@@ -1,0 +1,328 @@
+<!-- Игровой #6 тиндер -->
+
+<!-- Начало кода виджета Товарный Тиндер (блок T123) -->
+<div id="tinder-widget-container" class="w-full max-w-sm mx-auto bg-slate-50 rounded-[2.5rem] shadow-2xl overflow-hidden border-4 border-white relative h-[600px] flex flex-col font-sans" style="font-family: 'Inter', sans-serif;">
+  
+  <!-- Intro State -->
+  <div id="tinder-state-intro" class="flex-1 flex flex-col items-center justify-center p-8 text-center bg-gradient-to-b from-indigo-50 to-white transition-opacity duration-300">
+    <div class="w-24 h-24 bg-indigo-100 rounded-full flex items-center justify-center mb-8 relative">
+      <svg class="w-12 h-12 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+      <div class="absolute -top-2 -right-2 bg-rose-500 text-white text-xs font-bold px-2 py-1 rounded-full transform rotate-12">
+        Tinder
+      </div>
+    </div>
+    <h2 class="text-3xl font-black text-slate-800 mb-4 leading-tight">Найди тур<br/>своей мечты</h2>
+    <p class="text-slate-500 mb-8 text-lg">Свайпай вправо, если нравится. Влево — если нет. В конце тебя ждет подарок! 🎁</p>
+    <button id="tinder-btn-start" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-4 px-6 rounded-2xl transition-all shadow-lg shadow-indigo-200 flex items-center justify-center gap-2 text-lg hover:scale-[1.02]">
+      Начать поиск
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+    </button>
+  </div>
+
+  <!-- Swiping State -->
+  <div id="tinder-state-swiping" class="flex-1 relative p-4 flex flex-col hidden transition-opacity duration-300">
+    <div class="text-center mb-4 mt-2">
+      <span class="text-sm font-bold text-slate-400 uppercase tracking-widest" id="tinder-cards-left">Осталось: 5</span>
+    </div>
+    <div class="flex-1 relative w-full max-w-[320px] mx-auto" id="tinder-cards-container">
+      <!-- Cards will be injected here by JS -->
+    </div>
+  </div>
+
+  <!-- Summary State -->
+  <div id="tinder-state-summary" class="flex-1 flex flex-col p-8 bg-white hidden transition-opacity duration-300">
+    <div class="text-center mb-6">
+      <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+        <svg class="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"></path></svg>
+      </div>
+      <h2 class="text-2xl font-black text-slate-800 mb-2">Идеальный мэтч!</h2>
+      <p class="text-slate-500 text-sm" id="tinder-summary-text">Вы выбрали 0 направлений.</p>
+    </div>
+    <div class="flex-1 overflow-y-auto mb-6 space-y-3 pr-2" id="tinder-liked-list">
+      <!-- Liked items will be injected here -->
+    </div>
+    <button id="tinder-btn-lead" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-4 px-6 rounded-2xl transition-all shadow-lg shadow-indigo-200 hover:scale-[1.02]">
+      Узнать цены и забрать скидку
+    </button>
+  </div>
+
+  <!-- Lead Form State -->
+  <div id="tinder-state-lead_form" class="flex-1 flex flex-col justify-center p-8 bg-white hidden transition-opacity duration-300">
+    <div class="text-center mb-8">
+      <h2 class="text-2xl font-black text-slate-800 mb-3">Куда отправить подборку?</h2>
+      <p class="text-slate-500 text-sm">Оставьте контакты, мы пришлем цены на выбранные туры и закрепим за вами скидку 10%.</p>
+    </div>
+    <form id="tinder-lead-form" class="space-y-4">
+      <div>
+        <input type="text" id="tinder-user-name" required placeholder="Ваше имя" class="w-full px-5 py-4 rounded-2xl border-2 border-slate-100 focus:ring-0 focus:border-indigo-500 outline-none transition-all bg-slate-50 focus:bg-white font-medium">
+      </div>
+      <div>
+        <input type="tel" id="tinder-user-phone" required placeholder="+7 (999) 000-00-00" class="w-full px-5 py-4 rounded-2xl border-2 border-slate-100 focus:ring-0 focus:border-indigo-500 outline-none transition-all bg-slate-50 focus:bg-white font-medium">
+      </div>
+      <button type="submit" id="tinder-submit-btn" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-4 px-6 rounded-2xl transition-all shadow-lg shadow-indigo-200 flex items-center justify-center mt-4">
+        Получить подборку
+      </button>
+    </form>
+  </div>
+
+  <!-- Success State -->
+  <div id="tinder-state-success" class="flex-1 flex flex-col items-center justify-center p-8 text-center bg-white hidden transition-opacity duration-300">
+    <div class="w-24 h-24 bg-green-100 rounded-full flex items-center justify-center mb-6">
+      <svg class="w-12 h-12 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+    </div>
+    <h2 class="text-3xl font-black text-slate-800 mb-4">Готово!</h2>
+    <p class="text-slate-500 mb-8 text-lg">Мы уже готовим цены. Наш менеджер свяжется с вами по номеру <br><span id="tinder-success-phone" class="font-bold text-slate-800"></span></p>
+    <div class="bg-gradient-to-br from-indigo-50 to-purple-50 rounded-2xl p-6 w-full border-2 border-indigo-100 border-dashed relative overflow-hidden">
+      <div class="absolute top-0 right-0 w-16 h-16 bg-indigo-100 rounded-bl-full -mr-8 -mt-8"></div>
+      <div class="absolute bottom-0 left-0 w-16 h-16 bg-purple-100 rounded-tr-full -ml-8 -mb-8"></div>
+      <p class="text-sm text-indigo-600 uppercase tracking-widest font-bold mb-2 relative z-10">Ваш промокод на 10%</p>
+      <p class="text-3xl font-black text-slate-800 tracking-wider relative z-10">TRAVEL10</p>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
+<script>
+(function() {
+  const TOURS = [
+    { id: 1, title: 'Мальдивы', description: 'Белоснежный песок, кристальный океан и полное уединение в бунгало на воде.', image: 'https://picsum.photos/seed/maldives/600/800' },
+    { id: 2, title: 'Швейцарские Альпы', description: 'Горные лыжи, горячий глинтвейн и уютные заснеженные шале.', image: 'https://picsum.photos/seed/alps/600/800' },
+    { id: 3, title: 'Токио, Япония', description: 'Неоновые огни мегаполиса, древние храмы и цветение сакуры.', image: 'https://picsum.photos/seed/tokyo/600/800' },
+    { id: 4, title: 'Каппадокия, Турция', description: 'Романтичный полет на воздушном шаре на рассвете над марсианскими пейзажами.', image: 'https://picsum.photos/seed/cappadocia/600/800' },
+    { id: 5, title: 'Сафари в Кении', description: 'Дикая природа, львы, жирафы и незабываемые африканские закаты.', image: 'https://picsum.photos/seed/safari/600/800' }
+  ];
+
+  let currentCards = [...TOURS];
+  let likedItems = [];
+  let isDragging = false;
+  let startX = 0;
+  let currentX = 0;
+
+  function switchState(stateId) {
+    ['intro', 'swiping', 'summary', 'lead_form', 'success'].forEach(id => {
+      const el = document.getElementById('tinder-state-' + id);
+      if (el) {
+        el.classList.add('hidden');
+        el.style.opacity = '0';
+      }
+    });
+    const targetEl = document.getElementById('tinder-state-' + stateId);
+    if (targetEl) {
+      targetEl.classList.remove('hidden');
+      setTimeout(() => { targetEl.style.opacity = '1'; }, 50);
+    }
+  }
+
+  function renderCards() {
+    const container = document.getElementById('tinder-cards-container');
+    container.innerHTML = '';
+    document.getElementById('tinder-cards-left').innerText = `Осталось: ${currentCards.length}`;
+
+    if (currentCards.length === 0) {
+      setTimeout(showSummary, 300);
+      return;
+    }
+
+    // Render cards from back to front
+    for (let i = currentCards.length - 1; i >= 0; i--) {
+      const item = currentCards[i];
+      const isFront = i === 0;
+      
+      const card = document.createElement('div');
+      card.className = `absolute w-full h-full bg-white rounded-3xl shadow-xl overflow-hidden border border-slate-100 touch-none origin-bottom transition-transform duration-300 ease-out`;
+      card.style.zIndex = 10 - i;
+      
+      if (!isFront) {
+        card.style.transform = `scale(${1 - (i * 0.05)}) translateY(${i * 15}px)`;
+      }
+
+      card.innerHTML = `
+        <div class="relative w-full h-3/5">
+          <img src="${item.image}" alt="${item.title}" class="w-full h-full object-cover pointer-events-none" referrerpolicy="no-referrer" />
+          <div class="absolute inset-0 bg-gradient-to-b from-black/10 via-transparent to-black/60 pointer-events-none"></div>
+          
+          <div class="like-badge absolute top-8 left-6 bg-green-500 text-white px-6 py-2 rounded-full font-black text-2xl border-4 border-white transform -rotate-12 shadow-lg opacity-0 transition-opacity">ХОЧУ!</div>
+          <div class="nope-badge absolute top-8 right-6 bg-rose-500 text-white px-6 py-2 rounded-full font-black text-2xl border-4 border-white transform rotate-12 shadow-lg opacity-0 transition-opacity">НЕ МОЁ</div>
+
+          <div class="absolute bottom-4 left-4 right-4 text-white">
+            <div class="flex items-center gap-2 mb-1">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+              <span class="font-medium text-sm tracking-wide uppercase">${item.title.split(',')[0]}</span>
+            </div>
+            <h3 class="text-2xl font-bold leading-tight">${item.title}</h3>
+          </div>
+        </div>
+        <div class="p-6 h-2/5 flex flex-col justify-between bg-white">
+          <p class="text-slate-600 text-base leading-relaxed">${item.description}</p>
+          ${isFront ? `
+          <div class="flex justify-center gap-6 mt-4">
+            <button class="btn-nope w-14 h-14 rounded-full bg-white border-2 border-rose-100 flex items-center justify-center text-rose-500 hover:bg-rose-50 transition-all shadow-sm">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+            <button class="btn-like w-14 h-14 rounded-full bg-white border-2 border-green-100 flex items-center justify-center text-green-500 hover:bg-green-50 transition-all shadow-sm">
+              <svg class="w-6 h-6 fill-current" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path></svg>
+            </button>
+          </div>` : ''}
+        </div>
+      `;
+
+      if (isFront) {
+        setupDragEvents(card, item);
+        
+        // Setup button clicks
+        const btnNope = card.querySelector('.btn-nope');
+        const btnLike = card.querySelector('.btn-like');
+        if (btnNope) btnNope.addEventListener('click', () => swipeCard(card, item, 'left'));
+        if (btnLike) btnLike.addEventListener('click', () => swipeCard(card, item, 'right'));
+      }
+
+      container.appendChild(card);
+    }
+  }
+
+  function setupDragEvents(card, item) {
+    const handleStart = (e) => {
+      isDragging = true;
+      startX = e.type.includes('mouse') ? e.pageX : e.touches[0].pageX;
+      card.style.transition = 'none';
+      
+      if (e.type.includes('mouse')) {
+        document.addEventListener('mousemove', handleMove, { passive: false });
+        document.addEventListener('mouseup', handleEnd);
+      } else {
+        document.addEventListener('touchmove', handleMove, { passive: false });
+        document.addEventListener('touchend', handleEnd);
+      }
+    };
+
+    const handleMove = (e) => {
+      if (!isDragging) return;
+      e.preventDefault();
+      const x = e.type.includes('mouse') ? e.pageX : e.touches[0].pageX;
+      currentX = x - startX;
+      
+      const rotate = currentX * 0.05;
+      card.style.transform = `translateX(${currentX}px) rotate(${rotate}deg)`;
+
+      // Opacity for badges
+      const likeBadge = card.querySelector('.like-badge');
+      const nopeBadge = card.querySelector('.nope-badge');
+      if (currentX > 0) {
+        likeBadge.style.opacity = Math.min(currentX / 100, 1);
+        nopeBadge.style.opacity = 0;
+      } else {
+        nopeBadge.style.opacity = Math.min(Math.abs(currentX) / 100, 1);
+        likeBadge.style.opacity = 0;
+      }
+    };
+
+    const handleEnd = () => {
+      if (!isDragging) return;
+      isDragging = false;
+      
+      document.removeEventListener('mousemove', handleMove);
+      document.removeEventListener('mouseup', handleEnd);
+      document.removeEventListener('touchmove', handleMove);
+      document.removeEventListener('touchend', handleEnd);
+
+      card.style.transition = 'transform 0.3s ease-out, opacity 0.3s ease-out';
+
+      if (currentX > 100) {
+        swipeCard(card, item, 'right');
+      } else if (currentX < -100) {
+        swipeCard(card, item, 'left');
+      } else {
+        // Reset
+        card.style.transform = 'translateX(0px) rotate(0deg)';
+        card.querySelector('.like-badge').style.opacity = 0;
+        card.querySelector('.nope-badge').style.opacity = 0;
+      }
+      currentX = 0;
+    };
+
+    card.addEventListener('mousedown', handleStart);
+    card.addEventListener('touchstart', handleStart, { passive: true });
+  }
+
+  function swipeCard(card, item, direction) {
+    const throwX = direction === 'right' ? window.innerWidth : -window.innerWidth;
+    const rotate = direction === 'right' ? 30 : -30;
+    
+    card.style.transition = 'transform 0.5s ease-out, opacity 0.5s ease-out';
+    card.style.transform = `translateX(${throwX}px) rotate(${rotate}deg)`;
+    card.style.opacity = '0';
+
+    if (direction === 'right') {
+      likedItems.push(item);
+    }
+
+    setTimeout(() => {
+      currentCards.shift();
+      renderCards();
+    }, 300);
+  }
+
+  function showSummary() {
+    const text = document.getElementById('tinder-summary-text');
+    let word = 'направлений';
+    if (likedItems.length === 1) word = 'направление';
+    else if (likedItems.length > 1 && likedItems.length < 5) word = 'направления';
+    
+    text.innerText = `Вы выбрали ${likedItems.length} ${word}.`;
+
+    const list = document.getElementById('tinder-liked-list');
+    list.innerHTML = '';
+
+    if (likedItems.length > 0) {
+      likedItems.forEach(item => {
+        list.innerHTML += `
+          <div class="flex items-center gap-4 p-3 bg-slate-50 rounded-2xl border border-slate-100">
+            <img src="${item.image}" alt="${item.title}" class="w-16 h-16 rounded-xl object-cover" referrerpolicy="no-referrer" />
+            <div>
+              <h4 class="font-bold text-slate-800 leading-tight mb-1">${item.title}</h4>
+              <p class="text-xs text-slate-500 line-clamp-1">${item.description}</p>
+            </div>
+          </div>
+        `;
+      });
+    } else {
+      list.innerHTML = `
+        <div class="text-center text-slate-500 py-8 bg-slate-50 rounded-2xl border border-slate-100">
+          Вы ничего не выбрали 😢<br/>Но мы все равно дарим вам скидку!
+        </div>
+      `;
+    }
+
+    switchState('summary');
+    if (typeof confetti === 'function') {
+      confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 }, colors: ['#4f46e5', '#818cf8', '#ffffff'] });
+    }
+  }
+
+  // Bind events
+  document.getElementById('tinder-btn-start').addEventListener('click', () => {
+    switchState('swiping');
+    renderCards();
+  });
+
+  document.getElementById('tinder-btn-lead').addEventListener('click', () => {
+    switchState('lead_form');
+  });
+
+  document.getElementById('tinder-lead-form').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const btn = document.getElementById('tinder-submit-btn');
+    const phone = document.getElementById('tinder-user-phone').value;
+    btn.disabled = true;
+    btn.innerHTML = 'Отправка...';
+    
+    setTimeout(() => {
+      document.getElementById('tinder-success-phone').innerText = phone;
+      switchState('success');
+    }, 1500);
+  });
+
+})();
+</script>
+<!-- Конец кода виджета Товарный Тиндер -->
