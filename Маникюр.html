@@ -1,0 +1,281 @@
+<!-- Игровой #3 маникюр -->
+
+<!-- Начало кода игры для маникюрного салона (блок T123) -->
+<div id="nail-game-container" class="w-full max-w-sm mx-auto bg-white rounded-3xl shadow-xl overflow-hidden border border-pink-100 relative min-h-[450px] flex flex-col font-sans" style="font-family: 'Inter', sans-serif;">
+  
+  <!-- Intro State -->
+  <div id="nail-state-intro" class="flex-1 flex flex-col items-center justify-center p-8 text-center">
+    <div class="w-20 h-20 bg-pink-50 rounded-full flex items-center justify-center mb-6">
+      <svg class="w-10 h-10 text-pink-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4M4 19h4M13 3l2.29 2.29a2 2 0 002.83 0l2.29-2.29M13 13l2.29 2.29a2 2 0 002.83 0l2.29-2.29"></path></svg>
+    </div>
+    <h2 class="text-2xl font-bold text-slate-800 mb-2">Идеальный маникюр!</h2>
+    <p class="text-slate-500 mb-8">Соберите 10 страз для дизайна и уворачивайтесь от ножниц, чтобы получить скидку на маникюр!</p>
+    <button onclick="nail_startGame()" class="w-full bg-pink-500 hover:bg-pink-600 text-white font-semibold py-3 px-6 rounded-xl transition-colors flex items-center justify-center gap-2">
+      Начать игру
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+    </button>
+  </div>
+
+  <!-- Playing State -->
+  <div id="nail-state-playing" class="flex-1 flex flex-col bg-slate-50 hidden">
+    <div class="flex justify-between items-center p-4 bg-white shadow-sm z-10 relative">
+      <div class="flex items-center gap-2 font-semibold text-pink-600">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4M4 19h4M13 3l2.29 2.29a2 2 0 002.83 0l2.29-2.29M13 13l2.29 2.29a2 2 0 002.83 0l2.29-2.29"></path></svg>
+        <span id="nail-score-display">0 / 10</span>
+      </div>
+      <div class="flex items-center gap-1 text-rose-500" id="nail-lives-display">
+        <!-- Hearts will be injected here -->
+      </div>
+    </div>
+    <div class="flex-1 relative overflow-hidden cursor-none">
+      <div class="absolute inset-0 touch-none" style="touch-action: none;">
+        <canvas id="nail-game-canvas" class="block w-full h-full"></canvas>
+        <div class="absolute bottom-6 left-0 right-0 h-12 pointer-events-none">
+          <div class="mx-4 h-full bg-pink-50/50 backdrop-blur-sm rounded-full border border-pink-100/50 shadow-inner"></div>
+          <div id="nail-slider-thumb" class="absolute top-1/2 w-14 h-14 bg-white rounded-full shadow-lg border-2 border-pink-400 flex items-center justify-center text-pink-400" style="left: 50%; transform: translate(-50%, -50%);">
+            <svg class="w-6 h-6 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h8M8 17h8M16 21l4-4-4-4M8 3L4 7l4 4"></path></svg>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Game Over State -->
+  <div id="nail-state-gameover" class="flex-1 flex flex-col items-center justify-center p-8 text-center hidden">
+    <div class="w-20 h-20 bg-rose-50 rounded-full flex items-center justify-center mb-6">
+      <svg class="w-10 h-10 text-rose-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+    </div>
+    <h2 class="text-2xl font-bold text-slate-800 mb-2">Ой, ножницы!</h2>
+    <p class="text-slate-500 mb-8">Одно неверное движение и дизайн испорчен. Попробуем еще раз?</p>
+    <button onclick="nail_startGame()" class="w-full bg-pink-500 hover:bg-pink-600 text-white font-semibold py-3 px-6 rounded-xl transition-colors">Сыграть снова</button>
+  </div>
+
+  <!-- Won State -->
+  <div id="nail-state-won" class="flex-1 flex flex-col items-center justify-center p-8 text-center hidden">
+    <div class="w-20 h-20 bg-pink-100 rounded-full flex items-center justify-center mb-6">
+      <svg class="w-10 h-10 text-pink-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4M4 19h4M13 3l2.29 2.29a2 2 0 002.83 0l2.29-2.29M13 13l2.29 2.29a2 2 0 002.83 0l2.29-2.29"></path></svg>
+    </div>
+    <h2 class="text-2xl font-bold text-slate-800 mb-2">Идеальный дизайн! 🎉</h2>
+    <p class="text-slate-500 mb-8">Вы собрали все стразы и выиграли скидку 15% на маникюр с дизайном!</p>
+    <button onclick="nail_showLeadForm()" class="w-full bg-pink-500 hover:bg-pink-600 text-white font-semibold py-3 px-6 rounded-xl transition-colors">Забрать приз</button>
+  </div>
+
+  <!-- Lead Form State -->
+  <div id="nail-state-lead_form" class="flex-1 flex flex-col justify-center p-8 hidden">
+    <div class="text-center mb-6">
+      <h2 class="text-2xl font-bold text-slate-800 mb-2">Куда отправить приз?</h2>
+      <p class="text-slate-500 text-sm">Оставьте свои контакты, чтобы закрепить за вами скидку 15%.</p>
+    </div>
+    <form id="nail-lead-form" onsubmit="nail_submitForm(event)" class="space-y-4">
+      <div>
+        <input type="text" id="nail-user-name" required placeholder="Ваше имя" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-pink-500 focus:border-transparent outline-none transition-all">
+      </div>
+      <div>
+        <input type="tel" id="nail-user-phone" required placeholder="+7 (999) 000-00-00" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-pink-500 focus:border-transparent outline-none transition-all">
+      </div>
+      <button type="submit" id="nail-submit-btn" class="w-full bg-pink-500 hover:bg-pink-600 text-white font-semibold py-3 px-6 rounded-xl transition-colors flex items-center justify-center">Получить скидку</button>
+    </form>
+  </div>
+
+  <!-- Success State -->
+  <div id="nail-state-success" class="flex-1 flex flex-col items-center justify-center p-8 text-center hidden">
+    <div class="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mb-6">
+      <svg class="w-10 h-10 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+    </div>
+    <h2 class="text-2xl font-bold text-slate-800 mb-2">Отлично!</h2>
+    <p class="text-slate-500 mb-6">Мы закрепили за вами скидку. Наш администратор свяжется с вами по номеру <br><span id="nail-success-phone" class="font-medium text-slate-800"></span></p>
+    <div class="bg-slate-50 rounded-xl p-4 w-full border border-slate-200 border-dashed">
+      <p class="text-xs text-slate-400 uppercase tracking-wider font-semibold mb-1">Ваш промокод</p>
+      <p class="text-xl font-mono font-bold text-pink-600">NAILS15</p>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
+<script>
+(function() {
+  // Game Logic
+  const TARGET_SCORE = 10;
+  let score = 0;
+  let lives = 3;
+  let isPlaying = false;
+  let requestRef;
+  
+  const player = { x: 192, y: 340, radius: 20 };
+  let items = [];
+  let frameCount = 0;
+
+  const canvas = document.getElementById('nail-game-canvas');
+  const ctx = canvas.getContext('2d');
+  const sliderThumb = document.getElementById('nail-slider-thumb');
+
+  function switchState(stateId) {
+    ['intro', 'playing', 'gameover', 'won', 'lead_form', 'success'].forEach(id => {
+      document.getElementById('nail-state-' + id).classList.add('hidden');
+    });
+    document.getElementById('nail-state-' + stateId).classList.remove('hidden');
+  }
+
+  function updateHUD() {
+    document.getElementById('nail-score-display').innerText = `${score} / ${TARGET_SCORE}`;
+    let heartsHTML = '';
+    for(let i=0; i<3; i++) {
+      if (i < lives) {
+        heartsHTML += '<svg class="w-5 h-5 fill-current" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path></svg>';
+      } else {
+        heartsHTML += '<svg class="w-5 h-5 opacity-30 fill-current" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path></svg>';
+      }
+    }
+    document.getElementById('nail-lives-display').innerHTML = heartsHTML;
+  }
+
+  function resizeCanvas() {
+    const parent = canvas.parentElement;
+    if (parent) {
+      canvas.width = parent.clientWidth;
+      canvas.height = parent.clientHeight;
+      player.y = canvas.height - 100;
+    }
+  }
+
+  window.addEventListener('resize', resizeCanvas);
+
+  function render() {
+    if (!isPlaying) return;
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    frameCount++;
+
+    if (frameCount % 35 === 0) {
+      if (Math.random() > 0.35) {
+        items.push({
+          type: 'crystal',
+          x: 30 + Math.random() * (canvas.width - 60),
+          y: -30,
+          speed: 2.5 + Math.random() * 2,
+          radius: 15,
+          rotation: 0,
+          rotationSpeed: (Math.random() - 0.5) * 0.1
+        });
+      } else {
+        items.push({
+          type: 'microbe',
+          x: 30 + Math.random() * (canvas.width - 60),
+          y: -30,
+          speed: 3 + Math.random() * 2.5,
+          radius: 15,
+          rotation: 0,
+          rotationSpeed: (Math.random() - 0.5) * 0.2
+        });
+      }
+    }
+
+    for (let i = items.length - 1; i >= 0; i--) {
+      const item = items[i];
+      item.y += item.speed;
+      item.rotation += item.rotationSpeed;
+
+      const dx = item.x - player.x;
+      const dy = item.y - player.y;
+      const distance = Math.sqrt(dx * dx + dy * dy);
+
+      if (distance < item.radius + player.radius) {
+        if (item.type === 'crystal') {
+          score += 1;
+          updateHUD();
+          if (score >= TARGET_SCORE) {
+            isPlaying = false;
+            switchState('won');
+            confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 }, colors: ['#ec4899', '#d946ef', '#ffffff'] });
+          }
+        } else {
+          lives -= 1;
+          updateHUD();
+          if (lives <= 0) {
+            isPlaying = false;
+            switchState('gameover');
+          }
+        }
+        items.splice(i, 1);
+        continue;
+      }
+
+      if (item.y > canvas.height + 30) {
+        items.splice(i, 1);
+        continue;
+      }
+
+      ctx.save();
+      ctx.translate(item.x, item.y);
+      ctx.rotate(item.rotation);
+      ctx.font = '30px Arial';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(item.type === 'crystal' ? '💎' : '✂️', 0, 0);
+      ctx.restore();
+    }
+
+    ctx.save();
+    ctx.translate(player.x, player.y);
+    ctx.font = '40px Arial';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('💅', 0, 0);
+    ctx.restore();
+
+    if (sliderThumb) {
+      sliderThumb.style.left = `${player.x}px`;
+    }
+
+    if (isPlaying) {
+      requestRef = requestAnimationFrame(render);
+    }
+  }
+
+  function handleMove(e) {
+    const rect = canvas.getBoundingClientRect();
+    let clientX = e.touches ? e.touches[0].clientX : e.clientX;
+    let newX = clientX - rect.left;
+    newX = Math.max(28, Math.min(newX, canvas.width - 28));
+    player.x = newX;
+  }
+
+  canvas.addEventListener('mousedown', handleMove);
+  canvas.addEventListener('mousemove', handleMove);
+  canvas.addEventListener('touchstart', handleMove, { passive: true });
+  canvas.addEventListener('touchmove', handleMove, { passive: true });
+
+  window.nail_startGame = function() {
+    score = 0;
+    lives = 3;
+    items = [];
+    player.x = canvas.parentElement.clientWidth / 2;
+    frameCount = 0;
+    updateHUD();
+    switchState('playing');
+    resizeCanvas();
+    isPlaying = true;
+    if (requestRef) cancelAnimationFrame(requestRef);
+    requestRef = requestAnimationFrame(render);
+  };
+
+  window.nail_showLeadForm = function() {
+    switchState('lead_form');
+  };
+
+  window.nail_submitForm = function(e) {
+    e.preventDefault();
+    const btn = document.getElementById('nail-submit-btn');
+    const phone = document.getElementById('nail-user-phone').value;
+    btn.disabled = true;
+    btn.innerHTML = 'Отправка...';
+    
+    setTimeout(() => {
+      document.getElementById('nail-success-phone').innerText = phone;
+      switchState('success');
+    }, 1500);
+  };
+})();
+</script>
+<!-- Конец кода игры для маникюрного салона -->
