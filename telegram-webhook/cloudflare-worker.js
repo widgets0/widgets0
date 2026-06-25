@@ -44,6 +44,7 @@ function leadDomain(lead, request) {
 function fieldLabel(key) {
   const labels = {
     widget: "Виджет",
+    source: "Источник",
     name: "Имя",
     phone: "Телефон",
     prize: "Приз",
@@ -57,7 +58,7 @@ function fieldLabel(key) {
 }
 
 function formatLead(lead, request) {
-  const preferredKeys = ["widget", "name", "phone", "prize", "selectedTours", "score"];
+  const preferredKeys = ["widget", "source", "name", "phone", "prize", "selectedTours", "score"];
   const technicalKeys = new Set(["page", "createdAt"]);
   const usedKeys = new Set([...preferredKeys, ...technicalKeys]);
 
