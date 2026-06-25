@@ -1,0 +1,14 @@
+{
+  "name": "widget-telegram-webhook",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Webhook server that forwards widget leads to Telegram.",
+  "main": "local-server.js",
+  "scripts": {
+    "start": "node local-server.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "license": "UNLICENSED"
+}
