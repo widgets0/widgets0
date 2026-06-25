@@ -1,0 +1,904 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wheel of Fortune Widget</title>
+<!-- Библиотека для конфетти -->
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;800;900&family=Playfair+Display:wght@600&display=swap');
+
+html,
+body {
+    margin: 0;
+    min-height: 100%;
+}
+
+body {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* === CSS VARIABLES (DARK WARM THEME) === */
+.clientWidget001-root {
+    --bg-dark: rgba(0, 0, 0, 0.85);
+    --brand-main: #2A231E; 
+    --brand-light: #3A322C; 
+    --accent-yellow: #C4A47C; 
+    --accent-light: #F4EBD9; 
+    --comic-border: #1A1512; 
+    --text-main: #FFFFFF;
+    --text-dark: #2A231E;
+    width: 100%;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.clientWidget001-root .wof-overlay {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    padding: 20px;
+    animation: fadeInWof 0.4s ease forwards;
+    overflow: visible;
+}
+
+@keyframes fadeInWof {
+    from { opacity: 0; transform: scale(1.03); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+.clientWidget001-root .candle-wof-wrapper {
+    margin: 0 auto;
+    background-color: var(--brand-main);
+    background-image: repeating-conic-gradient(
+        var(--brand-main) 0deg 15deg,
+        var(--brand-light) 15deg 30deg
+    );
+    color: var(--text-main);
+    position: relative;
+    border-radius: 24px;
+    border: 5px solid var(--comic-border);
+    box-shadow: 10px 12px 0px rgba(0, 0, 0, 0.9);
+    display: flex;
+    box-sizing: border-box;
+    width: 100%;
+    z-index: 2;
+    animation: popInWof 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+@keyframes popInWof {
+    0% { transform: scale(0.85) translateY(20px); opacity: 0; }
+    100% { transform: scale(1) translateY(0); opacity: 1; }
+}
+
+.clientWidget001-root .wof-inner {
+    width: 100%;
+    display: flex;
+    position: relative;
+    z-index: 2;
+    box-sizing: border-box;
+}
+
+.clientWidget001-root .wof-close-btn {
+    display: none;
+}
+
+.clientWidget001-root .wof-close-btn:hover {
+    transform: scale(1.05) rotate(90deg);
+    background: var(--accent-yellow);
+}
+.clientWidget001-root .wof-close-btn:active {
+    transform: scale(0.95) translate(2px, 2px);
+    box-shadow: 0px 0px 0px rgba(0,0,0,1);
+}
+
+.clientWidget001-root .wof-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 28px;
+    margin-bottom: 16px;
+    color: var(--accent-yellow);
+    font-weight: 600;
+    line-height: 1.2;
+    text-transform: uppercase;
+    margin-top: 0;
+}
+
+.clientWidget001-root .wof-subtitle {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 16px;
+    color: var(--accent-light);
+    opacity: 0.8;
+    margin-bottom: 30px;
+    font-weight: 400;
+    line-height: 1.5;
+    margin-top: 0;
+}
+
+.clientWidget001-root .comic-star {
+    position: absolute;
+    z-index: 100;
+    pointer-events: none;
+    animation: twinkleWof 3s infinite alternate;
+}
+.clientWidget001-root .star-1 { top: -20px; left: -20px; width: 50px; }
+.clientWidget001-root .star-2 { bottom: -10px; right: 30px; width: 40px; }
+
+@keyframes twinkleWof {
+    0% { transform: scale(0.9) rotate(-10deg); }
+    100% { transform: scale(1.1) rotate(10deg); }
+}
+
+.clientWidget001-root .wof-wheel-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+}
+
+.clientWidget001-root .wof-wheel-container {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1 / 1;
+}
+
+.clientWidget001-root .wof-pointer {
+    position: absolute;
+    top: -24px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 50px;
+    height: 70px;
+    z-index: 20;
+    filter: drop-shadow(4px 4px 0px rgba(0,0,0,0.8));
+}
+
+.clientWidget001-root .wof-canvas {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    transition: transform 5s cubic-bezier(0.2, 0, 0.1, 1);
+    position: relative;
+    z-index: 5;
+    filter: drop-shadow(8px 10px 0px rgba(0,0,0,0.7));
+}
+
+.clientWidget001-root .wof-btn {
+    width: 100%;
+    background: var(--accent-yellow);
+    color: var(--text-dark);
+    border: 4px solid var(--comic-border);
+    padding: 20px 24px;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 24px;
+    font-weight: 900;
+    border-radius: 16px;
+    cursor: pointer;
+    transition: all 0.1s ease-in-out;
+    box-shadow: 4px 6px 0px var(--comic-border);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    outline: none;
+    position: relative;
+    margin-top: 10px;
+    display: block;
+    box-sizing: border-box;
+}
+
+.clientWidget001-root .wof-btn:hover:not(:disabled) {
+    transform: translate(-2px, -2px);
+    box-shadow: 6px 8px 0px var(--comic-border);
+    background: #D4B48C;
+}
+
+.clientWidget001-root .wof-btn:active:not(:disabled) {
+    transform: translate(4px, 6px);
+    box-shadow: 0px 0px 0px var(--comic-border);
+}
+
+.clientWidget001-root .wof-btn:disabled {
+    background: #504439;
+    color: #9A8C7F;
+    cursor: not-allowed;
+    transform: translate(4px, 6px);
+    box-shadow: 0px 0px 0px var(--comic-border);
+}
+
+.clientWidget001-root .wof-form-container {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    width: 100%;
+}
+
+.clientWidget001-root .wof-input-wrapper {
+    position: relative;
+    width: 100%;
+}
+
+.clientWidget001-root .wof-input {
+    width: 100%;
+    background: var(--accent-light);
+    border: 3px solid var(--comic-border);
+    color: var(--text-dark);
+    padding: 18px 20px;
+    border-radius: 12px;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    outline: none;
+    transition: all 0.2s;
+    box-shadow: inset 3px 3px 0px rgba(0,0,0,0.04);
+    box-sizing: border-box;
+}
+
+.clientWidget001-root .wof-input:focus {
+    background: #FFFFFF;
+    border-color: var(--accent-yellow);
+    box-shadow: inset 3px 3px 0px rgba(0,0,0,0.04), 0 0 0 3px var(--accent-yellow);
+    transform: translate(-1px, -1px);
+}
+
+.clientWidget001-root .wof-input::placeholder {
+    color: #8C7C6D;
+    font-weight: 700;
+}
+
+.clientWidget001-root .wof-prize-card {
+    width: 100%;
+    background: var(--accent-light); 
+    border: 4px solid var(--comic-border); 
+    border-radius: 20px;
+    padding: 30px 24px;
+    box-shadow: 6px 8px 0px rgba(0,0,0,1);
+    position: relative;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+}
+
+.clientWidget001-root .wof-prize-label {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 900;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--text-dark);
+    margin-bottom: 8px;
+}
+
+.clientWidget001-root .wof-prize-value {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 34px;
+    font-weight: 900;
+    color: var(--accent-yellow);
+    line-height: 1.15;
+    margin-bottom: 16px;
+    -webkit-text-stroke: 1.5px var(--comic-border);
+    text-shadow: 2px 2px 0px var(--comic-border);
+    text-transform: uppercase;
+}
+
+.clientWidget001-root .wof-subtitle-dark {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 15px;
+    color: var(--text-dark);
+    opacity: 0.9;
+    font-weight: 700;
+    margin-bottom: 25px;
+    line-height: 1.4;
+    margin-top: 0;
+}
+
+.clientWidget001-root .wof-timer-container {
+    background: rgba(0,0,0,0.05);
+    padding: 12px;
+    border-radius: 12px;
+    border: 2px solid var(--comic-border);
+    color: #b91c1c; 
+    font-weight: 800;
+    font-size: 14px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-variant-numeric: tabular-nums;
+    font-family: 'Montserrat', sans-serif;
+}
+
+.clientWidget001-root .wof-toast {
+    position: relative;
+    z-index: 1000000;
+    width: min(360px, calc(100vw - 32px));
+    padding: 24px 22px;
+    border: 4px solid var(--comic-border);
+    border-radius: 20px;
+    background: var(--accent-light);
+    color: var(--text-dark);
+    box-shadow: 8px 10px 0px rgba(0,0,0,1);
+    text-align: center;
+    transform: scale(0.92);
+    animation: toastInWof 0.32s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+.clientWidget001-root .wof-success-layer {
+    position: fixed;
+    inset: 0;
+    z-index: 1000000;
+    display: grid;
+    place-items: center;
+    padding: 24px;
+    pointer-events: none;
+}
+
+.clientWidget001-root .wof-toast-title {
+    margin: 0 0 8px;
+    font-family: 'Playfair Display', serif;
+    font-size: 30px;
+    line-height: 1.1;
+    color: var(--accent-yellow);
+    text-transform: uppercase;
+    -webkit-text-stroke: 1px var(--comic-border);
+    text-shadow: 2px 2px 0px var(--comic-border);
+}
+
+.clientWidget001-root .wof-toast-text {
+    margin: 0;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 15px;
+    line-height: 1.45;
+    font-weight: 800;
+}
+
+@keyframes toastInWof {
+    from { opacity: 0; transform: translateY(-12px) scale(0.92); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.clientWidget001-root .stagger-1 { animation: popBounceWof 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 0.1s both; }
+.clientWidget001-root .stagger-2 { animation: popBounceWof 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 0.15s both; }
+.clientWidget001-root .stagger-3 { animation: popBounceWof 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 0.2s both; }
+
+@keyframes popBounceWof {
+    0% { opacity: 0; transform: scale(0.9) translateY(15px); }
+    70% { transform: scale(1.02) translateY(-2px); }
+    100% { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+@media (max-width: 767px) {
+    .clientWidget001-root .wof-overlay {
+        padding: 16px;
+    }
+
+    .clientWidget001-root .candle-wof-wrapper {
+        margin: 0 auto; 
+        padding: 40px 20px 30px; 
+        flex-direction: column;
+        max-width: 100%;
+        min-height: auto;
+        border-radius: 24px;
+        display: flex;
+        justify-content: center;
+    }
+
+    .clientWidget001-root .wof-close-btn {
+        top: 15px;
+        right: 15px;
+    }
+
+    .clientWidget001-root .star-1 {
+        top: 10px;
+        left: 10px;
+        width: 40px;
+    }
+
+    .clientWidget001-root .star-2 {
+        bottom: 20px;
+        right: 20px;
+        width: 35px;
+    }
+
+    .clientWidget001-root .wof-inner {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .clientWidget001-root .wof-wheel-wrapper {
+        width: 100%;
+        max-width: 280px;
+        margin: 0 auto;
+    }
+
+    .clientWidget001-root .hidden-on-mobile {
+        display: none !important;
+    }
+
+    .clientWidget001-root .wof-content-wrapper {
+        width: 100%;
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
+        height: auto;
+    }
+    
+    .clientWidget001-root .wof-title { font-size: 24px; margin-bottom: 12px; }
+    .clientWidget001-root .wof-subtitle { font-size: 15px; margin-bottom: 20px; }
+    
+    .clientWidget001-root .wof-pointer {
+        top: -18px;
+        width: 40px;
+        height: 56px;
+    }
+    
+    .clientWidget001-root .wof-prize-card {
+        padding: 20px 16px;
+    }
+
+    .clientWidget001-root .wof-prize-value {
+        font-size: 28px;
+    }
+
+    .clientWidget001-root .wof-input { padding: 16px; font-size: 15px; }
+    .clientWidget001-root .wof-btn { padding: 18px 24px; font-size: 20px; }
+}
+
+@media (min-width: 768px) {
+    .clientWidget001-root .candle-wof-wrapper {
+        max-width: 880px; 
+        padding: 50px 50px;
+    }
+
+    .clientWidget001-root .wof-inner {
+        flex-direction: row;
+        align-items: center;
+        gap: 50px;
+    }
+
+    .clientWidget001-root .wof-content-wrapper {
+        width: 50%; 
+        position: relative;
+        z-index: 10;
+        box-sizing: border-box;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        height: 480px;
+    }
+
+    .clientWidget001-root .wof-wheel-wrapper {
+        width: 50%;
+        z-index: 5;
+    }
+
+    .clientWidget001-root .wof-title { font-size: 36px; }
+    .clientWidget001-root .wof-subtitle { font-size: 18px; margin-bottom: 40px; }
+    .clientWidget001-root .wof-input { padding: 18px 20px; font-size: 16px; }
+    .clientWidget001-root .wof-btn { padding: 22px 30px; font-size: 24px; }
+}
+</style>
+</head>
+<body>
+
+<!-- Начало блока для Тильды (можно скопировать всё начиная отсюда и выше в блок T123) -->
+<div class="clientWidget001-root">
+
+  <div id="clientWidget001-overlay" class="wof-overlay" style="display: flex;">
+    <div class="candle-wof-wrapper">
+      
+      <!-- Декоративные звезды -->
+      <svg class="comic-star star-1" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M50 0L61 39L100 50L61 61L50 100L39 61L0 50L39 39L50 0Z" fill="#C4A47C" stroke="#1A1512" stroke-width="6" stroke-linejoin="round"/>
+      </svg>
+      <svg class="comic-star star-2" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M50 0L61 39L100 50L61 61L50 100L39 61L0 50L39 39L50 0Z" fill="#C4A47C" stroke="#1A1512" stroke-width="6" stroke-linejoin="round"/>
+      </svg>
+      
+      <div class="wof-inner">
+        
+        <div id="clientWidget001-wheel-wrapper" class="wof-wheel-wrapper">
+          <div class="wof-wheel-container">
+            <svg class="wof-pointer" viewBox="0 0 60 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M30 80 L8 35 C0 20 8 2 30 2 C52 2 60 20 52 35 Z" fill="#C4A47C" stroke="#1A1512" stroke-width="5" stroke-linejoin="round"/>
+              <circle cx="30" cy="24" r="10" fill="#F4EBD9" stroke="#1A1512" stroke-width="5"/>
+            </svg>
+            <canvas id="clientWidget001-canvas" class="wof-canvas" width="1000" height="1000"></canvas>
+          </div>
+        </div>
+
+        <div class="wof-content-wrapper">
+          
+          <!-- Экран 1: Колесо -->
+          <div id="clientWidget001-step-spin" style="display: block;">
+            <h1 class="wof-title stagger-1">Твой подарок от школы свечеварения ждёт!</h1>
+            <p class="wof-subtitle stagger-2">Крути колесо — каждая участница получает приз. Без исключений!</p>
+            
+            <div class="stagger-3 wof-form-container">
+                <button id="clientWidget001-spin-btn" class="wof-btn" type="button">КРУТИТЬ!</button>
+            </div>
+          </div>
+
+          <!-- Экран 2: Форма -->
+          <div id="clientWidget001-step-form" class="wof-prize-card stagger-1" style="display: none;">
+            <div class="wof-prize-label">Твой Приз:</div>
+            <div id="clientWidget001-prize-value" class="wof-prize-value"></div>
+            <p class="wof-subtitle-dark stagger-2" style="margin-bottom: 15px;">
+              Поздравляем! Твой приз зарезервирован. Оставь контакт — мастер пришлёт его в течение часа
+            </p>
+
+            <div class="wof-timer-container">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 8px; display: inline-block; vertical-align: middle;"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+              <span id="clientWidget001-timer">Предложение сгорит через: 23:59:59</span>
+            </div>
+            
+            <form id="clientWidget001-form" class="wof-form-container stagger-3">
+              <div class="wof-input-wrapper">
+                  <input type="text" id="clientWidget001-name" placeholder="Как тебя зовут?" class="wof-input">
+              </div>
+              <div class="wof-input-wrapper">
+                  <input type="tel" id="clientWidget001-phone" placeholder="+7 (999) 000-00-00" class="wof-input">
+              </div>
+              
+              <div id="clientWidget001-form-error" style="color: #ef4444; font-weight: bold; font-size: 14px; text-align: center; padding: 0 8px; margin-bottom: 4px; min-height: 20px;"></div>
+              
+              <button type="submit" class="wof-btn" style="margin-top: 8px;">ЗАБРАТЬ ПРИЗ!</button>
+            </form>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Мини-окно успеха -->
+  <div id="clientWidget001-step-success" class="wof-success-layer" style="display: none;" aria-live="polite">
+    <div class="wof-toast">
+      <div class="wof-toast-title">Спасибо!</div>
+      <p class="wof-toast-text">Заявка отправлена. Мы скоро свяжемся с вами.</p>
+    </div>
+  </div>
+
+<script>
+(function() {
+  const LEGACY_STORAGE_KEY = 'clientWidget001_wof_v1';
+  const LEAD_CONFIG = {
+    webhookUrl: 'https://widgets0-production.up.railway.app',
+    widget: 'Колесо фортуны для сайта Леры',
+    source: 'project-001'
+  };
+  
+  const prizes = [
+    "Скидка 10%\nна курс",
+    "Подарок\nновичку",
+    "Секретный\nбонус",
+    "Чек-лист\nмастера",
+    "Скидка 20%\nна курс",
+    "Бесплатный\nМК"
+  ];
+
+  const colors = [
+    "#F4EBD9", "#C4A47C", "#F4EBD9", 
+    "#C4A47C", "#F4EBD9", "#C4A47C"
+  ];
+
+  // DOM Элементы
+  const overlay = document.getElementById('clientWidget001-overlay');
+  const spinBtn = document.getElementById('clientWidget001-spin-btn');
+  const canvas = document.getElementById('clientWidget001-canvas');
+  const ctx = canvas ? canvas.getContext('2d') : null;
+  const wheelWrapper = document.getElementById('clientWidget001-wheel-wrapper');
+  
+  const stepSpin = document.getElementById('clientWidget001-step-spin');
+  const stepForm = document.getElementById('clientWidget001-step-form');
+  const stepSuccess = document.getElementById('clientWidget001-step-success');
+  
+  const prizeValueEl = document.getElementById('clientWidget001-prize-value');
+  const timerEl = document.getElementById('clientWidget001-timer');
+  const form = document.getElementById('clientWidget001-form');
+  const nameInput = document.getElementById('clientWidget001-name');
+  const phoneInput = document.getElementById('clientWidget001-phone');
+  const formError = document.getElementById('clientWidget001-form-error');
+
+  let isSpinning = false;
+  let rotation = 0;
+  let timerInterval;
+  let selectedPrize = '';
+
+  function init() {
+    if (!overlay) return;
+
+    localStorage.removeItem(LEGACY_STORAGE_KEY);
+    localStorage.removeItem(LEGACY_STORAGE_KEY + '_prize');
+    localStorage.removeItem(LEGACY_STORAGE_KEY + '_expiry');
+
+    if (spinBtn) spinBtn.addEventListener('click', handleSpin);
+    if (form) form.addEventListener('submit', handleFormSubmit);
+    if (phoneInput) phoneInput.addEventListener('input', handlePhoneInput);
+
+    // Рисуем колесо
+    document.fonts.ready.then(() => {
+        drawWheel();
+    });
+    setTimeout(drawWheel, 100);
+    openWidget();
+  }
+
+  function openWidget() {
+    selectedPrize = '';
+    showStep('spin');
+    setTimeout(drawWheel, 50);
+    overlay.style.display = 'flex';
+  }
+
+  function showStep(step) {
+    if (stepSpin) stepSpin.style.display = step === 'spin' ? 'block' : 'none';
+    if (stepForm) stepForm.style.display = step === 'form' ? 'flex' : 'none';
+    if (stepSuccess) stepSuccess.style.display = step === 'success' ? 'grid' : 'none';
+
+    if (step === 'form') {
+      wheelWrapper.classList.add('hidden-on-mobile');
+      startTimer();
+    } else if (step === 'success') {
+      wheelWrapper.style.display = 'none';
+    } else {
+      wheelWrapper.classList.remove('hidden-on-mobile');
+      wheelWrapper.style.display = 'block';
+    }
+  }
+
+  function drawWheel() {
+    if (!ctx || !canvas) return;
+    const num = prizes.length;
+    const arc = (2 * Math.PI) / num;
+    const cx = canvas.width / 2;
+    const cy = canvas.height / 2;
+    const r = (canvas.width / 2) - 40;
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    ctx.beginPath(); 
+    ctx.arc(cx, cy, r + 24, 0, 2 * Math.PI); 
+    ctx.fillStyle = "#C4A47C"; 
+    ctx.fill();
+    ctx.lineWidth = 10;
+    ctx.strokeStyle = "#2A231E";
+    ctx.stroke();
+
+    ctx.beginPath();
+    ctx.arc(cx, cy, r, 0, 2 * Math.PI);
+    ctx.lineWidth = 10;
+    ctx.stroke();
+
+    for(let i = 0; i < num; i++) {
+        const ang = i * arc;
+        
+        ctx.beginPath();
+        ctx.moveTo(cx, cy);
+        ctx.arc(cx, cy, r, ang, ang + arc);
+        ctx.fillStyle = colors[i % colors.length];
+        ctx.fill();
+        
+        ctx.lineWidth = 8;
+        ctx.strokeStyle = "#1A1512";
+        ctx.stroke();
+
+        ctx.save();
+        ctx.translate(cx, cy);
+        
+        const textAngle = ang + arc / 2;
+        ctx.rotate(textAngle);
+        
+        const isUpsideDown = textAngle > Math.PI / 2 && textAngle < (3 * Math.PI) / 2;
+        
+        ctx.textAlign = isUpsideDown ? "left" : "right";
+        ctx.textBaseline = "middle"; 
+        
+        ctx.font = "800 42px 'Montserrat', sans-serif"; 
+        
+        const lines = prizes[i].split('\n');
+        const lineHeight = 52;
+        const startY = -((lines.length - 1) * lineHeight) / 2;
+        
+        if (isUpsideDown) {
+            ctx.rotate(Math.PI);
+            lines.forEach((line, index) => {
+                const yPos = - (startY + (index * lineHeight));
+                const xPos = -(r - 55); 
+                
+                ctx.fillStyle = "#2A231E";
+                ctx.fillText(line, xPos, yPos);
+            });
+        } else {
+            lines.forEach((line, index) => {
+                const yPos = startY + (index * lineHeight);
+                const xPos = r - 55;
+                
+                ctx.fillStyle = "#2A231E";
+                ctx.fillText(line, xPos, yPos);
+            });
+        }
+        ctx.restore();
+    }
+    
+    ctx.beginPath(); ctx.arc(cx, cy, 65, 0, 2 * Math.PI); 
+    ctx.fillStyle = "#C4A47C"; ctx.fill();
+    ctx.lineWidth = 10; ctx.stroke();
+    
+    ctx.beginPath(); ctx.arc(cx, cy, 30, 0, 2 * Math.PI); 
+    ctx.fillStyle = "#2A231E"; ctx.fill();
+    ctx.lineWidth = 4; ctx.stroke();
+  }
+
+  function handleSpin() {
+    if (isSpinning) return;
+    isSpinning = true;
+    spinBtn.innerText = "ВРАЩАЕМ...";
+    spinBtn.disabled = true;
+
+    const spin = Math.floor(2800 + Math.random() * 2000);
+    rotation += spin;
+    
+    canvas.style.transform = `rotate(${rotation}deg)`;
+
+    setTimeout(() => {
+        isSpinning = false;
+        spinBtn.innerText = "КРУТИТЬ!";
+        spinBtn.disabled = false;
+        
+        const degPerSector = 360 / prizes.length;
+        const actualDeg = (360 - (rotation % 360) + 270) % 360;
+        const index = Math.floor(actualDeg / degPerSector);
+        
+	        const winText = prizes[index];
+	        selectedPrize = winText;
+	        prizeValueEl.innerText = winText.replace(/\n/g, ' ');
+        
+        showStep('form');
+        
+        if (typeof confetti !== 'undefined') {
+            launchConfettiWidget();
+        }
+    }, 5000);
+  }
+
+  function launchConfettiWidget() {
+    const duration = 2500;
+    const end = Date.now() + duration;
+    const confettiColors = ['#C4A47C', '#F4EBD9', '#FFFFFF', '#8B6D45']; 
+
+    (function frame() {
+        confetti({ particleCount: 5, angle: 60, spread: 60, origin: { x: 0 }, colors: confettiColors, zIndex: 9999999 });
+        confetti({ particleCount: 5, angle: 120, spread: 60, origin: { x: 1 }, colors: confettiColors, zIndex: 9999999 });
+        if (Date.now() < end) requestAnimationFrame(frame);
+    }());
+  }
+
+  function handlePhoneInput(e) {
+    let val = e.target.value.replace(/\D/g, '');
+    if (val === '') {
+      phoneInput.value = '';
+      formError.innerText = '';
+      return;
+    }
+    if (val.startsWith('7') || val.startsWith('8')) {
+      val = val.substring(1);
+    }
+    let formatted = '+7';
+    if (val.length > 0) formatted += ' (' + val.substring(0, 3);
+    if (val.length >= 3) formatted += ') ' + val.substring(3, 6);
+    if (val.length >= 6) formatted += '-' + val.substring(6, 8);
+    if (val.length >= 8) formatted += '-' + val.substring(8, 10);
+    
+    phoneInput.value = formatted;
+    formError.innerText = '';
+  }
+
+  async function handleFormSubmit(e) {
+    e.preventDefault();
+    const name = nameInput.value.trim();
+    const phone = phoneInput.value;
+    const submitBtn = form.querySelector('button[type="submit"]');
+    const defaultSubmitText = submitBtn ? submitBtn.innerText : '';
+    
+    if (!name || phone.length < 18) {
+      formError.innerText = "Пожалуйста, корректно заполните все поля";
+      return;
+    }
+    
+    const prize = selectedPrize || 'Приз не выбран';
+
+    formError.innerText = '';
+    if (submitBtn) {
+      submitBtn.disabled = true;
+      submitBtn.innerText = 'ОТПРАВЛЯЕМ...';
+    }
+
+    try {
+      const response = await fetch(LEAD_CONFIG.webhookUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          widget: LEAD_CONFIG.widget,
+          source: LEAD_CONFIG.source,
+          name,
+          phone,
+          prize,
+          page: window.location.href.split('?')[0],
+          createdAt: new Date().toISOString()
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error('Webhook error: ' + response.status);
+      }
+
+      showSuccessAndClose();
+    } catch (error) {
+      console.error(error);
+      formError.innerText = "Не получилось отправить заявку. Попробуйте еще раз.";
+      if (submitBtn) {
+        submitBtn.disabled = false;
+        submitBtn.innerText = defaultSubmitText;
+      }
+    }
+  }
+
+  function showSuccessAndClose() {
+    var wrapper = document.querySelector('.clientWidget001-root .candle-wof-wrapper');
+    if (wrapper) wrapper.style.display = 'none';
+    showStep('success');
+    setTimeout(() => {
+      if (stepSuccess) stepSuccess.style.display = 'none';
+      overlay.style.display = 'none';
+    }, 4500);
+  }
+
+  function startTimer() {
+    if (timerInterval) clearInterval(timerInterval);
+    
+    const expiryTime = Date.now() + 24 * 60 * 60 * 1000;
+    
+    const updateTimer = () => {
+      const now = Date.now();
+      const remaining = Math.max(0, Math.floor((expiryTime - now) / 1000));
+      
+      const h = Math.floor(remaining / 3600).toString().padStart(2, '0');
+      const m = Math.floor((remaining % 3600) / 60).toString().padStart(2, '0');
+      const s = (remaining % 60).toString().padStart(2, '0');
+      
+      timerEl.innerText = `Предложение сгорит через: ${h}:${m}:${s}`;
+      
+      if (remaining <= 0) clearInterval(timerInterval);
+    };
+    
+    updateTimer();
+    timerInterval = setInterval(updateTimer, 1000);
+  }
+
+  // Запуск
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+})();
+</script>
+</div>
+<!-- Конец блока для Тильды -->
+
+</body>
+</html>

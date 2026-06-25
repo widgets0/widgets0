@@ -1,0 +1,864 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Галерея виджетов</title>
+  <style>
+    :root {
+      --bg: #030305;
+      --panel: rgba(255,255,255,.045);
+      --panel-2: #08080d;
+      --border: rgba(255,255,255,.13);
+      --border-strong: rgba(238,109,179,.55);
+      --text: #f6f4fb;
+      --muted: #a8a1b8;
+      --soft: #dcd7e9;
+      --pink: #ee6db3;
+      --violet: #6769ff;
+      --radius: 8px;
+      color-scheme: dark;
+    }
+
+    * {
+      box-sizing: border-box;
+      letter-spacing: 0;
+    }
+
+    html,
+    body {
+      margin: 0;
+      min-height: 100%;
+      background: var(--bg);
+      color: var(--text);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      overflow-x: hidden;
+      background:
+        radial-gradient(circle at 82% 10%, rgba(103,105,255,.18), transparent 30%),
+        radial-gradient(circle at 8% 76%, rgba(238,109,179,.12), transparent 30%),
+        linear-gradient(180deg, #030305 0%, #080614 100%);
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    button,
+    input {
+      font: inherit;
+    }
+
+    .gallery-page {
+      width: min(1380px, calc(100% - 40px));
+      margin: 0 auto;
+      padding: 72px 0 90px;
+    }
+
+    .gallery-hero {
+      max-width: 820px;
+      margin: 0 auto 54px;
+      text-align: center;
+      animation: fade-up .65s ease both;
+    }
+
+    .gallery-hero h1 {
+      margin: 0;
+      font-size: clamp(42px, 6vw, 78px);
+      line-height: 1.04;
+      font-weight: 900;
+    }
+
+    .gallery-hero p {
+      margin: 22px auto 0;
+      max-width: 760px;
+      color: var(--muted);
+      font-size: clamp(18px, 2.2vw, 24px);
+      line-height: 1.55;
+    }
+
+    .gallery-toolbar {
+      display: grid;
+      grid-template-columns: 1fr minmax(260px, 430px);
+      gap: 20px;
+      align-items: center;
+      margin-bottom: 30px;
+      padding: 16px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: rgba(255,255,255,.035);
+      animation: fade-up .65s ease .08s both;
+    }
+
+    .gallery-count {
+      display: flex;
+      align-items: baseline;
+      gap: 12px;
+      color: var(--muted);
+      font-size: 17px;
+    }
+
+    .gallery-count strong {
+      color: var(--text);
+      font-size: 26px;
+      line-height: 1;
+    }
+
+    .gallery-search {
+      width: 100%;
+      min-height: 52px;
+      padding: 0 18px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      outline: 0;
+      background: rgba(0,0,0,.24);
+      color: var(--text);
+      font-size: 17px;
+      transition: border-color .2s ease, box-shadow .2s ease;
+    }
+
+    .gallery-search:focus {
+      border-color: rgba(238,109,179,.68);
+      box-shadow: 0 0 0 4px rgba(238,109,179,.12);
+    }
+
+    .gallery-tabs {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+      margin: 0 0 34px;
+      animation: fade-up .65s ease .16s both;
+    }
+
+    .gallery-tab {
+      min-height: 42px;
+      padding: 0 18px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: rgba(255,255,255,.035);
+      color: var(--muted);
+      cursor: pointer;
+      transition: transform .2s ease, border-color .2s ease, background .2s ease, color .2s ease;
+    }
+
+    .gallery-tab:hover {
+      transform: translateY(-2px);
+      border-color: rgba(255,255,255,.24);
+      color: var(--text);
+    }
+
+    .gallery-tab.is-active {
+      border-color: var(--border-strong);
+      background: linear-gradient(135deg, rgba(103,105,255,.92), rgba(238,109,179,.86));
+      color: #fff;
+    }
+
+    .widget-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 28px;
+      animation: fade-up .65s ease .24s both;
+    }
+
+    .widget-card {
+      display: block;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--panel-2);
+      overflow: hidden;
+      cursor: pointer;
+      text-align: left;
+      color: inherit;
+      transition: transform .24s ease, border-color .24s ease, box-shadow .24s ease;
+    }
+
+    .widget-card:hover {
+      transform: translateY(-6px);
+      border-color: rgba(238,109,179,.58);
+      box-shadow: 0 26px 90px rgba(103,105,255,.14);
+    }
+
+    .widget-preview {
+      height: 330px;
+      display: grid;
+      place-items: center;
+      position: relative;
+      overflow: hidden;
+      background:
+        radial-gradient(circle at 0% 0%, rgba(238,109,179,.52), transparent 35%),
+        radial-gradient(circle at 100% 0%, rgba(103,105,255,.55), transparent 38%),
+        #090914;
+    }
+
+    .widget-preview-frame {
+      position: absolute;
+      top: 42px;
+      left: 50%;
+      width: 960px;
+      height: 540px;
+      border: 0;
+      border-radius: 40px;
+      background: transparent;
+      pointer-events: none;
+      transform: translateX(-50%) scale(.43);
+      transform-origin: top center;
+      filter: drop-shadow(0 30px 70px rgba(0,0,0,.48));
+    }
+
+    .widget-preview-frame.is-phone {
+      top: 16px;
+      width: 430px;
+      height: 660px;
+      transform: translateX(-50%) scale(.47);
+    }
+
+    .widget-preview-frame.is-compact {
+      top: 18px;
+      width: 430px;
+      height: 520px;
+      transform: translateX(-50%) scale(.58);
+    }
+
+    .widget-preview-frame.is-wide {
+      top: 42px;
+      width: 960px;
+      height: 540px;
+      transform: translateX(-50%) scale(.43);
+    }
+
+    .widget-preview::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background: linear-gradient(180deg, transparent 72%, rgba(8,8,13,.18));
+    }
+
+    .tinder-mini {
+      width: 190px;
+      height: 234px;
+      display: grid;
+      grid-template-rows: 48px 1fr 38px;
+      gap: 9px;
+      padding: 12px;
+      border: 3px solid rgba(255,255,255,.86);
+      border-radius: 28px;
+      background: linear-gradient(180deg, #f8fafc, #ffffff);
+      box-shadow: 0 24px 54px rgba(0,0,0,.42);
+      transform: rotate(-2deg);
+    }
+
+    .tinder-mini-top {
+      display: grid;
+      place-items: center;
+    }
+
+    .tinder-mini-icon {
+      width: 44px;
+      height: 44px;
+      display: grid;
+      place-items: center;
+      border-radius: 999px;
+      background: #e0e7ff;
+      color: #4f46e5;
+      font-weight: 900;
+    }
+
+    .tinder-mini-card {
+      position: relative;
+      overflow: hidden;
+      border-radius: 20px;
+      background:
+        linear-gradient(180deg, transparent, rgba(0,0,0,.58)),
+        linear-gradient(135deg, #f0abfc, #60a5fa 48%, #34d399);
+    }
+
+    .tinder-mini-card::before,
+    .tinder-mini-card::after {
+      content: "";
+      position: absolute;
+      top: 12px;
+      width: 44px;
+      height: 16px;
+      border: 2px solid #fff;
+      border-radius: 999px;
+      opacity: .85;
+    }
+
+    .tinder-mini-card::before {
+      left: 12px;
+      border-color: #22c55e;
+      transform: rotate(-12deg);
+    }
+
+    .tinder-mini-card::after {
+      right: 12px;
+      border-color: #f43f5e;
+      transform: rotate(12deg);
+    }
+
+    .tinder-mini-title {
+      position: absolute;
+      left: 14px;
+      right: 14px;
+      bottom: 10px;
+      color: #fff;
+      font-size: 16px;
+      font-weight: 900;
+      line-height: 1.1;
+    }
+
+    .tinder-mini-actions {
+      display: flex;
+      justify-content: center;
+      gap: 14px;
+    }
+
+    .tinder-mini-action {
+      width: 36px;
+      height: 36px;
+      display: grid;
+      place-items: center;
+      border-radius: 999px;
+      background: #fff;
+      box-shadow: 0 6px 18px rgba(15,23,42,.12);
+      font-weight: 900;
+    }
+
+    .tinder-mini-action.nope { color: #f43f5e; }
+    .tinder-mini-action.like { color: #22c55e; }
+
+    .widget-card:hover .tinder-mini {
+      transform: translateY(-4px) rotate(1deg);
+      transition: transform .24s ease;
+    }
+
+    .manicure-mini {
+      width: 220px;
+      height: 190px;
+      display: grid;
+      grid-template-rows: 44px 1fr 48px;
+      gap: 10px;
+      padding: 14px;
+      border: 3px solid rgba(255,255,255,.88);
+      border-radius: 28px;
+      background:
+        radial-gradient(circle at 20% 18%, rgba(244,114,182,.22), transparent 28%),
+        linear-gradient(180deg, #fff7fb, #ffffff);
+      box-shadow: 0 24px 54px rgba(0,0,0,.42);
+      transform: rotate(2deg);
+    }
+
+    .manicure-mini-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: #db2777;
+      font-weight: 900;
+    }
+
+    .manicure-mini-hearts {
+      display: flex;
+      gap: 4px;
+      color: #fb7185;
+      font-size: 14px;
+    }
+
+    .manicure-mini-play {
+      position: relative;
+      overflow: hidden;
+      border-radius: 22px;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,.65), transparent),
+        linear-gradient(135deg, #fce7f3, #dbeafe);
+    }
+
+    .manicure-mini-item {
+      position: absolute;
+      display: grid;
+      place-items: center;
+      width: 34px;
+      height: 34px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.72);
+      box-shadow: 0 8px 18px rgba(219,39,119,.16);
+      font-size: 18px;
+    }
+
+    .manicure-mini-item.one { left: 22px; top: 18px; }
+    .manicure-mini-item.two { right: 28px; top: 34px; }
+    .manicure-mini-item.three { left: 86px; bottom: 12px; }
+
+    .manicure-mini-slider {
+      position: relative;
+      align-self: center;
+      height: 28px;
+      border-radius: 999px;
+      background: #fce7f3;
+      border: 1px solid rgba(244,114,182,.32);
+    }
+
+    .manicure-mini-slider::after {
+      content: "💅";
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      display: grid;
+      place-items: center;
+      width: 42px;
+      height: 42px;
+      border-radius: 999px;
+      background: #fff;
+      transform: translate(-50%, -50%);
+      box-shadow: 0 8px 18px rgba(15,23,42,.16);
+      border: 2px solid #f472b6;
+    }
+
+    .widget-card:hover .manicure-mini {
+      transform: translateY(-4px) rotate(-1deg);
+      transition: transform .24s ease;
+    }
+
+    .widget-card-body {
+      padding: 22px;
+    }
+
+    .widget-card h2 {
+      margin: 0;
+      font-size: 24px;
+      line-height: 1.18;
+    }
+
+    .widget-card p {
+      margin: 12px 0 0;
+      color: var(--muted);
+      font-size: 17px;
+      line-height: 1.5;
+    }
+
+    .widget-card-meta {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      margin-top: 24px;
+      color: var(--muted);
+      font-size: 15px;
+    }
+
+    .empty-state {
+      display: none;
+      padding: 44px 20px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--panel);
+      color: var(--muted);
+      text-align: center;
+      font-size: 18px;
+    }
+
+    .empty-state.is-visible {
+      display: block;
+    }
+
+    .modal {
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 28px;
+      background: rgba(0,0,0,.72);
+      backdrop-filter: blur(14px);
+    }
+
+    .modal.is-open {
+      display: flex;
+    }
+
+    .modal-panel {
+      width: min(1280px, 100%);
+      max-height: calc(100vh - 28px);
+      display: grid;
+      grid-template-rows: auto minmax(0, 1fr);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: #060607;
+      overflow: hidden;
+      box-shadow: 0 26px 100px rgba(0,0,0,.58);
+      animation: modal-in .22s ease both;
+    }
+
+    .modal-head {
+      display: grid;
+      grid-template-columns: 1fr auto auto;
+      gap: 14px;
+      align-items: center;
+      padding: 22px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .modal-title h2 {
+      margin: 0;
+      font-size: 24px;
+    }
+
+    .modal-title p {
+      margin: 8px 0 0;
+      color: var(--muted);
+      line-height: 1.45;
+    }
+
+    .modal-use {
+      min-height: 48px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 22px;
+      border-radius: var(--radius);
+      background: linear-gradient(135deg, var(--violet), var(--pink));
+      color: #fff;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .modal-close {
+      width: 42px;
+      height: 42px;
+      border: 0;
+      border-radius: var(--radius);
+      background: rgba(255,255,255,.06);
+      color: var(--muted);
+      font-size: 28px;
+      line-height: 1;
+      cursor: pointer;
+    }
+
+    .modal-preview {
+      height: min(760px, calc(100vh - 182px));
+      min-height: 0;
+      display: grid;
+      place-items: center;
+      padding: 26px;
+      background:
+        radial-gradient(circle at 20% 0%, rgba(238,109,179,.16), transparent 34%),
+        radial-gradient(circle at 80% 0%, rgba(103,105,255,.18), transparent 34%),
+        #050506;
+      overflow: hidden;
+    }
+
+    .modal-frame {
+      width: min(1120px, 100%);
+      height: 100%;
+      border: 0;
+      border-radius: var(--radius);
+      background: transparent;
+      filter: drop-shadow(0 26px 80px rgba(0,0,0,.5));
+    }
+
+    @keyframes fade-up {
+      from { opacity: .5; transform: translateY(16px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes modal-in {
+      from { opacity: .3; transform: translateY(10px) scale(.98); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    @media (max-width: 1000px) {
+      .widget-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 720px) {
+      .gallery-page {
+        width: min(100% - 24px, 1380px);
+        padding: 48px 0 64px;
+      }
+
+      .gallery-toolbar,
+      .modal-head {
+        grid-template-columns: 1fr;
+      }
+
+      .widget-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .modal {
+        padding: 12px;
+      }
+
+      .modal-preview {
+        height: calc(100vh - 260px);
+        min-height: 480px;
+        padding: 12px;
+      }
+
+      .modal-frame {
+        width: min(430px, 100%);
+        height: 100%;
+        transform: none;
+      }
+    }
+
+    @media (max-height: 850px) and (min-width: 721px) {
+      .modal-head {
+        padding: 16px 20px;
+      }
+
+      .modal-title h2 {
+        font-size: 22px;
+      }
+
+      .modal-title p {
+        margin-top: 6px;
+        font-size: 15px;
+      }
+
+      .modal-preview {
+        height: calc(100vh - 154px);
+        padding: 12px;
+      }
+
+      .modal-frame {
+        transform: none;
+      }
+    }
+
+    @media (max-height: 740px) and (min-width: 721px) {
+      .modal-frame {
+        transform: none;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        animation: none !important;
+        transition: none !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="gallery-page">
+    <section class="gallery-hero">
+      <h1>Галерея готовых виджетов</h1>
+      <p>Открывай превью, проверяй сценарий и забирай нужный HTML-блок для Tilda.</p>
+    </section>
+
+    <section class="gallery-toolbar" aria-label="Управление галереей виджетов">
+      <div class="gallery-count"><strong data-visible-count>3</strong><span data-visible-label>виджета</span></div>
+      <input class="gallery-search" type="search" placeholder="Поиск виджетов" data-widget-search>
+    </section>
+
+    <nav class="gallery-tabs" aria-label="Категории виджетов" data-widget-tabs>
+      <button class="gallery-tab is-active" type="button" data-filter="all">Все</button>
+      <button class="gallery-tab" type="button" data-filter="quiz">Квизы</button>
+      <button class="gallery-tab" type="button" data-filter="games">Игры</button>
+      <button class="gallery-tab" type="button" data-filter="forms">Формы</button>
+      <button class="gallery-tab" type="button" data-filter="marketing">Маркетинг</button>
+      <button class="gallery-tab" type="button" data-filter="promo">Розыгрыши</button>
+      <button class="gallery-tab" type="button" data-filter="travel">Туризм</button>
+      <button class="gallery-tab" type="button" data-filter="beauty">Бьюти</button>
+    </nav>
+
+    <section class="widget-grid" data-widget-grid>
+      <!-- Чтобы добавить новый виджет: скопируй article, поменяй data-widget-src, data-type, заголовок и описание. -->
+      <article
+        class="widget-card"
+        tabindex="0"
+        role="button"
+        data-widget-card
+        data-type="quiz forms marketing travel"
+        data-search="товарный тиндер туры путешествия квиз форма лид форма маркетинг"
+        data-widget-title="Товарный Тиндер"
+        data-widget-description="Свайп-механика для подбора туров: пользователь выбирает понравившиеся направления, оставляет контакт и получает промокод."
+        data-widget-src="widgets/tinder-product-widget.html"
+      >
+        <div class="widget-preview">
+          <iframe class="widget-preview-frame is-phone" src="widgets/tinder-product-widget.html?preview=swiping" title="Превью виджета Товарный Тиндер" loading="lazy"></iframe>
+        </div>
+        <div class="widget-card-body">
+          <h2>Товарный Тиндер</h2>
+          <p>Свайп-квиз для подбора туров, сбора контактов и выдачи скидки после выбора направлений.</p>
+          <div class="widget-card-meta">
+            <span>Квиз</span>
+            <span>Превью</span>
+          </div>
+        </div>
+      </article>
+
+      <article
+        class="widget-card"
+        tabindex="0"
+        role="button"
+        data-widget-card
+        data-type="games forms marketing beauty"
+        data-search="маникюр игра бьюти салон ногти стразы скидка форма лиды маркетинг"
+        data-widget-title="Игра для маникюрного салона"
+        data-widget-description="Мини-игра для салона: пользователь собирает стразы, уворачивается от ножниц и оставляет контакты, чтобы забрать скидку."
+        data-widget-src="widgets/manicure-game-widget.html"
+      >
+        <div class="widget-preview">
+          <iframe class="widget-preview-frame is-compact" src="widgets/manicure-game-widget.html?preview=playing&static=1" title="Превью игры для маникюрного салона" loading="lazy"></iframe>
+        </div>
+        <div class="widget-card-body">
+          <h2>Игра для маникюрного салона</h2>
+          <p>Игровой виджет: собери 10 страз, избегай ножниц и забери скидку на маникюр.</p>
+          <div class="widget-card-meta">
+            <span>Игра</span>
+            <span>Превью</span>
+          </div>
+        </div>
+      </article>
+
+      <article
+        class="widget-card"
+        tabindex="0"
+        role="button"
+        data-widget-card
+        data-type="promo games forms marketing"
+        data-search="колесо фортуны свечи лера розыгрыш скидка подарок бонус приз форма лиды маркетинг игра"
+        data-widget-title="Колесо фортуны для сайта Леры"
+        data-widget-description="Статичный блок для страницы: пользователь крутит колесо, получает приз и оставляет контакт для заявки."
+        data-widget-src="клиенты/проект-001-свечи/lera-candles-wheel-static.html"
+      >
+        <div class="widget-preview">
+          <iframe class="widget-preview-frame is-wide" src="клиенты/проект-001-свечи/lera-candles-wheel-static.html?preview=1" title="Превью виджета Колесо фортуны для сайта Леры" loading="lazy"></iframe>
+        </div>
+        <div class="widget-card-body">
+          <h2>Колесо фортуны для сайта Леры</h2>
+          <p>Статичный блок с колесом призов, формой заявки и отправкой лида в Telegram через Railway.</p>
+          <div class="widget-card-meta">
+            <span>Розыгрыш</span>
+            <span>Превью</span>
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <div class="empty-state" data-empty-state>Ничего не найдено. Попробуй другой запрос или категорию.</div>
+  </main>
+
+  <div class="modal" data-widget-modal aria-hidden="true">
+    <div class="modal-panel" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+      <div class="modal-head">
+        <div class="modal-title">
+          <h2 id="modal-title" data-modal-title>Товарный Тиндер</h2>
+          <p data-modal-description>Превью виджета.</p>
+        </div>
+        <a class="modal-use" href="widgets/tinder-product-widget.html" target="_blank" rel="noopener" data-modal-use>Открыть виджет</a>
+        <button class="modal-close" type="button" aria-label="Закрыть превью" data-modal-close>×</button>
+      </div>
+      <div class="modal-preview">
+        <iframe class="modal-frame" src="about:blank" title="Превью виджета" data-modal-frame></iframe>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      var cards = Array.from(document.querySelectorAll('[data-widget-card]'));
+      var tabs = document.querySelector('[data-widget-tabs]');
+      var search = document.querySelector('[data-widget-search]');
+      var count = document.querySelector('[data-visible-count]');
+      var countLabel = document.querySelector('[data-visible-label]');
+      var empty = document.querySelector('[data-empty-state]');
+      var modal = document.querySelector('[data-widget-modal]');
+      var modalTitle = document.querySelector('[data-modal-title]');
+      var modalDescription = document.querySelector('[data-modal-description]');
+      var modalUse = document.querySelector('[data-modal-use]');
+      var modalFrame = document.querySelector('[data-modal-frame]');
+
+      function widgetWord(number) {
+        if (number % 10 === 1 && number % 100 !== 11) return 'виджет';
+        if ([2, 3, 4].indexOf(number % 10) !== -1 && [12, 13, 14].indexOf(number % 100) === -1) return 'виджета';
+        return 'виджетов';
+      }
+
+      function activeFilter() {
+        var active = document.querySelector('.gallery-tab.is-active');
+        return active ? active.getAttribute('data-filter') : 'all';
+      }
+
+      function updateGallery() {
+        var filter = activeFilter();
+        var query = (search.value || '').trim().toLowerCase();
+        var visible = 0;
+
+        cards.forEach(function (card) {
+          var types = card.getAttribute('data-type') || '';
+          var haystack = (card.getAttribute('data-search') || card.textContent).toLowerCase();
+          var matchesFilter = filter === 'all' || types.split(/\s+/).indexOf(filter) !== -1;
+          var matchesSearch = !query || haystack.indexOf(query) !== -1;
+          var show = matchesFilter && matchesSearch;
+          card.style.display = show ? '' : 'none';
+          if (show) visible += 1;
+        });
+
+        count.textContent = visible;
+        countLabel.textContent = widgetWord(visible);
+        empty.classList.toggle('is-visible', visible === 0);
+      }
+
+      function openModal(card) {
+        var src = card.getAttribute('data-widget-src');
+        modalTitle.textContent = card.getAttribute('data-widget-title') || 'Превью виджета';
+        modalDescription.textContent = card.getAttribute('data-widget-description') || '';
+        modalUse.href = src;
+        modalFrame.src = src;
+        modal.classList.add('is-open');
+        modal.setAttribute('aria-hidden', 'false');
+        document.body.style.overflow = 'hidden';
+      }
+
+      function closeModal() {
+        modal.classList.remove('is-open');
+        modal.setAttribute('aria-hidden', 'true');
+        modalFrame.src = 'about:blank';
+        document.body.style.overflow = '';
+      }
+
+      cards.forEach(function (card) {
+        card.addEventListener('click', function () { openModal(card); });
+        card.addEventListener('keydown', function (event) {
+          if (event.key === 'Enter' || event.key === ' ') {
+            event.preventDefault();
+            openModal(card);
+          }
+        });
+      });
+
+      tabs.addEventListener('click', function (event) {
+        var button = event.target.closest('.gallery-tab');
+        if (!button) return;
+        tabs.querySelectorAll('.gallery-tab').forEach(function (tab) {
+          tab.classList.toggle('is-active', tab === button);
+        });
+        updateGallery();
+      });
+
+      search.addEventListener('input', updateGallery);
+      document.querySelector('[data-modal-close]').addEventListener('click', closeModal);
+      modal.addEventListener('click', function (event) {
+        if (event.target === modal) closeModal();
+      });
+      document.addEventListener('keydown', function (event) {
+        if (event.key === 'Escape' && modal.classList.contains('is-open')) closeModal();
+      });
+
+      updateGallery();
+    }());
+  </script>
+</body>
+</html>
