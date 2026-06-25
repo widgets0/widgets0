@@ -663,13 +663,9 @@
 
     <nav class="gallery-tabs" aria-label="Категории виджетов" data-widget-tabs>
       <button class="gallery-tab is-active" type="button" data-filter="all">Все</button>
-      <button class="gallery-tab" type="button" data-filter="quiz">Квизы</button>
-      <button class="gallery-tab" type="button" data-filter="games">Игры</button>
-      <button class="gallery-tab" type="button" data-filter="forms">Формы</button>
-      <button class="gallery-tab" type="button" data-filter="marketing">Маркетинг</button>
-      <button class="gallery-tab" type="button" data-filter="promo">Розыгрыши</button>
-      <button class="gallery-tab" type="button" data-filter="travel">Туризм</button>
-      <button class="gallery-tab" type="button" data-filter="beauty">Бьюти</button>
+      <button class="gallery-tab" type="button" data-filter="quiz">Квиз</button>
+      <button class="gallery-tab" type="button" data-filter="games">Игра</button>
+      <button class="gallery-tab" type="button" data-filter="promo">Розыгрыш</button>
     </nav>
 
     <section class="widget-grid" data-widget-grid>
@@ -679,10 +675,34 @@
         tabindex="0"
         role="button"
         data-widget-card
-        data-type="quiz forms marketing travel"
-        data-search="товарный тиндер туры путешествия квиз форма лид форма маркетинг"
+        data-type="promo"
+        data-search="колесо фортуны розыгрыш скидка подарок бонус приз имя телефон"
+        data-widget-title="Колесо фортуны"
+        data-widget-description="Крути и выигрывай — виджет вовлекает посетителя и собирает имя и телефон в обмен на приз"
+        data-widget-src="клиенты/проект-001-свечи/lera-candles-wheel-static.html"
+      >
+        <div class="widget-preview">
+          <iframe class="widget-preview-frame is-wide" src="клиенты/проект-001-свечи/lera-candles-wheel-static.html?preview=1" title="Превью виджета Колесо фортуны" loading="lazy"></iframe>
+        </div>
+        <div class="widget-card-body">
+          <h2>Колесо фортуны</h2>
+          <p>Крути и выигрывай — виджет вовлекает посетителя и собирает имя и телефон в обмен на приз</p>
+          <div class="widget-card-meta">
+            <span>Розыгрыш</span>
+            <span>Превью</span>
+          </div>
+        </div>
+      </article>
+
+      <article
+        class="widget-card"
+        tabindex="0"
+        role="button"
+        data-widget-card
+        data-type="quiz"
+        data-search="товарный тиндер свайп товар услуга квиз контакт клиент"
         data-widget-title="Товарный Тиндер"
-        data-widget-description="Свайп-механика для подбора туров: пользователь выбирает понравившиеся направления, оставляет контакт и получает промокод."
+        data-widget-description="Свайпай влево и вправо — виджет подбирает товар или услугу и собирает контакт заинтересованного клиента"
         data-widget-src="widgets/tinder-product-widget.html"
       >
         <div class="widget-preview">
@@ -690,7 +710,7 @@
         </div>
         <div class="widget-card-body">
           <h2>Товарный Тиндер</h2>
-          <p>Свайп-квиз для подбора туров, сбора контактов и выдачи скидки после выбора направлений.</p>
+          <p>Свайпай влево и вправо — виджет подбирает товар или услугу и собирает контакт заинтересованного клиента</p>
           <div class="widget-card-meta">
             <span>Квиз</span>
             <span>Превью</span>
@@ -703,44 +723,20 @@
         tabindex="0"
         role="button"
         data-widget-card
-        data-type="games forms marketing beauty"
-        data-search="маникюр игра бьюти салон ногти стразы скидка форма лиды маркетинг"
-        data-widget-title="Игра для маникюрного салона"
-        data-widget-description="Мини-игра для салона: пользователь собирает стразы, уворачивается от ножниц и оставляет контакты, чтобы забрать скидку."
+        data-type="games"
+        data-search="игра ловушка мини игра скидка заявка выигрыш клиент"
+        data-widget-title="Игра-ловушка"
+        data-widget-description="Мини-игра для сайта: клиент играет, увлекается и оставляет заявку чтобы забрать выигранную скидку"
         data-widget-src="widgets/manicure-game-widget.html"
       >
         <div class="widget-preview">
-          <iframe class="widget-preview-frame is-compact" src="widgets/manicure-game-widget.html?preview=playing&static=1" title="Превью игры для маникюрного салона" loading="lazy"></iframe>
+          <iframe class="widget-preview-frame is-compact" src="widgets/manicure-game-widget.html?preview=playing&static=1" title="Превью виджета Игра-ловушка" loading="lazy"></iframe>
         </div>
         <div class="widget-card-body">
-          <h2>Игра для маникюрного салона</h2>
-          <p>Игровой виджет: собери 10 страз, избегай ножниц и забери скидку на маникюр.</p>
+          <h2>Игра-ловушка</h2>
+          <p>Мини-игра для сайта: клиент играет, увлекается и оставляет заявку чтобы забрать выигранную скидку</p>
           <div class="widget-card-meta">
             <span>Игра</span>
-            <span>Превью</span>
-          </div>
-        </div>
-      </article>
-
-      <article
-        class="widget-card"
-        tabindex="0"
-        role="button"
-        data-widget-card
-        data-type="promo games forms marketing"
-        data-search="колесо фортуны свечи лера розыгрыш скидка подарок бонус приз форма лиды маркетинг игра"
-        data-widget-title="Колесо фортуны для сайта Леры"
-        data-widget-description="Статичный блок для страницы: пользователь крутит колесо, получает приз и оставляет контакт для заявки."
-        data-widget-src="клиенты/проект-001-свечи/lera-candles-wheel-static.html"
-      >
-        <div class="widget-preview">
-          <iframe class="widget-preview-frame is-wide" src="клиенты/проект-001-свечи/lera-candles-wheel-static.html?preview=1" title="Превью виджета Колесо фортуны для сайта Леры" loading="lazy"></iframe>
-        </div>
-        <div class="widget-card-body">
-          <h2>Колесо фортуны для сайта Леры</h2>
-          <p>Статичный блок с колесом призов, формой заявки и отправкой лида в Telegram через Railway.</p>
-          <div class="widget-card-meta">
-            <span>Розыгрыш</span>
             <span>Превью</span>
           </div>
         </div>
