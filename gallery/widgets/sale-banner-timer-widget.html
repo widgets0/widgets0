@@ -1,0 +1,558 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Акционная полоса с таймером</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: #ffffff;
+      color: #16181d;
+      font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+
+    .demo-page {
+      min-height: 100vh;
+      background:
+        linear-gradient(180deg, #ffffff 0%, #f7f8fb 100%);
+    }
+
+    .demo-content {
+      width: min(100% - 32px, 1040px);
+      margin: 0 auto;
+      padding: 64px 0;
+    }
+
+    .demo-title {
+      margin: 0 0 18px;
+      font-size: clamp(28px, 5vw, 54px);
+      line-height: 1.05;
+      letter-spacing: 0;
+    }
+
+    .demo-text {
+      max-width: 640px;
+      margin: 0;
+      color: #667085;
+      font-size: 18px;
+      line-height: 1.55;
+    }
+
+    .sale-bar {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      min-height: 58px;
+      display: grid;
+      place-items: center;
+      padding: 10px 16px;
+      overflow: hidden;
+      color: #ffffff;
+      background:
+        radial-gradient(circle at 12% 30%, rgba(255, 214, 102, 0.75) 0 4px, transparent 5px),
+        radial-gradient(circle at 88% 70%, rgba(80, 220, 190, 0.75) 0 4px, transparent 5px),
+        linear-gradient(100deg, #7027ea 0%, #ec3c78 45%, #ff5b45 72%, #6c2eee 100%);
+      box-shadow: 0 12px 28px rgba(114, 39, 234, 0.22);
+    }
+
+    .sale-bar::before,
+    .sale-bar::after {
+      content: "";
+      position: absolute;
+      inset: auto;
+      width: 220px;
+      height: 220px;
+      border: 18px solid rgba(255,255,255,0.16);
+      border-radius: 50%;
+      pointer-events: none;
+    }
+
+    .sale-bar::before {
+      left: 18%;
+      top: -146px;
+    }
+
+    .sale-bar::after {
+      right: 18%;
+      bottom: -150px;
+    }
+
+    .sale-bar-inner {
+      position: relative;
+      z-index: 1;
+      width: min(100%, 1160px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 22px;
+      text-align: center;
+      font-weight: 800;
+      letter-spacing: 0;
+    }
+
+    .sale-kicker,
+    .sale-offer,
+    .sale-timer {
+      display: inline-flex;
+      align-items: center;
+      min-height: 30px;
+      white-space: nowrap;
+      text-transform: uppercase;
+      text-shadow: 0 1px 1px rgba(0,0,0,0.16);
+    }
+
+    .sale-kicker {
+      font-size: 15px;
+      opacity: 0.94;
+    }
+
+    .sale-offer {
+      font-size: 18px;
+    }
+
+    .sale-timer {
+      padding: 6px 10px;
+      border-radius: 10px;
+      background: rgba(255,255,255,0.16);
+      border: 1px solid rgba(255,255,255,0.2);
+      font-size: 14px;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .sale-divider {
+      width: 2px;
+      height: 28px;
+      background: rgba(255,255,255,0.35);
+    }
+
+    .sale-button {
+      appearance: none;
+      border: 0;
+      border-radius: 8px;
+      padding: 11px 18px;
+      background: #101828;
+      color: #ffffff;
+      font: inherit;
+      font-size: 15px;
+      font-weight: 900;
+      cursor: pointer;
+      box-shadow: 0 10px 20px rgba(16, 24, 40, 0.24);
+      transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+    }
+
+    .sale-button:hover {
+      transform: translateY(-1px);
+      background: #0b1220;
+      box-shadow: 0 14px 24px rgba(16, 24, 40, 0.28);
+    }
+
+    .sale-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 18px;
+      background: rgba(15, 23, 42, 0.54);
+      backdrop-filter: blur(10px);
+    }
+
+    .sale-modal.is-open {
+      display: flex;
+    }
+
+    .sale-form-card {
+      position: relative;
+      width: min(100%, 430px);
+      padding: 28px;
+      border-radius: 20px;
+      background: #ffffff;
+      box-shadow: 0 28px 90px rgba(15, 23, 42, 0.3);
+      animation: modalIn 0.28s ease-out;
+    }
+
+    .sale-close {
+      position: absolute;
+      top: 14px;
+      right: 14px;
+      width: 32px;
+      height: 32px;
+      display: grid;
+      place-items: center;
+      border: 0;
+      border-radius: 8px;
+      background: #f2f4f7;
+      color: #667085;
+      font-size: 22px;
+      line-height: 1;
+      cursor: pointer;
+    }
+
+    .sale-close:hover {
+      background: #eaecf0;
+      color: #101828;
+    }
+
+    .sale-form-title {
+      margin: 0 38px 8px 0;
+      font-size: 28px;
+      line-height: 1.12;
+      letter-spacing: 0;
+    }
+
+    .sale-form-text {
+      margin: 0 0 20px;
+      color: #667085;
+      line-height: 1.5;
+      font-size: 15px;
+    }
+
+    .sale-form {
+      display: grid;
+      gap: 12px;
+    }
+
+    .sale-input {
+      width: 100%;
+      height: 50px;
+      border: 1px solid #d0d5dd;
+      border-radius: 10px;
+      padding: 0 14px;
+      color: #101828;
+      font: inherit;
+      font-weight: 650;
+      outline: none;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .sale-input:focus {
+      border-color: #ec3c78;
+      box-shadow: 0 0 0 4px rgba(236, 60, 120, 0.12);
+    }
+
+    .sale-consent {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      color: #667085;
+      font-size: 12px;
+      line-height: 1.4;
+      font-weight: 600;
+    }
+
+    .sale-consent input {
+      width: 18px;
+      height: 18px;
+      margin: 0;
+      accent-color: #ec3c78;
+      flex: 0 0 auto;
+    }
+
+    .sale-error {
+      min-height: 18px;
+      color: #d92d20;
+      font-size: 13px;
+      font-weight: 700;
+      text-align: center;
+    }
+
+    .sale-submit {
+      width: 100%;
+      height: 52px;
+      border: 0;
+      border-radius: 10px;
+      background: linear-gradient(100deg, #7027ea, #ec3c78);
+      color: #ffffff;
+      font: inherit;
+      font-weight: 900;
+      cursor: pointer;
+      box-shadow: 0 14px 28px rgba(112, 39, 234, 0.22);
+    }
+
+    .sale-submit:disabled {
+      opacity: 0.7;
+      cursor: wait;
+    }
+
+    .sale-success {
+      display: none;
+      text-align: center;
+      padding: 18px 4px 4px;
+    }
+
+    .sale-success.is-open {
+      display: block;
+    }
+
+    .sale-success h2 {
+      margin: 0 0 10px;
+      font-size: 28px;
+    }
+
+    .sale-success p {
+      margin: 0;
+      color: #667085;
+      line-height: 1.5;
+      font-weight: 600;
+    }
+
+    .sale-form-card.is-success .sale-form-content {
+      display: none;
+    }
+
+    @keyframes modalIn {
+      from {
+        opacity: 0;
+        transform: translateY(14px) scale(0.98);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    @media (max-width: 760px) {
+      .sale-bar {
+        padding: 10px 12px;
+      }
+
+      .sale-bar-inner {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: 8px 12px;
+        text-align: left;
+      }
+
+      .sale-kicker {
+        display: none;
+      }
+
+      .sale-divider {
+        display: none;
+      }
+
+      .sale-offer {
+        grid-column: 1;
+        font-size: 14px;
+        white-space: normal;
+      }
+
+      .sale-timer {
+        grid-column: 1;
+        justify-self: start;
+        font-size: 12px;
+        min-height: 26px;
+        padding: 5px 8px;
+      }
+
+      .sale-button {
+        grid-column: 2;
+        grid-row: 1 / span 2;
+        align-self: center;
+        padding: 11px 14px;
+        font-size: 13px;
+      }
+
+      .demo-content {
+        padding: 48px 0;
+      }
+
+      .sale-form-card {
+        padding: 24px;
+      }
+    }
+
+    @media (max-width: 390px) {
+      .sale-bar-inner {
+        grid-template-columns: 1fr;
+        text-align: center;
+      }
+
+      .sale-offer,
+      .sale-timer,
+      .sale-button {
+        grid-column: 1;
+        justify-self: center;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="demo-page">
+    <section class="sale-bar" data-duration-hours="48">
+      <div class="sale-bar-inner">
+        <span class="sale-kicker">Сезонная акция</span>
+        <span class="sale-divider" aria-hidden="true"></span>
+        <span class="sale-offer">Скидка 20% на обучение до конца недели</span>
+        <span class="sale-divider" aria-hidden="true"></span>
+        <span class="sale-timer">Осталось: <strong data-sale-timer>48:00:00</strong></span>
+        <button class="sale-button" type="button" data-open-sale-form>Забрать скидку</button>
+      </div>
+    </section>
+
+    <section class="demo-content">
+      <h1 class="demo-title">Виджет промо-полосы</h1>
+      <p class="demo-text">Полоса крепится сверху страницы, показывает дедлайн акции и открывает форму заявки по кнопке.</p>
+    </section>
+  </main>
+
+  <div class="sale-modal" data-sale-modal aria-hidden="true">
+    <div class="sale-form-card" role="dialog" aria-modal="true" aria-labelledby="sale-form-title">
+      <button class="sale-close" type="button" aria-label="Закрыть" data-sale-close>×</button>
+
+      <div class="sale-form-content">
+        <h2 class="sale-form-title" id="sale-form-title">Забронировать скидку</h2>
+        <p class="sale-form-text">Оставьте контакты, и мы закрепим за вами условия акции.</p>
+
+        <form class="sale-form" data-sale-form>
+          <input class="sale-input" type="text" name="name" placeholder="Ваше имя" autocomplete="name" required>
+          <input class="sale-input" type="tel" name="phone" placeholder="+7 (999) 999-99-99" autocomplete="tel" inputmode="tel" required>
+          <label class="sale-consent">
+            <input type="checkbox" name="consent" checked required>
+            <span>Согласен(на) на обработку персональных данных</span>
+          </label>
+          <div class="sale-error" data-sale-error aria-live="polite"></div>
+          <button class="sale-submit" type="submit">Отправить заявку</button>
+        </form>
+      </div>
+
+      <div class="sale-success" data-sale-success>
+        <h2>Спасибо за заявку!</h2>
+        <p>Мы получили ваши контакты и скоро свяжемся с вами.</p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      const LEAD_CONFIG = {
+        webhookUrl: "https://widgets0-production.up.railway.app",
+        widget: "Акционная полоса с таймером",
+        source: "sale-banner-timer"
+      };
+
+      const bar = document.querySelector('.sale-bar');
+      const timerEl = document.querySelector('[data-sale-timer]');
+      const openBtn = document.querySelector('[data-open-sale-form]');
+      const modal = document.querySelector('[data-sale-modal]');
+      const closeBtn = document.querySelector('[data-sale-close]');
+      const formCard = document.querySelector('.sale-form-card');
+      const form = document.querySelector('[data-sale-form]');
+      const errorEl = document.querySelector('[data-sale-error]');
+      const successEl = document.querySelector('[data-sale-success]');
+
+      const durationHours = parseInt(bar.getAttribute('data-duration-hours') || '48', 10);
+      const deadline = new Date(Date.now() + (Number.isNaN(durationHours) ? 48 : durationHours) * 60 * 60 * 1000);
+
+      function pad(value) {
+        return value < 10 ? '0' + value : String(value);
+      }
+
+      function updateTimer() {
+        let diff = Math.max(0, deadline - new Date());
+        const hours = Math.floor(diff / 3600000);
+        diff -= hours * 3600000;
+        const minutes = Math.floor(diff / 60000);
+        diff -= minutes * 60000;
+        const seconds = Math.floor(diff / 1000);
+        timerEl.textContent = `${pad(hours)}:${pad(minutes)}:${pad(seconds)}`;
+      }
+
+      function formatPhone(value) {
+        const digits = value.replace(/\D/g, '').replace(/^8/, '7').slice(0, 11);
+        const normalized = digits.startsWith('7') ? digits : '7' + digits;
+        const parts = normalized.slice(1);
+        let result = '+7';
+        if (parts.length > 0) result += ' (' + parts.slice(0, 3);
+        if (parts.length >= 3) result += ')';
+        if (parts.length > 3) result += ' ' + parts.slice(3, 6);
+        if (parts.length > 6) result += '-' + parts.slice(6, 8);
+        if (parts.length > 8) result += '-' + parts.slice(8, 10);
+        return result;
+      }
+
+      function openModal() {
+        modal.classList.add('is-open');
+        modal.setAttribute('aria-hidden', 'false');
+        const nameInput = form.elements.name;
+        if (nameInput) setTimeout(() => nameInput.focus(), 50);
+      }
+
+      function closeModal() {
+        modal.classList.remove('is-open');
+        modal.setAttribute('aria-hidden', 'true');
+      }
+
+      setInterval(updateTimer, 1000);
+      updateTimer();
+
+      openBtn.addEventListener('click', openModal);
+      closeBtn.addEventListener('click', closeModal);
+      modal.addEventListener('click', (event) => {
+        if (event.target === modal) closeModal();
+      });
+
+      form.elements.phone.addEventListener('input', () => {
+        form.elements.phone.value = formatPhone(form.elements.phone.value);
+      });
+
+      form.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        const submitBtn = form.querySelector('.sale-submit');
+        const name = form.elements.name.value.trim();
+        const phone = form.elements.phone.value.trim();
+        const consent = form.elements.consent.checked;
+
+        if (!name || phone.replace(/\D/g, '').length !== 11) {
+          errorEl.textContent = 'Введите имя и полный номер телефона.';
+          return;
+        }
+
+        if (!consent) {
+          errorEl.textContent = 'Нужно согласие на обработку персональных данных.';
+          return;
+        }
+
+        errorEl.textContent = '';
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Отправляем...';
+
+        try {
+          const response = await fetch(LEAD_CONFIG.webhookUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              widget: LEAD_CONFIG.widget,
+              source: LEAD_CONFIG.source,
+              name,
+              phone,
+              'Акция': 'Скидка 20% на обучение',
+              'Осталось по таймеру': timerEl.textContent,
+              'Согласие на обработку персональных данных': 'Да',
+              page: window.location.href.split('?')[0],
+              createdAt: new Date().toISOString()
+            })
+          });
+
+          if (!response.ok) throw new Error('Webhook error');
+
+          formCard.classList.add('is-success');
+          successEl.classList.add('is-open');
+          setTimeout(closeModal, 4500);
+        } catch (error) {
+          errorEl.textContent = 'Не получилось отправить заявку. Попробуйте ещё раз.';
+          submitBtn.disabled = false;
+          submitBtn.textContent = 'Отправить заявку';
+        }
+      });
+    })();
+  </script>
+</body>
+</html>
