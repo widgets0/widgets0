@@ -1,0 +1,542 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Мобильная акция</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #f4f5f8;
+      font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+
+    .mobile-demo-screen {
+      position: relative;
+      width: min(100%, 420px);
+      min-height: 760px;
+      overflow: hidden;
+      background: #ffffff;
+      box-shadow: 0 28px 80px rgba(15, 23, 42, 0.18);
+    }
+
+    .mobile-demo-content {
+      padding: 22px 18px 250px;
+      filter: brightness(0.55);
+    }
+
+    .mobile-demo-tabs {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 18px;
+    }
+
+    .mobile-demo-tab,
+    .mobile-demo-line {
+      border-radius: 999px;
+      background: #e7e9ef;
+    }
+
+    .mobile-demo-tab {
+      width: 82px;
+      height: 32px;
+    }
+
+    .mobile-demo-line {
+      width: 100%;
+      height: 18px;
+      margin-bottom: 18px;
+    }
+
+    .mobile-demo-line:nth-child(odd) {
+      width: 86%;
+    }
+
+    .mobile-sale-widget {
+      position: fixed;
+      left: 50%;
+      bottom: 14px;
+      z-index: 50;
+      width: min(100% - 24px, 390px);
+      overflow: hidden;
+      border-radius: 24px;
+      background: #ffffff;
+      color: #1d1d20;
+      box-shadow: 0 24px 70px rgba(15, 23, 42, 0.32);
+      transform: translateX(-50%) translateY(18px);
+      opacity: 0;
+      pointer-events: none;
+      transition: transform 0.32s ease, opacity 0.32s ease;
+    }
+
+    .mobile-sale-widget.is-visible {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    .mobile-sale-widget.is-hidden {
+      opacity: 0;
+      pointer-events: none;
+      transform: translateX(-50%) translateY(18px);
+    }
+
+    .mobile-sale-art {
+      position: relative;
+      min-height: 210px;
+      padding: 28px 22px;
+      overflow: hidden;
+      background:
+        radial-gradient(circle at 70% 64%, rgba(255,255,255,0.7) 0 0, transparent 28%),
+        linear-gradient(135deg, #ffe47a 0%, #ffb13b 52%, #ff7c4d 100%);
+    }
+
+    .mobile-sale-art::before {
+      content: "";
+      position: absolute;
+      right: -38px;
+      bottom: -58px;
+      width: 210px;
+      height: 210px;
+      border-radius: 44px;
+      background: linear-gradient(145deg, #ff8d42, #e85924);
+      box-shadow: inset 12px 0 28px rgba(255,255,255,0.2), 0 22px 42px rgba(123, 55, 18, 0.24);
+      transform: rotate(-8deg);
+    }
+
+    .mobile-sale-art::after {
+      content: "20%";
+      position: absolute;
+      right: 28px;
+      bottom: 24px;
+      min-width: 98px;
+      padding: 13px 18px;
+      border-radius: 28px;
+      background: rgba(255, 255, 255, 0.36);
+      color: #ffffff;
+      font-size: 34px;
+      font-weight: 900;
+      text-align: center;
+      box-shadow: inset 0 0 0 2px rgba(255,255,255,0.28);
+      backdrop-filter: blur(8px);
+    }
+
+    .mobile-sale-kicker {
+      position: relative;
+      z-index: 1;
+      display: inline-flex;
+      margin-bottom: 6px;
+      padding: 7px 10px;
+      border-radius: 99px;
+      background: rgba(255,255,255,0.28);
+      color: rgba(255,255,255,0.92);
+      font-size: 12px;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .mobile-sale-title-art {
+      position: relative;
+      z-index: 1;
+      margin: 0;
+      color: rgba(255,255,255,0.92);
+      font-size: 46px;
+      line-height: 0.95;
+      font-weight: 900;
+      letter-spacing: 0;
+    }
+
+    .mobile-sale-body {
+      padding: 24px 20px 22px;
+      text-align: center;
+    }
+
+    .mobile-sale-title {
+      margin: 0 0 10px;
+      color: #20212a;
+      font-size: 25px;
+      line-height: 1.12;
+      letter-spacing: 0;
+    }
+
+    .mobile-sale-text {
+      margin: 0 0 14px;
+      color: #666b78;
+      font-size: 15px;
+      line-height: 1.45;
+      font-weight: 600;
+    }
+
+    .mobile-sale-timer {
+      display: inline-flex;
+      margin-bottom: 16px;
+      padding: 7px 11px;
+      border-radius: 99px;
+      background: #f4f5f8;
+      color: #475467;
+      font-size: 13px;
+      font-weight: 800;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .mobile-sale-button {
+      width: 100%;
+      min-height: 56px;
+      border: 0;
+      border-radius: 16px;
+      background: #1f2026;
+      color: #ffffff;
+      font: inherit;
+      font-size: 16px;
+      font-weight: 900;
+      cursor: pointer;
+    }
+
+    .mobile-sale-close {
+      position: absolute;
+      top: 14px;
+      right: 14px;
+      z-index: 2;
+      width: 32px;
+      height: 32px;
+      display: grid;
+      place-items: center;
+      border: 0;
+      border-radius: 10px;
+      background: rgba(255,255,255,0.34);
+      color: rgba(31,32,38,0.58);
+      font-size: 26px;
+      line-height: 1;
+      cursor: pointer;
+    }
+
+    .mobile-sale-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 80;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 18px;
+      background: rgba(15, 23, 42, 0.56);
+      backdrop-filter: blur(10px);
+    }
+
+    .mobile-sale-modal.is-open {
+      display: flex;
+    }
+
+    .mobile-sale-form-card {
+      position: relative;
+      width: min(100%, 380px);
+      padding: 24px;
+      border-radius: 22px;
+      background: #ffffff;
+      box-shadow: 0 24px 70px rgba(15, 23, 42, 0.34);
+    }
+
+    .mobile-modal-close {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      width: 32px;
+      height: 32px;
+      border: 0;
+      border-radius: 10px;
+      background: #f2f4f7;
+      color: #667085;
+      font-size: 24px;
+      cursor: pointer;
+    }
+
+    .mobile-sale-form-card h2 {
+      margin: 0 36px 8px 0;
+      font-size: 25px;
+      line-height: 1.12;
+    }
+
+    .mobile-sale-form-card p {
+      margin: 0 0 18px;
+      color: #667085;
+      line-height: 1.45;
+      font-weight: 600;
+    }
+
+    .mobile-sale-form {
+      display: grid;
+      gap: 12px;
+    }
+
+    .mobile-sale-input {
+      width: 100%;
+      height: 50px;
+      border: 1px solid #d0d5dd;
+      border-radius: 12px;
+      padding: 0 14px;
+      color: #101828;
+      font: inherit;
+      font-weight: 650;
+      outline: none;
+    }
+
+    .mobile-sale-consent {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      color: #667085;
+      font-size: 12px;
+      line-height: 1.4;
+      font-weight: 600;
+      text-align: left;
+    }
+
+    .mobile-sale-consent input {
+      width: 18px;
+      height: 18px;
+      margin: 0;
+      accent-color: #ff8a3d;
+      flex: 0 0 auto;
+    }
+
+    .mobile-sale-error {
+      min-height: 18px;
+      color: #d92d20;
+      font-size: 13px;
+      font-weight: 700;
+      text-align: center;
+    }
+
+    .mobile-sale-submit {
+      height: 52px;
+      border: 0;
+      border-radius: 14px;
+      background: #1f2026;
+      color: #ffffff;
+      font: inherit;
+      font-weight: 900;
+      cursor: pointer;
+    }
+
+    .mobile-sale-success {
+      display: none;
+      text-align: center;
+      padding: 12px 0 2px;
+    }
+
+    .mobile-sale-success.is-open {
+      display: block;
+    }
+
+    .mobile-sale-form-card.is-success .mobile-sale-form-content {
+      display: none;
+    }
+
+    @media (min-width: 761px) {
+      body:not(.preview-mode) .mobile-sale-widget {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="mobile-demo-screen">
+    <div class="mobile-demo-content" aria-hidden="true">
+      <div class="mobile-demo-tabs">
+        <div class="mobile-demo-tab"></div>
+        <div class="mobile-demo-tab"></div>
+        <div class="mobile-demo-tab"></div>
+      </div>
+      <div class="mobile-demo-line"></div>
+      <div class="mobile-demo-line"></div>
+      <div class="mobile-demo-line"></div>
+      <div class="mobile-demo-line"></div>
+      <div class="mobile-demo-line"></div>
+      <div class="mobile-demo-line"></div>
+      <div class="mobile-demo-line"></div>
+    </div>
+  </div>
+
+  <div class="mobile-sale-widget" data-duration-hours="24">
+    <button class="mobile-sale-close" type="button" aria-label="Закрыть" data-mobile-sale-close>×</button>
+    <div class="mobile-sale-art">
+      <span class="mobile-sale-kicker">Только сегодня</span>
+      <h1 class="mobile-sale-title-art">Акция</h1>
+    </div>
+    <div class="mobile-sale-body">
+      <h2 class="mobile-sale-title">Ваш шанс забрать скидку</h2>
+      <p class="mobile-sale-text">Оставьте заявку и получите персональное предложение на обучение.</p>
+      <div class="mobile-sale-timer">Осталось: <strong data-mobile-sale-timer>24:00:00</strong></div>
+      <button class="mobile-sale-button" type="button" data-open-mobile-sale-form>Участвовать в акции</button>
+    </div>
+  </div>
+
+  <div class="mobile-sale-modal" data-mobile-sale-modal aria-hidden="true">
+    <div class="mobile-sale-form-card" role="dialog" aria-modal="true" aria-labelledby="mobile-sale-title">
+      <button class="mobile-modal-close" type="button" aria-label="Закрыть" data-mobile-modal-close>×</button>
+      <div class="mobile-sale-form-content">
+        <h2 id="mobile-sale-title">Забрать предложение</h2>
+        <p>Оставьте контакты, и мы закрепим за вами условия акции.</p>
+        <form class="mobile-sale-form" data-mobile-sale-form>
+          <input class="mobile-sale-input" type="text" name="name" placeholder="Ваше имя" autocomplete="name" required>
+          <input class="mobile-sale-input" type="tel" name="phone" placeholder="+7 (999) 999-99-99" autocomplete="tel" inputmode="tel" required>
+          <label class="mobile-sale-consent">
+            <input type="checkbox" name="consent" checked required>
+            <span>Согласен(на) на обработку персональных данных</span>
+          </label>
+          <div class="mobile-sale-error" data-mobile-sale-error aria-live="polite"></div>
+          <button class="mobile-sale-submit" type="submit">Отправить заявку</button>
+        </form>
+      </div>
+      <div class="mobile-sale-success" data-mobile-sale-success>
+        <h2>Спасибо за заявку!</h2>
+        <p>Мы получили ваши контакты и скоро свяжемся с вами.</p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      const LEAD_CONFIG = {
+        webhookUrl: "https://widgets0-production.up.railway.app",
+        widget: "Мобильная акция",
+        source: "mobile-sale-card"
+      };
+
+      if (new URLSearchParams(window.location.search).get('preview') === '1') {
+        document.body.classList.add('preview-mode');
+      }
+
+      const widget = document.querySelector('.mobile-sale-widget');
+      const timerEl = document.querySelector('[data-mobile-sale-timer]');
+      const closeWidgetBtn = document.querySelector('[data-mobile-sale-close]');
+      const openBtn = document.querySelector('[data-open-mobile-sale-form]');
+      const modal = document.querySelector('[data-mobile-sale-modal]');
+      const closeModalBtn = document.querySelector('[data-mobile-modal-close]');
+      const formCard = document.querySelector('.mobile-sale-form-card');
+      const form = document.querySelector('[data-mobile-sale-form]');
+      const errorEl = document.querySelector('[data-mobile-sale-error]');
+      const successEl = document.querySelector('[data-mobile-sale-success]');
+      const durationHours = parseInt(widget.getAttribute('data-duration-hours') || '24', 10);
+      const deadline = new Date(Date.now() + (Number.isNaN(durationHours) ? 24 : durationHours) * 60 * 60 * 1000);
+
+      function pad(value) {
+        return value < 10 ? '0' + value : String(value);
+      }
+
+      function updateTimer() {
+        let diff = Math.max(0, deadline - new Date());
+        const hours = Math.floor(diff / 3600000);
+        diff -= hours * 3600000;
+        const minutes = Math.floor(diff / 60000);
+        diff -= minutes * 60000;
+        const seconds = Math.floor(diff / 1000);
+        timerEl.textContent = `${pad(hours)}:${pad(minutes)}:${pad(seconds)}`;
+      }
+
+      function formatPhone(value) {
+        const digits = value.replace(/\D/g, '').replace(/^8/, '7').slice(0, 11);
+        const normalized = digits.startsWith('7') ? digits : '7' + digits;
+        const parts = normalized.slice(1);
+        let result = '+7';
+        if (parts.length > 0) result += ' (' + parts.slice(0, 3);
+        if (parts.length >= 3) result += ')';
+        if (parts.length > 3) result += ' ' + parts.slice(3, 6);
+        if (parts.length > 6) result += '-' + parts.slice(6, 8);
+        if (parts.length > 8) result += '-' + parts.slice(8, 10);
+        return result;
+      }
+
+      function openModal() {
+        modal.classList.add('is-open');
+        modal.setAttribute('aria-hidden', 'false');
+      }
+
+      function closeModal() {
+        modal.classList.remove('is-open');
+        modal.setAttribute('aria-hidden', 'true');
+      }
+
+      updateTimer();
+      setInterval(updateTimer, 1000);
+
+      setTimeout(() => {
+        if (widget && document.body.contains(widget)) widget.classList.add('is-visible');
+      }, document.body.classList.contains('preview-mode') ? 0 : 1600);
+
+      closeWidgetBtn.addEventListener('click', () => {
+        widget.classList.add('is-hidden');
+        setTimeout(() => widget.remove(), 280);
+      });
+
+      openBtn.addEventListener('click', openModal);
+      closeModalBtn.addEventListener('click', closeModal);
+      modal.addEventListener('click', (event) => {
+        if (event.target === modal) closeModal();
+      });
+
+      form.elements.phone.addEventListener('input', () => {
+        form.elements.phone.value = formatPhone(form.elements.phone.value);
+      });
+
+      form.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        const submitBtn = form.querySelector('.mobile-sale-submit');
+        const name = form.elements.name.value.trim();
+        const phone = form.elements.phone.value.trim();
+        const consent = form.elements.consent.checked;
+
+        if (!name || phone.replace(/\D/g, '').length !== 11) {
+          errorEl.textContent = 'Введите имя и полный номер телефона.';
+          return;
+        }
+
+        if (!consent) {
+          errorEl.textContent = 'Нужно согласие на обработку персональных данных.';
+          return;
+        }
+
+        errorEl.textContent = '';
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Отправляем...';
+
+        try {
+          const response = await fetch(LEAD_CONFIG.webhookUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              widget: LEAD_CONFIG.widget,
+              source: LEAD_CONFIG.source,
+              name,
+              phone,
+              'Акция': 'Мобильная акция на обучение',
+              'Осталось по таймеру': timerEl.textContent,
+              'Согласие на обработку персональных данных': 'Да',
+              page: window.location.href.split('?')[0],
+              createdAt: new Date().toISOString()
+            })
+          });
+
+          if (!response.ok) throw new Error('Webhook error');
+
+          formCard.classList.add('is-success');
+          successEl.classList.add('is-open');
+          setTimeout(closeModal, 4500);
+        } catch (error) {
+          errorEl.textContent = 'Не получилось отправить заявку. Попробуйте ещё раз.';
+          submitBtn.disabled = false;
+          submitBtn.textContent = 'Отправить заявку';
+        }
+      });
+    })();
+  </script>
+</body>
+</html>

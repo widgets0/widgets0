@@ -6,10 +6,10 @@
     left: 0;
     right: 0;
     z-index: 9999;
-    min-height: 58px;
+    min-height: 68px;
     display: grid;
     place-items: center;
-    padding: 10px 48px 10px 16px;
+    padding: 14px 58px 14px 24px;
     overflow: hidden;
     color: #ffffff;
     background:
@@ -17,7 +17,6 @@
       radial-gradient(circle at 88% 70%, rgba(80, 220, 190, 0.75) 0 4px, transparent 5px),
       linear-gradient(100deg, #7027ea 0%, #ec3c78 45%, #ff5b45 72%, #6c2eee 100%);
     box-shadow: 0 12px 28px rgba(114, 39, 234, 0.22);
-    transition: opacity 0.25s ease, transform 0.25s ease;
     font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     opacity: 0;
     pointer-events: none;
@@ -66,11 +65,11 @@
   .sale-bar-inner {
     position: relative;
     z-index: 1;
-    width: min(100%, 1160px);
+    width: min(100%, 1360px);
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 22px;
+    gap: 30px;
     text-align: center;
     font-weight: 800;
     letter-spacing: 0;
@@ -308,68 +307,7 @@
 
   @media (max-width: 760px) {
     .sale-bar {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: auto;
-      min-height: 0;
-      display: block;
-      padding: 16px 44px 16px 16px;
-      border-radius: 0 0 22px 22px;
-      box-shadow: 0 22px 54px rgba(15, 23, 42, 0.22);
-    }
-
-    .sale-bar.is-hidden {
-      transform: translateY(-120%);
-    }
-
-    .sale-bar-inner {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 10px;
-      text-align: center;
-    }
-
-    .sale-kicker {
-      justify-self: center;
-      min-height: 0;
-      font-size: 12px;
-      letter-spacing: 0.08em;
-    }
-
-    .sale-divider {
       display: none;
-    }
-
-    .sale-offer {
-      font-size: 24px;
-      line-height: 1.08;
-      white-space: normal;
-      text-transform: none;
-      justify-self: center;
-    }
-
-    .sale-timer {
-      justify-self: center;
-      font-size: 13px;
-      min-height: 28px;
-      padding: 6px 10px;
-    }
-
-    .sale-button {
-      width: 100%;
-      margin-top: 4px;
-      padding: 15px 18px;
-      border-radius: 14px;
-      font-size: 15px;
-    }
-
-    .sale-bar-close {
-      top: 12px;
-      right: 12px;
-      transform: none;
-      background: rgba(255,255,255,0.18);
     }
   }
 </style>
