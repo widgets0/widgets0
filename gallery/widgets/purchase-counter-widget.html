@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Счётчик посетителей</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 28px;
+      background:
+        radial-gradient(circle at 16% 16%, rgba(168, 85, 247, 0.24), transparent 34%),
+        radial-gradient(circle at 84% 84%, rgba(236, 72, 153, 0.2), transparent 34%),
+        #070711;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+
+    .counter-demo-card {
+      width: min(100%, 820px);
+      min-height: 380px;
+      display: flex;
+      align-items: flex-start;
+      justify-content: flex-start;
+      padding: clamp(22px, 5vw, 48px);
+      border-radius: 28px;
+      background:
+        linear-gradient(135deg, rgba(255,255,255,0.08), rgba(255,255,255,0.02)),
+        rgba(12, 12, 22, 0.76);
+      border: 1px solid rgba(255,255,255,0.12);
+      box-shadow: 0 30px 90px rgba(0,0,0,0.45);
+    }
+
+    .purchase-counter {
+      position: relative;
+      background: rgba(15, 15, 25, 0.8);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      color: #e2e8f0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      font-size: 15px;
+      font-weight: 500;
+      padding: 16px 24px 16px 60px;
+      border-radius: 60px;
+      border: 1px solid rgba(120, 120, 255, 0.2);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      max-width: fit-content;
+      animation: fadeInUp 0.8s ease-out;
+      transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+    }
+
+    .purchase-counter:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5);
+      border-color: rgba(168, 85, 247, 0.4);
+    }
+
+    .pulse-dot {
+      position: absolute;
+      left: 22px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 10px;
+      height: 10px;
+      background: #f43f5e;
+      border-radius: 50%;
+      box-shadow: 0 0 0 0 rgba(244, 63, 94, 0.7);
+      animation: pulse 2s infinite;
+    }
+
+    .eye-icon {
+      position: absolute;
+      left: 34px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 24px;
+      height: 24px;
+      color: #a78bfa;
+    }
+
+    .purchase-counter strong {
+      background: linear-gradient(90deg, #c084fc, #ec4899);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      font-weight: 700;
+      font-size: 17px;
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes pulse {
+      0% { transform: translateY(-50%) scale(0.8); box-shadow: 0 0 0 0 rgba(244, 63, 94, 0.7); }
+      70% { transform: translateY(-50%) scale(1); box-shadow: 0 0 0 10px rgba(244, 63, 94, 0); }
+      100% { transform: translateY(-50%) scale(0.8); box-shadow: 0 0 0 0 rgba(244, 63, 94, 0); }
+    }
+
+    @media (max-width: 640px) {
+      body {
+        padding: 16px;
+      }
+
+      .counter-demo-card {
+        min-height: 260px;
+        padding: 20px;
+        border-radius: 22px;
+      }
+
+      .purchase-counter {
+        font-size: 14px;
+        padding: 14px 18px 14px 56px;
+      }
+
+      .eye-icon {
+        width: 22px;
+        height: 22px;
+        left: 32px;
+      }
+
+      .pulse-dot {
+        left: 19px;
+        width: 9px;
+        height: 9px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="counter-demo-card">
+    <div class="purchase-counter" data-counter-min="24" data-counter-max="38">
+      <div class="pulse-dot"></div>
+      <svg class="eye-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+        <circle cx="12" cy="12" r="3"></circle>
+      </svg>
+      <span class="text">Уже купили: <strong data-counter-value>28</strong> человек</span>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      const counters = document.querySelectorAll('.purchase-counter');
+
+      counters.forEach((counter) => {
+        const valueEl = counter.querySelector('[data-counter-value]');
+        if (!valueEl) return;
+
+        const min = parseInt(counter.getAttribute('data-counter-min') || '24', 10);
+        const max = parseInt(counter.getAttribute('data-counter-max') || '38', 10);
+        let value = parseInt(valueEl.textContent || String(min), 10);
+
+        function updateValue() {
+          const next = Math.max(min, Math.min(max, value + (Math.random() > 0.35 ? 1 : -1)));
+          value = next;
+          valueEl.textContent = String(value);
+        }
+
+        setInterval(updateValue, 7000);
+      });
+    })();
+  </script>
+</body>
+</html>
