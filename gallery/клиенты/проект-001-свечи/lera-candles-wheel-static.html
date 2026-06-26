@@ -256,6 +256,26 @@ body {
     font-weight: 700;
 }
 
+.clientWidget001-root .wof-consent {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    color: #4F443A;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 1.35;
+    text-align: left;
+}
+
+.clientWidget001-root .wof-consent input {
+    width: 18px;
+    height: 18px;
+    margin: 0;
+    accent-color: var(--accent-yellow);
+    flex: 0 0 auto;
+}
+
 .clientWidget001-root .wof-prize-card {
     width: 100%;
     background: var(--accent-light); 
@@ -552,6 +572,10 @@ body {
               <div class="wof-input-wrapper">
                   <input type="tel" id="clientWidget001-phone" placeholder="+7 (999) 000-00-00" class="wof-input">
               </div>
+              <label class="wof-consent">
+                <input type="checkbox" id="clientWidget001-consent" checked required>
+                <span>Согласен(на) на обработку персональных данных</span>
+              </label>
               
               <div id="clientWidget001-form-error" style="color: #ef4444; font-weight: bold; font-size: 14px; text-align: center; padding: 0 8px; margin-bottom: 4px; min-height: 20px;"></div>
               
@@ -611,6 +635,7 @@ body {
   const form = document.getElementById('clientWidget001-form');
   const nameInput = document.getElementById('clientWidget001-name');
   const phoneInput = document.getElementById('clientWidget001-phone');
+  const consentInput = document.getElementById('clientWidget001-consent');
   const formError = document.getElementById('clientWidget001-form-error');
 
   let isSpinning = false;
@@ -818,6 +843,11 @@ body {
       formError.innerText = "Пожалуйста, корректно заполните все поля";
       return;
     }
+
+    if (consentInput && !consentInput.checked) {
+      formError.innerText = "Нужно согласие на обработку персональных данных";
+      return;
+    }
     
     const prize = selectedPrize || 'Приз не выбран';
 
@@ -837,6 +867,7 @@ body {
           name,
           phone,
           prize,
+          'Согласие на обработку персональных данных': 'Да',
           page: window.location.href.split('?')[0],
           createdAt: new Date().toISOString()
         })

@@ -92,6 +92,10 @@
       <div>
         <input type="tel" required placeholder="+7 (999) 000-00-00" class="tinder-user-phone w-full px-5 py-4 rounded-2xl border-2 border-slate-100 focus:ring-0 focus:border-indigo-500 outline-none transition-all bg-slate-50 focus:bg-white font-medium">
       </div>
+      <label class="flex items-start gap-2 text-left text-xs leading-snug text-slate-500 font-medium">
+        <input type="checkbox" class="tinder-consent mt-0.5 w-4 h-4 accent-indigo-600 shrink-0" checked required>
+        <span>Согласен(на) на обработку персональных данных</span>
+      </label>
       <button type="submit" class="tinder-submit-btn w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-4 px-6 rounded-2xl transition-all shadow-lg shadow-indigo-200 flex items-center justify-center mt-4">
         Получить подборку
       </button>
@@ -438,7 +442,14 @@
         const btnSubmit = widget.querySelector('.tinder-submit-btn');
         const nameInput = widget.querySelector('.tinder-user-name');
         const phoneInput = widget.querySelector('.tinder-user-phone');
+        const consentInput = widget.querySelector('.tinder-consent');
         const defaultText = btnSubmit.innerHTML;
+
+        if (consentInput && !consentInput.checked) {
+          alert('Нужно согласие на обработку персональных данных.');
+          return;
+        }
+
         btnSubmit.disabled = true;
         btnSubmit.innerHTML = 'Отправка...';
 
@@ -448,7 +459,8 @@
             name: nameInput ? nameInput.value : '',
             phone: phoneInput ? phoneInput.value : '',
             selectedTours: likedItems.map(item => item.title),
-            prize: 'TRAVEL10'
+            prize: 'TRAVEL10',
+            'Согласие на обработку персональных данных': 'Да'
           });
           const successPhone = widget.querySelector('.tinder-success-phone');
           if (successPhone && phoneInput) successPhone.innerText = phoneInput.value;

@@ -310,6 +310,24 @@
       font-weight: 700;
     }
 
+    .bf-consent {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      color: rgba(255,255,255,0.72);
+      font-size: 12px;
+      line-height: 1.4;
+      font-weight: 600;
+    }
+
+    .bf-consent input {
+      width: 18px;
+      height: 18px;
+      margin: 0;
+      accent-color: #ff6bc1;
+      flex: 0 0 auto;
+    }
+
     .bf-success {
       text-align: center;
       animation: bf-pop-in 0.45s cubic-bezier(0.16, 1, 0.3, 1);
@@ -447,6 +465,10 @@
           <form id="bf-lead-form" class="bf-lead-form">
             <input class="bf-input" id="bf-name" name="name" type="text" placeholder="Ваше имя" autocomplete="name" required>
             <input class="bf-input" id="bf-phone" name="phone" type="tel" placeholder="+7 (999) 999-99-99" autocomplete="tel" inputmode="tel" required>
+            <label class="bf-consent">
+              <input id="bf-consent" type="checkbox" checked required>
+              <span>Согласен(на) на обработку персональных данных</span>
+            </label>
             <div class="bf-form-error" id="bf-form-error" aria-live="polite"></div>
             <button type="submit" class="bf-submit" id="bf-submit">Отправить заявку</button>
           </form>
@@ -478,6 +500,7 @@
       const leadForm = document.getElementById("bf-lead-form");
       const nameInput = document.getElementById("bf-name");
       const phoneInput = document.getElementById("bf-phone");
+      const consentInput = document.getElementById("bf-consent");
       const errorEl = document.getElementById("bf-form-error");
       const submitBtn = document.getElementById("bf-submit");
       const successEl = document.getElementById("bf-success");
@@ -588,6 +611,11 @@
             return;
           }
 
+          if (consentInput && !consentInput.checked) {
+            errorEl.textContent = "Нужно согласие на обработку персональных данных.";
+            return;
+          }
+
           errorEl.textContent = "";
           submitBtn.disabled = true;
           submitBtn.textContent = "Отправляем...";
@@ -599,6 +627,7 @@
             phone,
             "Акция": "Чёрная пятница: скидка 15%",
             "Осталось по таймеру": getTimeLeftText(),
+            "Согласие на обработку персональных данных": "Да",
             page: window.location.href,
             createdAt: new Date().toISOString()
           };

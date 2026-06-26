@@ -392,6 +392,24 @@
             box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1) !important;
         }
 
+        .cw-consent {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            color: #64748b;
+            font-size: 12px;
+            line-height: 1.4;
+            font-weight: 600;
+        }
+
+        .cw-consent input {
+            width: 18px;
+            height: 18px;
+            margin: 0;
+            accent-color: #4f46e5;
+            flex: 0 0 auto;
+        }
+
         .cw-btn {
             width: 100% !important;
             padding: 18px !important;
@@ -605,6 +623,10 @@
             <form id="cw-lead-form">
                 <input type="text" class="cw-input" id="cw-name" placeholder="Ваше имя" required autocomplete="name">
                 <input type="tel" class="cw-input" id="cw-phone" placeholder="+7 (999) 999-99-99" required autocomplete="tel" inputmode="tel">
+                <label class="cw-consent">
+                    <input type="checkbox" id="cw-consent" checked required>
+                    <span>Согласен(на) на обработку персональных данных</span>
+                </label>
                 <button type="submit" class="cw-btn" id="cw-submit-btn">
                     <svg class="cw-spinner" id="cw-loading-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <circle opacity="0.25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
@@ -657,6 +679,7 @@
             const btnText = document.getElementById('cw-btn-text');
             const loadingIcon = document.getElementById('cw-loading-icon');
             const phoneInput = document.getElementById('cw-phone');
+            const consentInput = document.getElementById('cw-consent');
 
             // Форматирование цены (1 200 ₽)
             function formatCurrency(num) {
@@ -757,6 +780,11 @@
                         return;
                     }
 
+                    if (consentInput && !consentInput.checked) {
+                        alert('Нужно согласие на обработку персональных данных.');
+                        return;
+                    }
+
                     if(submitBtn) submitBtn.disabled = true;
                     if(btnText) btnText.textContent = 'Обработка...';
                     if(loadingIcon) loadingIcon.style.display = 'block';
@@ -770,6 +798,7 @@
                         'Площадь': areaRange.value + ' м²',
                         'Опции': selectedOptions.length ? selectedOptions : 'Без дополнительных опций',
                         'Итоговая стоимость': totalPriceEl.textContent,
+                        'Согласие на обработку персональных данных': 'Да',
                         page: window.location.href.split('?')[0],
                         createdAt: new Date().toISOString()
                     };
