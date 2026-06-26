@@ -15,92 +15,174 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 28px;
-      background:
-        radial-gradient(circle at 16% 16%, rgba(168, 85, 247, 0.24), transparent 34%),
-        radial-gradient(circle at 84% 84%, rgba(236, 72, 153, 0.2), transparent 34%),
-        #070711;
+      padding: 24px;
+      background: #f7f8fb;
+      color: #101828;
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     }
 
-    .counter-demo-card {
-      width: min(100%, 820px);
-      min-height: 380px;
-      display: flex;
-      align-items: flex-start;
-      justify-content: flex-start;
-      padding: clamp(22px, 5vw, 48px);
+    .counter-page-demo {
+      width: min(100%, 760px);
+      min-height: 360px;
+      position: relative;
+      display: grid;
+      grid-template-columns: 0.9fr 1.1fr;
+      gap: 28px;
+      align-items: center;
+      padding: clamp(22px, 4vw, 42px);
       border-radius: 28px;
+      background: #ffffff;
+      border: 1px solid #eceff4;
+      box-shadow: 0 24px 70px rgba(15, 23, 42, 0.12);
+      overflow: hidden;
+    }
+
+    .counter-product-image {
+      min-height: 230px;
+      border-radius: 22px;
       background:
-        linear-gradient(135deg, rgba(255,255,255,0.08), rgba(255,255,255,0.02)),
-        rgba(12, 12, 22, 0.76);
-      border: 1px solid rgba(255,255,255,0.12);
-      box-shadow: 0 30px 90px rgba(0,0,0,0.45);
+        radial-gradient(circle at 68% 24%, rgba(236, 72, 153, 0.22), transparent 32%),
+        radial-gradient(circle at 28% 72%, rgba(99, 102, 241, 0.2), transparent 34%),
+        linear-gradient(135deg, #f5f7ff, #fff1f7);
+      border: 1px solid #edf0f7;
+    }
+
+    .counter-product-copy {
+      display: grid;
+      gap: 14px;
+    }
+
+    .counter-product-kicker {
+      width: 120px;
+      height: 12px;
+      border-radius: 99px;
+      background: #ebeef5;
+    }
+
+    .counter-product-title {
+      width: min(100%, 320px);
+      height: 26px;
+      border-radius: 99px;
+      background: #dfe5ef;
+    }
+
+    .counter-product-line {
+      height: 12px;
+      border-radius: 99px;
+      background: #eef1f6;
+    }
+
+    .counter-product-line:nth-child(4) {
+      width: 82%;
+    }
+
+    .counter-product-button {
+      width: 160px;
+      height: 44px;
+      margin-top: 10px;
+      border-radius: 12px;
+      background: #101828;
     }
 
     .purchase-counter {
-      position: relative;
-      background: rgba(15, 15, 25, 0.8);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      color: #e2e8f0;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      font-size: 15px;
-      font-weight: 500;
-      padding: 16px 24px 16px 60px;
-      border-radius: 60px;
-      border: 1px solid rgba(120, 120, 255, 0.2);
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+      position: absolute;
+      left: clamp(18px, 4vw, 36px);
+      bottom: clamp(18px, 4vw, 34px);
+      z-index: 2;
       display: inline-flex;
       align-items: center;
-      gap: 12px;
-      max-width: fit-content;
-      animation: fadeInUp 0.8s ease-out;
-      transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+      gap: 10px;
+      width: fit-content;
+      max-width: calc(100% - 36px);
+      padding: 12px 38px 12px 14px;
+      border-radius: 14px;
+      border: 1px solid rgba(226, 232, 240, 0.95);
+      background: rgba(255, 255, 255, 0.92);
+      color: #334155;
+      box-shadow: 0 16px 38px rgba(15, 23, 42, 0.16);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      font-size: 14px;
+      font-weight: 600;
+      line-height: 1.2;
+      animation: fadeInUp 0.55s ease-out;
+      transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.25s ease;
     }
 
     .purchase-counter:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5);
-      border-color: rgba(168, 85, 247, 0.4);
+      transform: translateY(-2px);
+      box-shadow: 0 20px 44px rgba(15, 23, 42, 0.19);
+    }
+
+    .purchase-counter.is-hidden {
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(8px);
+    }
+
+    .counter-icon-wrap {
+      position: relative;
+      width: 30px;
+      height: 30px;
+      flex: 0 0 auto;
+      display: grid;
+      place-items: center;
+      border-radius: 10px;
+      background: #f4f0ff;
+      color: #7c3aed;
     }
 
     .pulse-dot {
       position: absolute;
-      left: 22px;
-      top: 50%;
-      transform: translateY(-50%);
-      width: 10px;
-      height: 10px;
-      background: #f43f5e;
+      right: -2px;
+      top: -2px;
+      width: 9px;
+      height: 9px;
+      background: #22c55e;
+      border: 2px solid #ffffff;
       border-radius: 50%;
-      box-shadow: 0 0 0 0 rgba(244, 63, 94, 0.7);
+      box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.55);
       animation: pulse 2s infinite;
     }
 
     .eye-icon {
-      position: absolute;
-      left: 34px;
-      top: 50%;
-      transform: translateY(-50%);
-      width: 24px;
-      height: 24px;
-      color: #a78bfa;
+      width: 18px;
+      height: 18px;
     }
 
     .purchase-counter strong {
-      background: linear-gradient(90deg, #c084fc, #ec4899);
-      -webkit-background-clip: text;
-      background-clip: text;
-      -webkit-text-fill-color: transparent;
-      font-weight: 700;
-      font-size: 17px;
+      color: #7c3aed;
+      font-weight: 800;
+      font-size: 15px;
+    }
+
+    .counter-close {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      width: 22px;
+      height: 22px;
+      display: grid;
+      place-items: center;
+      border: 0;
+      border-radius: 8px;
+      background: #f1f5f9;
+      color: #64748b;
+      cursor: pointer;
+      font-size: 16px;
+      line-height: 1;
+      transition: background 0.2s ease, color 0.2s ease;
+    }
+
+    .counter-close:hover {
+      background: #e2e8f0;
+      color: #0f172a;
     }
 
     @keyframes fadeInUp {
       from {
         opacity: 0;
-        transform: translateY(20px);
+        transform: translateY(14px);
       }
       to {
         opacity: 1;
@@ -109,50 +191,62 @@
     }
 
     @keyframes pulse {
-      0% { transform: translateY(-50%) scale(0.8); box-shadow: 0 0 0 0 rgba(244, 63, 94, 0.7); }
-      70% { transform: translateY(-50%) scale(1); box-shadow: 0 0 0 10px rgba(244, 63, 94, 0); }
-      100% { transform: translateY(-50%) scale(0.8); box-shadow: 0 0 0 0 rgba(244, 63, 94, 0); }
+      0% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.55); }
+      70% { box-shadow: 0 0 0 8px rgba(34, 197, 94, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); }
     }
 
     @media (max-width: 640px) {
       body {
-        padding: 16px;
+        padding: 14px;
       }
 
-      .counter-demo-card {
-        min-height: 260px;
+      .counter-page-demo {
+        min-height: 520px;
+        grid-template-columns: 1fr;
+        align-content: start;
+        gap: 20px;
         padding: 20px;
         border-radius: 22px;
       }
 
+      .counter-product-image {
+        min-height: 230px;
+      }
+
       .purchase-counter {
-        font-size: 14px;
-        padding: 14px 18px 14px 56px;
-      }
-
-      .eye-icon {
-        width: 22px;
-        height: 22px;
-        left: 32px;
-      }
-
-      .pulse-dot {
-        left: 19px;
-        width: 9px;
-        height: 9px;
+        left: 16px;
+        right: 16px;
+        bottom: 16px;
+        max-width: none;
+        font-size: 13px;
+        padding: 12px 38px 12px 12px;
       }
     }
   </style>
 </head>
 <body>
-  <div class="counter-demo-card">
+  <div class="counter-page-demo">
+    <div class="counter-product-image" aria-hidden="true"></div>
+    <div class="counter-product-copy" aria-hidden="true">
+      <div class="counter-product-kicker"></div>
+      <div class="counter-product-title"></div>
+      <div class="counter-product-line"></div>
+      <div class="counter-product-line"></div>
+      <div class="counter-product-line"></div>
+      <div class="counter-product-button"></div>
+    </div>
+
     <div class="purchase-counter" data-counter-min="24" data-counter-max="38">
-      <div class="pulse-dot"></div>
-      <svg class="eye-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-        <circle cx="12" cy="12" r="3"></circle>
-      </svg>
+      <div class="counter-icon-wrap">
+        <div class="pulse-dot"></div>
+        <svg class="eye-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+          <circle cx="12" cy="12" r="3"></circle>
+        </svg>
+      </div>
       <span class="text">Уже купили: <strong data-counter-value>28</strong> человек</span>
+      <button class="counter-close" type="button" aria-label="Закрыть">×</button>
     </div>
   </div>
 
@@ -162,6 +256,7 @@
 
       counters.forEach((counter) => {
         const valueEl = counter.querySelector('[data-counter-value]');
+        const closeBtn = counter.querySelector('.counter-close');
         if (!valueEl) return;
 
         const min = parseInt(counter.getAttribute('data-counter-min') || '24', 10);
@@ -174,7 +269,15 @@
           valueEl.textContent = String(value);
         }
 
-        setInterval(updateValue, 7000);
+        const timer = setInterval(updateValue, 7000);
+
+        if (closeBtn) {
+          closeBtn.addEventListener('click', () => {
+            clearInterval(timer);
+            counter.classList.add('is-hidden');
+            setTimeout(() => counter.remove(), 260);
+          });
+        }
       });
     })();
   </script>
