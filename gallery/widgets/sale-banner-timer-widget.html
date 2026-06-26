@@ -19,96 +19,14 @@
 
     .demo-page {
       min-height: 100vh;
-      background:
-        linear-gradient(180deg, #ffffff 0%, #f7f8fb 100%);
-      padding-bottom: 80px;
-    }
-
-    .demo-site {
-      width: min(100% - 32px, 1040px);
-      margin: 0 auto;
-      padding: 48px 0 80px;
-    }
-
-    .demo-nav {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 42px;
-    }
-
-    .demo-logo,
-    .demo-pill,
-    .demo-line,
-    .demo-button,
-    .demo-card {
-      border-radius: 999px;
-      background: #eaecf0;
-    }
-
-    .demo-logo {
-      width: 116px;
-      height: 22px;
-    }
-
-    .demo-nav-links {
-      display: flex;
-      gap: 12px;
-    }
-
-    .demo-pill {
-      width: 78px;
-      height: 16px;
-    }
-
-    .demo-hero {
-      display: grid;
-      grid-template-columns: 1.05fr 0.95fr;
-      gap: 34px;
-      align-items: center;
-    }
-
-    .demo-copy {
-      display: grid;
-      gap: 14px;
-    }
-
-    .demo-line {
-      height: 18px;
-    }
-
-    .demo-line.is-title {
-      width: min(100%, 460px);
-      height: 44px;
-      border-radius: 14px;
-      background: #d0d5dd;
-    }
-
-    .demo-line.is-short {
-      width: 70%;
-    }
-
-    .demo-button {
-      width: 180px;
-      height: 48px;
-      margin-top: 10px;
-      border-radius: 12px;
-      background: #101828;
-    }
-
-    .demo-card {
-      min-height: 320px;
-      border-radius: 26px;
-      background:
-        radial-gradient(circle at 70% 28%, rgba(236, 60, 120, 0.18), transparent 34%),
-        radial-gradient(circle at 22% 76%, rgba(112, 39, 234, 0.16), transparent 34%),
-        #f2f4f7;
-      border: 1px solid #e4e7ec;
+      background: #ffffff;
     }
 
     .sale-bar {
-      position: sticky;
+      position: fixed;
       top: 0;
+      left: 0;
+      right: 0;
       z-index: 50;
       min-height: 58px;
       display: grid;
@@ -121,7 +39,16 @@
         radial-gradient(circle at 88% 70%, rgba(80, 220, 190, 0.75) 0 4px, transparent 5px),
         linear-gradient(100deg, #7027ea 0%, #ec3c78 45%, #ff5b45 72%, #6c2eee 100%);
       box-shadow: 0 12px 28px rgba(114, 39, 234, 0.22);
-      transition: opacity 0.25s ease, transform 0.25s ease;
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(-120%);
+      transition: opacity 0.32s ease, transform 0.32s ease;
+    }
+
+    .sale-bar.is-visible {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translateY(0);
     }
 
     .sale-bar.is-hidden {
@@ -413,46 +340,21 @@
     }
 
     @media (max-width: 760px) {
-      .demo-page {
-        padding-bottom: 230px;
-      }
-
-      .demo-site {
-        padding: 32px 0 56px;
-      }
-
-      .demo-nav {
-        margin-bottom: 28px;
-      }
-
-      .demo-nav-links .demo-pill:nth-child(n+3) {
-        display: none;
-      }
-
-      .demo-hero {
-        grid-template-columns: 1fr;
-      }
-
-      .demo-card {
-        min-height: 240px;
-        order: -1;
-      }
-
       .sale-bar {
         position: fixed;
-        top: auto;
-        left: 12px;
-        right: 12px;
-        bottom: 12px;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: auto;
         min-height: 0;
         display: block;
-        padding: 20px;
-        border-radius: 24px;
-        box-shadow: 0 26px 70px rgba(15, 23, 42, 0.28);
+        padding: 16px 44px 16px 16px;
+        border-radius: 0 0 22px 22px;
+        box-shadow: 0 22px 54px rgba(15, 23, 42, 0.22);
       }
 
       .sale-bar.is-hidden {
-        transform: translateY(24px);
+        transform: translateY(-120%);
       }
 
       .sale-bar-inner {
@@ -512,28 +414,6 @@
 </head>
 <body>
   <main class="demo-page">
-    <!-- DEMO ONLY: заглушка сайта для превью. Клиенту это не копируем. -->
-    <section class="demo-site" aria-hidden="true">
-      <div class="demo-nav">
-        <div class="demo-logo"></div>
-        <div class="demo-nav-links">
-          <div class="demo-pill"></div>
-          <div class="demo-pill"></div>
-          <div class="demo-pill"></div>
-        </div>
-      </div>
-      <div class="demo-hero">
-        <div class="demo-copy">
-          <div class="demo-line is-title"></div>
-          <div class="demo-line"></div>
-          <div class="demo-line"></div>
-          <div class="demo-line is-short"></div>
-          <div class="demo-button"></div>
-        </div>
-        <div class="demo-card"></div>
-      </div>
-    </section>
-
     <!-- WIDGET PREVIEW: чистый код для клиента лежит рядом в sale-banner-timer-widget-embed.html -->
     <section class="sale-bar" data-duration-hours="48">
       <div class="sale-bar-inner">
@@ -638,6 +518,10 @@
 
       setInterval(updateTimer, 1000);
       updateTimer();
+
+      setTimeout(() => {
+        if (bar && document.body.contains(bar)) bar.classList.add('is-visible');
+      }, 2000);
 
       openBtn.addEventListener('click', openModal);
       barCloseBtn.addEventListener('click', () => {
