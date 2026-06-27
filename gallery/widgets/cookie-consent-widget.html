@@ -26,48 +26,49 @@
     }
 
     .cookie-demo-card {
-      width: min(100%, 760px);
-      padding: 38px;
+      width: min(100%, 560px);
+      padding: 30px;
       border: 1px solid rgba(17, 24, 39, 0.08);
-      border-radius: 18px;
-      background: rgba(255, 255, 255, 0.72);
-      box-shadow: 0 22px 70px rgba(15, 23, 42, 0.08);
+      border-radius: 26px;
+      background: rgba(255, 255, 255, 0.58);
+      box-shadow: 0 18px 60px rgba(15, 23, 42, 0.06);
     }
 
     .cookie-demo-card h1 {
-      margin: 0 0 12px;
-      font-size: clamp(32px, 5vw, 54px);
+      margin: 0 0 10px;
+      font-size: clamp(28px, 4vw, 42px);
       line-height: 1;
       letter-spacing: 0;
     }
 
     .cookie-demo-card p {
       margin: 0;
-      max-width: 540px;
+      max-width: 430px;
       color: #64748b;
-      font-size: 17px;
-      line-height: 1.55;
+      font-size: 15px;
+      line-height: 1.5;
       font-weight: 600;
     }
 
     .cookie-consent {
       position: fixed;
       left: 50%;
-      bottom: 18px;
+      bottom: 20px;
       z-index: 9999;
-      width: min(calc(100% - 28px), 940px);
+      width: min(calc(100% - 28px), 620px);
       display: grid;
-      grid-template-columns: auto minmax(0, 1fr) auto;
-      gap: 16px;
+      grid-template-columns: auto minmax(0, 1fr) auto auto;
+      gap: 10px;
       align-items: center;
-      padding: 16px 18px;
-      border: 1px solid rgba(255, 255, 255, 0.16);
-      border-radius: 18px;
-      background: rgba(17, 24, 39, 0.88);
-      color: #f8fafc;
-      box-shadow: 0 24px 80px rgba(2, 6, 23, 0.34);
-      backdrop-filter: blur(18px);
-      transform: translate(-50%, 18px);
+      padding: 10px 10px 10px 12px;
+      border: 1px solid rgba(255, 255, 255, 0.66);
+      border-radius: 22px;
+      background: rgba(255, 255, 255, 0.78);
+      color: #111827;
+      box-shadow: 0 18px 50px rgba(15, 23, 42, 0.18);
+      backdrop-filter: blur(22px) saturate(1.18);
+      -webkit-backdrop-filter: blur(22px) saturate(1.18);
+      transform: translate(-50%, 14px) scale(0.98);
       opacity: 0;
       pointer-events: none;
       transition: transform 0.28s ease, opacity 0.28s ease;
@@ -76,47 +77,46 @@
     .cookie-consent.is-visible {
       opacity: 1;
       pointer-events: auto;
-      transform: translate(-50%, 0);
+      transform: translate(-50%, 0) scale(1);
     }
 
     .cookie-icon {
-      width: 44px;
-      height: 44px;
+      width: 34px;
+      height: 34px;
       display: grid;
       place-items: center;
-      border-radius: 14px;
-      background: linear-gradient(135deg, #fde68a, #f59e0b);
-      color: #3f2600;
-      font-size: 23px;
-      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.26);
+      border-radius: 12px;
+      background: linear-gradient(135deg, #ffcf57, #ff9f0a);
+      color: #5f3700;
+      font-size: 18px;
+      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.38);
     }
 
     .cookie-copy h2 {
-      margin: 0 0 4px;
-      font-size: 16px;
+      margin: 0 0 2px;
+      font-size: 14px;
       line-height: 1.2;
       letter-spacing: 0;
     }
 
     .cookie-copy p {
       margin: 0;
-      color: rgba(248, 250, 252, 0.72);
-      font-size: 13px;
-      line-height: 1.42;
+      color: #667085;
+      font-size: 12px;
+      line-height: 1.35;
       font-weight: 600;
     }
 
     .cookie-actions {
       display: flex;
       align-items: center;
-      gap: 8px;
     }
 
     .cookie-btn {
-      min-height: 42px;
+      min-height: 36px;
       border: 0;
-      border-radius: 12px;
-      padding: 0 16px;
+      border-radius: 999px;
+      padding: 0 17px;
       font: inherit;
       font-size: 14px;
       font-weight: 850;
@@ -130,42 +130,21 @@
     }
 
     .cookie-btn-primary {
-      background: #ffffff;
-      color: #111827;
-    }
-
-    .cookie-btn-secondary {
-      background: rgba(255, 255, 255, 0.08);
-      color: #e5e7eb;
+      background: #007aff;
+      color: #ffffff;
+      box-shadow: 0 8px 22px rgba(0, 122, 255, 0.28);
     }
 
     .cookie-close {
-      width: 38px;
-      height: 38px;
+      width: 34px;
+      height: 34px;
       border: 0;
-      border-radius: 12px;
-      background: rgba(255, 255, 255, 0.08);
-      color: rgba(248, 250, 252, 0.78);
-      font-size: 24px;
+      border-radius: 50%;
+      background: rgba(17, 24, 39, 0.06);
+      color: #667085;
+      font-size: 22px;
       line-height: 1;
       cursor: pointer;
-    }
-
-    .cookie-settings {
-      grid-column: 2 / -1;
-      display: none;
-      margin-top: -4px;
-      padding: 12px;
-      border-radius: 14px;
-      background: rgba(255, 255, 255, 0.08);
-      color: rgba(248, 250, 252, 0.78);
-      font-size: 13px;
-      line-height: 1.45;
-      font-weight: 600;
-    }
-
-    .cookie-consent.is-settings-open .cookie-settings {
-      display: block;
     }
 
     @media (max-width: 720px) {
@@ -174,22 +153,22 @@
       }
 
       .cookie-demo-card {
-        padding: 28px;
+        padding: 24px;
       }
 
       .cookie-consent {
         grid-template-columns: auto 1fr auto;
-        gap: 12px;
-        padding: 14px;
+        gap: 10px;
+        padding: 10px;
         bottom: 12px;
-        border-radius: 18px;
+        border-radius: 20px;
       }
 
       .cookie-icon {
-        width: 38px;
-        height: 38px;
+        width: 32px;
+        height: 32px;
         border-radius: 12px;
-        font-size: 20px;
+        font-size: 17px;
       }
 
       .cookie-copy {
@@ -197,7 +176,7 @@
       }
 
       .cookie-copy h2 {
-        font-size: 15px;
+        font-size: 14px;
       }
 
       .cookie-copy p {
@@ -205,21 +184,13 @@
       }
 
       .cookie-actions {
-        grid-column: 1 / -1;
-        width: 100%;
-        display: grid;
-        grid-template-columns: 1fr 1fr;
+        grid-column: 2 / 3;
+        justify-self: start;
       }
 
       .cookie-close {
         grid-column: 3;
         grid-row: 1;
-        width: 34px;
-        height: 34px;
-      }
-
-      .cookie-settings {
-        grid-column: 1 / -1;
       }
     }
   </style>
@@ -236,16 +207,12 @@
     <div class="cookie-icon" aria-hidden="true">●</div>
     <div class="cookie-copy">
       <h2>Мы используем cookie</h2>
-      <p>Они помогают сайту работать корректно, запоминать настройки и становиться удобнее.</p>
+      <p>Чтобы сайт работал корректно и становился удобнее.</p>
     </div>
     <div class="cookie-actions">
-      <button class="cookie-btn cookie-btn-secondary" type="button" data-cookie-settings>Подробнее</button>
-      <button class="cookie-btn cookie-btn-primary" type="button" data-cookie-accept>Принять</button>
+      <button class="cookie-btn cookie-btn-primary" type="button" data-cookie-accept>Ок</button>
     </div>
     <button class="cookie-close" type="button" aria-label="Закрыть" data-cookie-close>×</button>
-    <div class="cookie-settings" data-cookie-settings-panel>
-      Используются только необходимые cookie и базовая аналитика. Вы можете изменить настройки браузера в любой момент.
-    </div>
   </section>
 
   <script>
@@ -255,7 +222,6 @@
       const bar = document.querySelector('[data-cookie-consent]');
       const acceptBtn = document.querySelector('[data-cookie-accept]');
       const closeBtn = document.querySelector('[data-cookie-close]');
-      const settingsBtn = document.querySelector('[data-cookie-settings]');
 
       function showBar() {
         bar.classList.add('is-visible');
@@ -280,9 +246,6 @@
         hideBar(false);
       });
 
-      settingsBtn.addEventListener('click', function () {
-        bar.classList.toggle('is-settings-open');
-      });
     })();
   </script>
 </body>
