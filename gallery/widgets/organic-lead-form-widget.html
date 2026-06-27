@@ -35,22 +35,29 @@
       isolation: isolate;
     }
 
-    .organic-lead-badge {
+    .organic-lead-close {
       position: absolute;
-      left: 50%;
-      top: 0;
+      top: 26px;
+      right: 26px;
       z-index: 4;
-      min-width: 260px;
-      padding: 16px 28px;
-      border-radius: 999px;
-      background: #ffd84d;
-      color: #111111;
-      text-align: center;
-      text-transform: uppercase;
-      font-size: 18px;
-      font-weight: 850;
-      transform: translate(-50%, -50%);
-      box-shadow: 0 14px 28px rgba(114, 89, 12, 0.14);
+      width: 38px;
+      height: 38px;
+      display: grid;
+      place-items: center;
+      border: 1px solid rgba(21, 21, 21, 0.24);
+      border-radius: 50%;
+      background: rgba(255, 253, 248, 0.76);
+      color: #151515;
+      font-size: 26px;
+      line-height: 1;
+      cursor: pointer;
+      backdrop-filter: blur(8px);
+      transition: transform 0.18s ease, background 0.18s ease;
+    }
+
+    .organic-lead-close:hover {
+      transform: rotate(90deg);
+      background: #fffdf8;
     }
 
     .organic-lead-inner {
@@ -108,19 +115,29 @@
       display: inline-flex;
       align-items: center;
       gap: 7px;
-      min-height: 34px;
-      padding: 0 12px;
+      min-height: 42px;
+      padding: 0 16px;
       border-radius: 999px;
       background: #151515;
       color: #ffffff;
-      font-size: 13px;
-      font-weight: 750;
+      font-size: 15px;
+      font-weight: 850;
       font-variant-numeric: tabular-nums;
+    }
+
+    .organic-lead-pill strong {
+      font-size: 19px;
+      letter-spacing: 0;
     }
 
     .organic-lead-pill.is-light {
       background: #ece7dc;
       color: #302b25;
+      font-size: 14px;
+    }
+
+    .organic-lead-pill.is-light strong {
+      font-size: 16px;
     }
 
     .organic-lead-form {
@@ -279,13 +296,15 @@
       }
 
       .organic-lead-widget {
-        padding: 54px 22px 24px;
+        padding: 30px 22px 24px;
       }
 
-      .organic-lead-badge {
-        min-width: 220px;
-        padding: 13px 20px;
-        font-size: 15px;
+      .organic-lead-close {
+        top: 16px;
+        right: 16px;
+        width: 34px;
+        height: 34px;
+        font-size: 24px;
       }
 
       .organic-lead-inner {
@@ -317,7 +336,7 @@
 <body>
   <section class="organic-lead-widget" data-organic-widget data-duration-minutes="180" data-places="7">
     <div class="organic-lead-line"></div>
-    <div class="organic-lead-badge">Закрытый бонус</div>
+    <button class="organic-lead-close" type="button" aria-label="Закрыть форму" data-organic-close>×</button>
 
     <div class="organic-lead-inner">
       <div class="organic-lead-copy">
@@ -366,6 +385,7 @@
       const form = document.querySelector('[data-organic-form]');
       const timerEl = document.querySelector('[data-organic-timer]');
       const placesEl = document.querySelector('[data-organic-places]');
+      const closeBtn = document.querySelector('[data-organic-close]');
       const errorEl = document.querySelector('[data-organic-error]');
       const successEl = document.querySelector('[data-organic-success]');
       const durationMinutes = parseInt(widget.getAttribute('data-duration-minutes') || '180', 10);
@@ -402,6 +422,10 @@
       updateTimer();
       setInterval(updateTimer, 1000);
       placesEl.textContent = Number.isNaN(places) ? '7' : String(places);
+
+      closeBtn.addEventListener('click', function () {
+        widget.style.display = 'none';
+      });
 
       form.elements.phone.addEventListener('input', function () {
         form.elements.phone.value = formatPhone(form.elements.phone.value);
