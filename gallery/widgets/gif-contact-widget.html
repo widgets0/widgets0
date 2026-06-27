@@ -1,0 +1,482 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Виджет с гифкой</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700;800&display=swap');
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 28px;
+      background: #f7f6fb;
+      font-family: 'Inter', Arial, sans-serif;
+    }
+
+    .cat-banner-wrapper {
+      width: 100%;
+      padding: 0 20px;
+      font-family: 'Inter', Arial, sans-serif;
+    }
+
+    .cat-banner-wrapper * {
+      box-sizing: border-box;
+    }
+
+    .cat-card {
+      max-width: 1000px;
+      margin: 0 auto;
+      background:
+        radial-gradient(circle at 12% 18%, rgba(255,255,255,0.24), transparent 30%),
+        #cbb4f0;
+      border-radius: 36px;
+      position: relative;
+      overflow: visible;
+      box-shadow: 0 22px 48px rgba(61, 42, 100, 0.18);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: clamp(36px, 6vw, 64px) clamp(28px, 7vw, 78px);
+      transition: box-shadow 0.3s ease;
+    }
+
+    .cat-card:hover {
+      box-shadow: 0 32px 70px rgba(61, 42, 100, 0.24);
+    }
+
+    .cat-content {
+      width: 52%;
+      position: relative;
+      z-index: 2;
+    }
+
+    .cat-title {
+      color: #ffffff;
+      font-size: clamp(34px, 5vw, 48px);
+      font-weight: 700;
+      line-height: 1.1;
+      margin: 0 0 18px;
+      letter-spacing: 0;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+
+    .cat-subtitle {
+      color: rgba(255, 255, 255, 0.9);
+      font-size: clamp(16px, 2vw, 19px);
+      font-weight: 400;
+      line-height: 1.5;
+      margin: 0 0 34px;
+      max-width: 440px;
+    }
+
+    .cat-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 56px;
+      background-color: #fff5ab;
+      color: #2d2d2d;
+      font: inherit;
+      font-size: 17px;
+      font-weight: 800;
+      text-decoration: none;
+      padding: 16px 38px;
+      border-radius: 18px;
+      border: none;
+      cursor: pointer;
+      transition: transform 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
+      box-shadow: 0 12px 24px rgba(61, 42, 100, 0.12);
+    }
+
+    .cat-btn:hover {
+      background-color: #fff9c4;
+      transform: translateY(-2px);
+      box-shadow: 0 18px 32px rgba(61, 42, 100, 0.16);
+    }
+
+    .cat-image-wrapper {
+      width: 44%;
+      display: flex;
+      justify-content: flex-end;
+      position: relative;
+      z-index: 3;
+    }
+
+    .polaroid-frame {
+      background: #ffffff;
+      padding: 12px 12px 44px;
+      border-radius: 6px;
+      box-shadow: 0 20px 42px -10px rgba(61, 42, 100, 0.26);
+      transform: rotate(2deg);
+      transition: transform 0.45s cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 0.45s ease;
+      width: min(100%, 310px);
+      margin-right: -42px;
+    }
+
+    .cat-card:hover .polaroid-frame {
+      transform: rotate(0deg) scale(1.03) translateY(-5px);
+      box-shadow: 0 30px 54px -10px rgba(61, 42, 100, 0.32);
+    }
+
+    .polaroid-img {
+      width: 100%;
+      height: 284px;
+      object-fit: cover;
+      display: block;
+      background-color: #f0f0f0;
+      filter: brightness(0.98);
+    }
+
+    .cat-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 80;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 18px;
+      background: rgba(31, 22, 48, 0.5);
+      backdrop-filter: blur(10px);
+    }
+
+    .cat-modal.is-open {
+      display: flex;
+    }
+
+    .cat-form-card {
+      position: relative;
+      width: min(100%, 430px);
+      padding: 28px;
+      border-radius: 22px;
+      background: #ffffff;
+      box-shadow: 0 30px 90px rgba(31, 22, 48, 0.3);
+      animation: catModalIn 0.25s ease-out;
+    }
+
+    .cat-form-card.is-success .cat-form-content {
+      display: none;
+    }
+
+    .cat-close {
+      position: absolute;
+      top: 14px;
+      right: 14px;
+      width: 32px;
+      height: 32px;
+      border: 0;
+      border-radius: 10px;
+      background: #f4f1fa;
+      color: #8a759f;
+      font-size: 24px;
+      cursor: pointer;
+      line-height: 1;
+    }
+
+    .cat-form-title {
+      margin: 0 38px 8px 0;
+      color: #251934;
+      font-size: 28px;
+      line-height: 1.12;
+      letter-spacing: 0;
+    }
+
+    .cat-form-text {
+      margin: 0 0 20px;
+      color: #766980;
+      line-height: 1.5;
+      font-size: 15px;
+    }
+
+    .cat-form {
+      display: grid;
+      gap: 12px;
+    }
+
+    .cat-input {
+      width: 100%;
+      height: 52px;
+      border: 1px solid #ded6ea;
+      border-radius: 12px;
+      padding: 0 14px;
+      color: #251934;
+      font: inherit;
+      font-weight: 650;
+      outline: none;
+    }
+
+    .cat-input:focus {
+      border-color: #a889df;
+      box-shadow: 0 0 0 4px rgba(168, 137, 223, 0.16);
+    }
+
+    .cat-consent {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      color: #766980;
+      font-size: 12px;
+      line-height: 1.4;
+      font-weight: 600;
+    }
+
+    .cat-consent input {
+      width: 18px;
+      height: 18px;
+      margin: 0;
+      accent-color: #a889df;
+      flex: 0 0 auto;
+    }
+
+    .cat-error {
+      min-height: 18px;
+      color: #d92d20;
+      font-size: 13px;
+      font-weight: 700;
+      text-align: center;
+    }
+
+    .cat-submit {
+      width: 100%;
+      height: 52px;
+      border: 0;
+      border-radius: 14px;
+      background: #a889df;
+      color: #ffffff;
+      font: inherit;
+      font-weight: 900;
+      cursor: pointer;
+    }
+
+    .cat-submit:disabled {
+      opacity: 0.7;
+      cursor: wait;
+    }
+
+    .cat-success {
+      display: none;
+      text-align: center;
+      padding: 18px 4px 4px;
+    }
+
+    .cat-success.is-open {
+      display: block;
+    }
+
+    .cat-success h2 {
+      margin: 0 0 10px;
+      color: #251934;
+      font-size: 28px;
+    }
+
+    .cat-success p {
+      margin: 0;
+      color: #766980;
+      line-height: 1.5;
+      font-weight: 600;
+    }
+
+    @keyframes catModalIn {
+      from { opacity: 0; transform: translateY(14px) scale(0.98); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    @media (max-width: 960px) {
+      body {
+        padding: 16px;
+      }
+
+      .cat-banner-wrapper {
+        padding: 0;
+      }
+
+      .cat-card {
+        flex-direction: column;
+        padding: 42px 24px;
+        text-align: center;
+        border-radius: 28px;
+      }
+
+      .cat-content {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-bottom: 42px;
+      }
+
+      .cat-image-wrapper {
+        width: 100%;
+        justify-content: center;
+      }
+
+      .polaroid-frame {
+        width: 260px;
+        margin-right: 0;
+        padding: 10px 10px 36px;
+      }
+
+      .polaroid-img {
+        height: 240px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="cat-banner-wrapper">
+    <div class="cat-card">
+      <div class="cat-content">
+        <h2 class="cat-title">Остались вопросы?</h2>
+        <p class="cat-subtitle">
+          Наш отдел заботы ответит на все вопросы и поможет с выбором программы или техническими сложностями.
+        </p>
+        <button type="button" class="cat-btn" data-cat-open>Связаться</button>
+      </div>
+
+      <div class="cat-image-wrapper">
+        <div class="polaroid-frame">
+          <img src="https://media.tenor.com/2roX3uxz_68AAAAC/cat-wig.gif" alt="Кот службы заботы" class="polaroid-img">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="cat-modal" data-cat-modal aria-hidden="true">
+    <div class="cat-form-card" role="dialog" aria-modal="true" aria-labelledby="cat-form-title">
+      <button type="button" class="cat-close" data-cat-close aria-label="Закрыть">×</button>
+
+      <div class="cat-form-content">
+        <h2 class="cat-form-title" id="cat-form-title">Напишите нам</h2>
+        <p class="cat-form-text">Оставьте контакты, и мы поможем с выбором или ответим на вопрос.</p>
+
+        <form class="cat-form" data-cat-form>
+          <input class="cat-input" type="text" name="name" placeholder="Ваше имя" autocomplete="name" required>
+          <input class="cat-input" type="tel" name="phone" placeholder="+7 (999) 999-99-99" autocomplete="tel" inputmode="tel" required>
+          <textarea class="cat-input" name="question" placeholder="Ваш вопрос" rows="3" style="height: 92px; padding-top: 14px; resize: vertical;"></textarea>
+          <label class="cat-consent">
+            <input type="checkbox" name="consent" checked required>
+            <span>Согласен(на) на обработку персональных данных</span>
+          </label>
+          <div class="cat-error" data-cat-error aria-live="polite"></div>
+          <button type="submit" class="cat-submit">Отправить заявку</button>
+        </form>
+      </div>
+
+      <div class="cat-success" data-cat-success>
+        <h2>Спасибо за заявку!</h2>
+        <p>Мы получили сообщение и скоро свяжемся с вами.</p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      const LEAD_CONFIG = {
+        webhookUrl: "https://widgets0-production.up.railway.app",
+        widget: "Виджет с гифкой",
+        source: "gif-contact-widget"
+      };
+
+      const openBtn = document.querySelector('[data-cat-open]');
+      const modal = document.querySelector('[data-cat-modal]');
+      const closeBtn = document.querySelector('[data-cat-close]');
+      const formCard = document.querySelector('.cat-form-card');
+      const form = document.querySelector('[data-cat-form]');
+      const errorEl = document.querySelector('[data-cat-error]');
+      const successEl = document.querySelector('[data-cat-success]');
+
+      function openModal() {
+        modal.classList.add('is-open');
+        modal.setAttribute('aria-hidden', 'false');
+        setTimeout(() => form.elements.name.focus(), 50);
+      }
+
+      function closeModal() {
+        modal.classList.remove('is-open');
+        modal.setAttribute('aria-hidden', 'true');
+      }
+
+      function formatPhone(value) {
+        const digits = value.replace(/\D/g, '').replace(/^8/, '7').slice(0, 11);
+        const normalized = digits.startsWith('7') ? digits : '7' + digits;
+        const parts = normalized.slice(1);
+        let result = '+7';
+        if (parts.length > 0) result += ' (' + parts.slice(0, 3);
+        if (parts.length >= 3) result += ')';
+        if (parts.length > 3) result += ' ' + parts.slice(3, 6);
+        if (parts.length > 6) result += '-' + parts.slice(6, 8);
+        if (parts.length > 8) result += '-' + parts.slice(8, 10);
+        return result;
+      }
+
+      openBtn.addEventListener('click', openModal);
+      closeBtn.addEventListener('click', closeModal);
+      modal.addEventListener('click', (event) => {
+        if (event.target === modal) closeModal();
+      });
+
+      form.elements.phone.addEventListener('input', () => {
+        form.elements.phone.value = formatPhone(form.elements.phone.value);
+      });
+
+      form.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        const submitBtn = form.querySelector('.cat-submit');
+        const name = form.elements.name.value.trim();
+        const phone = form.elements.phone.value.trim();
+        const question = form.elements.question.value.trim();
+        const consent = form.elements.consent.checked;
+
+        if (!name || phone.replace(/\D/g, '').length !== 11) {
+          errorEl.textContent = 'Введите имя и полный номер телефона.';
+          return;
+        }
+
+        if (!consent) {
+          errorEl.textContent = 'Нужно согласие на обработку персональных данных.';
+          return;
+        }
+
+        errorEl.textContent = '';
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Отправляем...';
+
+        try {
+          const response = await fetch(LEAD_CONFIG.webhookUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              widget: LEAD_CONFIG.widget,
+              source: LEAD_CONFIG.source,
+              name,
+              phone,
+              question: question || 'Вопрос не указан',
+              'Согласие на обработку персональных данных': 'Да',
+              page: window.location.href.split('?')[0],
+              createdAt: new Date().toISOString()
+            })
+          });
+
+          if (!response.ok) throw new Error('Webhook error');
+
+          formCard.classList.add('is-success');
+          successEl.classList.add('is-open');
+          setTimeout(closeModal, 4500);
+        } catch (error) {
+          errorEl.textContent = 'Не получилось отправить заявку. Попробуйте ещё раз.';
+          submitBtn.disabled = false;
+          submitBtn.textContent = 'Отправить заявку';
+        }
+      });
+    })();
+  </script>
+</body>
+</html>
