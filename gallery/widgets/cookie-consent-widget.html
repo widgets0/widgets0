@@ -1,0 +1,289 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Cookie-плашка</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background:
+        linear-gradient(135deg, #f8fafc 0%, #eef2f7 100%);
+      font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      color: #111827;
+    }
+
+    .cookie-demo-page {
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 34px;
+    }
+
+    .cookie-demo-card {
+      width: min(100%, 760px);
+      padding: 38px;
+      border: 1px solid rgba(17, 24, 39, 0.08);
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.72);
+      box-shadow: 0 22px 70px rgba(15, 23, 42, 0.08);
+    }
+
+    .cookie-demo-card h1 {
+      margin: 0 0 12px;
+      font-size: clamp(32px, 5vw, 54px);
+      line-height: 1;
+      letter-spacing: 0;
+    }
+
+    .cookie-demo-card p {
+      margin: 0;
+      max-width: 540px;
+      color: #64748b;
+      font-size: 17px;
+      line-height: 1.55;
+      font-weight: 600;
+    }
+
+    .cookie-consent {
+      position: fixed;
+      left: 50%;
+      bottom: 18px;
+      z-index: 9999;
+      width: min(calc(100% - 28px), 940px);
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr) auto;
+      gap: 16px;
+      align-items: center;
+      padding: 16px 18px;
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      border-radius: 18px;
+      background: rgba(17, 24, 39, 0.88);
+      color: #f8fafc;
+      box-shadow: 0 24px 80px rgba(2, 6, 23, 0.34);
+      backdrop-filter: blur(18px);
+      transform: translate(-50%, 18px);
+      opacity: 0;
+      pointer-events: none;
+      transition: transform 0.28s ease, opacity 0.28s ease;
+    }
+
+    .cookie-consent.is-visible {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translate(-50%, 0);
+    }
+
+    .cookie-icon {
+      width: 44px;
+      height: 44px;
+      display: grid;
+      place-items: center;
+      border-radius: 14px;
+      background: linear-gradient(135deg, #fde68a, #f59e0b);
+      color: #3f2600;
+      font-size: 23px;
+      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.26);
+    }
+
+    .cookie-copy h2 {
+      margin: 0 0 4px;
+      font-size: 16px;
+      line-height: 1.2;
+      letter-spacing: 0;
+    }
+
+    .cookie-copy p {
+      margin: 0;
+      color: rgba(248, 250, 252, 0.72);
+      font-size: 13px;
+      line-height: 1.42;
+      font-weight: 600;
+    }
+
+    .cookie-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .cookie-btn {
+      min-height: 42px;
+      border: 0;
+      border-radius: 12px;
+      padding: 0 16px;
+      font: inherit;
+      font-size: 14px;
+      font-weight: 850;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: transform 0.18s ease, background 0.18s ease;
+    }
+
+    .cookie-btn:hover {
+      transform: translateY(-1px);
+    }
+
+    .cookie-btn-primary {
+      background: #ffffff;
+      color: #111827;
+    }
+
+    .cookie-btn-secondary {
+      background: rgba(255, 255, 255, 0.08);
+      color: #e5e7eb;
+    }
+
+    .cookie-close {
+      width: 38px;
+      height: 38px;
+      border: 0;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.08);
+      color: rgba(248, 250, 252, 0.78);
+      font-size: 24px;
+      line-height: 1;
+      cursor: pointer;
+    }
+
+    .cookie-settings {
+      grid-column: 2 / -1;
+      display: none;
+      margin-top: -4px;
+      padding: 12px;
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.08);
+      color: rgba(248, 250, 252, 0.78);
+      font-size: 13px;
+      line-height: 1.45;
+      font-weight: 600;
+    }
+
+    .cookie-consent.is-settings-open .cookie-settings {
+      display: block;
+    }
+
+    @media (max-width: 720px) {
+      .cookie-demo-page {
+        padding: 22px;
+      }
+
+      .cookie-demo-card {
+        padding: 28px;
+      }
+
+      .cookie-consent {
+        grid-template-columns: auto 1fr auto;
+        gap: 12px;
+        padding: 14px;
+        bottom: 12px;
+        border-radius: 18px;
+      }
+
+      .cookie-icon {
+        width: 38px;
+        height: 38px;
+        border-radius: 12px;
+        font-size: 20px;
+      }
+
+      .cookie-copy {
+        grid-column: 2 / 3;
+      }
+
+      .cookie-copy h2 {
+        font-size: 15px;
+      }
+
+      .cookie-copy p {
+        font-size: 12px;
+      }
+
+      .cookie-actions {
+        grid-column: 1 / -1;
+        width: 100%;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .cookie-close {
+        grid-column: 3;
+        grid-row: 1;
+        width: 34px;
+        height: 34px;
+      }
+
+      .cookie-settings {
+        grid-column: 1 / -1;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="cookie-demo-page" aria-hidden="true">
+    <section class="cookie-demo-card">
+      <h1>Пример страницы</h1>
+      <p>Куки-плашка появляется снизу, не мешает просмотру сайта и запоминает выбор посетителя.</p>
+    </section>
+  </main>
+
+  <section class="cookie-consent" data-cookie-consent aria-live="polite">
+    <div class="cookie-icon" aria-hidden="true">●</div>
+    <div class="cookie-copy">
+      <h2>Мы используем cookie</h2>
+      <p>Они помогают сайту работать корректно, запоминать настройки и становиться удобнее.</p>
+    </div>
+    <div class="cookie-actions">
+      <button class="cookie-btn cookie-btn-secondary" type="button" data-cookie-settings>Подробнее</button>
+      <button class="cookie-btn cookie-btn-primary" type="button" data-cookie-accept>Принять</button>
+    </div>
+    <button class="cookie-close" type="button" aria-label="Закрыть" data-cookie-close>×</button>
+    <div class="cookie-settings" data-cookie-settings-panel>
+      Используются только необходимые cookie и базовая аналитика. Вы можете изменить настройки браузера в любой момент.
+    </div>
+  </section>
+
+  <script>
+    (function () {
+      const STORAGE_KEY = 'cookie_consent_widget_v1';
+      const isPreview = new URLSearchParams(window.location.search).has('preview');
+      const bar = document.querySelector('[data-cookie-consent]');
+      const acceptBtn = document.querySelector('[data-cookie-accept]');
+      const closeBtn = document.querySelector('[data-cookie-close]');
+      const settingsBtn = document.querySelector('[data-cookie-settings]');
+
+      function showBar() {
+        bar.classList.add('is-visible');
+      }
+
+      function hideBar(saveChoice) {
+        bar.classList.remove('is-visible');
+        if (saveChoice) {
+          localStorage.setItem(STORAGE_KEY, 'accepted');
+        }
+      }
+
+      if (isPreview || localStorage.getItem(STORAGE_KEY) !== 'accepted') {
+        setTimeout(showBar, isPreview ? 0 : 1200);
+      }
+
+      acceptBtn.addEventListener('click', function () {
+        hideBar(true);
+      });
+
+      closeBtn.addEventListener('click', function () {
+        hideBar(false);
+      });
+
+      settingsBtn.addEventListener('click', function () {
+        bar.classList.toggle('is-settings-open');
+      });
+    })();
+  </script>
+</body>
+</html>
