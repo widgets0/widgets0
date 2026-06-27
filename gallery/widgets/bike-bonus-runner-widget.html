@@ -493,16 +493,24 @@
 
       function startGame() {
         cancelAnimationFrame(raf);
-        fitCanvas();
-        resetGame();
-        running = true;
-        lastTime = performance.now();
-        hintEl.style.display = 'block';
         switchState('play');
-        raf = requestAnimationFrame(loop);
-        setTimeout(function () {
-          hintEl.style.display = 'none';
-        }, 1700);
+        running = false;
+
+        requestAnimationFrame(function () {
+          fitCanvas();
+          requestAnimationFrame(function () {
+            fitCanvas();
+            resetGame();
+            draw();
+            running = true;
+            lastTime = performance.now();
+            hintEl.style.display = 'block';
+            raf = requestAnimationFrame(loop);
+            setTimeout(function () {
+              hintEl.style.display = 'none';
+            }, 1700);
+          });
+        });
       }
 
       function stopGame() {
