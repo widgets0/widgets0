@@ -1,0 +1,271 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Рейтинг на Яндекс Картах</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 24px;
+      background:
+        radial-gradient(circle at 18% 14%, rgba(255, 204, 0, 0.18), transparent 28%),
+        radial-gradient(circle at 82% 76%, rgba(36, 113, 255, 0.12), transparent 30%),
+        #f5f7fb;
+      color: #171717;
+      font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+    }
+
+    .yr-demo-page {
+      width: min(100%, 860px);
+      min-height: 430px;
+      display: grid;
+      place-items: center;
+      padding: clamp(20px, 5vw, 54px);
+      border-radius: 32px;
+      border: 1px solid #e8edf5;
+      background:
+        linear-gradient(135deg, rgba(255,255,255,0.94), rgba(255,255,255,0.78)),
+        linear-gradient(135deg, #eef4ff, #fff8df);
+      box-shadow: 0 28px 80px rgba(30, 41, 59, 0.12);
+    }
+
+    .yr-widget {
+      --yr-yellow: #ffcc00;
+      --yr-blue: #2471ff;
+      --yr-black: #191919;
+      --yr-muted: #6f7785;
+      width: min(100%, 430px);
+      display: block;
+      color: inherit;
+      text-decoration: none;
+      outline: none;
+    }
+
+    .yr-card {
+      position: relative;
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 18px;
+      align-items: center;
+      padding: 22px;
+      border: 1px solid rgba(17, 24, 39, 0.08);
+      border-radius: 24px;
+      background: rgba(255, 255, 255, 0.92);
+      box-shadow: 0 20px 50px rgba(15, 23, 42, 0.14);
+      overflow: hidden;
+      transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease;
+    }
+
+    .yr-card::before {
+      content: "";
+      position: absolute;
+      inset: 0 auto 0 0;
+      width: 7px;
+      background: var(--yr-yellow);
+    }
+
+    .yr-widget:hover .yr-card,
+    .yr-widget:focus-visible .yr-card {
+      transform: translateY(-3px);
+      border-color: rgba(36, 113, 255, 0.28);
+      box-shadow: 0 26px 64px rgba(15, 23, 42, 0.18);
+    }
+
+    .yr-mark {
+      width: 74px;
+      height: 74px;
+      display: grid;
+      place-items: center;
+      border-radius: 22px;
+      background: #fff5bf;
+      border: 1px solid rgba(255, 204, 0, 0.6);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.75);
+    }
+
+    .yr-mark span {
+      width: 46px;
+      height: 46px;
+      display: grid;
+      place-items: center;
+      border-radius: 15px;
+      background: var(--yr-yellow);
+      color: var(--yr-black);
+      font-size: 26px;
+      font-weight: 950;
+      line-height: 1;
+    }
+
+    .yr-content {
+      min-width: 0;
+    }
+
+    .yr-topline {
+      display: flex;
+      align-items: baseline;
+      gap: 10px;
+      margin-bottom: 9px;
+    }
+
+    .yr-rating {
+      color: var(--yr-black);
+      font-size: 48px;
+      line-height: 0.9;
+      font-weight: 950;
+      letter-spacing: -0.02em;
+    }
+
+    .yr-source {
+      color: var(--yr-muted);
+      font-size: 13px;
+      font-weight: 850;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+    }
+
+    .yr-stars {
+      display: flex;
+      gap: 3px;
+      margin: 0 0 11px;
+      color: var(--yr-yellow);
+      filter: drop-shadow(0 4px 10px rgba(255, 204, 0, 0.24));
+    }
+
+    .yr-stars svg {
+      width: 27px;
+      height: 27px;
+      flex: 0 0 auto;
+    }
+
+    .yr-reviews {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+      align-items: center;
+      color: var(--yr-muted);
+      font-size: 15px;
+      line-height: 1.25;
+      font-weight: 750;
+    }
+
+    .yr-reviews strong {
+      color: var(--yr-black);
+      font-weight: 900;
+    }
+
+    .yr-arrow {
+      width: 27px;
+      height: 27px;
+      display: inline-grid;
+      place-items: center;
+      border-radius: 50%;
+      background: #eef4ff;
+      color: var(--yr-blue);
+      font-size: 18px;
+      line-height: 1;
+      transform: translateY(1px);
+    }
+
+    .yr-place {
+      display: block;
+      margin-top: 6px;
+      color: #424a57;
+      font-size: 13px;
+      font-weight: 750;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    @media (max-width: 520px) {
+      body {
+        padding: 16px;
+      }
+
+      .yr-demo-page {
+        min-height: 360px;
+        padding: 18px;
+        border-radius: 24px;
+      }
+
+      .yr-card {
+        grid-template-columns: 1fr;
+        gap: 14px;
+        padding: 20px;
+        text-align: center;
+      }
+
+      .yr-mark {
+        margin: 0 auto;
+      }
+
+      .yr-topline,
+      .yr-reviews,
+      .yr-stars {
+        justify-content: center;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="yr-demo-page">
+    <!-- Начало кода виджета "Рейтинг на Яндекс Картах" -->
+    <a class="yr-widget" href="https://yandex.ru/maps/?text=%D0%BD%D0%B0%D0%B7%D0%B2%D0%B0%D0%BD%D0%B8%D0%B5%20%D0%B7%D0%B0%D0%B2%D0%B5%D0%B4%D0%B5%D0%BD%D0%B8%D1%8F" target="_blank" rel="noopener" data-yr-widget>
+      <div class="yr-card">
+        <div class="yr-mark" aria-hidden="true"><span>Я</span></div>
+        <div class="yr-content">
+          <div class="yr-topline">
+            <span class="yr-rating" data-yr-rating>4,8</span>
+            <span class="yr-source">Яндекс Карты</span>
+          </div>
+          <div class="yr-stars" aria-label="Рейтинг 4,8 из 5">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 1.8l3.09 6.27 6.92 1.01-5.01 4.88 1.18 6.9L12 17.6l-6.18 3.26 1.18-6.9-5.01-4.88 6.92-1.01L12 1.8z"/></svg>
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 1.8l3.09 6.27 6.92 1.01-5.01 4.88 1.18 6.9L12 17.6l-6.18 3.26 1.18-6.9-5.01-4.88 6.92-1.01L12 1.8z"/></svg>
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 1.8l3.09 6.27 6.92 1.01-5.01 4.88 1.18 6.9L12 17.6l-6.18 3.26 1.18-6.9-5.01-4.88 6.92-1.01L12 1.8z"/></svg>
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 1.8l3.09 6.27 6.92 1.01-5.01 4.88 1.18 6.9L12 17.6l-6.18 3.26 1.18-6.9-5.01-4.88 6.92-1.01L12 1.8z"/></svg>
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 1.8l3.09 6.27 6.92 1.01-5.01 4.88 1.18 6.9L12 17.6l-6.18 3.26 1.18-6.9-5.01-4.88 6.92-1.01L12 1.8z"/></svg>
+          </div>
+          <div class="yr-reviews">
+            <span><strong data-yr-reviews>1 248</strong> отзывов</span>
+            <span class="yr-arrow" aria-hidden="true">›</span>
+          </div>
+          <span class="yr-place" data-yr-place>Название заведения</span>
+        </div>
+      </div>
+    </a>
+
+    <script>
+      (function () {
+        const YANDEX_RATING_CONFIG = {
+          rating: '4,8',
+          reviewsCount: '1 248',
+          placeName: 'Название заведения',
+          yandexMapsUrl: 'https://yandex.ru/maps/?text=%D0%BD%D0%B0%D0%B7%D0%B2%D0%B0%D0%BD%D0%B8%D0%B5%20%D0%B7%D0%B0%D0%B2%D0%B5%D0%B4%D0%B5%D0%BD%D0%B8%D1%8F'
+        };
+
+        const widget = document.querySelector('[data-yr-widget]');
+        if (!widget) return;
+
+        const ratingEl = widget.querySelector('[data-yr-rating]');
+        const reviewsEl = widget.querySelector('[data-yr-reviews]');
+        const placeEl = widget.querySelector('[data-yr-place]');
+        const starsEl = widget.querySelector('.yr-stars');
+
+        widget.href = YANDEX_RATING_CONFIG.yandexMapsUrl;
+        if (ratingEl) ratingEl.textContent = YANDEX_RATING_CONFIG.rating;
+        if (reviewsEl) reviewsEl.textContent = YANDEX_RATING_CONFIG.reviewsCount;
+        if (placeEl) placeEl.textContent = YANDEX_RATING_CONFIG.placeName;
+        if (starsEl) starsEl.setAttribute('aria-label', 'Рейтинг ' + YANDEX_RATING_CONFIG.rating + ' из 5');
+      })();
+    </script>
+    <!-- Конец кода виджета "Рейтинг на Яндекс Картах" -->
+  </main>
+</body>
+</html>
