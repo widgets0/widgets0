@@ -438,11 +438,12 @@
       let lives = 3;
       let speed = 176;
       let distance = 0;
+      let gameTime = 0;
       let spawnTimer = 0;
       let invincible = 0;
       let worldOffset = 0;
       let objects = [];
-      const player = { x: 38, y: 0, w: 116, h: 82, vy: 0, grounded: true };
+      const player = { x: 40, y: 0, w: 104, h: 78, vy: 0, grounded: true };
       const assetBase = new URL('../assets/bike-game/', window.location.href).href;
 
       function makeAsset(fileName) {
@@ -452,9 +453,9 @@
       }
 
       const SPRITES = {
-        bike: makeAsset('cyclist2.png'),
-        cone: makeAsset('obstacle-cut.png'),
-        bonus: makeAsset('bonus-cut.png')
+        bike: makeAsset('cyclist3.png'),
+        cone: makeAsset('obstacle2.png'),
+        bonus: makeAsset('bonus2.png')
       };
 
       function switchState(name) {
@@ -494,6 +495,7 @@
         lives = 3;
         speed = 176;
         distance = 0;
+        gameTime = 0;
         spawnTimer = 0;
         invincible = 0;
         worldOffset = 0;
@@ -534,7 +536,7 @@
       function jump() {
         if (!running) return;
         if (player.grounded) {
-          player.vy = -560;
+          player.vy = -660;
           player.grounded = false;
         }
       }
@@ -550,7 +552,7 @@
             type: 'bonus',
             value,
             x: getWidth() + 24,
-            y: ground - 168 - Math.random() * 106,
+            y: ground - 176 - Math.random() * 112,
             w: size,
             h: size,
             hit: false
@@ -559,12 +561,39 @@
           objects.push({
             type: 'obstacle',
             x: getWidth() + 28,
-            y: ground - 66,
-            w: 50 + Math.random() * 10,
-            h: 66,
+            y: ground - 56,
+            w: 58 + Math.random() * 8,
+            h: 56,
             hit: false
           });
         }
+      }
+
+      function getPlayerHitbox() {
+        return {
+          x: player.x + 25,
+          y: player.y + 34,
+          w: player.w - 46,
+          h: player.h - 36
+        };
+      }
+
+      function getObjectHitbox(obj) {
+        if (obj.type === 'bonus') {
+          return {
+            x: obj.x + 10,
+            y: obj.y + 10,
+            w: obj.w - 20,
+            h: obj.h - 20
+          };
+        }
+
+        return {
+          x: obj.x + 10,
+          y: obj.y + 18,
+          w: obj.w - 20,
+          h: obj.h - 20
+        };
       }
 
       function rectsCollide(a, b) {
@@ -581,18 +610,19 @@
 
       function update(dt) {
         const ground = getGroundY();
+        gameTime += dt;
         worldOffset += speed * dt;
         distance += speed * dt;
-        speed = Math.min(265, 176 + distance / 900);
+        speed = Math.min(330, 176 + gameTime * 4.2);
         spawnTimer -= dt;
         invincible = Math.max(0, invincible - dt);
 
         if (spawnTimer <= 0) {
           spawnObject();
-          spawnTimer = 0.82 + Math.random() * 0.58;
+          spawnTimer = Math.max(0.62, 1.02 - gameTime * 0.008) + Math.random() * 0.46;
         }
 
-        player.vy += 1120 * dt;
+        player.vy += 1260 * dt;
         player.y += player.vy * dt;
         if (player.y + player.h >= ground) {
           player.y = ground - player.h;
@@ -602,7 +632,7 @@
 
         objects.forEach(function (obj) {
           obj.x -= speed * dt;
-          if (!obj.hit && rectsCollide(player, obj)) {
+          if (!obj.hit && rectsCollide(getPlayerHitbox(), getObjectHitbox(obj))) {
             obj.hit = true;
             if (obj.type === 'bonus') {
               score += obj.value;
@@ -638,7 +668,7 @@
         const bob = player.grounded ? Math.sin(worldOffset / 20) * 1.6 : 0;
         if (SPRITES.bike.complete && SPRITES.bike.naturalWidth) {
           ctx.imageSmoothingEnabled = false;
-          ctx.drawImage(SPRITES.bike, x - 24, y - 48 + bob, 158, 140);
+          ctx.drawImage(SPRITES.bike, x - 20, y - 54 + bob, 154, 134);
         }
         ctx.restore();
       }
@@ -647,7 +677,7 @@
         ctx.save();
         if (SPRITES.cone.complete && SPRITES.cone.naturalWidth) {
           ctx.imageSmoothingEnabled = false;
-          ctx.drawImage(SPRITES.cone, obj.x - 18, obj.y - 24, obj.w + 36, obj.h + 34);
+          ctx.drawImage(SPRITES.cone, obj.x - 14, obj.y - 18, obj.w + 28, obj.h + 24);
         }
         ctx.restore();
       }
@@ -658,7 +688,7 @@
         ctx.shadowBlur = 18;
         if (SPRITES.bonus.complete && SPRITES.bonus.naturalWidth) {
           ctx.imageSmoothingEnabled = false;
-          ctx.drawImage(SPRITES.bonus, obj.x - 12, obj.y - 20, obj.w + 24, obj.h + 24);
+          ctx.drawImage(SPRITES.bonus, obj.x - 10, obj.y - 16, obj.w + 20, obj.h + 20);
         }
         ctx.shadowBlur = 0;
         ctx.fillStyle = '#24211d';
