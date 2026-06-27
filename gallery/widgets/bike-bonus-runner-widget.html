@@ -442,7 +442,97 @@
       let invincible = 0;
       let worldOffset = 0;
       let objects = [];
-      const player = { x: 50, y: 0, w: 78, h: 58, vy: 0, grounded: true };
+      const player = { x: 40, y: 0, w: 104, h: 76, vy: 0, grounded: true };
+
+      function makeSprite(svg) {
+        const img = new Image();
+        img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
+        return img;
+      }
+
+      function bonusSprite(value) {
+        return makeSprite(`
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 64" shape-rendering="crispEdges">
+            <defs>
+              <linearGradient id="g" x1="0" x2="1" y1="0" y2="1">
+                <stop stop-color="#ff654a"/>
+                <stop offset=".52" stop-color="#ed4db8"/>
+                <stop offset="1" stop-color="#2f8cff"/>
+              </linearGradient>
+            </defs>
+            <path d="M8 12h80v8h4v24h-4v8H8v-8H4V20h4z" fill="#24211d"/>
+            <path d="M12 8h72v8h4v24h-4v8H12v-8H8V16h4z" fill="url(#g)"/>
+            <path d="M19 15h51v4H19z" fill="#fff" opacity=".24"/>
+            <path d="M14 22h6v6h-6zM76 28h6v6h-6z" fill="#fffaf4" opacity=".85"/>
+            <text x="48" y="39" text-anchor="middle" font-family="Courier New, monospace" font-size="26" font-weight="900" fill="#fff">+${value}</text>
+          </svg>
+        `);
+      }
+
+      const SPRITES = {
+        bikeA: makeSprite(`
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 150 104" shape-rendering="crispEdges">
+            <rect width="150" height="104" fill="none"/>
+            <g stroke="#24211d" stroke-width="7" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="31" cy="78" r="22" fill="#fffaf4"/>
+              <circle cx="116" cy="78" r="22" fill="#fffaf4"/>
+              <path d="M31 78L64 47L83 78L116 78L86 42L58 42L31 78Z" fill="none"/>
+              <path d="M86 42L103 31L123 34"/>
+              <path d="M53 35h31"/>
+            </g>
+            <g stroke="#5d5750" stroke-width="3" stroke-linecap="round">
+              <path d="M31 78h22M31 78l15-15M31 78l-15-14M31 78v-22M116 78h22M116 78l15-15M116 78l-15-14M116 78v-22"/>
+            </g>
+            <circle cx="31" cy="78" r="5" fill="#24211d"/>
+            <circle cx="116" cy="78" r="5" fill="#24211d"/>
+            <circle cx="64" cy="47" r="6" fill="#24211d"/>
+            <rect x="55" y="19" width="33" height="25" rx="5" fill="#2f8cff" stroke="#24211d" stroke-width="5"/>
+            <rect x="55" y="35" width="33" height="9" fill="#1d6fe8"/>
+            <rect x="76" y="3" width="18" height="18" rx="5" fill="#ffe071" stroke="#24211d" stroke-width="5"/>
+            <rect x="83" y="0" width="20" height="6" fill="#24211d"/>
+            <path d="M63 43L43 66M81 43L102 66M88 22L119 33" stroke="#24211d" stroke-width="7" stroke-linecap="round"/>
+            <rect x="36" y="1" width="22" height="18" fill="#ffcf57" stroke="#24211d" stroke-width="5"/>
+            <rect x="31" y="18" width="31" height="6" fill="#24211d"/>
+          </svg>
+        `),
+        bikeB: makeSprite(`
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 150 104" shape-rendering="crispEdges">
+            <rect width="150" height="104" fill="none"/>
+            <g stroke="#24211d" stroke-width="7" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="31" cy="78" r="22" fill="#fffaf4"/>
+              <circle cx="116" cy="78" r="22" fill="#fffaf4"/>
+              <path d="M31 78L64 47L83 78L116 78L86 42L58 42L31 78Z" fill="none"/>
+              <path d="M86 42L103 31L123 34"/>
+              <path d="M53 35h31"/>
+            </g>
+            <g stroke="#5d5750" stroke-width="3" stroke-linecap="round">
+              <path d="M31 78l20 10M31 78l10-20M31 78l-20-9M31 78l-9 20M116 78l20 10M116 78l10-20M116 78l-20-9M116 78l-9 20"/>
+            </g>
+            <circle cx="31" cy="78" r="5" fill="#24211d"/>
+            <circle cx="116" cy="78" r="5" fill="#24211d"/>
+            <circle cx="64" cy="47" r="6" fill="#24211d"/>
+            <rect x="55" y="18" width="33" height="25" rx="5" fill="#2f8cff" stroke="#24211d" stroke-width="5"/>
+            <rect x="55" y="34" width="33" height="9" fill="#1d6fe8"/>
+            <rect x="77" y="2" width="18" height="18" rx="5" fill="#ffe071" stroke="#24211d" stroke-width="5"/>
+            <rect x="84" y="0" width="20" height="6" fill="#24211d"/>
+            <path d="M63 43L54 70M81 43L90 70M88 22L119 33" stroke="#24211d" stroke-width="7" stroke-linecap="round"/>
+            <rect x="36" y="1" width="22" height="18" fill="#ffcf57" stroke="#24211d" stroke-width="5"/>
+            <rect x="31" y="18" width="31" height="6" fill="#24211d"/>
+          </svg>
+        `),
+        cone: makeSprite(`
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 70 82" shape-rendering="crispEdges">
+            <rect width="70" height="82" fill="none"/>
+            <path d="M33 4h8v8h6v16h6v18h7v16H14V46h7V28h6V12h6z" fill="#24211d"/>
+            <path d="M35 8h6v8h5v15h6v18h6v8H18v-8h6V31h6V16h5z" fill="#ff7a2f"/>
+            <path d="M28 34h26v8H25zM21 54h37v7H18z" fill="#fffaf4"/>
+            <path d="M10 64h50v10H10z" fill="#24211d"/>
+          </svg>
+        `),
+        bonus1: bonusSprite(1),
+        bonus3: bonusSprite(3),
+        bonus5: bonusSprite(5)
+      };
 
       function switchState(name) {
         document.querySelectorAll('[data-bike-state]').forEach(function (state) {
@@ -521,7 +611,7 @@
       function jump() {
         if (!running) return;
         if (player.grounded) {
-          player.vy = -500;
+          player.vy = -560;
           player.grounded = false;
         }
       }
@@ -621,137 +711,32 @@
       function drawBike(x, y) {
         ctx.save();
         if (invincible > 0 && Math.floor(invincible * 12) % 2 === 0) ctx.globalAlpha = 0.42;
-
-        const wheelR = 14;
-        const rear = { x: x + 16, y: y + 43 };
-        const front = { x: x + 62, y: y + 43 };
-        const crank = { x: x + 38, y: y + 37 };
-        const wheelSpin = worldOffset / 18;
-
-        function drawWheel(center) {
-          ctx.save();
-          ctx.translate(center.x, center.y);
-          ctx.rotate(wheelSpin);
-          ctx.lineWidth = 3;
-          ctx.strokeStyle = '#24211d';
-          ctx.fillStyle = '#fffaf4';
-          ctx.beginPath();
-          ctx.arc(0, 0, wheelR, 0, Math.PI * 2);
-          ctx.fill();
-          ctx.stroke();
-          ctx.lineWidth = 1.6;
-          ctx.strokeStyle = 'rgba(36,33,29,0.82)';
-          for (let i = 0; i < 8; i++) {
-            const a = i * Math.PI / 4;
-            ctx.beginPath();
-            ctx.moveTo(0, 0);
-            ctx.lineTo(Math.cos(a) * (wheelR - 3), Math.sin(a) * (wheelR - 3));
-            ctx.stroke();
-          }
-          ctx.fillStyle = '#24211d';
-          ctx.beginPath();
-          ctx.arc(0, 0, 3, 0, Math.PI * 2);
-          ctx.fill();
-          ctx.restore();
+        const frame = Math.floor(worldOffset / 34) % 2 === 0 ? SPRITES.bikeA : SPRITES.bikeB;
+        if (frame.complete && frame.naturalWidth) {
+          ctx.imageSmoothingEnabled = false;
+          ctx.drawImage(frame, x - 18, y - 20, 138, 96);
         }
-
-        drawWheel(rear);
-        drawWheel(front);
-
-        ctx.lineWidth = 4;
-        ctx.lineCap = 'round';
-        ctx.lineJoin = 'round';
-        ctx.strokeStyle = '#24211d';
-        ctx.beginPath();
-        ctx.moveTo(rear.x, rear.y);
-        ctx.lineTo(crank.x, crank.y);
-        ctx.lineTo(x + 50, y + 22);
-        ctx.lineTo(x + 28, y + 22);
-        ctx.closePath();
-        ctx.moveTo(x + 50, y + 22);
-        ctx.lineTo(front.x, front.y);
-        ctx.moveTo(x + 28, y + 22);
-        ctx.lineTo(rear.x, rear.y);
-        ctx.stroke();
-
-        ctx.fillStyle = '#24211d';
-        ctx.fillRect(x + 22, y + 17, 18, 5);
-        ctx.strokeStyle = '#24211d';
-        ctx.beginPath();
-        ctx.moveTo(x + 55, y + 20);
-        ctx.lineTo(x + 66, y + 13);
-        ctx.lineTo(x + 75, y + 15);
-        ctx.stroke();
-
-        ctx.fillStyle = '#2f8cff';
-        ctx.beginPath();
-        ctx.roundRect(x + 31, y + 4, 23, 17, 4);
-        ctx.fill();
-        ctx.fillStyle = '#1d6fe8';
-        ctx.fillRect(x + 31, y + 15, 23, 6);
-
-        ctx.fillStyle = '#ffe071';
-        ctx.beginPath();
-        ctx.roundRect(x + 42, y - 10, 13, 13, 4);
-        ctx.fill();
-        ctx.fillStyle = '#24211d';
-        ctx.fillRect(x + 46, y - 12, 12, 4);
-
-        ctx.strokeStyle = '#24211d';
-        ctx.lineWidth = 4;
-        ctx.beginPath();
-        ctx.moveTo(x + 40, y + 19);
-        ctx.lineTo(x + 28, y + 34);
-        ctx.moveTo(x + 48, y + 19);
-        ctx.lineTo(x + 58, y + 34);
-        ctx.moveTo(x + 53, y + 5);
-        ctx.lineTo(x + 70, y + 13);
-        ctx.stroke();
-
-        ctx.fillStyle = '#ffcf57';
-        ctx.fillRect(x + 26, y - 12, 12, 12);
-        ctx.fillStyle = '#24211d';
-        ctx.fillRect(x + 23, y - 1, 20, 3);
         ctx.restore();
       }
 
       function drawObstacle(obj) {
         ctx.save();
-        const x = obj.x;
-        const y = obj.y;
-        const w = obj.w;
-        const h = obj.h;
-        ctx.fillStyle = '#ff7a2f';
-        ctx.beginPath();
-        ctx.moveTo(x + w / 2, y);
-        ctx.lineTo(x + w - 3, y + h - 8);
-        ctx.lineTo(x + 3, y + h - 8);
-        ctx.closePath();
-        ctx.fill();
-        ctx.fillStyle = '#ffffff';
-        ctx.fillRect(x + 9, y + h * 0.45, w - 18, 5);
-        ctx.fillStyle = '#24211d';
-        ctx.fillRect(x, y + h - 8, w, 8);
-        ctx.fillRect(x + 5, y + h - 14, w - 10, 4);
+        if (SPRITES.cone.complete && SPRITES.cone.naturalWidth) {
+          ctx.imageSmoothingEnabled = false;
+          ctx.drawImage(SPRITES.cone, obj.x - 8, obj.y - 10, obj.w + 18, obj.h + 18);
+        }
         ctx.restore();
       }
 
       function drawBonus(obj) {
-        const grd = ctx.createLinearGradient(obj.x, obj.y, obj.x + obj.w, obj.y + obj.h);
-        grd.addColorStop(0, '#ff654a');
-        grd.addColorStop(0.55, '#ed4db8');
-        grd.addColorStop(1, '#2f8cff');
+        const sprite = SPRITES['bonus' + obj.value] || SPRITES.bonus1;
         ctx.save();
-        ctx.shadowColor = 'rgba(237,77,184,0.34)';
+        ctx.shadowColor = 'rgba(47,140,255,0.24)';
         ctx.shadowBlur = 16;
-        ctx.fillStyle = grd;
-        ctx.beginPath();
-        ctx.roundRect(obj.x, obj.y, obj.w, obj.h, 14);
-        ctx.fill();
-        ctx.shadowBlur = 0;
-        ctx.fillStyle = 'rgba(255,255,255,0.18)';
-        ctx.fillRect(obj.x + 8, obj.y + 6, obj.w - 16, 3);
-        drawPixelText('+' + obj.value, obj.x + obj.w / 2, obj.y + obj.h / 2 + 1, 18, '#fff', 'center');
+        if (sprite.complete && sprite.naturalWidth) {
+          ctx.imageSmoothingEnabled = false;
+          ctx.drawImage(sprite, obj.x - 4, obj.y - 4, obj.w + 8, obj.h + 8);
+        }
         ctx.restore();
       }
 
