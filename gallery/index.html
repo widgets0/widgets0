@@ -580,15 +580,74 @@
     @media (max-width: 720px) {
       .gallery-page {
         width: min(100% - 24px, 1380px);
-        padding: 48px 0 64px;
+        padding: 24px 0 56px;
+      }
+
+      .gallery-hero {
+        margin-bottom: 20px;
+      }
+
+      .gallery-hero h1 {
+        font-size: clamp(32px, 10vw, 42px);
+        line-height: 1.05;
+      }
+
+      .gallery-hero p {
+        margin-top: 12px;
+        max-width: 330px;
+        font-size: 15px;
+        line-height: 1.38;
       }
 
       .gallery-toolbar {
-        grid-template-columns: 1fr;
+        grid-template-columns: auto minmax(0, 1fr);
+        gap: 12px;
+        margin-bottom: 18px;
+        padding: 10px;
+        border-radius: 14px;
+      }
+
+      .gallery-count {
+        gap: 7px;
+        font-size: 13px;
+      }
+
+      .gallery-count strong {
+        font-size: 22px;
+      }
+
+      .gallery-search {
+        min-height: 42px;
+        padding: 0 12px;
+        border-radius: 12px;
+        font-size: 15px;
+      }
+
+      .gallery-tabs {
+        flex-wrap: nowrap;
+        justify-content: flex-start;
+        gap: 8px;
+        margin: 0 -12px 18px;
+        padding: 0 12px 5px;
+        overflow-x: auto;
+        scrollbar-width: none;
+        -webkit-overflow-scrolling: touch;
+      }
+
+      .gallery-tabs::-webkit-scrollbar {
+        display: none;
+      }
+
+      .gallery-tab {
+        flex: 0 0 auto;
+        min-height: 38px;
+        padding: 0 14px;
+        border-radius: 12px;
       }
 
       .widget-grid {
         grid-template-columns: 1fr;
+        gap: 18px;
       }
 
       .modal {
