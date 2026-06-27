@@ -297,8 +297,8 @@
     }
 
     @media (min-width: 761px) {
-      body:not(.preview-mode) .mobile-sale-widget {
-        display: none;
+      .mobile-sale-widget {
+        width: 390px;
       }
     }
   </style>
@@ -344,6 +344,8 @@
 
   <script>
     (function () {
+      const isPreview = new URLSearchParams(window.location.search).has('preview');
+
       const LEAD_CONFIG = {
         webhookUrl: "https://widgets0-production.up.railway.app",
         widget: "Мобильная акция",
@@ -405,7 +407,7 @@
 
       setTimeout(() => {
         if (widget && document.body.contains(widget)) widget.classList.add('is-visible');
-      }, 2000);
+      }, isPreview ? 0 : 2000);
 
       closeWidgetBtn.addEventListener('click', () => {
         widget.classList.add('is-hidden');
