@@ -57,35 +57,17 @@
       filter: drop-shadow(0 28px 42px rgba(0, 0, 0, 0.18));
     }
 
-    .yr-shield,
-    .yr-shield::before,
-    .yr-shield::after {
+    .yr-shield-svg {
       position: absolute;
-      content: "";
-      clip-path: polygon(50% 0%, 94% 16%, 100% 24%, 100% 78%, 91% 88%, 50% 100%, 9% 88%, 0% 78%, 0% 24%, 6% 16%);
-    }
-
-    .yr-shield {
       inset: 0;
-      background: var(--yr-yellow);
-      border-radius: 34px;
+      width: 100%;
+      height: 100%;
+      overflow: visible;
+      pointer-events: none;
     }
 
-    .yr-shield::before {
-      inset: 15px;
-      background:
-        linear-gradient(135deg, rgba(255,255,255,0.1), transparent 24%),
-        var(--yr-black);
-    }
-
-    .yr-shield::after {
-      inset: 31px;
-      background:
-        radial-gradient(circle at 50% 13%, rgba(255,255,255,0.98), transparent 20%),
-        linear-gradient(180deg, #ffffff 0%, #f9f9f8 54%, #ffffff 100%);
-      box-shadow:
-        inset 0 0 0 2px rgba(255, 255, 255, 0.74),
-        inset 0 0 44px rgba(0, 0, 0, 0.06);
+    .yr-shield-white {
+      filter: drop-shadow(0 0 34px rgba(0,0,0,0.08));
     }
 
     .yr-content {
@@ -121,20 +103,20 @@
     .yr-rating {
       margin: 0;
       color: #111111;
-      font-size: clamp(82px, 17vw, 112px);
-      line-height: 0.82;
-      font-weight: 950;
-      letter-spacing: -0.08em;
+      font-size: clamp(104px, 22vw, 148px);
+      line-height: 0.76;
+      font-weight: 1000;
+      letter-spacing: -0.1em;
       text-shadow:
         0 2px 0 rgba(255, 255, 255, 0.8),
-        0 10px 18px rgba(0, 0, 0, 0.12);
+        0 14px 20px rgba(0, 0, 0, 0.15);
     }
 
     .yr-stars {
       display: flex;
       justify-content: center;
       gap: 10px;
-      margin: 34px 0 28px;
+      margin: 40px 0 30px;
       color: var(--yr-yellow);
       filter: drop-shadow(0 6px 12px rgba(255, 209, 0, 0.28));
     }
@@ -160,7 +142,7 @@
       grid-template-columns: 1fr auto 1fr;
       gap: 18px;
       align-items: center;
-      margin: 22px 0 30px;
+      margin: 18px 0 22px;
       color: var(--yr-gray);
       font-size: clamp(24px, 5vw, 32px);
       line-height: 1;
@@ -179,7 +161,7 @@
     .yr-divider {
       width: min(100%, 320px);
       height: 3px;
-      margin: 0 0 24px;
+      margin: 0 0 14px;
       border-radius: 999px;
       background: #d9d9d9;
     }
@@ -187,7 +169,7 @@
     .yr-place {
       max-width: 100%;
       color: var(--yr-blue);
-      font-size: clamp(34px, 8.5vw, 54px);
+      font-size: clamp(32px, 7.5vw, 46px);
       line-height: 0.95;
       font-weight: 950;
       letter-spacing: 0.1em;
@@ -196,6 +178,7 @@
         0 2px 0 rgba(255, 255, 255, 0.9),
         0 9px 18px rgba(6, 75, 183, 0.18);
       white-space: nowrap;
+      transform: translateY(-4px);
     }
 
     @media (max-width: 520px) {
@@ -213,18 +196,10 @@
         padding: 40px 34px 74px;
       }
 
-      .yr-shield::before {
-        inset: 12px;
-      }
-
-      .yr-shield::after {
-        inset: 25px;
-      }
-
       .yr-map-icon {
         width: 92px;
         height: 92px;
-        margin-bottom: 34px;
+        margin-bottom: 30px;
       }
 
       .yr-place {
@@ -238,7 +213,24 @@
     <!-- Начало кода виджета "Рейтинг на Яндекс Картах" -->
     <a class="yr-widget" href="https://yandex.ru/maps/?text=Samsung" target="_blank" rel="noopener" data-yr-widget>
       <div class="yr-badge">
-        <span class="yr-shield" aria-hidden="true"></span>
+        <svg class="yr-shield-svg" viewBox="0 0 460 650" aria-hidden="true" preserveAspectRatio="none">
+          <defs>
+            <linearGradient id="yrWhiteSurface" x1="0" x2="0" y1="0" y2="1">
+              <stop offset="0" stop-color="#ffffff"/>
+              <stop offset="0.54" stop-color="#fbfbfa"/>
+              <stop offset="1" stop-color="#ffffff"/>
+            </linearGradient>
+            <radialGradient id="yrTopGlow" cx="50%" cy="17%" r="55%">
+              <stop offset="0" stop-color="#ffffff" stop-opacity="0.96"/>
+              <stop offset="0.52" stop-color="#ffffff" stop-opacity="0.22"/>
+              <stop offset="1" stop-color="#ffffff" stop-opacity="0"/>
+            </radialGradient>
+          </defs>
+          <path fill="#ffd100" d="M230 18 C244 18 381 67 407 81 C431 94 444 111 444 136 L444 500 C444 529 429 552 402 565 L253 636 C239 643 221 643 207 636 L58 565 C31 552 16 529 16 500 L16 136 C16 111 29 94 53 81 L207 22 C214 19 222 18 230 18 Z"/>
+          <path fill="#191919" d="M230 42 C242 42 364 86 388 98 C409 109 420 124 420 146 L420 486 C420 512 407 532 383 544 L251 607 C238 613 222 613 209 607 L77 544 C53 532 40 512 40 486 L40 146 C40 124 51 109 72 98 L209 46 C216 43 223 42 230 42 Z"/>
+          <path class="yr-shield-white" fill="url(#yrWhiteSurface)" d="M230 67 C240 67 348 106 369 117 C387 127 396 140 396 159 L396 478 C396 503 384 525 362 536 L251 601 C238 609 222 609 209 601 L98 536 C76 525 64 503 64 478 L64 159 C64 140 73 127 91 117 L211 70 C217 68 224 67 230 67 Z"/>
+          <path fill="url(#yrTopGlow)" d="M230 67 C240 67 348 106 369 117 C387 127 396 140 396 159 L396 478 C396 503 384 525 362 536 L251 601 C238 609 222 609 209 601 L98 536 C76 525 64 503 64 478 L64 159 C64 140 73 127 91 117 L211 70 C217 68 224 67 230 67 Z"/>
+        </svg>
         <div class="yr-content">
           <div class="yr-map-icon" aria-label="Яндекс Карты">
             <svg class="yr-map-pin" viewBox="0 0 64 80" aria-hidden="true">
