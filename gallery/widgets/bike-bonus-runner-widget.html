@@ -1,0 +1,821 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Велоигра за бонусы</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 18px;
+      background: #f4f0ea;
+      font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      color: #24211d;
+    }
+
+    .bike-widget {
+      width: min(100%, 390px);
+      min-height: 640px;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      border: 8px solid #ffffff;
+      border-radius: 34px;
+      background: #fffaf4;
+      box-shadow: 0 26px 70px rgba(34, 27, 19, 0.18);
+      isolation: isolate;
+    }
+
+    .bike-screen {
+      flex: 1;
+      display: none;
+      min-height: 0;
+      position: relative;
+    }
+
+    .bike-screen.is-active {
+      display: flex;
+    }
+
+    .bike-intro {
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      padding: 36px 22px 24px;
+      text-align: center;
+      background:
+        radial-gradient(circle at 12% 18%, rgba(44, 143, 255, 0.08), transparent 28%),
+        radial-gradient(circle at 92% 8%, rgba(255, 83, 123, 0.08), transparent 26%),
+        #fffaf4;
+    }
+
+    .bike-pixel-cloud {
+      position: absolute;
+      width: 54px;
+      height: 24px;
+      opacity: 0.28;
+      background:
+        linear-gradient(#b8b3ac 0 0) 8px 12px / 34px 4px no-repeat,
+        linear-gradient(#b8b3ac 0 0) 16px 8px / 22px 4px no-repeat,
+        linear-gradient(#b8b3ac 0 0) 24px 4px / 12px 4px no-repeat;
+    }
+
+    .bike-cloud-1 { top: 34px; left: 24px; }
+    .bike-cloud-2 { top: 64px; right: 18px; transform: scale(0.78); }
+
+    .bike-kicker {
+      margin: 0;
+      color: #6f6961;
+      font-size: 13px;
+      font-weight: 850;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .bike-title {
+      margin: 30px 0 10px;
+      max-width: 320px;
+      font-family: "Courier New", monospace;
+      font-size: 42px;
+      line-height: 0.98;
+      font-weight: 900;
+      letter-spacing: 0;
+    }
+
+    .bike-subtitle {
+      margin: 0 auto;
+      max-width: 300px;
+      color: #5f5a54;
+      font-size: 16px;
+      line-height: 1.45;
+      font-weight: 700;
+    }
+
+    .bike-prizes {
+      width: 100%;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin: 36px 0;
+    }
+
+    .bike-prize {
+      min-height: 118px;
+      display: grid;
+      place-items: center;
+      padding: 12px 8px;
+      border-radius: 20px;
+      background: #ffffff;
+      box-shadow: 0 12px 26px rgba(37, 32, 26, 0.08);
+    }
+
+    .bike-prize strong {
+      display: block;
+      margin-bottom: 7px;
+      font-family: "Courier New", monospace;
+      font-size: 24px;
+      line-height: 1;
+    }
+
+    .bike-prize span {
+      color: #69635d;
+      font-size: 11px;
+      line-height: 1.2;
+      font-weight: 800;
+    }
+
+    .bike-primary,
+    .bike-secondary {
+      width: 100%;
+      min-height: 54px;
+      border: 0;
+      border-radius: 16px;
+      font: inherit;
+      font-weight: 900;
+      cursor: pointer;
+    }
+
+    .bike-primary {
+      background: #25231f;
+      color: #ffffff;
+      box-shadow: 0 12px 24px rgba(37, 35, 31, 0.16);
+    }
+
+    .bike-secondary {
+      background: #efebe5;
+      color: #413d38;
+    }
+
+    .bike-play {
+      flex-direction: column;
+      background: #fffaf4;
+      touch-action: manipulation;
+      user-select: none;
+    }
+
+    .bike-hud {
+      position: absolute;
+      inset: 18px 18px auto;
+      z-index: 4;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      pointer-events: none;
+    }
+
+    .bike-chip {
+      min-height: 42px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 0 14px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.88);
+      color: #25231f;
+      font-family: "Courier New", monospace;
+      font-size: 18px;
+      font-weight: 900;
+      box-shadow: 0 10px 24px rgba(37, 32, 26, 0.1);
+      backdrop-filter: blur(10px);
+    }
+
+    .bike-close {
+      width: 42px;
+      height: 42px;
+      display: grid;
+      place-items: center;
+      border: 0;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.88);
+      color: #504b45;
+      font-size: 28px;
+      line-height: 1;
+      pointer-events: auto;
+      cursor: pointer;
+      box-shadow: 0 10px 24px rgba(37, 32, 26, 0.1);
+    }
+
+    .bike-canvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+      flex: 1;
+      background: #fffaf4;
+      cursor: pointer;
+    }
+
+    .bike-hint {
+      position: absolute;
+      left: 50%;
+      bottom: 74px;
+      z-index: 3;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: rgba(37, 35, 31, 0.82);
+      color: #ffffff;
+      font-size: 12px;
+      font-weight: 850;
+      transform: translateX(-50%);
+      pointer-events: none;
+      opacity: 0.86;
+    }
+
+    .bike-result,
+    .bike-lead,
+    .bike-success {
+      flex-direction: column;
+      justify-content: center;
+      padding: 30px 24px;
+      text-align: center;
+      background:
+        radial-gradient(circle at 20% 18%, rgba(255, 83, 123, 0.1), transparent 30%),
+        radial-gradient(circle at 84% 18%, rgba(44, 143, 255, 0.1), transparent 30%),
+        #fffaf4;
+    }
+
+    .bike-result h2,
+    .bike-lead h2,
+    .bike-success h2 {
+      margin: 0 0 10px;
+      font-family: "Courier New", monospace;
+      font-size: 30px;
+      line-height: 1.05;
+    }
+
+    .bike-result p,
+    .bike-lead p,
+    .bike-success p {
+      margin: 0 0 20px;
+      color: #615b54;
+      font-size: 15px;
+      line-height: 1.45;
+      font-weight: 700;
+    }
+
+    .bike-score-badge {
+      width: max-content;
+      margin: 0 auto 22px;
+      padding: 12px 22px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, #ff654a, #ed4db8 48%, #2f8cff);
+      color: #ffffff;
+      font-family: "Courier New", monospace;
+      font-size: 34px;
+      font-weight: 900;
+      box-shadow: 0 16px 34px rgba(95, 71, 193, 0.22);
+    }
+
+    .bike-actions {
+      display: grid;
+      gap: 10px;
+    }
+
+    .bike-form {
+      display: grid;
+      gap: 12px;
+      margin-top: 4px;
+      text-align: left;
+    }
+
+    .bike-input {
+      width: 100%;
+      height: 52px;
+      border: 1px solid #ded8ce;
+      border-radius: 14px;
+      padding: 0 14px;
+      background: #ffffff;
+      color: #25231f;
+      font: inherit;
+      font-weight: 700;
+      outline: none;
+    }
+
+    .bike-input:focus {
+      border-color: #2f8cff;
+      box-shadow: 0 0 0 4px rgba(47, 140, 255, 0.14);
+    }
+
+    .bike-consent {
+      display: flex;
+      align-items: flex-start;
+      gap: 9px;
+      color: #69635d;
+      font-size: 12px;
+      line-height: 1.35;
+      font-weight: 700;
+    }
+
+    .bike-consent input {
+      width: 17px;
+      height: 17px;
+      margin: 0;
+      accent-color: #2f8cff;
+      flex: 0 0 auto;
+    }
+
+    .bike-error {
+      min-height: 18px;
+      color: #d92d20;
+      font-size: 13px;
+      font-weight: 800;
+      text-align: center;
+    }
+
+    @media (max-width: 460px) {
+      body {
+        padding: 0;
+        background: #fffaf4;
+      }
+
+      .bike-widget {
+        width: 100%;
+        min-height: 100vh;
+        min-height: 100dvh;
+        border: 0;
+        border-radius: 0;
+        box-shadow: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <section class="bike-widget" data-bike-widget>
+    <div class="bike-screen bike-intro is-active" data-bike-state="intro">
+      <span class="bike-pixel-cloud bike-cloud-1"></span>
+      <span class="bike-pixel-cloud bike-cloud-2"></span>
+      <div>
+        <p class="bike-kicker">Мини-игра за бонусы</p>
+        <h1 class="bike-title">У нас игра!</h1>
+        <p class="bike-subtitle">Прыгайте через препятствия, собирайте баллы и забирайте свой выигрыш.</p>
+      </div>
+      <div class="bike-prizes">
+        <div class="bike-prize"><div><strong>+1</strong><span>за малый бонус</span></div></div>
+        <div class="bike-prize"><div><strong>+3</strong><span>за яркий билет</span></div></div>
+        <div class="bike-prize"><div><strong>+5</strong><span>за редкий приз</span></div></div>
+      </div>
+      <button class="bike-primary" type="button" data-bike-start>Играть</button>
+    </div>
+
+    <div class="bike-screen bike-play" data-bike-state="play">
+      <div class="bike-hud">
+        <button class="bike-close" type="button" aria-label="Назад" data-bike-back>‹</button>
+        <div style="display:flex;gap:10px;">
+          <span class="bike-chip">◆ <span data-bike-score>0</span></span>
+          <span class="bike-chip">♥ <span data-bike-lives>3</span></span>
+        </div>
+      </div>
+      <canvas class="bike-canvas" data-bike-canvas></canvas>
+      <div class="bike-hint" data-bike-hint>Тапните, чтобы прыгнуть</div>
+    </div>
+
+    <div class="bike-screen bike-result" data-bike-state="result">
+      <h2>Ваш выигрыш</h2>
+      <div class="bike-score-badge">+<span data-bike-final-score>0</span></div>
+      <p>Столько баллов вы собрали. Оставьте контакты, чтобы закрепить бонус.</p>
+      <div class="bike-actions">
+        <button class="bike-primary" type="button" data-bike-claim>Забрать баллы</button>
+        <button class="bike-secondary" type="button" data-bike-retry>Еще раз</button>
+      </div>
+    </div>
+
+    <div class="bike-screen bike-lead" data-bike-state="lead">
+      <h2>Куда отправить бонус?</h2>
+      <p>Закрепим за вами <strong data-bike-lead-score>0</strong> баллов и передадим заявку менеджеру.</p>
+      <form class="bike-form" data-bike-form>
+        <input class="bike-input" type="text" name="name" placeholder="Ваше имя" autocomplete="name" required>
+        <input class="bike-input" type="tel" name="phone" placeholder="+7 (999) 999-99-99" autocomplete="tel" inputmode="tel" required>
+        <label class="bike-consent">
+          <input type="checkbox" name="consent" checked required>
+          <span>Согласен(на) на обработку персональных данных</span>
+        </label>
+        <div class="bike-error" data-bike-error aria-live="polite"></div>
+        <button class="bike-primary" type="submit">Получить бонус</button>
+      </form>
+    </div>
+
+    <div class="bike-screen bike-success" data-bike-state="success">
+      <h2>Готово!</h2>
+      <div class="bike-score-badge">+<span data-bike-success-score>0</span></div>
+      <p>Мы получили заявку и закрепили за вами баллы. Скоро свяжемся.</p>
+      <button class="bike-secondary" type="button" data-bike-success-retry>Сыграть еще</button>
+    </div>
+  </section>
+
+  <script>
+    (function () {
+      const LEAD_CONFIG = {
+        webhookUrl: "https://widgets0-production.up.railway.app",
+        widget: "Велоигра за бонусы",
+        source: "bike-bonus-runner"
+      };
+
+      const params = new URLSearchParams(window.location.search);
+      const isPreviewPlaying = params.get('preview') === 'playing';
+      const widget = document.querySelector('[data-bike-widget]');
+      const canvas = document.querySelector('[data-bike-canvas]');
+      const ctx = canvas.getContext('2d');
+      const scoreEl = document.querySelector('[data-bike-score]');
+      const livesEl = document.querySelector('[data-bike-lives]');
+      const finalScoreEl = document.querySelector('[data-bike-final-score]');
+      const leadScoreEl = document.querySelector('[data-bike-lead-score]');
+      const successScoreEl = document.querySelector('[data-bike-success-score]');
+      const hintEl = document.querySelector('[data-bike-hint]');
+      const form = document.querySelector('[data-bike-form]');
+      const errorEl = document.querySelector('[data-bike-error]');
+
+      let raf = 0;
+      let lastTime = 0;
+      let running = false;
+      let score = 0;
+      let lives = 3;
+      let speed = 176;
+      let distance = 0;
+      let spawnTimer = 0;
+      let invincible = 0;
+      let worldOffset = 0;
+      let objects = [];
+      const player = { x: 58, y: 0, w: 42, h: 32, vy: 0, grounded: true };
+
+      function switchState(name) {
+        document.querySelectorAll('[data-bike-state]').forEach(function (state) {
+          state.classList.toggle('is-active', state.getAttribute('data-bike-state') === name);
+        });
+      }
+
+      function fitCanvas() {
+        const rect = canvas.getBoundingClientRect();
+        const dpr = Math.min(window.devicePixelRatio || 1, 2);
+        canvas.width = Math.max(1, Math.floor(rect.width * dpr));
+        canvas.height = Math.max(1, Math.floor(rect.height * dpr));
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        player.y = getGroundY() - player.h;
+      }
+
+      function getWidth() {
+        return canvas.getBoundingClientRect().width || 390;
+      }
+
+      function getHeight() {
+        return canvas.getBoundingClientRect().height || 640;
+      }
+
+      function getGroundY() {
+        return getHeight() - 92;
+      }
+
+      function updateHud() {
+        scoreEl.textContent = score;
+        livesEl.textContent = lives;
+      }
+
+      function resetGame() {
+        score = 0;
+        lives = 3;
+        speed = 176;
+        distance = 0;
+        spawnTimer = 0;
+        invincible = 0;
+        worldOffset = 0;
+        objects = [];
+        player.vy = 0;
+        player.grounded = true;
+        player.y = getGroundY() - player.h;
+        updateHud();
+      }
+
+      function startGame() {
+        cancelAnimationFrame(raf);
+        fitCanvas();
+        resetGame();
+        running = true;
+        lastTime = performance.now();
+        hintEl.style.display = 'block';
+        switchState('play');
+        raf = requestAnimationFrame(loop);
+        setTimeout(function () {
+          hintEl.style.display = 'none';
+        }, 1700);
+      }
+
+      function stopGame() {
+        running = false;
+        cancelAnimationFrame(raf);
+      }
+
+      function jump() {
+        if (!running) return;
+        if (player.grounded) {
+          player.vy = -430;
+          player.grounded = false;
+        }
+      }
+
+      function spawnObject() {
+        const isBonus = Math.random() > 0.38;
+        const ground = getGroundY();
+        if (isBonus) {
+          const values = [1, 1, 1, 3, 3, 5];
+          const value = values[Math.floor(Math.random() * values.length)];
+          objects.push({
+            type: 'bonus',
+            value,
+            x: getWidth() + 24,
+            y: ground - 116 - Math.random() * 72,
+            w: value === 5 ? 32 : 28,
+            h: value === 5 ? 32 : 28,
+            hit: false
+          });
+        } else {
+          objects.push({
+            type: 'obstacle',
+            x: getWidth() + 28,
+            y: ground - 38,
+            w: 24 + Math.random() * 14,
+            h: 38,
+            hit: false
+          });
+        }
+      }
+
+      function rectsCollide(a, b) {
+        return a.x < b.x + b.w && a.x + a.w > b.x && a.y < b.y + b.h && a.y + a.h > b.y;
+      }
+
+      function endGame() {
+        stopGame();
+        finalScoreEl.textContent = score;
+        leadScoreEl.textContent = score;
+        successScoreEl.textContent = score;
+        switchState('result');
+      }
+
+      function update(dt) {
+        const ground = getGroundY();
+        worldOffset += speed * dt;
+        distance += speed * dt;
+        speed = Math.min(265, 176 + distance / 900);
+        spawnTimer -= dt;
+        invincible = Math.max(0, invincible - dt);
+
+        if (spawnTimer <= 0) {
+          spawnObject();
+          spawnTimer = 0.82 + Math.random() * 0.58;
+        }
+
+        player.vy += 1120 * dt;
+        player.y += player.vy * dt;
+        if (player.y + player.h >= ground) {
+          player.y = ground - player.h;
+          player.vy = 0;
+          player.grounded = true;
+        }
+
+        objects.forEach(function (obj) {
+          obj.x -= speed * dt;
+          if (!obj.hit && rectsCollide(player, obj)) {
+            obj.hit = true;
+            if (obj.type === 'bonus') {
+              score += obj.value;
+              updateHud();
+            } else if (invincible <= 0) {
+              lives -= 1;
+              invincible = 1.1;
+              updateHud();
+              if (lives <= 0) {
+                endGame();
+              }
+            }
+          }
+        });
+        objects = objects.filter(function (obj) {
+          return obj.x + obj.w > -40 && !(obj.hit && obj.type === 'bonus');
+        });
+      }
+
+      function drawPixelText(text, x, y, size, color, align) {
+        ctx.save();
+        ctx.fillStyle = color;
+        ctx.font = '900 ' + size + 'px "Courier New", monospace';
+        ctx.textAlign = align || 'left';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(text, x, y);
+        ctx.restore();
+      }
+
+      function drawBike(x, y) {
+        ctx.save();
+        if (invincible > 0 && Math.floor(invincible * 12) % 2 === 0) ctx.globalAlpha = 0.42;
+        ctx.strokeStyle = '#24211d';
+        ctx.lineWidth = 3;
+        ctx.fillStyle = '#ffffff';
+        ctx.beginPath();
+        ctx.arc(x + 8, y + 25, 8, 0, Math.PI * 2);
+        ctx.arc(x + 33, y + 25, 8, 0, Math.PI * 2);
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.moveTo(x + 8, y + 25);
+        ctx.lineTo(x + 20, y + 13);
+        ctx.lineTo(x + 33, y + 25);
+        ctx.lineTo(x + 19, y + 25);
+        ctx.closePath();
+        ctx.stroke();
+        ctx.fillStyle = '#2f8cff';
+        ctx.fillRect(x + 16, y + 3, 13, 9);
+        ctx.fillStyle = '#ffe071';
+        ctx.fillRect(x + 21, y - 6, 8, 8);
+        ctx.strokeStyle = '#24211d';
+        ctx.beginPath();
+        ctx.moveTo(x + 22, y + 12);
+        ctx.lineTo(x + 14, y + 22);
+        ctx.moveTo(x + 25, y + 12);
+        ctx.lineTo(x + 34, y + 21);
+        ctx.moveTo(x + 27, y + 3);
+        ctx.lineTo(x + 38, y + 8);
+        ctx.stroke();
+        ctx.restore();
+      }
+
+      function drawObstacle(obj) {
+        ctx.save();
+        ctx.fillStyle = '#3d3933';
+        ctx.fillRect(obj.x + obj.w / 2 - 3, obj.y + 7, 6, obj.h - 7);
+        ctx.fillRect(obj.x + 5, obj.y + obj.h - 6, obj.w - 10, 6);
+        ctx.fillRect(obj.x + obj.w / 2 - 12, obj.y + 20, 24, 5);
+        ctx.fillStyle = '#24211d';
+        ctx.fillRect(obj.x + obj.w / 2 - 2, obj.y, 4, 10);
+        ctx.restore();
+      }
+
+      function drawBonus(obj) {
+        const grd = ctx.createLinearGradient(obj.x, obj.y, obj.x + obj.w, obj.y + obj.h);
+        grd.addColorStop(0, '#ff654a');
+        grd.addColorStop(0.55, '#ed4db8');
+        grd.addColorStop(1, '#2f8cff');
+        ctx.save();
+        ctx.fillStyle = grd;
+        ctx.beginPath();
+        ctx.roundRect(obj.x, obj.y, obj.w, obj.h, 9);
+        ctx.fill();
+        drawPixelText('+' + obj.value, obj.x + obj.w / 2, obj.y + obj.h / 2 + 1, 14, '#fff', 'center');
+        ctx.restore();
+      }
+
+      function draw() {
+        const w = getWidth();
+        const h = getHeight();
+        const ground = getGroundY();
+        ctx.clearRect(0, 0, w, h);
+        ctx.fillStyle = '#fffaf4';
+        ctx.fillRect(0, 0, w, h);
+
+        ctx.strokeStyle = 'rgba(92, 87, 80, 0.42)';
+        ctx.lineWidth = 2;
+        for (let i = 0; i < 5; i++) {
+          const cx = ((w + 90) - ((worldOffset * 0.18 + i * 116) % (w + 90))) - 60;
+          ctx.beginPath();
+          ctx.moveTo(cx, 150 + (i % 2) * 52);
+          ctx.lineTo(cx + 16, 150 + (i % 2) * 52);
+          ctx.moveTo(cx + 9, 146 + (i % 2) * 52);
+          ctx.lineTo(cx + 23, 146 + (i % 2) * 52);
+          ctx.stroke();
+        }
+
+        ctx.strokeStyle = '#24211d';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(0, ground + 1);
+        ctx.lineTo(w, ground + 1);
+        ctx.stroke();
+        ctx.fillStyle = 'rgba(36,33,29,0.32)';
+        for (let i = 0; i < 12; i++) {
+          const x = (i * 54 - worldOffset * 0.6) % (w + 54);
+          ctx.fillRect(x, ground + 14 + (i % 3) * 12, 3, 3);
+          ctx.fillRect(x + 20, ground + 5, 16, 2);
+        }
+
+        objects.forEach(function (obj) {
+          if (obj.type === 'bonus') drawBonus(obj);
+          else drawObstacle(obj);
+        });
+        drawBike(player.x, player.y);
+      }
+
+      function loop(now) {
+        if (!running) return;
+        const dt = Math.min(0.032, (now - lastTime) / 1000 || 0);
+        lastTime = now;
+        update(dt);
+        draw();
+        if (running) raf = requestAnimationFrame(loop);
+      }
+
+      function formatPhone(value) {
+        const digits = value.replace(/\D/g, '').replace(/^8/, '7').slice(0, 11);
+        const normalized = digits.startsWith('7') ? digits : '7' + digits;
+        const parts = normalized.slice(1);
+        let result = '+7';
+        if (parts.length > 0) result += ' (' + parts.slice(0, 3);
+        if (parts.length >= 3) result += ')';
+        if (parts.length > 3) result += ' ' + parts.slice(3, 6);
+        if (parts.length > 6) result += '-' + parts.slice(6, 8);
+        if (parts.length > 8) result += '-' + parts.slice(8, 10);
+        return result;
+      }
+
+      async function sendLead(data) {
+        const response = await fetch(LEAD_CONFIG.webhookUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(Object.assign({
+            widget: LEAD_CONFIG.widget,
+            source: LEAD_CONFIG.source,
+            page: window.location.href.split('?')[0],
+            createdAt: new Date().toISOString()
+          }, data))
+        });
+        if (!response.ok) throw new Error('Webhook error');
+      }
+
+      document.querySelector('[data-bike-start]').addEventListener('click', startGame);
+      document.querySelector('[data-bike-back]').addEventListener('click', function () {
+        stopGame();
+        switchState('intro');
+      });
+      document.querySelector('[data-bike-retry]').addEventListener('click', startGame);
+      document.querySelector('[data-bike-success-retry]').addEventListener('click', startGame);
+      document.querySelector('[data-bike-claim]').addEventListener('click', function () {
+        leadScoreEl.textContent = score;
+        switchState('lead');
+      });
+
+      canvas.addEventListener('pointerdown', function (event) {
+        event.preventDefault();
+        jump();
+      });
+      window.addEventListener('keydown', function (event) {
+        if (event.code === 'Space') {
+          event.preventDefault();
+          jump();
+        }
+      });
+      window.addEventListener('resize', fitCanvas);
+
+      form.elements.phone.addEventListener('input', function () {
+        form.elements.phone.value = formatPhone(form.elements.phone.value);
+      });
+
+      form.addEventListener('submit', async function (event) {
+        event.preventDefault();
+        const submitBtn = form.querySelector('.bike-primary');
+        const name = form.elements.name.value.trim();
+        const phone = form.elements.phone.value.trim();
+        const consent = form.elements.consent.checked;
+        if (!name || phone.replace(/\D/g, '').length !== 11) {
+          errorEl.textContent = 'Введите имя и полный номер телефона.';
+          return;
+        }
+        if (!consent) {
+          errorEl.textContent = 'Нужно согласие на обработку персональных данных.';
+          return;
+        }
+        errorEl.textContent = '';
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Отправляем...';
+        try {
+          await sendLead({
+            name,
+            phone,
+            score,
+            'Выигрыш': '+' + score + ' баллов',
+            'Согласие на обработку персональных данных': 'Да'
+          });
+          successScoreEl.textContent = score;
+          form.reset();
+          form.elements.consent.checked = true;
+          switchState('success');
+        } catch (error) {
+          errorEl.textContent = 'Не получилось отправить заявку. Попробуйте еще раз.';
+        } finally {
+          submitBtn.disabled = false;
+          submitBtn.textContent = 'Получить бонус';
+        }
+      });
+
+      if (isPreviewPlaying) {
+        setTimeout(startGame, 120);
+      } else {
+        fitCanvas();
+        draw();
+      }
+    })();
+  </script>
+</body>
+</html>
