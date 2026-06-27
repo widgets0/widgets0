@@ -442,7 +442,7 @@
       let invincible = 0;
       let worldOffset = 0;
       let objects = [];
-      const player = { x: 58, y: 0, w: 42, h: 32, vy: 0, grounded: true };
+      const player = { x: 50, y: 0, w: 78, h: 58, vy: 0, grounded: true };
 
       function switchState(name) {
         document.querySelectorAll('[data-bike-state]').forEach(function (state) {
@@ -468,7 +468,7 @@
       }
 
       function getGroundY() {
-        return getHeight() - 92;
+        return getHeight() - 112;
       }
 
       function updateHud() {
@@ -521,7 +521,7 @@
       function jump() {
         if (!running) return;
         if (player.grounded) {
-          player.vy = -430;
+          player.vy = -500;
           player.grounded = false;
         }
       }
@@ -536,18 +536,18 @@
             type: 'bonus',
             value,
             x: getWidth() + 24,
-            y: ground - 116 - Math.random() * 72,
-            w: value === 5 ? 32 : 28,
-            h: value === 5 ? 32 : 28,
+            y: ground - 148 - Math.random() * 92,
+            w: value === 5 ? 48 : 42,
+            h: value === 5 ? 38 : 34,
             hit: false
           });
         } else {
           objects.push({
             type: 'obstacle',
             x: getWidth() + 28,
-            y: ground - 38,
-            w: 24 + Math.random() * 14,
-            h: 38,
+            y: ground - 50,
+            w: 34 + Math.random() * 10,
+            h: 50,
             hit: false
           });
         }
@@ -621,44 +621,118 @@
       function drawBike(x, y) {
         ctx.save();
         if (invincible > 0 && Math.floor(invincible * 12) % 2 === 0) ctx.globalAlpha = 0.42;
+
+        const wheelR = 14;
+        const rear = { x: x + 16, y: y + 43 };
+        const front = { x: x + 62, y: y + 43 };
+        const crank = { x: x + 38, y: y + 37 };
+        const wheelSpin = worldOffset / 18;
+
+        function drawWheel(center) {
+          ctx.save();
+          ctx.translate(center.x, center.y);
+          ctx.rotate(wheelSpin);
+          ctx.lineWidth = 3;
+          ctx.strokeStyle = '#24211d';
+          ctx.fillStyle = '#fffaf4';
+          ctx.beginPath();
+          ctx.arc(0, 0, wheelR, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.stroke();
+          ctx.lineWidth = 1.6;
+          ctx.strokeStyle = 'rgba(36,33,29,0.82)';
+          for (let i = 0; i < 8; i++) {
+            const a = i * Math.PI / 4;
+            ctx.beginPath();
+            ctx.moveTo(0, 0);
+            ctx.lineTo(Math.cos(a) * (wheelR - 3), Math.sin(a) * (wheelR - 3));
+            ctx.stroke();
+          }
+          ctx.fillStyle = '#24211d';
+          ctx.beginPath();
+          ctx.arc(0, 0, 3, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.restore();
+        }
+
+        drawWheel(rear);
+        drawWheel(front);
+
+        ctx.lineWidth = 4;
+        ctx.lineCap = 'round';
+        ctx.lineJoin = 'round';
         ctx.strokeStyle = '#24211d';
-        ctx.lineWidth = 3;
-        ctx.fillStyle = '#ffffff';
         ctx.beginPath();
-        ctx.arc(x + 8, y + 25, 8, 0, Math.PI * 2);
-        ctx.arc(x + 33, y + 25, 8, 0, Math.PI * 2);
-        ctx.stroke();
-        ctx.beginPath();
-        ctx.moveTo(x + 8, y + 25);
-        ctx.lineTo(x + 20, y + 13);
-        ctx.lineTo(x + 33, y + 25);
-        ctx.lineTo(x + 19, y + 25);
+        ctx.moveTo(rear.x, rear.y);
+        ctx.lineTo(crank.x, crank.y);
+        ctx.lineTo(x + 50, y + 22);
+        ctx.lineTo(x + 28, y + 22);
         ctx.closePath();
+        ctx.moveTo(x + 50, y + 22);
+        ctx.lineTo(front.x, front.y);
+        ctx.moveTo(x + 28, y + 22);
+        ctx.lineTo(rear.x, rear.y);
         ctx.stroke();
-        ctx.fillStyle = '#2f8cff';
-        ctx.fillRect(x + 16, y + 3, 13, 9);
-        ctx.fillStyle = '#ffe071';
-        ctx.fillRect(x + 21, y - 6, 8, 8);
+
+        ctx.fillStyle = '#24211d';
+        ctx.fillRect(x + 22, y + 17, 18, 5);
         ctx.strokeStyle = '#24211d';
         ctx.beginPath();
-        ctx.moveTo(x + 22, y + 12);
-        ctx.lineTo(x + 14, y + 22);
-        ctx.moveTo(x + 25, y + 12);
-        ctx.lineTo(x + 34, y + 21);
-        ctx.moveTo(x + 27, y + 3);
-        ctx.lineTo(x + 38, y + 8);
+        ctx.moveTo(x + 55, y + 20);
+        ctx.lineTo(x + 66, y + 13);
+        ctx.lineTo(x + 75, y + 15);
         ctx.stroke();
+
+        ctx.fillStyle = '#2f8cff';
+        ctx.beginPath();
+        ctx.roundRect(x + 31, y + 4, 23, 17, 4);
+        ctx.fill();
+        ctx.fillStyle = '#1d6fe8';
+        ctx.fillRect(x + 31, y + 15, 23, 6);
+
+        ctx.fillStyle = '#ffe071';
+        ctx.beginPath();
+        ctx.roundRect(x + 42, y - 10, 13, 13, 4);
+        ctx.fill();
+        ctx.fillStyle = '#24211d';
+        ctx.fillRect(x + 46, y - 12, 12, 4);
+
+        ctx.strokeStyle = '#24211d';
+        ctx.lineWidth = 4;
+        ctx.beginPath();
+        ctx.moveTo(x + 40, y + 19);
+        ctx.lineTo(x + 28, y + 34);
+        ctx.moveTo(x + 48, y + 19);
+        ctx.lineTo(x + 58, y + 34);
+        ctx.moveTo(x + 53, y + 5);
+        ctx.lineTo(x + 70, y + 13);
+        ctx.stroke();
+
+        ctx.fillStyle = '#ffcf57';
+        ctx.fillRect(x + 26, y - 12, 12, 12);
+        ctx.fillStyle = '#24211d';
+        ctx.fillRect(x + 23, y - 1, 20, 3);
         ctx.restore();
       }
 
       function drawObstacle(obj) {
         ctx.save();
-        ctx.fillStyle = '#3d3933';
-        ctx.fillRect(obj.x + obj.w / 2 - 3, obj.y + 7, 6, obj.h - 7);
-        ctx.fillRect(obj.x + 5, obj.y + obj.h - 6, obj.w - 10, 6);
-        ctx.fillRect(obj.x + obj.w / 2 - 12, obj.y + 20, 24, 5);
+        const x = obj.x;
+        const y = obj.y;
+        const w = obj.w;
+        const h = obj.h;
+        ctx.fillStyle = '#ff7a2f';
+        ctx.beginPath();
+        ctx.moveTo(x + w / 2, y);
+        ctx.lineTo(x + w - 3, y + h - 8);
+        ctx.lineTo(x + 3, y + h - 8);
+        ctx.closePath();
+        ctx.fill();
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(x + 9, y + h * 0.45, w - 18, 5);
         ctx.fillStyle = '#24211d';
-        ctx.fillRect(obj.x + obj.w / 2 - 2, obj.y, 4, 10);
+        ctx.fillRect(x, y + h - 8, w, 8);
+        ctx.fillRect(x + 5, y + h - 14, w - 10, 4);
         ctx.restore();
       }
 
@@ -668,11 +742,16 @@
         grd.addColorStop(0.55, '#ed4db8');
         grd.addColorStop(1, '#2f8cff');
         ctx.save();
+        ctx.shadowColor = 'rgba(237,77,184,0.34)';
+        ctx.shadowBlur = 16;
         ctx.fillStyle = grd;
         ctx.beginPath();
-        ctx.roundRect(obj.x, obj.y, obj.w, obj.h, 9);
+        ctx.roundRect(obj.x, obj.y, obj.w, obj.h, 14);
         ctx.fill();
-        drawPixelText('+' + obj.value, obj.x + obj.w / 2, obj.y + obj.h / 2 + 1, 14, '#fff', 'center');
+        ctx.shadowBlur = 0;
+        ctx.fillStyle = 'rgba(255,255,255,0.18)';
+        ctx.fillRect(obj.x + 8, obj.y + 6, obj.w - 16, 3);
+        drawPixelText('+' + obj.value, obj.x + obj.w / 2, obj.y + obj.h / 2 + 1, 18, '#fff', 'center');
         ctx.restore();
       }
 
