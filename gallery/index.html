@@ -480,6 +480,31 @@
       line-height: 1.5;
     }
 
+    .widget-card-details {
+      display: grid;
+      gap: 14px;
+      margin-top: 16px;
+    }
+
+    .widget-card-detail {
+      display: grid;
+      gap: 5px;
+    }
+
+    .widget-card-detail strong {
+      color: var(--text);
+      font-size: 13px;
+      line-height: 1.2;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+
+    .widget-card-detail span {
+      color: var(--muted);
+      font-size: 16px;
+      line-height: 1.42;
+    }
+
     .widget-card-meta {
       display: flex;
       justify-content: space-between;
@@ -861,7 +886,7 @@
         data-type="promo"
         data-search="колесо фортуны розыгрыш скидка подарок бонус приз имя телефон"
         data-widget-title="Колесо фортуны"
-        data-widget-description="Посетитель крутит колесо, выигрывает бонус и оставляет имя и телефон, чтобы его забрать. Хорошо заходит в салонах, кафе, магазинах и локальных услугах."
+        data-widget-description="Как работает: посетитель крутит колесо, выигрывает бонус и оставляет имя и телефон, чтобы его забрать. Кому подходит: салоны, кафе, магазины, локальные услуги."
         data-widget-src="клиенты/проект-001-свечи/lera-candles-wheel-static.html"
       >
         <div class="widget-preview">
@@ -869,7 +894,16 @@
         </div>
         <div class="widget-card-body">
           <h2>Колесо фортуны</h2>
-          <p>Посетитель крутит колесо, выигрывает бонус и оставляет имя и телефон, чтобы его забрать. Хорошо заходит в салонах, кафе, магазинах и локальных услугах.</p>
+          <div class="widget-card-details">
+            <div class="widget-card-detail">
+              <strong>Как работает</strong>
+              <span>Посетитель крутит колесо, выигрывает бонус и оставляет имя и телефон, чтобы его забрать.</span>
+            </div>
+            <div class="widget-card-detail">
+              <strong>Кому подходит</strong>
+              <span>Салоны · кафе · магазины · локальные услуги</span>
+            </div>
+          </div>
           <div class="widget-card-meta">
             <span>Розыгрыш</span>
             <span>Превью</span>
@@ -885,7 +919,7 @@
         data-type="calculator"
         data-search="калькулятор стоимость расчет услуга клининг ремонт автоуслуги параметры заявка телефон"
         data-widget-title="Калькулятор стоимости"
-        data-widget-description="Посетитель сам считает примерную цену услуги — и оставляет контакт, чтобы получить точный расчёт. Для клининга, ремонта, автоуслуг — всего, где цена зависит от параметров."
+        data-widget-description="Как работает: посетитель сам считает примерную цену и оставляет контакт, чтобы получить точный расчёт. Кому подходит: клининг, ремонт, автоуслуги, услуги с вилкой цен."
         data-widget-src="widgets/cleaning-calculator-widget.html"
       >
         <div class="widget-preview">
@@ -893,7 +927,16 @@
         </div>
         <div class="widget-card-body">
           <h2>Калькулятор стоимости</h2>
-          <p>Посетитель сам считает примерную цену услуги — и оставляет контакт, чтобы получить точный расчёт. Для клининга, ремонта, автоуслуг — всего, где цена зависит от параметров.</p>
+          <div class="widget-card-details">
+            <div class="widget-card-detail">
+              <strong>Как работает</strong>
+              <span>Посетитель сам считает примерную цену и оставляет контакт, чтобы получить точный расчёт.</span>
+            </div>
+            <div class="widget-card-detail">
+              <strong>Кому подходит</strong>
+              <span>Клининг · ремонт · автоуслуги · услуги с вилкой цен</span>
+            </div>
+          </div>
           <div class="widget-card-meta">
             <span>Калькулятор</span>
             <span>Превью</span>
@@ -909,7 +952,7 @@
         data-type="quiz"
         data-search="товарный тиндер свайп товар услуга квиз контакт клиент"
         data-widget-title="Товарный Тиндер"
-        data-widget-description="Посетитель листает варианты как в Тиндере, отмечает что нравится — виджет подбирает товар или услугу и собирает контакт. Для магазинов, курсов, туров, подарков."
+        data-widget-description="Как работает: посетитель листает варианты, отмечает что нравится — виджет подбирает товар и собирает контакт. Кому подходит: магазины, курсы, туры, подарки."
         data-widget-src="widgets/tinder-product-widget.html"
       >
         <div class="widget-preview">
@@ -917,7 +960,16 @@
         </div>
         <div class="widget-card-body">
           <h2>Товарный Тиндер</h2>
-          <p>Посетитель листает варианты как в Тиндере, отмечает что нравится — виджет подбирает товар или услугу и собирает контакт. Для магазинов, курсов, туров, подарков.</p>
+          <div class="widget-card-details">
+            <div class="widget-card-detail">
+              <strong>Как работает</strong>
+              <span>Посетитель листает варианты, отмечает что нравится — виджет подбирает товар и собирает контакт.</span>
+            </div>
+            <div class="widget-card-detail">
+              <strong>Кому подходит</strong>
+              <span>Магазины · курсы · туры · подарки</span>
+            </div>
+          </div>
           <div class="widget-card-meta">
             <span>Квиз</span>
             <span>Превью</span>
@@ -934,7 +986,7 @@
         data-type="quiz forms"
         data-search="квиз свечеварение свечи подборщик обучение мастер класс база вип заявка telegram телефон"
         data-widget-title="Квиз по свечеварению"
-        data-widget-description="Подборщик ведёт посетителя по 4 вопросам, определяет сегмент и собирает контакт на рекомендацию и бонус. Для школ, курсов и экспертных воронок."
+        data-widget-description="Как работает: посетитель отвечает на вопросы, получает рекомендацию и оставляет контакт, чтобы забрать бонус. Кому подходит: школы, курсы, эксперты, образовательные воронки."
         data-widget-src="widgets/quees.html"
       >
         <div class="widget-preview">
@@ -942,7 +994,16 @@
         </div>
         <div class="widget-card-body">
           <h2>Квиз по свечеварению</h2>
-          <p>Подборщик ведёт посетителя по 4 вопросам, определяет сегмент и собирает контакт на рекомендацию и бонус. Для школ, курсов и экспертных воронок.</p>
+          <div class="widget-card-details">
+            <div class="widget-card-detail">
+              <strong>Как работает</strong>
+              <span>Посетитель отвечает на вопросы, получает рекомендацию и оставляет контакт, чтобы забрать бонус.</span>
+            </div>
+            <div class="widget-card-detail">
+              <strong>Кому подходит</strong>
+              <span>Школы · курсы · эксперты · образовательные воронки</span>
+            </div>
+          </div>
           <div class="widget-card-meta">
             <span>Квиз</span>
             <span>Превью</span>
@@ -958,7 +1019,7 @@
         data-type="promo forms"
         data-search="форма таймер черная пятница акция скидка дедлайн заявка телефон имя"
         data-widget-title="Форма с таймером"
-        data-widget-description="Таймер создаёт ощущение, что предложение скоро закончится, и подталкивает оставить заявку сейчас. Для акций, запуска курса, набора группы."
+        data-widget-description="Как работает: таймер показывает, что предложение скоро закончится, и подталкивает оставить заявку сейчас. Кому подходит: акции, запуск курса, набор группы."
         data-widget-src="widgets/black-friday-timer-form-widget.html"
       >
         <div class="widget-preview">
@@ -966,7 +1027,16 @@
         </div>
         <div class="widget-card-body">
           <h2>Форма с таймером</h2>
-          <p>Таймер создаёт ощущение, что предложение скоро закончится, и подталкивает оставить заявку сейчас. Для акций, запуска курса, набора группы.</p>
+          <div class="widget-card-details">
+            <div class="widget-card-detail">
+              <strong>Как работает</strong>
+              <span>Таймер показывает, что предложение скоро закончится, и подталкивает оставить заявку сейчас.</span>
+            </div>
+            <div class="widget-card-detail">
+              <strong>Кому подходит</strong>
+              <span>Акции · запуск курса · набор группы</span>
+            </div>
+          </div>
           <div class="widget-card-meta">
             <span>Форма</span>
             <span>Превью</span>
@@ -982,7 +1052,7 @@
         data-type="banner forms promo"
         data-search="акционная полоса баннер таймер скидка акция заявка форма телефон обучение"
         data-widget-title="Акционная полоса"
-        data-widget-description="Заметная полоса вверху сайта с акцией и таймером — ловит внимание сразу при заходе. Для сезонных акций и скидок."
+        data-widget-description="Как работает: заметная полоса сверху сайта показывает акцию, таймер и открывает форму заявки. Кому подходит: сезонные акции, скидки, распродажи, спецпредложения."
         data-widget-src="widgets/sale-banner-timer-widget.html"
       >
         <div class="widget-preview">
@@ -990,7 +1060,16 @@
         </div>
         <div class="widget-card-body">
           <h2>Акционная полоса</h2>
-          <p>Заметная полоса вверху сайта с акцией и таймером — ловит внимание сразу при заходе. Для сезонных акций и скидок.</p>
+          <div class="widget-card-details">
+            <div class="widget-card-detail">
+              <strong>Как работает</strong>
+              <span>Заметная полоса сверху сайта показывает акцию, таймер и открывает форму заявки.</span>
+            </div>
+            <div class="widget-card-detail">
+              <strong>Кому подходит</strong>
+              <span>Сезонные акции · скидки · распродажи · спецпредложения</span>
+            </div>
+          </div>
           <div class="widget-card-meta">
             <span>Баннер</span>
             <span>Превью</span>
@@ -1006,7 +1085,7 @@
         data-type="banner forms promo"
         data-search="мобильная акция мобильный баннер карточка таймер скидка заявка форма телефон обучение"
         data-widget-title="Мобильная акция"
-        data-widget-description="Промо-карточка специально под телефон: показывает акцию и собирает заявку у мобильных посетителей. А их обычно больше половины."
+        data-widget-description="Как работает: мобильная промо-карточка появляется снизу, показывает акцию и собирает заявку. Кому подходит: мобильный трафик, розыгрыши, скидки, быстрые заявки."
         data-widget-src="widgets/mobile-sale-card-widget.html?preview=1"
       >
         <div class="widget-preview">
@@ -1014,7 +1093,16 @@
         </div>
         <div class="widget-card-body">
           <h2>Мобильная акция</h2>
-          <p>Промо-карточка специально под телефон: показывает акцию и собирает заявку у мобильных посетителей. А их обычно больше половины.</p>
+          <div class="widget-card-details">
+            <div class="widget-card-detail">
+              <strong>Как работает</strong>
+              <span>Мобильная промо-карточка появляется снизу, показывает акцию и собирает заявку.</span>
+            </div>
+            <div class="widget-card-detail">
+              <strong>Кому подходит</strong>
+              <span>Мобильный трафик · розыгрыши · скидки · быстрые заявки</span>
+            </div>
+          </div>
           <div class="widget-card-meta">
             <span>Баннер</span>
             <span>Превью</span>
@@ -1030,7 +1118,7 @@
         data-type="games"
         data-search="игра ловушка мини игра скидка заявка выигрыш клиент"
         data-widget-title="Игра-ловушка"
-        data-widget-description="Посетитель играет, увлекается и оставляет заявку, чтобы забрать выигранную скидку. Оживляет сайт, хорошо работает в акциях и распродажах."
+        data-widget-description="Как работает: посетитель играет, выигрывает скидку и оставляет заявку, чтобы забрать приз. Кому подходит: акции, распродажи, салоны, локальные услуги."
         data-widget-src="widgets/manicure-game-widget.html"
       >
         <div class="widget-preview">
@@ -1038,7 +1126,16 @@
         </div>
         <div class="widget-card-body">
           <h2>Игра-ловушка</h2>
-          <p>Посетитель играет, увлекается и оставляет заявку, чтобы забрать выигранную скидку. Оживляет сайт, хорошо работает в акциях и распродажах.</p>
+          <div class="widget-card-details">
+            <div class="widget-card-detail">
+              <strong>Как работает</strong>
+              <span>Посетитель играет, выигрывает скидку и оставляет заявку, чтобы забрать приз.</span>
+            </div>
+            <div class="widget-card-detail">
+              <strong>Кому подходит</strong>
+              <span>Акции · распродажи · салоны · локальные услуги</span>
+            </div>
+          </div>
           <div class="widget-card-meta">
             <span>Игра</span>
             <span>Превью</span>
@@ -1054,7 +1151,7 @@
         data-type="informer"
         data-search="посетители счетчик купили смотрят товар социальное доказательство информер"
         data-widget-title="Счётчик посетителей"
-        data-widget-description="Показывает, сколько человек сейчас смотрят товар или уже купили — создаёт ощущение спроса. Для магазинов и страниц товара."
+        data-widget-description="Как работает: показывает, сколько человек смотрят товар или уже купили, и создаёт ощущение спроса. Кому подходит: магазины, карточки товара, лендинги, страницы услуг."
         data-widget-src="widgets/purchase-counter-widget.html"
       >
         <div class="widget-preview">
@@ -1062,7 +1159,16 @@
         </div>
         <div class="widget-card-body">
           <h2>Счётчик посетителей</h2>
-          <p>Показывает, сколько человек сейчас смотрят товар или уже купили — создаёт ощущение спроса. Для магазинов и страниц товара.</p>
+          <div class="widget-card-details">
+            <div class="widget-card-detail">
+              <strong>Как работает</strong>
+              <span>Показывает, сколько человек смотрят товар или уже купили, и создаёт ощущение спроса.</span>
+            </div>
+            <div class="widget-card-detail">
+              <strong>Кому подходит</strong>
+              <span>Магазины · карточки товара · лендинги · страницы услуг</span>
+            </div>
+          </div>
           <div class="widget-card-meta">
             <span>Информер</span>
             <span>Превью</span>
@@ -1078,7 +1184,7 @@
         data-type="games"
         data-search="велоигра велосипед раннер игра бонусы баллы препятствия прыжок жизни заявка"
         data-widget-title="Велоигра за бонусы"
-        data-widget-description="Пиксельная мини-игра: велосипед едет сам, игрок прыгает через препятствия, собирает баллы и оставляет заявку на выигрыш."
+        data-widget-description="Как работает: посетитель управляет мини-игрой, собирает баллы и оставляет контакт, чтобы забрать выигрыш. Кому подходит: акции, доставка, магазины, молодая аудитория."
         data-widget-src="widgets/bike-bonus-runner-widget.html"
       >
         <div class="widget-preview">
@@ -1086,7 +1192,16 @@
         </div>
         <div class="widget-card-body">
           <h2>Велоигра за бонусы</h2>
-          <p>Пиксельная мини-игра: велосипед едет сам, игрок прыгает через препятствия, собирает баллы и оставляет заявку на выигрыш.</p>
+          <div class="widget-card-details">
+            <div class="widget-card-detail">
+              <strong>Как работает</strong>
+              <span>Посетитель управляет мини-игрой, собирает баллы и оставляет контакт, чтобы забрать выигрыш.</span>
+            </div>
+            <div class="widget-card-detail">
+              <strong>Кому подходит</strong>
+              <span>Акции · доставка · магазины · молодая аудитория</span>
+            </div>
+          </div>
           <div class="widget-card-meta">
             <span>Игра</span>
             <span>Превью</span>
@@ -1102,7 +1217,7 @@
         data-type="forms"
         data-search="гифка кот форма обратная связь вопросы заявка телефон поддержка забота"
         data-widget-title="Форма с гифкой"
-        data-widget-description="Мягкий блок обратной связи с GIF: открывает форму и отправляет вопрос клиента."
+        data-widget-description="Как работает: заметный блок с GIF открывает короткую форму для вопроса или заявки. Кому подходит: консультации, поддержка, услуги, экспертные сайты."
         data-widget-src="widgets/gif-contact-widget.html"
       >
         <div class="widget-preview">
@@ -1110,7 +1225,16 @@
         </div>
         <div class="widget-card-body">
           <h2>Форма с гифкой</h2>
-          <p>Мягкий блок обратной связи с GIF: открывает форму и отправляет вопрос клиента.</p>
+          <div class="widget-card-details">
+            <div class="widget-card-detail">
+              <strong>Как работает</strong>
+              <span>Заметный блок с GIF открывает короткую форму для вопроса или заявки.</span>
+            </div>
+            <div class="widget-card-detail">
+              <strong>Кому подходит</strong>
+              <span>Консультации · поддержка · услуги · экспертные сайты</span>
+            </div>
+          </div>
           <div class="widget-card-meta">
             <span>Форма</span>
             <span>Превью</span>
@@ -1126,7 +1250,7 @@
         data-type="forms promo"
         data-search="арт форма органичная картинка неровные края бонус таймер заявка телефон имя подарок"
         data-widget-title="Арт-форма с бонусом"
-        data-widget-description="Дизайнерская форма с органичной картинкой, таймером и заявкой на персональный бонус."
+        data-widget-description="Как работает: форма с изображением и таймером предлагает бонус и собирает контакт. Кому подходит: обучение, услуги, премиальные офферы, консультации."
         data-widget-src="widgets/organic-lead-form-widget.html"
       >
         <div class="widget-preview">
@@ -1134,7 +1258,16 @@
         </div>
         <div class="widget-card-body">
           <h2>Арт-форма с бонусом</h2>
-          <p>Дизайнерская форма с органичной картинкой, таймером и заявкой на персональный бонус.</p>
+          <div class="widget-card-details">
+            <div class="widget-card-detail">
+              <strong>Как работает</strong>
+              <span>Форма с изображением и таймером предлагает бонус и собирает контакт.</span>
+            </div>
+            <div class="widget-card-detail">
+              <strong>Кому подходит</strong>
+              <span>Обучение · услуги · премиальные офферы · консультации</span>
+            </div>
+          </div>
           <div class="widget-card-meta">
             <span>Форма</span>
             <span>Превью</span>
@@ -1150,7 +1283,7 @@
         data-type="informer"
         data-search="яндекс рейтинг отзывы карты оценка звезды доверие репутация информер"
         data-widget-title="Рейтинг на Яндекс Картах"
-        data-widget-description="Кликабельный информер с оценкой, количеством отзывов и переходом на страницу заведения в Яндекс Картах."
+        data-widget-description="Как работает: показывает рейтинг, количество отзывов и ведёт на страницу заведения в Яндекс Картах. Кому подходит: локальный бизнес, клиники, салоны, рестораны."
         data-widget-src="widgets/yandex-rating-widget.html"
       >
         <div class="widget-preview">
@@ -1158,7 +1291,16 @@
         </div>
         <div class="widget-card-body">
           <h2>Рейтинг на Яндекс Картах</h2>
-          <p>Кликабельный информер с оценкой, количеством отзывов и переходом на страницу заведения в Яндекс Картах.</p>
+          <div class="widget-card-details">
+            <div class="widget-card-detail">
+              <strong>Как работает</strong>
+              <span>Показывает рейтинг, количество отзывов и ведёт на страницу заведения в Яндекс Картах.</span>
+            </div>
+            <div class="widget-card-detail">
+              <strong>Кому подходит</strong>
+              <span>Локальный бизнес · клиники · салоны · рестораны</span>
+            </div>
+          </div>
           <div class="widget-card-meta">
             <span>Информер</span>
             <span>Превью</span>
@@ -1174,7 +1316,7 @@
         data-type="informer"
         data-search="cookie куки cookies согласие плашка информер privacy приватность аналитика"
         data-widget-title="Cookie-плашка"
-        data-widget-description="Компактная iOS-плашка про cookie: показывает короткий текст, кнопку Ок и запоминает выбор посетителя."
+        data-widget-description="Как работает: показывает аккуратное уведомление о cookie и запоминает согласие посетителя. Кому подходит: сайты с аналитикой, рекламой, формами и пикселями."
         data-widget-src="widgets/cookie-consent-widget.html?preview=1"
       >
         <div class="widget-preview">
@@ -1182,7 +1324,16 @@
         </div>
         <div class="widget-card-body">
           <h2>Cookie-плашка</h2>
-          <p>Компактная iOS-плашка про cookie: показывает короткий текст, кнопку Ок и запоминает выбор посетителя.</p>
+          <div class="widget-card-details">
+            <div class="widget-card-detail">
+              <strong>Как работает</strong>
+              <span>Показывает аккуратное уведомление о cookie и запоминает согласие посетителя.</span>
+            </div>
+            <div class="widget-card-detail">
+              <strong>Кому подходит</strong>
+              <span>Сайты с аналитикой · рекламой · формами · пикселями</span>
+            </div>
+          </div>
           <div class="widget-card-meta">
             <span>Информер</span>
             <span>Превью</span>
