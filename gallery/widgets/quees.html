@@ -341,7 +341,9 @@
     btnRestart.addEventListener('click', restartQuiz);
     formLead.addEventListener('submit', handleSubmit);
 
-    if (params.get('preview') === 'question') {
+    if (params.get('preview') === 'question' || params.get('preview') === 'question1') {
+      currentQuestionIndex = 0;
+      answers = {};
       navigateTo('quiz');
     }
   }
