@@ -606,12 +606,12 @@ body {
   };
   
   const prizes = [
-    "Скидка 10%\nна курс",
-    "Подарок\nновичку",
-    "Секретный\nбонус",
-    "Чек-лист\nмастера",
-    "Скидка 20%\nна курс",
-    "Бесплатный\nМК"
+    "Бесплатный урок\n«Почему не\nпахнет свеча»",
+    "Чек-лист\nпроверенных\nпоставщиков",
+    "МК для новичка\nза 490 ₽*",
+    "Скидка 15%\nна тариф\nПРОФИ",
+    "Гайд\n«3 ошибки\nновичка»",
+    "Скидка 2000 ₽\nна тариф\nВИП"
   ];
 
   const colors = [
@@ -732,10 +732,10 @@ body {
         ctx.textAlign = isUpsideDown ? "left" : "right";
         ctx.textBaseline = "middle"; 
         
-        ctx.font = "800 42px 'Montserrat', sans-serif"; 
+        ctx.font = "800 32px 'Montserrat', sans-serif"; 
         
         const lines = prizes[i].split('\n');
-        const lineHeight = 52;
+        const lineHeight = 38;
         const startY = -((lines.length - 1) * lineHeight) / 2;
         
         if (isUpsideDown) {
