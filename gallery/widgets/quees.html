@@ -5,324 +5,712 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Квиз: с чего начать в свечеварении</title>
   <style>
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
 
     body {
       min-height: 100vh;
       margin: 0;
       display: grid;
       place-items: center;
-      padding: 24px;
-      background:
-        radial-gradient(circle at 20% 0%, rgba(255, 215, 137, .34), transparent 35%),
-        radial-gradient(circle at 90% 85%, rgba(123, 92, 255, .14), transparent 34%),
-        #f7f1e7;
-      color: #261f1a;
+      padding: 26px;
+      background: #f3f4f7;
+      color: #202124;
       font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
     }
 
     .candle-quiz {
-      width: min(440px, calc(100vw - 32px));
-      border: 1px solid rgba(58, 45, 35, .14);
-      border-radius: 28px;
-      background: rgba(255, 252, 246, .92);
-      box-shadow: 0 28px 80px rgba(55, 38, 20, .16);
-      overflow: hidden;
-    }
-
-    .cq-top {
-      min-height: 122px;
-      padding: 24px 24px 20px;
-      background:
-        linear-gradient(135deg, rgba(83, 60, 40, .92), rgba(161, 116, 70, .74)),
-        radial-gradient(circle at 15% 20%, rgba(255, 210, 124, .32), transparent 30%);
-      color: #fff8ed;
+      --accent: #1479ea;
+      --accent-soft: #edf5ff;
+      width: min(1120px, calc(100vw - 52px));
+      min-height: 620px;
       position: relative;
       overflow: hidden;
+      border-radius: 46px;
+      background: #fff;
+      box-shadow: 0 30px 80px rgba(31, 41, 55, .08);
     }
 
-    .cq-top::after {
+    .candle-quiz::before {
       content: "";
       position: absolute;
-      width: 140px;
-      height: 140px;
-      right: -46px;
-      top: -48px;
-      border-radius: 50%;
-      background: rgba(255, 219, 154, .18);
+      inset: 0;
+      border-radius: inherit;
+      border: 1px solid rgba(17, 24, 39, .05);
+      pointer-events: none;
     }
 
-    .cq-kicker {
-      margin: 0 0 10px;
-      color: rgba(255, 248, 237, .72);
-      font-size: 12px;
-      font-weight: 800;
-      letter-spacing: .08em;
-      text-transform: uppercase;
+    .cq-progress-line {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 0;
+      height: 7px;
+      border-radius: 999px;
+      background: var(--accent);
+      transition: width .28s ease;
+      z-index: 5;
+    }
+
+    .cq-header {
+      height: 86px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      padding: 30px 40px 0;
+      position: relative;
+      z-index: 2;
+    }
+
+    .cq-brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 14px;
+      font-size: 24px;
+      font-weight: 900;
+      letter-spacing: -.04em;
+      color: #202124;
+    }
+
+    .cq-logo {
+      width: 42px;
+      height: 42px;
+      display: grid;
+      place-items: center;
+      border-radius: 13px;
+      background: var(--accent);
+      color: #fff;
+      box-shadow: 0 12px 28px rgba(20, 121, 234, .22);
+    }
+
+    .cq-logo svg { width: 24px; height: 24px; }
+
+    .cq-close {
+      width: 56px;
+      height: 56px;
+      display: grid;
+      place-items: center;
+      border: 0;
+      border-radius: 50%;
+      background: #f7f8fa;
+      color: #929aa6;
+      cursor: pointer;
+      transition: transform .18s ease, background .18s ease;
+    }
+
+    .cq-close:hover {
+      transform: scale(1.04);
+      background: #eef1f5;
+    }
+
+    .cq-close svg { width: 28px; height: 28px; }
+
+    .cq-screen {
+      display: none;
+      min-height: 534px;
+      padding: 44px 52px 52px;
+      animation: cqFade .25s ease both;
       position: relative;
       z-index: 1;
+    }
+
+    .cq-screen.is-active { display: block; }
+
+    .cq-intro-grid {
+      min-height: 438px;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(360px, 46%);
+      align-items: center;
+      gap: 64px;
     }
 
     .cq-title {
       margin: 0;
-      max-width: 330px;
-      font-size: 27px;
-      line-height: 1.05;
-      font-weight: 900;
-      letter-spacing: -.03em;
-      position: relative;
-      z-index: 1;
-    }
-
-    .cq-body {
-      padding: 24px;
-    }
-
-    .cq-screen {
-      display: none;
-      animation: cqFade .24s ease both;
-    }
-
-    .cq-screen.is-active {
-      display: block;
+      max-width: 520px;
+      font-size: clamp(48px, 5.2vw, 76px);
+      line-height: .99;
+      font-weight: 950;
+      letter-spacing: -.07em;
+      color: #202124;
     }
 
     .cq-text {
-      margin: 0;
-      color: #695e54;
-      font-size: 16px;
-      line-height: 1.5;
+      margin: 28px 0 0;
+      max-width: 500px;
+      color: #85868c;
+      font-size: clamp(22px, 2.1vw, 30px);
+      line-height: 1.35;
+      letter-spacing: -.035em;
+      font-weight: 500;
     }
 
     .cq-main-btn,
-    .cq-option,
+    .cq-next,
     .cq-submit,
     .cq-secondary {
-      width: 100%;
-      min-height: 52px;
+      min-height: 68px;
       border: 0;
-      border-radius: 14px;
+      border-radius: 999px;
       cursor: pointer;
       font: inherit;
+      font-size: 24px;
       font-weight: 850;
-      transition: transform .18s ease, box-shadow .18s ease, background .18s ease;
+      letter-spacing: -.03em;
+      transition: transform .18s ease, box-shadow .18s ease, opacity .18s ease, background .18s ease;
     }
 
-    .cq-main-btn,
-    .cq-submit {
-      margin-top: 22px;
-      background: #2b211a;
-      color: #fff8ed;
-      box-shadow: 0 14px 34px rgba(43, 33, 26, .24);
+    .cq-main-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 18px;
+      margin-top: 44px;
+      padding: 0 42px;
+      background: #1f1f22;
+      color: #fff;
+      box-shadow: 0 22px 36px rgba(22, 24, 29, .16);
     }
 
     .cq-main-btn:hover,
-    .cq-submit:hover,
-    .cq-option:hover,
+    .cq-next:hover:not(:disabled),
+    .cq-submit:hover:not(:disabled),
     .cq-secondary:hover {
       transform: translateY(-2px);
+      box-shadow: 0 20px 34px rgba(20, 121, 234, .18);
     }
 
-    .cq-progress {
+    .cq-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      margin-top: 48px;
+    }
+
+    .cq-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      min-height: 44px;
+      padding: 0 22px;
+      border-radius: 999px;
+      background: #f4f5f7;
+      color: #2b2c30;
+      font-size: 18px;
+      font-weight: 800;
+      letter-spacing: -.025em;
+    }
+
+    .cq-visual {
+      position: relative;
+      align-self: stretch;
+      min-height: 420px;
+      border-radius: 48px;
+      overflow: hidden;
+      background:
+        linear-gradient(135deg, rgba(30, 24, 18, .18), rgba(255, 245, 224, .08)),
+        url("https://images.unsplash.com/photo-1603006905003-be475563bc59?auto=format&fit=crop&w=900&q=80") center/cover;
+      box-shadow: 0 34px 70px rgba(22, 24, 29, .14);
+    }
+
+    .cq-visual::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, transparent 35%, rgba(0, 0, 0, .38));
+    }
+
+    .cq-visual-badge {
+      position: absolute;
+      left: 50%;
+      bottom: 30px;
+      z-index: 1;
+      transform: translateX(-50%);
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      min-height: 46px;
+      padding: 0 28px;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, .42);
+      background: rgba(255, 255, 255, .22);
+      color: #fff;
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      font-size: 18px;
+      font-weight: 750;
+      white-space: nowrap;
+    }
+
+    .cq-question-head {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 14px;
-      margin-bottom: 18px;
-      color: #8d8075;
-      font-size: 13px;
+      gap: 22px;
+      margin: 28px 0 56px;
+    }
+
+    .cq-step {
+      color: #8c8f96;
+      font-size: 18px;
       font-weight: 800;
-    }
-
-    .cq-bar {
-      height: 8px;
-      flex: 1;
-      border-radius: 999px;
-      background: #eee3d3;
-      overflow: hidden;
-    }
-
-    .cq-bar span {
-      display: block;
-      width: 25%;
-      height: 100%;
-      border-radius: inherit;
-      background: linear-gradient(90deg, #c58c45, #ffcf7a);
-      transition: width .24s ease;
-    }
-
-    .cq-question-title,
-    .cq-result-title {
-      margin: 0 0 16px;
-      font-size: 23px;
-      line-height: 1.16;
-      font-weight: 900;
-      letter-spacing: -.02em;
-    }
-
-    .cq-options {
-      display: grid;
-      gap: 10px;
-    }
-
-    .cq-option {
-      min-height: 60px;
-      padding: 14px 16px;
-      border: 1px solid rgba(58, 45, 35, .14);
-      background: #fffaf2;
-      color: #2e261f;
-      text-align: left;
-      line-height: 1.25;
-      box-shadow: 0 8px 20px rgba(70, 48, 28, .07);
-    }
-
-    .cq-result-badge {
-      display: inline-flex;
-      margin-bottom: 12px;
-      padding: 8px 12px;
-      border-radius: 999px;
-      background: #fff0cf;
-      color: #8b5a19;
-      font-size: 12px;
-      font-weight: 900;
       letter-spacing: .08em;
       text-transform: uppercase;
     }
 
-    .cq-result-text,
-    .cq-bonus {
+    .cq-bonus-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      min-height: 50px;
+      padding: 0 22px;
+      border: 1px solid rgba(224, 168, 42, .42);
+      border-radius: 999px;
+      background: #fffaf0;
+      color: #9a6018;
+      font-size: 18px;
+      font-weight: 850;
+      white-space: nowrap;
+    }
+
+    .cq-question-title {
       margin: 0;
-      color: #685b50;
-      font-size: 15px;
-      line-height: 1.48;
+      color: #202124;
+      font-size: clamp(36px, 4vw, 48px);
+      line-height: 1.05;
+      font-weight: 950;
+      letter-spacing: -.06em;
+    }
+
+    .cq-question-subtitle {
+      margin: 22px 0 0;
+      color: #8a8c92;
+      font-size: 25px;
+      line-height: 1.25;
+      letter-spacing: -.04em;
+    }
+
+    .cq-options {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 22px;
+      margin-top: 56px;
+    }
+
+    .cq-option {
+      min-height: 138px;
+      padding: 26px 28px;
+      border: 2px solid transparent;
+      border-radius: 28px;
+      background: #f8f9fb;
+      color: #202124;
+      cursor: pointer;
+      font: inherit;
+      text-align: center;
+      display: grid;
+      place-items: center;
+      gap: 12px;
+      transition: transform .18s ease, background .18s ease, border-color .18s ease, box-shadow .18s ease;
+    }
+
+    .cq-option:hover,
+    .cq-option.is-selected {
+      transform: translateY(-2px);
+      background: #fff;
+      border-color: rgba(20, 121, 234, .42);
+      box-shadow: 0 18px 36px rgba(20, 121, 234, .12);
+    }
+
+    .cq-option-icon {
+      width: 34px;
+      height: 34px;
+      display: grid;
+      place-items: center;
+      color: var(--accent);
+    }
+
+    .cq-option-icon svg { width: 32px; height: 32px; }
+
+    .cq-option-text {
+      font-size: 22px;
+      line-height: 1.2;
+      font-weight: 800;
+      letter-spacing: -.035em;
+    }
+
+    .cq-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      margin-top: 58px;
+      padding-top: 28px;
+      border-top: 1px solid #eef0f3;
+    }
+
+    .cq-back {
+      border: 0;
+      background: transparent;
+      color: #85868c;
+      cursor: pointer;
+      font: inherit;
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: -.025em;
+    }
+
+    .cq-next,
+    .cq-submit {
+      min-width: 180px;
+      padding: 0 36px;
+      background: var(--accent);
+      color: #fff;
+      box-shadow: 0 16px 32px rgba(20, 121, 234, .18);
+    }
+
+    .cq-next:disabled,
+    .cq-submit:disabled {
+      cursor: not-allowed;
+      opacity: .45;
+      background: #eef0f3;
+      color: #9ca3af;
+      box-shadow: none;
+    }
+
+    .cq-result {
+      max-width: 760px;
+      margin: 52px auto 0;
+      text-align: center;
+    }
+
+    .cq-result-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      min-height: 44px;
+      padding: 0 22px;
+      border-radius: 999px;
+      background: var(--accent-soft);
+      color: #5d96ed;
+      font-size: 20px;
+      font-weight: 850;
+      letter-spacing: -.025em;
+    }
+
+    .cq-result-title {
+      margin: 36px 0 0;
+      color: #202124;
+      font-size: clamp(34px, 4vw, 46px);
+      line-height: 1.08;
+      font-weight: 950;
+      letter-spacing: -.055em;
+    }
+
+    .cq-result-text {
+      margin: 22px auto 0;
+      max-width: 760px;
+      color: #85868c;
+      font-size: 23px;
+      line-height: 1.38;
+      letter-spacing: -.035em;
     }
 
     .cq-bonus {
-      margin-top: 14px;
-      padding: 14px;
-      border: 1px dashed rgba(145, 97, 35, .3);
-      border-radius: 14px;
-      background: #fff7e8;
-      color: #49382b;
-      font-weight: 700;
+      margin: 24px auto 0;
+      max-width: 760px;
+      padding: 20px 24px;
+      border-radius: 24px;
+      background: #f8f9fb;
+      color: #303238;
+      font-size: 19px;
+      line-height: 1.38;
+      font-weight: 750;
+      letter-spacing: -.025em;
     }
 
     .cq-form {
       display: grid;
-      gap: 12px;
-      margin-top: 18px;
+      gap: 18px;
+      max-width: 560px;
+      margin: 34px auto 0;
+      text-align: left;
     }
 
     .cq-field {
       width: 100%;
-      min-height: 50px;
-      padding: 0 15px;
-      border: 1px solid rgba(58, 45, 35, .16);
-      border-radius: 14px;
+      min-height: 68px;
+      padding: 0 28px;
+      border: 2px solid transparent;
+      border-radius: 22px;
       outline: 0;
-      background: #fffaf2;
-      color: #261f1a;
+      background: #f8f9fb;
+      color: #202124;
       font: inherit;
-      font-weight: 700;
+      font-size: 23px;
+      letter-spacing: -.035em;
     }
 
     .cq-field:focus {
-      border-color: rgba(197, 140, 69, .7);
-      box-shadow: 0 0 0 4px rgba(197, 140, 69, .12);
+      border-color: rgba(20, 121, 234, .38);
+      background: #fff;
+      box-shadow: 0 0 0 5px rgba(20, 121, 234, .08);
     }
 
     .cq-consent {
       display: flex;
-      gap: 10px;
       align-items: flex-start;
-      color: #6b6157;
-      font-size: 13px;
+      gap: 12px;
+      color: #85868c;
+      font-size: 15px;
       line-height: 1.35;
-      font-weight: 700;
+      font-weight: 650;
     }
 
     .cq-consent input {
-      width: 18px;
-      height: 18px;
+      width: 19px;
+      height: 19px;
       flex: 0 0 auto;
-      accent-color: #2b211a;
       margin-top: 1px;
+      accent-color: var(--accent);
     }
 
     .cq-submit {
-      margin-top: 2px;
-    }
-
-    .cq-submit:disabled {
-      opacity: .65;
-      cursor: wait;
-      transform: none;
-    }
-
-    .cq-secondary {
-      margin-top: 10px;
-      background: #f0e6d8;
-      color: #3b3027;
-    }
-
-    .cq-success {
-      text-align: center;
-      padding: 18px 0 6px;
-    }
-
-    .cq-success-icon {
-      width: 70px;
-      height: 70px;
-      display: grid;
-      place-items: center;
-      margin: 0 auto 16px;
-      border-radius: 50%;
-      background: #e8f8df;
-      color: #397222;
-      font-size: 32px;
-      font-weight: 900;
+      width: 100%;
+      border-radius: 18px;
     }
 
     .cq-error {
       display: none;
-      margin: 2px 0 0;
-      color: #b42318;
-      font-size: 13px;
+      margin: 0;
+      color: #d92d20;
+      font-size: 15px;
       font-weight: 800;
+      text-align: center;
     }
 
-    .cq-error.is-visible {
-      display: block;
+    .cq-error.is-visible { display: block; }
+
+    .cq-success {
+      display: grid;
+      place-items: center;
+      text-align: center;
+    }
+
+    .cq-success-inner {
+      max-width: 680px;
+      margin: auto;
+    }
+
+    .cq-success-icon {
+      width: 82px;
+      height: 82px;
+      display: grid;
+      place-items: center;
+      margin: 0 auto 28px;
+      border-radius: 50%;
+      background: var(--accent-soft);
+      color: var(--accent);
+      font-size: 38px;
+      font-weight: 950;
+    }
+
+    .cq-secondary {
+      margin-top: 34px;
+      padding: 0 34px;
+      background: #f0f2f5;
+      color: #202124;
     }
 
     @keyframes cqFade {
-      from { opacity: 0; transform: translateY(8px); }
+      from { opacity: 0; transform: translateY(10px); }
       to { opacity: 1; transform: translateY(0); }
     }
 
-    @media (max-width: 480px) {
+    @media (max-width: 760px) {
       body {
         padding: 12px;
+        background: #f3f4f7;
       }
 
       .candle-quiz {
         width: min(100%, calc(100vw - 24px));
-        border-radius: 22px;
+        min-height: min(760px, calc(100vh - 24px));
+        border-radius: 30px;
       }
 
-      .cq-top {
-        min-height: 110px;
-        padding: 20px 20px 18px;
+      .cq-progress-line { height: 5px; }
+
+      .cq-header {
+        height: 70px;
+        padding: 20px 22px 0;
+      }
+
+      .cq-brand {
+        gap: 10px;
+        font-size: 20px;
+      }
+
+      .cq-logo {
+        width: 36px;
+        height: 36px;
+        border-radius: 11px;
+      }
+
+      .cq-close {
+        width: 46px;
+        height: 46px;
+      }
+
+      .cq-screen {
+        min-height: calc(min(760px, 100vh - 24px) - 70px);
+        padding: 30px 22px 26px;
+      }
+
+      .cq-intro-grid {
+        min-height: auto;
+        grid-template-columns: 1fr;
+        gap: 26px;
       }
 
       .cq-title {
-        font-size: 24px;
+        font-size: 40px;
+        letter-spacing: -.06em;
       }
 
-      .cq-body {
-        padding: 20px;
+      .cq-text {
+        margin-top: 18px;
+        font-size: 19px;
+      }
+
+      .cq-main-btn {
+        width: 100%;
+        justify-content: center;
+        min-height: 58px;
+        margin-top: 28px;
+        padding: 0 24px;
+        font-size: 20px;
+      }
+
+      .cq-pills {
+        margin-top: 22px;
+        gap: 10px;
+      }
+
+      .cq-pill {
+        min-height: 38px;
+        padding: 0 14px;
+        font-size: 14px;
+      }
+
+      .cq-visual {
+        min-height: 220px;
+        border-radius: 26px;
+      }
+
+      .cq-visual-badge {
+        bottom: 18px;
+        min-height: 38px;
+        padding: 0 16px;
+        font-size: 14px;
+      }
+
+      .cq-question-head {
+        margin: 18px 0 30px;
+      }
+
+      .cq-step {
+        font-size: 13px;
+      }
+
+      .cq-bonus-chip {
+        min-height: 38px;
+        padding: 0 13px;
+        font-size: 13px;
+      }
+
+      .cq-question-title {
+        font-size: 30px;
+      }
+
+      .cq-question-subtitle {
+        margin-top: 12px;
+        font-size: 17px;
+      }
+
+      .cq-options {
+        grid-template-columns: 1fr;
+        gap: 12px;
+        margin-top: 24px;
+      }
+
+      .cq-option {
+        min-height: 76px;
+        grid-template-columns: 32px 1fr;
+        place-items: center start;
+        text-align: left;
+        padding: 16px 18px;
+        border-radius: 20px;
+      }
+
+      .cq-option-text {
+        font-size: 17px;
+      }
+
+      .cq-footer {
+        margin-top: 24px;
+        padding-top: 18px;
+      }
+
+      .cq-back {
+        font-size: 17px;
+      }
+
+      .cq-next {
+        min-width: 128px;
+        min-height: 52px;
+        padding: 0 20px;
+        font-size: 18px;
+      }
+
+      .cq-result {
+        margin-top: 20px;
+      }
+
+      .cq-result-badge {
+        min-height: 38px;
+        padding: 0 15px;
+        font-size: 15px;
+      }
+
+      .cq-result-title {
+        margin-top: 22px;
+        font-size: 29px;
+      }
+
+      .cq-result-text {
+        font-size: 16px;
+      }
+
+      .cq-bonus {
+        padding: 14px 16px;
+        border-radius: 18px;
+        font-size: 14px;
+      }
+
+      .cq-form {
+        gap: 12px;
+        margin-top: 20px;
+      }
+
+      .cq-field {
+        min-height: 54px;
+        padding: 0 18px;
+        border-radius: 16px;
+        font-size: 17px;
+      }
+
+      .cq-submit,
+      .cq-secondary {
+        min-height: 54px;
+        font-size: 18px;
       }
     }
   </style>
@@ -330,27 +718,61 @@
 <body>
   <!-- Начало кода виджета Квиз "С чего начать в свечеварении" -->
   <div class="candle-quiz" data-candle-quiz>
-    <div class="cq-top">
-      <p class="cq-kicker">Виджет-квиз</p>
-      <h1 class="cq-title">С чего начать в свечеварении?</h1>
-    </div>
+    <div class="cq-progress-line" data-progress-line></div>
 
-    <div class="cq-body">
-      <section class="cq-screen is-active" data-screen="intro">
-        <p class="cq-text">Ответь на 4 вопроса — подберём формат, который подойдёт именно тебе, и дадим бонус на старт.</p>
-        <button class="cq-main-btn" type="button" data-start>Пройти за 1 минуту</button>
-      </section>
+    <header class="cq-header">
+      <div class="cq-brand">
+        <span class="cq-logo" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none">
+            <path d="M8 21h8M12 3c2.2 2.1 3.3 4.1 3.3 6.1A3.3 3.3 0 0 1 12 12.4a3.3 3.3 0 0 1-3.3-3.3C8.7 7.1 9.8 5.1 12 3Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M7 21V12.5c0-.8.7-1.5 1.5-1.5h7c.8 0 1.5.7 1.5 1.5V21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </span>
+        <span>Дневник свечника</span>
+      </div>
+      <button class="cq-close" type="button" aria-label="Закрыть виджет" data-close>
+        <svg viewBox="0 0 24 24" fill="none">
+          <path d="M6 6l12 12M18 6 6 18" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/>
+        </svg>
+      </button>
+    </header>
 
-      <section class="cq-screen" data-screen="question">
-        <div class="cq-progress">
-          <span data-progress-label>1 / 4</span>
-          <div class="cq-bar" aria-hidden="true"><span data-progress-bar></span></div>
+    <section class="cq-screen is-active" data-screen="intro">
+      <div class="cq-intro-grid">
+        <div>
+          <h1 class="cq-title">С чего начать в свечеварении?</h1>
+          <p class="cq-text">Ответь на 4 вопроса — подберём формат, который подойдёт именно тебе, и дадим бонус на старт.</p>
+          <button class="cq-main-btn" type="button" data-start>
+            Пройти за 1 минуту
+            <span aria-hidden="true">→</span>
+          </button>
+          <div class="cq-pills" aria-hidden="true">
+            <span class="cq-pill">% Бонус на старт</span>
+            <span class="cq-pill">☑ Рекомендация</span>
+          </div>
         </div>
-        <h2 class="cq-question-title" data-question-title></h2>
-        <div class="cq-options" data-options></div>
-      </section>
+        <div class="cq-visual">
+          <div class="cq-visual-badge">✨ Тёплый старт без хаоса</div>
+        </div>
+      </div>
+    </section>
 
-      <section class="cq-screen" data-screen="result">
+    <section class="cq-screen" data-screen="question">
+      <div class="cq-question-head">
+        <div class="cq-step" data-progress-label>Шаг 1 из 4</div>
+        <div class="cq-bonus-chip">🎁 Бонус ждёт</div>
+      </div>
+      <h2 class="cq-question-title" data-question-title></h2>
+      <p class="cq-question-subtitle">Выбери вариант, который ближе всего к тебе</p>
+      <div class="cq-options" data-options></div>
+      <div class="cq-footer">
+        <button class="cq-back" type="button" data-back>← Назад</button>
+        <button class="cq-next" type="button" data-next disabled>Далее →</button>
+      </div>
+    </section>
+
+    <section class="cq-screen" data-screen="result">
+      <div class="cq-result">
         <div class="cq-result-badge" data-result-segment></div>
         <h2 class="cq-result-title" data-result-title></h2>
         <p class="cq-result-text" data-result-text></p>
@@ -366,15 +788,17 @@
           <p class="cq-error" data-error></p>
           <button class="cq-submit" type="submit" data-submit>Получить рекомендацию и бонус</button>
         </form>
-      </section>
+      </div>
+    </section>
 
-      <section class="cq-screen cq-success" data-screen="success">
+    <section class="cq-screen cq-success" data-screen="success">
+      <div class="cq-success-inner">
         <div class="cq-success-icon">✓</div>
         <h2 class="cq-result-title">Готово! Уже летит к тебе ✨</h2>
         <p class="cq-result-text">Скоро напишем в Telegram с твоей рекомендацией и бонусом. До встречи в Дневнике свечника!</p>
         <button class="cq-secondary" type="button" data-restart>Пройти ещё раз</button>
-      </section>
-    </div>
+      </div>
+    </section>
   </div>
 
   <script>
@@ -393,66 +817,74 @@
         {
           title: 'Делала ли ты свечи раньше?',
           options: [
-            { text: 'Никогда, только мечтаю попробовать', score: 'Н' },
-            { text: 'Пробовала пару раз для себя', score: 'Т' },
-            { text: 'Уже делаю, хочу выйти на доход', score: 'М' }
+            { text: 'Никогда, только мечтаю попробовать', score: 'Н', icon: 'spark' },
+            { text: 'Пробовала пару раз для себя', score: 'Т', icon: 'heart' },
+            { text: 'Уже делаю, хочу выйти на доход', score: 'М', icon: 'chart' }
           ]
         },
         {
           title: 'Что тебе ближе?',
           options: [
-            { text: 'Хочу занятие для души и руками', score: 'Т' },
-            { text: 'Хочу с нуля освоить и начать зарабатывать', score: 'Н' },
-            { text: 'Хочу масштабировать то, что уже делаю', score: 'М' }
+            { text: 'Хочу занятие для души и руками', score: 'Т', icon: 'heart' },
+            { text: 'Хочу с нуля освоить и начать зарабатывать', score: 'Н', icon: 'spark' },
+            { text: 'Хочу масштабировать то, что уже делаю', score: 'М', icon: 'chart' }
           ]
         },
         {
           title: 'Сколько времени готова уделять?',
           options: [
-            { text: 'Пока просто попробовать, без обязательств', score: 'Н' },
-            { text: 'Несколько часов в неделю в удовольствие', score: 'Т' },
-            { text: 'Готова вложиться серьёзно, это мой бизнес', score: 'М' }
+            { text: 'Пока просто попробовать, без обязательств', score: 'Н', icon: 'spark' },
+            { text: 'Несколько часов в неделю в удовольствие', score: 'Т', icon: 'heart' },
+            { text: 'Готова вложиться серьёзно, это мой бизнес', score: 'М', icon: 'chart' }
           ]
         },
         {
           title: 'Что для тебя важнее всего?',
           options: [
-            { text: 'Получить первый красивый результат', score: 'Н' },
-            { text: 'Творчество и спокойствие', score: 'Т' },
-            { text: 'Стабильные продажи и клиенты', score: 'М' }
+            { text: 'Получить первый красивый результат', score: 'Н', icon: 'spark' },
+            { text: 'Творчество и спокойствие', score: 'Т', icon: 'heart' },
+            { text: 'Стабильные продажи и клиенты', score: 'М', icon: 'chart' }
           ]
         }
       ];
 
       const RESULTS = {
         'Н': {
-          segment: 'Новичок',
+          segment: '✨ Анализ завершён: новичок',
           title: 'Тебе подойдёт: Мастер-класс для новичка',
           text: 'Ты в самом начале — и это здорово. Начни с мастер-класса за 990 ₽: зальёшь первую свечу по проверенному рецепту, без тестов и испорченных материалов. Это мягкий вход, после которого станет понятно, твоё это или нет.',
           bonus: 'Оставь контакт — пришлём скидку на мастер-класс и чек-лист «что нужно для первой свечи».'
         },
         'Т': {
-          segment: 'Творческий',
+          segment: '✨ Анализ завершён: творческий путь',
           title: 'Тебе подойдёт: тариф БАЗА',
           text: 'Тебе нужно не просто попробовать, а освоить разные виды изделий в своё удовольствие. Тариф БАЗА — это 14 модулей по производству плюс всё для старта, в комфортном темпе.',
           bonus: 'Оставь контакт — пришлём подборку «5 видов свечей, с которых приятно начать» и персональную скидку.'
         },
         'М': {
-          segment: 'Мастер',
+          segment: '✨ Анализ завершён: мастер',
           title: 'Тебе подойдёт: тариф ВИП',
           text: 'Ты уже в теме и хочешь выйти на стабильный доход. Тебе нужна не теория, а работа с куратором над твоим проектом: продажи, продвижение, масштаб. ВИП — выбор большинства тех, кто пришёл за бизнесом.',
           bonus: 'Оставь контакт — пришлём разбор «3 причины, почему свечи не продаются» и спецусловие на тариф.'
         }
       };
 
+      const ICONS = {
+        spark: '<svg viewBox="0 0 24 24" fill="none"><path d="M12 3l1.7 5.3L19 10l-5.3 1.7L12 17l-1.7-5.3L5 10l5.3-1.7L12 3Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8L19 15Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>',
+        heart: '<svg viewBox="0 0 24 24" fill="none"><path d="M12 20s-7-4.4-9-9a4.6 4.6 0 0 1 7.6-5L12 7.4 13.4 6A4.6 4.6 0 0 1 21 11c-2 4.6-9 9-9 9Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>',
+        chart: '<svg viewBox="0 0 24 24" fill="none"><path d="M4 19V5M4 19h16M8 16v-4M12 16V8M16 16v-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>'
+      };
+
       const root = document.querySelector('[data-candle-quiz]');
       if (!root) return;
 
       const screens = root.querySelectorAll('[data-screen]');
+      const progressLine = root.querySelector('[data-progress-line]');
       const questionTitle = root.querySelector('[data-question-title]');
       const optionsWrap = root.querySelector('[data-options]');
       const progressLabel = root.querySelector('[data-progress-label]');
-      const progressBar = root.querySelector('[data-progress-bar]');
+      const nextBtn = root.querySelector('[data-next]');
+      const backBtn = root.querySelector('[data-back]');
       const resultSegment = root.querySelector('[data-result-segment]');
       const resultTitle = root.querySelector('[data-result-title]');
       const resultText = root.querySelector('[data-result-text]');
@@ -463,44 +895,56 @@
 
       let step = 0;
       let answers = [];
+      let selectedOption = null;
       let resultKey = 'Н';
       let result = RESULTS[resultKey];
+
+      function setProgress(percent) {
+        if (progressLine) progressLine.style.width = percent + '%';
+      }
 
       function switchScreen(name) {
         screens.forEach(screen => {
           screen.classList.toggle('is-active', screen.dataset.screen === name);
         });
+
+        if (name === 'intro') setProgress(0);
+        if (name === 'question') setProgress((step / QUESTIONS.length) * 100);
+        if (name === 'result' || name === 'success') setProgress(100);
       }
 
       function renderQuestion() {
         const question = QUESTIONS[step];
+        selectedOption = answers[step] || null;
         questionTitle.textContent = question.title;
-        progressLabel.textContent = (step + 1) + ' / ' + QUESTIONS.length;
-        progressBar.style.width = (((step + 1) / QUESTIONS.length) * 100) + '%';
+        progressLabel.textContent = 'Шаг ' + (step + 1) + ' из ' + QUESTIONS.length;
         optionsWrap.innerHTML = '';
 
         question.options.forEach(option => {
           const btn = document.createElement('button');
           btn.type = 'button';
           btn.className = 'cq-option';
-          btn.textContent = option.text;
+          btn.innerHTML = '<span class="cq-option-icon" aria-hidden="true">' + ICONS[option.icon] + '</span><span class="cq-option-text">' + option.text + '</span>';
+          if (selectedOption && selectedOption.text === option.text) btn.classList.add('is-selected');
           btn.addEventListener('click', () => {
-            answers.push(option.score);
-            step += 1;
-            if (step >= QUESTIONS.length) {
-              showResult();
-            } else {
-              renderQuestion();
-            }
+            selectedOption = option;
+            answers[step] = option;
+            optionsWrap.querySelectorAll('.cq-option').forEach(item => item.classList.remove('is-selected'));
+            btn.classList.add('is-selected');
+            nextBtn.disabled = false;
           });
           optionsWrap.appendChild(btn);
         });
+
+        nextBtn.disabled = !selectedOption;
+        backBtn.style.visibility = step === 0 ? 'hidden' : 'visible';
+        setProgress(((step + 1) / QUESTIONS.length) * 100);
       }
 
       function getResultKey() {
         const counts = { 'Н': 0, 'Т': 0, 'М': 0 };
         answers.forEach(answer => {
-          counts[answer] = (counts[answer] || 0) + 1;
+          if (answer && answer.score) counts[answer.score] += 1;
         });
         return ['Н', 'Т', 'М'].sort((a, b) => counts[b] - counts[a])[0];
       }
@@ -534,9 +978,31 @@
         switchScreen('question');
       });
 
+      nextBtn.addEventListener('click', () => {
+        if (!selectedOption) return;
+        answers[step] = selectedOption;
+        if (step >= QUESTIONS.length - 1) {
+          showResult();
+          return;
+        }
+        step += 1;
+        renderQuestion();
+      });
+
+      backBtn.addEventListener('click', () => {
+        if (step === 0) return;
+        step -= 1;
+        renderQuestion();
+      });
+
+      root.querySelector('[data-close]').addEventListener('click', () => {
+        root.style.display = 'none';
+      });
+
       root.querySelector('[data-restart]').addEventListener('click', () => {
         step = 0;
         answers = [];
+        selectedOption = null;
         if (form) form.reset();
         const consent = form ? form.querySelector('[name="consent"]') : null;
         if (consent) consent.checked = true;
@@ -573,7 +1039,7 @@
             'Результат квиза': result.segment,
             'Рекомендация': result.title,
             'Бонус': result.bonus,
-            'Ответы': answers.join(', '),
+            'Ответы': answers.map((answer, index) => (index + 1) + '. ' + answer.text + ' (' + answer.score + ')').join('; '),
             'Согласие на обработку персональных данных': 'Да',
             page: window.location.href.split('?')[0],
             createdAt: new Date().toISOString()
@@ -591,10 +1057,7 @@
               body: JSON.stringify(lead)
             });
 
-            if (!response.ok) {
-              throw new Error('Webhook error: ' + response.status);
-            }
-
+            if (!response.ok) throw new Error('Webhook error: ' + response.status);
             switchScreen('success');
           } catch (error) {
             console.error(error);
@@ -609,6 +1072,7 @@
       }
 
       if (params.get('preview') === 'question') {
+        step = 0;
         renderQuestion();
         switchScreen('question');
       }
