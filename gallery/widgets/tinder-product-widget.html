@@ -92,10 +92,10 @@
         Tinder
       </div>
     </div>
-    <h2 class="text-3xl font-black text-slate-800 mb-4 leading-tight">Найди тур<br/>своей мечты</h2>
-    <p class="text-slate-500 mb-8 text-lg">Свайпай вправо, если нравится. Влево — если нет. В конце тебя ждет подарок! 🎁</p>
+    <h2 class="text-3xl font-black text-slate-800 mb-4 leading-tight">Подбери формат<br/>в свечеварении</h2>
+    <p class="text-slate-500 mb-8 text-lg">Свайпай вправо то, что откликается. В конце подберём вариант обучения и бонус на старт.</p>
     <button class="tinder-btn-start w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-4 px-6 rounded-2xl transition-all shadow-lg shadow-indigo-200 flex items-center justify-center gap-2 text-lg hover:scale-[1.02]">
-      Начать поиск
+      Начать подбор
       <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
     </button>
   </div>
@@ -117,21 +117,21 @@
         <svg class="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"></path></svg>
       </div>
       <h2 class="text-2xl font-black text-slate-800 mb-2">Идеальный мэтч!</h2>
-      <p class="tinder-summary-text text-slate-500 text-sm">Вы выбрали 0 направлений.</p>
+      <p class="tinder-summary-text text-slate-500 text-sm">Вы выбрали 0 вариантов.</p>
     </div>
     <div class="tinder-liked-list flex-1 overflow-y-auto mb-6 space-y-3 pr-2">
       <!-- Liked items will be injected here -->
     </div>
     <button class="tinder-btn-lead w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-4 px-6 rounded-2xl transition-all shadow-lg shadow-indigo-200 hover:scale-[1.02]">
-      Узнать цены и забрать скидку
+      Получить рекомендацию и бонус
     </button>
   </div>
 
   <!-- Lead Form State -->
   <div class="tinder-state-lead_form flex-1 flex flex-col justify-center p-8 bg-white hidden transition-opacity duration-300">
     <div class="text-center mb-8">
-      <h2 class="text-2xl font-black text-slate-800 mb-3">Куда отправить подборку?</h2>
-      <p class="text-slate-500 text-sm">Оставьте контакты, мы пришлем цены на выбранные туры и закрепим за вами скидку 10%.</p>
+      <h2 class="text-2xl font-black text-slate-800 mb-3">Куда отправить рекомендацию?</h2>
+      <p class="text-slate-500 text-sm">Оставьте контакты, мы пришлём подходящий формат по свечеварению и закрепим за вами бонус.</p>
     </div>
     <form class="tinder-lead-form space-y-4">
       <div>
@@ -145,7 +145,7 @@
         <span>Согласен(на) на обработку персональных данных</span>
       </label>
       <button type="submit" class="tinder-submit-btn w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-4 px-6 rounded-2xl transition-all shadow-lg shadow-indigo-200 flex items-center justify-center mt-4">
-        Получить подборку
+        Получить рекомендацию
       </button>
     </form>
   </div>
@@ -156,12 +156,12 @@
       <svg class="w-12 h-12 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
     </div>
     <h2 class="text-3xl font-black text-slate-800 mb-4">Готово!</h2>
-    <p class="text-slate-500 mb-8 text-lg">Мы уже готовим цены. Наш менеджер свяжется с вами по номеру <br><span class="tinder-success-phone font-bold text-slate-800"></span></p>
+    <p class="text-slate-500 mb-8 text-lg">Мы уже готовим рекомендацию. Напишем вам по номеру <br><span class="tinder-success-phone font-bold text-slate-800"></span></p>
     <div class="bg-gradient-to-br from-indigo-50 to-purple-50 rounded-2xl p-6 w-full border-2 border-indigo-100 border-dashed relative overflow-hidden">
       <div class="absolute top-0 right-0 w-16 h-16 bg-indigo-100 rounded-bl-full -mr-8 -mt-8"></div>
       <div class="absolute bottom-0 left-0 w-16 h-16 bg-purple-100 rounded-tr-full -ml-8 -mb-8"></div>
-      <p class="text-sm text-indigo-600 uppercase tracking-widest font-bold mb-2 relative z-10">Ваш промокод на 10%</p>
-      <p class="text-3xl font-black text-slate-800 tracking-wider relative z-10">TRAVEL10</p>
+      <p class="text-sm text-indigo-600 uppercase tracking-widest font-bold mb-2 relative z-10">Ваш бонус на старт</p>
+      <p class="text-3xl font-black text-slate-800 tracking-wider relative z-10">CANDLE15</p>
     </div>
   </div>
 </div>
@@ -171,11 +171,11 @@
 <script>
 (function() {
   const TOURS = [
-    { id: 1, title: 'Мальдивы', description: 'Белоснежный песок, кристальный океан и полное уединение в бунгало на воде.', image: 'https://picsum.photos/seed/maldives/600/800' },
-    { id: 2, title: 'Швейцарские Альпы', description: 'Горные лыжи, горячий глинтвейн и уютные заснеженные шале.', image: 'https://picsum.photos/seed/alps/600/800' },
-    { id: 3, title: 'Токио, Япония', description: 'Неоновые огни мегаполиса, древние храмы и цветение сакуры.', image: 'https://picsum.photos/seed/tokyo/600/800' },
-    { id: 4, title: 'Каппадокия, Турция', description: 'Романтичный полет на воздушном шаре на рассвете над марсианскими пейзажами.', image: 'https://picsum.photos/seed/cappadocia/600/800' },
-    { id: 5, title: 'Сафари в Кении', description: 'Дикая природа, львы, жирафы и незабываемые африканские закаты.', image: 'https://picsum.photos/seed/safari/600/800' }
+    { id: 1, title: 'Мастер-класс для новичка', description: 'Мягкий старт: зальёте первую свечу по понятному рецепту и поймёте, ваше это или нет.', image: 'assets/candle-tinder-1.jpg' },
+    { id: 2, title: 'Тариф БАЗА', description: 'Для тех, кто хочет спокойно освоить разные виды свечей и собрать уверенную домашнюю практику.', image: 'assets/candle-tinder-2.jpg' },
+    { id: 3, title: 'Тариф ПРОФИ', description: 'Когда хочется не только делать красиво, но и подготовить продукт к первым продажам.', image: 'assets/candle-tinder-3.jpg' },
+    { id: 4, title: 'Тариф ВИП', description: 'Формат с куратором для тех, кто хочет разобрать проект, продажи и продвижение под себя.', image: 'assets/candle-tinder-4.jpg' },
+    { id: 5, title: 'Поставщики и материалы', description: 'Подборки воска, ароматов, фитилей и упаковки, чтобы не тратить деньги на случайные тесты.', image: 'assets/candle-tinder-5.jpg' }
   ];
 
   const LEAD_CONFIG = Object.assign({
@@ -197,7 +197,7 @@
       lead.name ? 'Имя: ' + lead.name : '',
       lead.phone ? 'Телефон: ' + lead.phone : '',
       lead.prize ? 'Приз: ' + lead.prize : '',
-      lead.selectedTours && lead.selectedTours.length ? 'Выбрано: ' + lead.selectedTours.join(', ') : '',
+      lead.selectedFormats && lead.selectedFormats.length ? 'Выбрано: ' + lead.selectedFormats.join(', ') : '',
       'Страница: ' + lead.page,
       'Время: ' + lead.createdAt
     ].filter(Boolean).join('\n');
@@ -421,9 +421,9 @@
 
     function showSummary() {
       const text = widget.querySelector('.tinder-summary-text');
-      let word = 'направлений';
-      if (likedItems.length === 1) word = 'направление';
-      else if (likedItems.length > 1 && likedItems.length < 5) word = 'направления';
+      let word = 'вариантов';
+      if (likedItems.length === 1) word = 'вариант';
+      else if (likedItems.length > 1 && likedItems.length < 5) word = 'варианта';
       
       if (text) text.innerText = `Вы выбрали ${likedItems.length} ${word}.`;
 
@@ -448,7 +448,7 @@
         if (list) {
           list.innerHTML = `
             <div class="text-center text-slate-500 py-8 bg-slate-50 rounded-2xl border border-slate-100">
-              Вы ничего не выбрали 😢<br/>Но мы все равно дарим вам скидку!
+              Вы ничего не выбрали 😢<br/>Но мы всё равно пришлём мягкий стартовый вариант.
             </div>
           `;
         }
@@ -503,11 +503,11 @@
 
         try {
           await sendWidgetLead({
-            widget: 'Товарный Тиндер',
+            widget: 'Товарный Тиндер: свечеварение',
             name: nameInput ? nameInput.value : '',
             phone: phoneInput ? phoneInput.value : '',
-            selectedTours: likedItems.map(item => item.title),
-            prize: 'TRAVEL10',
+            selectedFormats: likedItems.map(item => item.title),
+            prize: 'CANDLE15',
             'Согласие на обработку персональных данных': 'Да'
           });
           const successPhone = widget.querySelector('.tinder-success-phone');
