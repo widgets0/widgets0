@@ -3,266 +3,352 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Рейтинг на Яндекс Картах</title>
+  <title>Виджет отзывов Яндекс Карт</title>
   <style>
     * {
       box-sizing: border-box;
     }
 
     body {
-      margin: 0;
       min-height: 100vh;
-      display: grid;
-      place-items: center;
-      padding: 24px;
+      margin: 0;
       background: #ffffff;
-      color: #111111;
-      font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+      font-family: Arial, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     }
 
-    .yr-demo-page {
-      width: min(100%, 760px);
-      min-height: 680px;
-      display: grid;
-      place-items: center;
-      padding: clamp(14px, 4vw, 46px);
-      background: #ffffff;
+    #yandex-reviews-widget {
+      position: fixed;
+      right: 16px;
+      bottom: 16px;
+      z-index: 9999;
+      display: block;
+      font-family: Arial, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      user-select: none;
+      animation: yaWidgetPopIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
     }
 
-    .yr-widget {
-      --yr-yellow: #ffd100;
-      --yr-black: #171717;
-      --yr-gray: #737780;
-      --yr-blue: #064bb7;
-      width: min(100%, 430px);
+    #yandex-reviews-widget a {
       display: block;
       color: inherit;
       text-decoration: none;
       outline: none;
+      cursor: pointer;
     }
 
-    .yr-badge {
-      display: grid;
-      padding: 18px;
-      border-radius: 46px;
-      background: var(--yr-yellow);
-      box-shadow:
-        0 24px 46px rgba(0, 0, 0, 0.14),
-        0 0 0 1px rgba(255, 209, 0, 0.34);
-      transition: transform 0.22s ease, box-shadow 0.22s ease;
-    }
-
-    .yr-widget:hover .yr-badge,
-    .yr-widget:focus-visible .yr-badge {
-      transform: translateY(-3px);
-      box-shadow:
-        0 30px 58px rgba(0, 0, 0, 0.17),
-        0 0 0 1px rgba(255, 209, 0, 0.44);
-    }
-
-    .yr-card {
-      display: grid;
-      justify-items: center;
-      text-align: center;
-      min-height: 586px;
-      padding: 36px 28px 38px;
-      border: 13px solid var(--yr-black);
-      border-radius: 34px;
-      background:
-        radial-gradient(circle at 50% 0%, rgba(255, 255, 255, 1), transparent 32%),
-        linear-gradient(180deg, #ffffff 0%, #fbfbfb 56%, #ffffff 100%);
-      box-shadow:
-        inset 0 0 0 2px rgba(255, 255, 255, 0.72),
-        inset 0 0 34px rgba(0, 0, 0, 0.045);
-    }
-
-    .yr-map-icon {
-      width: 100px;
-      height: 100px;
-      display: grid;
-      place-items: center;
-      margin: 0 auto 26px;
-      border-radius: 28px;
-      background: #ffffff;
-      box-shadow:
-        0 18px 34px rgba(0, 0, 0, 0.14),
-        inset 0 1px 0 rgba(255, 255, 255, 0.9);
-    }
-
-    .yr-map-pin {
-      width: 55px;
-      height: 69px;
+    #yandex-reviews-widget svg {
       display: block;
-      filter: drop-shadow(0 10px 18px rgba(239, 45, 38, 0.2));
-    }
-
-    .yr-rating {
-      margin: 0;
-      color: #111111;
-      font-size: clamp(94px, 21vw, 134px);
-      line-height: 0.78;
-      font-weight: 1000;
-      letter-spacing: -0.1em;
-      text-shadow:
-        0 2px 0 rgba(255, 255, 255, 0.8),
-        0 14px 20px rgba(0, 0, 0, 0.15);
-    }
-
-    .yr-stars {
-      display: flex;
-      justify-content: center;
-      gap: 8px;
-      margin: 34px 0 28px;
-      color: var(--yr-yellow);
-      filter: drop-shadow(0 6px 12px rgba(255, 209, 0, 0.28));
-    }
-
-    .yr-stars svg {
-      width: clamp(34px, 7.5vw, 42px);
-      height: clamp(34px, 7.5vw, 42px);
       flex: 0 0 auto;
     }
 
-    .yr-source {
-      color: #111111;
-      font-size: clamp(30px, 6.7vw, 42px);
-      line-height: 1.08;
-      font-weight: 900;
-      letter-spacing: -0.04em;
-      text-shadow: 0 8px 14px rgba(0, 0, 0, 0.11);
+    .ya-widget-shell {
+      transition: transform 0.34s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     }
 
-    .yr-reviews {
-      width: min(100%, 320px);
+    .ya-widget-shell:hover {
+      transform: translateY(-4px) scale(1.03);
+    }
+
+    .ya-close {
+      position: absolute;
+      z-index: 5;
       display: grid;
-      grid-template-columns: 1fr auto 1fr;
-      gap: 16px;
+      place-items: center;
+      padding: 0;
+      border: 0;
+      cursor: pointer;
+      transition: color 0.2s ease, background 0.2s ease, transform 0.2s ease;
+    }
+
+    .ya-close:hover {
+      transform: scale(1.04);
+    }
+
+    .ya-mobile-card {
+      position: relative;
+      display: flex;
       align-items: center;
-      margin: 18px 0 24px;
-      color: var(--yr-gray);
-      font-size: clamp(23px, 5vw, 30px);
+      justify-content: center;
+      width: 68px;
+      height: 68px;
+      border: 4px solid #1a1a1a;
+      border-radius: 50%;
+      background: #ffffff;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+    }
+
+    .ya-mobile-close {
+      top: -6px;
+      left: -6px;
+      width: 28px;
+      height: 28px;
+      border: 3px solid #1a1a1a;
+      border-radius: 50%;
+      background: #ffffff;
+      color: #6b7280;
+    }
+
+    .ya-mobile-rating {
+      position: absolute;
+      top: -6px;
+      right: -10px;
+      display: flex;
+      align-items: center;
+      gap: 2px;
+      padding: 2px 8px;
+      border: 3px solid #1a1a1a;
+      border-radius: 999px;
+      background: #ffcc00;
+      color: #1a1a1a;
+      font-size: 12px;
       line-height: 1;
-      font-weight: 850;
-      letter-spacing: 0.04em;
+      font-weight: 800;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
     }
 
-    .yr-reviews::before,
-    .yr-reviews::after {
-      content: "";
-      height: 3px;
-      border-radius: 999px;
-      background: #d7d7d7;
+    .ya-desktop-card {
+      position: relative;
+      display: none;
+      width: 240px;
+      flex-direction: column;
+      align-items: center;
+      padding: 6px;
+      border-radius: 36px;
+      background: #ffcc00;
+      box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.15);
     }
 
-    .yr-divider {
-      width: min(100%, 320px);
-      height: 3px;
-      margin: 0 0 22px;
-      border-radius: 999px;
-      background: #d9d9d9;
+    .ya-desktop-inner {
+      position: relative;
+      display: flex;
+      width: 100%;
+      flex-direction: column;
+      align-items: center;
+      padding: 44px 16px 20px;
+      border: 4px solid #1a1a1a;
+      border-radius: 30px;
+      background: #ffffff;
+      text-align: center;
     }
 
-    .yr-place {
-      max-width: 100%;
-      color: var(--yr-blue);
-      font-size: clamp(32px, 7.5vw, 46px);
-      line-height: 0.95;
-      font-weight: 950;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      text-shadow:
-        0 2px 0 rgba(255, 255, 255, 0.9),
-        0 9px 18px rgba(6, 75, 183, 0.18);
+    .ya-desktop-close {
+      top: 8px;
+      right: 8px;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background: transparent;
+      color: #d1d5db;
+    }
+
+    .ya-desktop-close:hover {
+      background: #f3f4f6;
+      color: #4b5563;
+    }
+
+    .ya-pin-box {
+      position: absolute;
+      top: -36px;
+      left: 50%;
+      display: flex;
+      width: 72px;
+      height: 72px;
+      align-items: center;
+      justify-content: center;
+      transform: translateX(-50%);
+      border: 1px solid #f9fafb;
+      border-radius: 24px;
+      background: #ffffff;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+    }
+
+    .ya-company {
+      width: 100%;
+      margin: 4px 0 8px;
+      padding: 0 8px;
+      overflow: hidden;
+      color: #034ea2;
+      font-size: 18px;
+      font-weight: 900;
+      letter-spacing: 0.05em;
+      text-overflow: ellipsis;
       white-space: nowrap;
     }
 
-    @media (max-width: 520px) {
-      body {
-        padding: 10px;
+    .ya-score {
+      margin-bottom: 8px;
+      color: #1a1a1a;
+      font-size: 64px;
+      line-height: 0.9;
+      font-weight: 800;
+      letter-spacing: -0.06em;
+    }
+
+    .ya-stars {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 12px;
+    }
+
+    .ya-choice {
+      display: flex;
+      width: 100%;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      margin-bottom: 12px;
+      padding: 5px 10px;
+      border-radius: 999px;
+      background: #eff6ff;
+      color: #034ea2;
+      font-size: 9px;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .ya-title {
+      margin-bottom: 16px;
+      color: #1a1a1a;
+      font-size: 20px;
+      line-height: 1.15;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+    }
+
+    .ya-reviews {
+      display: flex;
+      width: 100%;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .ya-reviews::before,
+    .ya-reviews::after {
+      content: "";
+      height: 2px;
+      flex: 1;
+      border-radius: 999px;
+      background: #e5e7eb;
+    }
+
+    .ya-reviews span {
+      color: #9ca3af;
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .ya-button {
+      width: 100%;
+      padding: 14px 16px;
+      border-radius: 12px;
+      background: #1a1a1a;
+      color: #ffffff;
+      font-size: 14px;
+      font-weight: 800;
+      letter-spacing: 0.02em;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.12);
+      transition: background 0.2s ease;
+    }
+
+    .ya-widget-shell:hover .ya-button {
+      background: #333333;
+    }
+
+    @keyframes yaWidgetPopIn {
+      0% {
+        opacity: 0;
+        transform: translateY(50px) scale(0.9);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    @media (min-width: 768px) {
+      #yandex-reviews-widget {
+        right: 24px;
+        bottom: 24px;
       }
 
-      .yr-demo-page {
-        min-height: 620px;
-        padding: 8px;
+      .ya-mobile-card {
+        display: none;
       }
 
-      .yr-badge {
-        padding: 14px;
-        border-radius: 38px;
-      }
-
-      .yr-card {
-        min-height: 548px;
-        padding: 30px 22px 32px;
-        border-width: 11px;
-        border-radius: 28px;
-      }
-
-      .yr-map-icon {
-        width: 88px;
-        height: 88px;
-        margin-bottom: 24px;
-      }
-
-      .yr-place {
-        letter-spacing: 0.08em;
+      .ya-desktop-card {
+        display: flex;
       }
     }
   </style>
 </head>
 <body>
-  <main class="yr-demo-page">
-    <!-- Начало кода виджета "Рейтинг на Яндекс Картах" -->
-    <a class="yr-widget" href="https://yandex.ru/maps/?text=Samsung" target="_blank" rel="noopener" data-yr-widget>
-      <div class="yr-badge">
-        <div class="yr-card">
-          <div class="yr-map-icon" aria-label="Яндекс Карты">
-            <svg class="yr-map-pin" viewBox="0 0 64 80" aria-hidden="true">
-              <path fill="#ff2f27" d="M32 0C14.33 0 0 14.05 0 31.39c0 21.34 25.23 33.6 29.46 46.29.77 2.31 4.31 2.31 5.08 0C38.77 64.99 64 52.73 64 31.39 64 14.05 49.67 0 32 0z"/>
-              <circle cx="32" cy="30" r="12.5" fill="#fff"/>
-            </svg>
+  <!-- ========================================== -->
+  <!-- ВИДЖЕТ ОТЗЫВОВ ЯНДЕКС.КАРТ (НАЧАЛО)        -->
+  <!-- ========================================== -->
+  <div id="yandex-reviews-widget">
+    <a href="https://yandex.ru/maps/org/samsung_servis_plaz/1090124317/" target="_blank" rel="noopener noreferrer" class="ya-widget-shell">
+      <div class="ya-mobile-card">
+        <button onclick="closeYandexWidget(event)" class="ya-close ya-mobile-close" aria-label="Закрыть виджет">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+
+        <svg width="28" height="36" viewBox="0 0 28 36" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M14 0C6.268 0 0 6.268 0 14C0 24.5 14 36 14 36C14 36 28 24.5 28 14C28 6.268 21.732 0 14 0ZM14 19C11.2385 19 9 16.7615 9 14C9 11.2385 11.2385 9 14 9C16.7615 9 19 11.2385 19 14C19 16.7615 16.7615 19 14 19Z" fill="#F33B3D"/></svg>
+
+        <div class="ya-mobile-rating">
+          4,8
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="#1A1A1A" stroke="#1A1A1A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+        </div>
+      </div>
+
+      <div class="ya-desktop-card">
+        <div class="ya-desktop-inner">
+          <button onclick="closeYandexWidget(event)" class="ya-close ya-desktop-close" aria-label="Закрыть виджет">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </button>
+
+          <div class="ya-pin-box">
+            <svg width="32" height="40" viewBox="0 0 28 36" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M14 0C6.268 0 0 6.268 0 14C0 24.5 14 36 14 36C14 36 28 24.5 28 14C28 6.268 21.732 0 14 0ZM14 19C11.2385 19 9 16.7615 9 14C9 11.2385 11.2385 9 14 9C16.7615 9 19 11.2385 19 14C19 16.7615 16.7615 19 14 19Z" fill="#F33B3D"/></svg>
           </div>
-          <p class="yr-rating" data-yr-rating>4,8</p>
-          <div class="yr-stars" aria-label="Рейтинг 4,8 из 5">
-            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 1.8l3.09 6.27 6.92 1.01-5.01 4.88 1.18 6.9L12 17.6l-6.18 3.26 1.18-6.9-5.01-4.88 6.92-1.01L12 1.8z"/></svg>
-            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 1.8l3.09 6.27 6.92 1.01-5.01 4.88 1.18 6.9L12 17.6l-6.18 3.26 1.18-6.9-5.01-4.88 6.92-1.01L12 1.8z"/></svg>
-            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 1.8l3.09 6.27 6.92 1.01-5.01 4.88 1.18 6.9L12 17.6l-6.18 3.26 1.18-6.9-5.01-4.88 6.92-1.01L12 1.8z"/></svg>
-            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 1.8l3.09 6.27 6.92 1.01-5.01 4.88 1.18 6.9L12 17.6l-6.18 3.26 1.18-6.9-5.01-4.88 6.92-1.01L12 1.8z"/></svg>
-            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 1.8l3.09 6.27 6.92 1.01-5.01 4.88 1.18 6.9L12 17.6l-6.18 3.26 1.18-6.9-5.01-4.88 6.92-1.01L12 1.8z"/></svg>
+
+          <div class="ya-company">SAMSUNG</div>
+          <div class="ya-score">4,8</div>
+
+          <div class="ya-stars" aria-label="Рейтинг 4,8 из 5">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="#FFCC00" stroke="#FFCC00" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="#FFCC00" stroke="#FFCC00" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="#FFCC00" stroke="#FFCC00" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="#FFCC00" stroke="#FFCC00" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="#FFCC00" stroke="#FFCC00" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
           </div>
-          <div class="yr-source">Яндекс Карты</div>
-          <div class="yr-reviews"><span><span data-yr-reviews>1 248</span> отзывов</span></div>
-          <div class="yr-divider" aria-hidden="true"></div>
-          <span class="yr-place" data-yr-place>Samsung</span>
+
+          <div class="ya-choice">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3.85 8.62a4 4 0 0 1 4.78-4.77 4 4 0 0 1 6.74 0 4 4 0 0 1 4.78 4.78 4 4 0 0 1 0 6.74 4 4 0 0 1-4.77 4.78 4 4 0 0 1-6.75 0 4 4 0 0 1-4.78-4.77 4 4 0 0 1 0-6.76Z"/><path d="m9 12 2 2 4-4"/></svg>
+            <span>Выбор пользователей</span>
+          </div>
+
+          <div class="ya-title">Яндекс Карты</div>
+          <div class="ya-reviews"><span>1 248 отзывов</span></div>
+          <div class="ya-button">Посмотреть отзывы</div>
         </div>
       </div>
     </a>
+  </div>
 
-    <script>
-      (function () {
-        const YANDEX_RATING_CONFIG = {
-          rating: '4,8',
-          reviewsCount: '1 248',
-          placeName: 'Samsung',
-          yandexMapsUrl: 'https://yandex.ru/maps/?text=Samsung'
-        };
-
-        const widget = document.querySelector('[data-yr-widget]');
-        if (!widget) return;
-
-        const ratingEl = widget.querySelector('[data-yr-rating]');
-        const reviewsEl = widget.querySelector('[data-yr-reviews]');
-        const placeEl = widget.querySelector('[data-yr-place]');
-        const starsEl = widget.querySelector('.yr-stars');
-
-        widget.href = YANDEX_RATING_CONFIG.yandexMapsUrl;
-        if (ratingEl) ratingEl.textContent = YANDEX_RATING_CONFIG.rating;
-        if (reviewsEl) reviewsEl.textContent = YANDEX_RATING_CONFIG.reviewsCount;
-        if (placeEl) placeEl.textContent = YANDEX_RATING_CONFIG.placeName;
-        if (starsEl) starsEl.setAttribute('aria-label', 'Рейтинг ' + YANDEX_RATING_CONFIG.rating + ' из 5');
-      })();
-    </script>
-    <!-- Конец кода виджета "Рейтинг на Яндекс Картах" -->
-  </main>
+  <script>
+    function closeYandexWidget(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      var widget = document.getElementById('yandex-reviews-widget');
+      if (widget) widget.style.display = 'none';
+    }
+  </script>
+  <!-- ========================================== -->
+  <!-- ВИДЖЕТ ОТЗЫВОВ ЯНДЕКС.КАРТ (КОНЕЦ)         -->
+  <!-- ========================================== -->
 </body>
 </html>
