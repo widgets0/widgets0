@@ -34,6 +34,32 @@
       isolation: isolate;
     }
 
+    .bike-widget-close {
+      position: absolute;
+      top: 18px;
+      right: 18px;
+      z-index: 12;
+      width: 42px;
+      height: 42px;
+      display: grid;
+      place-items: center;
+      border: 0;
+      border-radius: 14px;
+      background: rgba(37, 35, 31, 0.78);
+      color: #ffffff;
+      font-size: 28px;
+      line-height: 1;
+      cursor: pointer;
+      box-shadow: 0 12px 24px rgba(37, 35, 31, 0.16);
+      backdrop-filter: blur(10px);
+      transition: transform 0.18s ease, background 0.18s ease;
+    }
+
+    .bike-widget-close:hover {
+      transform: rotate(90deg);
+      background: rgba(37, 35, 31, 0.92);
+    }
+
     .bike-screen {
       flex: 1;
       display: none;
@@ -174,6 +200,7 @@
     .bike-stats {
       display: flex;
       gap: 10px;
+      margin-right: 52px;
     }
 
     .bike-chip {
@@ -422,6 +449,7 @@
 </head>
 <body>
   <section class="bike-widget" data-bike-widget>
+    <button class="bike-widget-close" type="button" aria-label="Закрыть виджет" data-bike-close-widget>×</button>
     <div class="bike-screen bike-intro is-active" data-bike-state="intro">
       <span class="bike-pixel-cloud bike-cloud-1"></span>
       <span class="bike-pixel-cloud bike-cloud-2"></span>
@@ -869,6 +897,10 @@
       }
 
       document.querySelector('[data-bike-start]').addEventListener('click', startGame);
+      document.querySelector('[data-bike-close-widget]').addEventListener('click', function () {
+        stopGame();
+        widget.style.display = 'none';
+      });
       document.querySelector('[data-bike-back]').addEventListener('click', function () {
         stopGame();
         switchState('intro');

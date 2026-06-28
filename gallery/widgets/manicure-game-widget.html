@@ -14,6 +14,9 @@
 
 <!-- Начало кода игры для маникюрного салона (блок T123) -->
 <div id="nail-game-container" class="w-full max-w-sm mx-auto bg-white rounded-3xl shadow-xl overflow-hidden border border-pink-100 relative min-h-[450px] flex flex-col font-sans" style="font-family: 'Inter', sans-serif;">
+  <button id="nail-close-btn" type="button" aria-label="Закрыть виджет" class="absolute top-4 right-4 z-50 w-9 h-9 rounded-full bg-white/80 text-slate-400 hover:text-slate-700 hover:bg-white shadow-sm flex items-center justify-center transition-all">
+    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+  </button>
   
   <!-- Intro State -->
   <div id="nail-state-intro" class="flex-1 flex flex-col items-center justify-center p-8 text-center">
@@ -188,6 +191,7 @@
   const canvas = document.getElementById('nail-game-canvas');
   const ctx = canvas.getContext('2d');
   const sliderThumb = document.getElementById('nail-slider-thumb');
+  const closeBtn = document.getElementById('nail-close-btn');
 
   function switchState(stateId) {
     ['intro', 'playing', 'gameover', 'won', 'lead_form', 'success'].forEach(id => {
@@ -324,6 +328,14 @@
   canvas.addEventListener('mousemove', handleMove);
   canvas.addEventListener('touchstart', handleMove, { passive: true });
   canvas.addEventListener('touchmove', handleMove, { passive: true });
+
+  if (closeBtn) {
+    closeBtn.addEventListener('click', function() {
+      isPlaying = false;
+      if (requestRef) cancelAnimationFrame(requestRef);
+      document.getElementById('nail-game-container').style.display = 'none';
+    });
+  }
 
   window.nail_startGame = function() {
     score = 0;

@@ -42,6 +42,7 @@
             margin: 0 auto;
             background: #ffffff;
             border-radius: 24px;
+            position: relative;
             box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.1), 0 0 0 1px rgba(0,0,0,0.03);
             overflow: hidden;
             color: #1f2937;
@@ -508,6 +509,31 @@
             border-color: #bbf7d0 !important;
         }
 
+        .cw-close {
+            position: absolute;
+            top: 14px;
+            right: 14px;
+            z-index: 5;
+            width: 36px;
+            height: 36px;
+            display: grid;
+            place-items: center;
+            border: 0;
+            border-radius: 10px;
+            background: rgba(241, 245, 249, 0.92);
+            color: #64748b;
+            font-size: 24px;
+            line-height: 1;
+            cursor: pointer;
+            transition: background 0.18s ease, color 0.18s ease, transform 0.18s ease;
+        }
+
+        .cw-close:hover {
+            background: #e2e8f0;
+            color: #0f172a;
+            transform: rotate(90deg);
+        }
+
         @media (max-width: 640px) {
             body {
                 padding: 12px !important;
@@ -623,6 +649,7 @@
     </style>
 
     <!-- ЛЕВАЯ ПАНЕЛЬ: Калькулятор -->
+    <button class="cw-close" type="button" aria-label="Закрыть калькулятор" id="cw-close-action">×</button>
     <div class="cw-main-panel">
         
         <div class="cw-header">
@@ -775,6 +802,7 @@
             const loadingIcon = document.getElementById('cw-loading-icon');
             const phoneInput = document.getElementById('cw-phone');
             const consentInput = document.getElementById('cw-consent');
+            const closeBtn = document.getElementById('cw-close-action');
 
             // Форматирование цены (1 200 ₽)
             function formatCurrency(num) {
@@ -934,6 +962,13 @@
             }
 
             // Первый запуск
+            if(closeBtn) {
+                closeBtn.addEventListener('click', function() {
+                    const root = document.getElementById('cleaning-widget-root');
+                    if(root) root.style.display = 'none';
+                });
+            }
+
             calculate();
         })();
     </script>

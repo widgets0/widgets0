@@ -332,7 +332,7 @@
         width: 100%;
         min-height: 0;
         grid-template-columns: 1fr;
-        gap: 14px;
+        gap: 16px;
       }
 
       .organic-lead-copy {
@@ -341,12 +341,12 @@
       }
 
       .organic-lead-visual {
-        min-height: 152px;
+        min-height: clamp(230px, 43dvh, 330px);
         order: 1;
       }
 
       .organic-lead-image {
-        inset: 0;
+        inset: -4px -12px -4px 0;
       }
 
       .organic-lead-form {
@@ -361,7 +361,7 @@
 
       .organic-lead-title {
         margin-bottom: 8px;
-        font-size: clamp(27px, 8vw, 36px);
+        font-size: clamp(25px, 7.4vw, 34px);
         line-height: 1.02;
       }
 
