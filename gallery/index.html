@@ -505,13 +505,32 @@
       line-height: 1.42;
     }
 
-    .widget-card-meta {
-      display: flex;
-      justify-content: space-between;
-      gap: 16px;
+    .widget-card-action {
       margin-top: 24px;
-      color: var(--muted);
-      font-size: 15px;
+    }
+
+    .widget-card-button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      min-height: 48px;
+      padding: 13px 18px;
+      border-radius: 8px;
+      border: 1px solid rgba(255,255,255,.14);
+      background: linear-gradient(135deg, #6d5cff, #e85aa8);
+      color: #fff;
+      font-size: 16px;
+      font-weight: 800;
+      line-height: 1.2;
+      box-shadow: 0 16px 34px rgba(109,92,255,.24);
+      transition: transform .18s ease, box-shadow .18s ease, filter .18s ease;
+    }
+
+    .widget-card:hover .widget-card-button {
+      transform: translateY(-1px);
+      box-shadow: 0 20px 42px rgba(232,90,168,.26);
+      filter: brightness(1.04);
     }
 
     .empty-state {
@@ -904,9 +923,8 @@
               <span>Салоны · кафе · магазины · локальные услуги</span>
             </div>
           </div>
-          <div class="widget-card-meta">
-            <span>Розыгрыш</span>
-            <span>Превью</span>
+          <div class="widget-card-action">
+            <span class="widget-card-button">Посмотреть виджет</span>
           </div>
         </div>
       </article>
@@ -937,9 +955,8 @@
               <span>Клининг · ремонт · автоуслуги · услуги с вилкой цен</span>
             </div>
           </div>
-          <div class="widget-card-meta">
-            <span>Калькулятор</span>
-            <span>Превью</span>
+          <div class="widget-card-action">
+            <span class="widget-card-button">Посмотреть виджет</span>
           </div>
         </div>
       </article>
@@ -970,9 +987,8 @@
               <span>Магазины · курсы · туры · подарки</span>
             </div>
           </div>
-          <div class="widget-card-meta">
-            <span>Квиз</span>
-            <span>Превью</span>
+          <div class="widget-card-action">
+            <span class="widget-card-button">Посмотреть виджет</span>
           </div>
         </div>
       </article>
@@ -1004,9 +1020,8 @@
               <span>Школы · курсы · эксперты · образовательные воронки</span>
             </div>
           </div>
-          <div class="widget-card-meta">
-            <span>Квиз</span>
-            <span>Превью</span>
+          <div class="widget-card-action">
+            <span class="widget-card-button">Посмотреть виджет</span>
           </div>
         </div>
       </article>
@@ -1037,9 +1052,8 @@
               <span>Акции · запуск курса · набор группы</span>
             </div>
           </div>
-          <div class="widget-card-meta">
-            <span>Форма</span>
-            <span>Превью</span>
+          <div class="widget-card-action">
+            <span class="widget-card-button">Посмотреть виджет</span>
           </div>
         </div>
       </article>
@@ -1070,9 +1084,8 @@
               <span>Сезонные акции · скидки · распродажи · спецпредложения</span>
             </div>
           </div>
-          <div class="widget-card-meta">
-            <span>Баннер</span>
-            <span>Превью</span>
+          <div class="widget-card-action">
+            <span class="widget-card-button">Посмотреть виджет</span>
           </div>
         </div>
       </article>
@@ -1103,9 +1116,8 @@
               <span>Мобильный трафик · розыгрыши · скидки · быстрые заявки</span>
             </div>
           </div>
-          <div class="widget-card-meta">
-            <span>Баннер</span>
-            <span>Превью</span>
+          <div class="widget-card-action">
+            <span class="widget-card-button">Посмотреть виджет</span>
           </div>
         </div>
       </article>
@@ -1136,9 +1148,8 @@
               <span>Акции · распродажи · салоны · локальные услуги</span>
             </div>
           </div>
-          <div class="widget-card-meta">
-            <span>Игра</span>
-            <span>Превью</span>
+          <div class="widget-card-action">
+            <span class="widget-card-button">Посмотреть виджет</span>
           </div>
         </div>
       </article>
@@ -1169,9 +1180,8 @@
               <span>Магазины · карточки товара · лендинги · страницы услуг</span>
             </div>
           </div>
-          <div class="widget-card-meta">
-            <span>Информер</span>
-            <span>Превью</span>
+          <div class="widget-card-action">
+            <span class="widget-card-button">Посмотреть виджет</span>
           </div>
         </div>
       </article>
@@ -1202,9 +1212,8 @@
               <span>Акции · доставка · магазины · молодая аудитория</span>
             </div>
           </div>
-          <div class="widget-card-meta">
-            <span>Игра</span>
-            <span>Превью</span>
+          <div class="widget-card-action">
+            <span class="widget-card-button">Посмотреть виджет</span>
           </div>
         </div>
       </article>
@@ -1235,9 +1244,8 @@
               <span>Консультации · поддержка · услуги · экспертные сайты</span>
             </div>
           </div>
-          <div class="widget-card-meta">
-            <span>Форма</span>
-            <span>Превью</span>
+          <div class="widget-card-action">
+            <span class="widget-card-button">Посмотреть виджет</span>
           </div>
         </div>
       </article>
@@ -1268,9 +1276,8 @@
               <span>Обучение · услуги · премиальные офферы · консультации</span>
             </div>
           </div>
-          <div class="widget-card-meta">
-            <span>Форма</span>
-            <span>Превью</span>
+          <div class="widget-card-action">
+            <span class="widget-card-button">Посмотреть виджет</span>
           </div>
         </div>
       </article>
@@ -1301,9 +1308,8 @@
               <span>Локальный бизнес · клиники · салоны · рестораны</span>
             </div>
           </div>
-          <div class="widget-card-meta">
-            <span>Информер</span>
-            <span>Превью</span>
+          <div class="widget-card-action">
+            <span class="widget-card-button">Посмотреть виджет</span>
           </div>
         </div>
       </article>
@@ -1334,9 +1340,8 @@
               <span>Сайты с аналитикой · рекламой · формами · пикселями</span>
             </div>
           </div>
-          <div class="widget-card-meta">
-            <span>Информер</span>
-            <span>Превью</span>
+          <div class="widget-card-action">
+            <span class="widget-card-button">Посмотреть виджет</span>
           </div>
         </div>
       </article>
