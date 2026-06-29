@@ -133,6 +133,11 @@
         padding: max(12px, env(safe-area-inset-top)) 14px max(18px, env(safe-area-inset-bottom)) !important;
       }
 
+      .tinder-swipe-header {
+        padding-right: 58px;
+        margin-top: 2px !important;
+      }
+
       .tinder-cards-container {
         max-width: min(100%, 380px) !important;
       }
@@ -148,18 +153,26 @@
       }
 
       .tinder-intro-showcase {
-        height: 156px;
-        margin-bottom: 16px;
+        height: clamp(178px, 43vw, 208px);
+        margin-bottom: 18px;
       }
 
       .tinder-intro-product {
-        width: 108px;
-        height: 138px;
+        width: clamp(124px, 31vw, 148px);
+        height: clamp(158px, 40vw, 188px);
       }
 
       .tinder-intro-product:nth-child(2) {
-        width: 124px;
-        height: 150px;
+        width: clamp(146px, 36vw, 168px);
+        height: clamp(176px, 44vw, 204px);
+      }
+
+      .tinder-intro-product:nth-child(1) {
+        transform: translateX(-96px) rotate(-9deg);
+      }
+
+      .tinder-intro-product:nth-child(3) {
+        transform: translateX(96px) rotate(9deg);
       }
     }
   </style>
@@ -195,12 +208,14 @@
 
   <!-- Swiping State -->
   <div class="tinder-state-swiping flex-1 relative p-4 flex flex-col hidden transition-opacity duration-300">
-    <div class="flex items-center justify-between gap-3 mb-4 mt-2">
+    <div class="tinder-swipe-header flex items-center gap-3 mb-4 mt-2">
       <button class="tinder-btn-back inline-flex items-center gap-1 text-xs font-bold text-zinc-400 hover:text-zinc-900 transition-colors" type="button">
         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
         Назад
       </button>
-      <span class="tinder-cards-left text-sm font-bold text-zinc-400 uppercase tracking-widest">Осталось: 7</span>
+      <div class="tinder-progress-track h-1.5 flex-1 overflow-hidden rounded-full bg-zinc-200" aria-hidden="true">
+        <div class="tinder-progress-bar h-full w-0 rounded-full bg-zinc-950 transition-all duration-300"></div>
+      </div>
     </div>
     <div class="tinder-cards-container flex-1 relative w-full max-w-[320px] mx-auto">
       <!-- Cards will be injected here by JS -->
@@ -437,8 +452,11 @@
       const container = widget.querySelector('.tinder-cards-container');
       container.innerHTML = '';
       
-      const countEl = widget.querySelector('.tinder-cards-left');
-      if (countEl) countEl.innerText = `Осталось: ${Math.max(currentCards.length - 1, 0)}`;
+      const progressBar = widget.querySelector('.tinder-progress-bar');
+      if (progressBar) {
+        const completed = Math.max(PRODUCTS.length - currentCards.length, 0);
+        progressBar.style.width = `${Math.min((completed / PRODUCTS.length) * 100, 100)}%`;
+      }
 
       const backBtn = widget.querySelector('.tinder-btn-back');
       if (backBtn) {
