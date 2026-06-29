@@ -18,6 +18,66 @@
       box-sizing: border-box;
     }
 
+    .tinder-brand-mark {
+      width: 132px;
+      height: auto;
+      border-radius: 18px;
+      box-shadow: 0 18px 45px rgba(0, 0, 0, .14);
+    }
+
+    .tinder-intro-showcase {
+      position: relative;
+      width: 100%;
+      height: 158px;
+      margin: 0 0 24px;
+      display: grid;
+      place-items: center;
+      isolation: isolate;
+    }
+
+    .tinder-intro-showcase::before {
+      content: "";
+      position: absolute;
+      inset: 18px 22px;
+      border-radius: 32px;
+      background: linear-gradient(135deg, rgba(24, 24, 27, .08), rgba(24, 24, 27, .02));
+      filter: blur(.2px);
+      z-index: -1;
+    }
+
+    .tinder-intro-product {
+      position: absolute;
+      width: 108px;
+      height: 138px;
+      object-fit: cover;
+      border-radius: 24px;
+      border: 5px solid #fff;
+      box-shadow: 0 20px 38px rgba(24, 24, 27, .18);
+      animation: tinderFloat 4.8s ease-in-out infinite;
+    }
+
+    .tinder-intro-product:nth-child(1) {
+      transform: translateX(-74px) rotate(-9deg);
+      animation-delay: -.4s;
+    }
+
+    .tinder-intro-product:nth-child(2) {
+      width: 124px;
+      height: 150px;
+      z-index: 2;
+      transform: translateY(-4px);
+    }
+
+    .tinder-intro-product:nth-child(3) {
+      transform: translateX(74px) rotate(9deg);
+      animation-delay: -.9s;
+    }
+
+    @keyframes tinderFloat {
+      0%, 100% { translate: 0 0; }
+      50% { translate: 0 -7px; }
+    }
+
     @media (max-width: 520px) {
       html,
       body {
@@ -59,8 +119,12 @@
       .tinder-state-summary,
       .tinder-state-lead_form,
       .tinder-state-success {
-        padding: 28px !important;
+        padding: 22px !important;
         padding-top: max(56px, calc(env(safe-area-inset-top) + 48px)) !important;
+      }
+
+      .tinder-state-summary {
+        padding-bottom: max(18px, env(safe-area-inset-bottom)) !important;
       }
 
       .tinder-state-swiping {
@@ -74,6 +138,25 @@
       .tinder-card-copy {
         font-size: 14px !important;
         line-height: 1.45 !important;
+      }
+
+      .tinder-brand-mark {
+        width: 118px;
+      }
+
+      .tinder-intro-showcase {
+        height: 144px;
+        margin-bottom: 18px;
+      }
+
+      .tinder-intro-product {
+        width: 96px;
+        height: 124px;
+      }
+
+      .tinder-intro-product:nth-child(2) {
+        width: 112px;
+        height: 136px;
       }
     }
   </style>
@@ -90,13 +173,14 @@
   </button>
 
   <!-- Intro State -->
-  <div class="tinder-state-intro flex-1 flex flex-col items-center justify-center p-8 text-center bg-gradient-to-b from-white to-zinc-100 transition-opacity duration-300">
-    <div class="mb-8">
-      <div class="text-2xl font-black tracking-[0.22em] text-zinc-950">FV SPORT</div>
-      <div class="mx-auto mt-3 h-px w-24 bg-zinc-950/20"></div>
+  <div class="tinder-state-intro flex-1 flex flex-col items-center justify-center p-7 text-center bg-gradient-to-b from-white to-zinc-100 transition-opacity duration-300">
+    <div class="mb-5">
+      <img class="tinder-brand-mark" src="assets/fvsport-tinder/fvsport-logo.png" alt="FV SPORT" />
     </div>
-    <div class="mb-8 grid h-24 w-24 place-items-center rounded-full bg-zinc-950 text-white shadow-xl shadow-zinc-300">
-      <svg class="h-10 w-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M7 7h10m-9 4h8m-7 4h6M5 21h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>
+    <div class="tinder-intro-showcase" aria-hidden="true">
+      <img class="tinder-intro-product" src="assets/fvsport-tinder/top-rise-yellow.jpg" alt="" />
+      <img class="tinder-intro-product" src="assets/fvsport-tinder/top-impuls-goluboy.jpg" alt="" />
+      <img class="tinder-intro-product" src="assets/fvsport-tinder/crop-top-portu-blue.jpg" alt="" />
     </div>
     <h2 class="text-3xl font-black text-zinc-950 mb-4 leading-tight">Подбери свой<br/>топ на лето</h2>
     <p class="text-zinc-500 mb-8 text-base leading-relaxed">Свайпай вправо, если нравится. Влево — если не твоё. В конце соберём подборку и пришлём со скидкой 10% на первый заказ.</p>
@@ -121,20 +205,22 @@
   </div>
 
   <!-- Summary State -->
-  <div class="tinder-state-summary flex-1 flex flex-col p-8 bg-white hidden transition-opacity duration-300">
-    <div class="text-center mb-6">
-      <div class="w-16 h-16 bg-zinc-950 rounded-full flex items-center justify-center mx-auto mb-4">
+  <div class="tinder-state-summary flex-1 min-h-0 flex flex-col p-6 bg-white hidden transition-opacity duration-300">
+    <div class="text-center mb-4 shrink-0">
+      <div class="w-14 h-14 bg-zinc-950 rounded-full flex items-center justify-center mx-auto mb-4">
         <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path></svg>
       </div>
       <h2 class="tinder-summary-title text-2xl font-black text-zinc-950 mb-2">Твоя подборка готова</h2>
-      <p class="tinder-summary-text text-zinc-500 text-sm leading-relaxed">Тебе понравилось 0 топов.</p>
+      <p class="tinder-summary-text text-zinc-500 text-base leading-relaxed">Тебе понравилось 0 топов.</p>
     </div>
-    <div class="tinder-liked-list flex-1 overflow-y-auto mb-6 space-y-3 pr-2">
+    <div class="tinder-liked-list min-h-0 flex-1 overflow-y-auto overscroll-contain mb-4 space-y-3 pr-2">
       <!-- Liked items will be injected here -->
     </div>
-    <button class="tinder-btn-lead w-full bg-zinc-950 hover:bg-zinc-800 text-white font-bold py-4 px-6 rounded-2xl transition-all shadow-lg shadow-zinc-300 hover:scale-[1.02]">
-      Получить подборку и скидку
-    </button>
+    <div class="shrink-0 pt-2 bg-white">
+      <button class="tinder-btn-lead w-full bg-zinc-950 hover:bg-zinc-800 text-white font-bold py-4 px-6 rounded-2xl transition-all shadow-lg shadow-zinc-300 hover:scale-[1.02]">
+        Получить подборку и скидку
+      </button>
+    </div>
   </div>
 
   <!-- Lead Form State -->
