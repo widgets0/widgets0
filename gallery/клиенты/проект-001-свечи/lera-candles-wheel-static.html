@@ -7,6 +7,36 @@
 <!-- Библиотека для конфетти -->
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
+<script>
+// === НАСТРОЙКИ ПОВЕДЕНИЯ ВИДЖЕТА ===
+// Меняйте только этот блок, если нужно настроить показ колеса для клиента.
+window.CLIENT_WIDGET001_BEHAVIOR_CONFIG = {
+    // Через сколько секунд после загрузки страницы показать виджет.
+    // Пример: 0 - сразу, 2 - через 2 секунды, 10 - через 10 секунд.
+    appearanceDelaySeconds: 0,
+
+    // Как часто показывать виджет одному пользователю.
+    // Варианты:
+    // 'always' - показывать всегда;
+    // 'once_per_hour' - показывать не чаще одного раза в час;
+    // 'once_per_day' - показывать не чаще одного раза в день;
+    // 'custom' - использовать customFrequencyHours ниже.
+    showFrequency: 'always',
+
+    // Используется только если showFrequency: 'custom'.
+    // Например: 6 - показывать не чаще одного раза в 6 часов.
+    customFrequencyHours: 24,
+
+    // Позиция на десктопе.
+    // Варианты: 'center' - по центру страницы, 'bottom-left' - слева снизу, 'bottom-right' - справа снизу.
+    desktopPosition: 'center',
+
+    // Ключ localStorage для запоминания последнего показа.
+    // Обычно менять не нужно. Меняйте только если на странице стоит несколько таких виджетов.
+    displayStorageKey: 'clientWidget001_last_shown_at'
+};
+</script>
+
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;800;900&family=Playfair+Display:wght@600&display=swap');
 
@@ -35,9 +65,13 @@ body {
     --text-dark: #2A231E;
     width: 100%;
     min-height: 100vh;
-    display: flex;
+    display: none;
     align-items: center;
     justify-content: center;
+}
+
+.clientWidget001-root.is-visible {
+    display: flex;
 }
 
 .clientWidget001-root .wof-overlay {
@@ -92,7 +126,22 @@ body {
 }
 
 .clientWidget001-root .wof-close-btn {
-    display: none;
+    position: absolute;
+    top: 18px;
+    right: 18px;
+    z-index: 200;
+    width: 46px;
+    height: 46px;
+    border: 2px solid rgba(26, 21, 18, 0.08);
+    border-radius: 14px;
+    background: rgba(255, 255, 255, 0.75);
+    color: #7A6F66;
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.12);
+    cursor: pointer;
+    display: grid;
+    place-items: center;
+    transition: all 0.18s ease;
+    -webkit-tap-highlight-color: transparent;
 }
 
 .clientWidget001-root .wof-close-btn:hover {
@@ -478,6 +527,63 @@ body {
 }
 
 @media (min-width: 768px) {
+    .clientWidget001-root.wof-position-bottom-left,
+    .clientWidget001-root.wof-position-bottom-right {
+        position: fixed;
+        bottom: 24px;
+        z-index: 999999;
+        width: min(430px, calc(100vw - 48px));
+        min-height: 0;
+    }
+
+    .clientWidget001-root.wof-position-bottom-left {
+        left: 24px;
+    }
+
+    .clientWidget001-root.wof-position-bottom-right {
+        right: 24px;
+    }
+
+    .clientWidget001-root.wof-position-bottom-left.is-visible,
+    .clientWidget001-root.wof-position-bottom-right.is-visible {
+        display: block;
+    }
+
+    .clientWidget001-root.wof-position-bottom-left .wof-overlay,
+    .clientWidget001-root.wof-position-bottom-right .wof-overlay {
+        min-height: 0;
+        padding: 0;
+    }
+
+    .clientWidget001-root.wof-position-bottom-left .candle-wof-wrapper,
+    .clientWidget001-root.wof-position-bottom-right .candle-wof-wrapper {
+        max-width: 430px;
+        padding: 34px 28px 30px;
+    }
+
+    .clientWidget001-root.wof-position-bottom-left .wof-inner,
+    .clientWidget001-root.wof-position-bottom-right .wof-inner {
+        flex-direction: column;
+        gap: 24px;
+    }
+
+    .clientWidget001-root.wof-position-bottom-left .wof-content-wrapper,
+    .clientWidget001-root.wof-position-bottom-right .wof-content-wrapper,
+    .clientWidget001-root.wof-position-bottom-left .wof-wheel-wrapper,
+    .clientWidget001-root.wof-position-bottom-right .wof-wheel-wrapper {
+        width: 100%;
+    }
+
+    .clientWidget001-root.wof-position-bottom-left .wof-content-wrapper,
+    .clientWidget001-root.wof-position-bottom-right .wof-content-wrapper {
+        height: auto;
+    }
+
+    .clientWidget001-root.wof-position-bottom-left .wof-title,
+    .clientWidget001-root.wof-position-bottom-right .wof-title {
+        font-size: 26px;
+    }
+
     .clientWidget001-root .candle-wof-wrapper {
         max-width: 880px; 
         padding: 50px 50px;
@@ -509,6 +615,17 @@ body {
     .clientWidget001-root .wof-subtitle { font-size: 18px; margin-bottom: 40px; }
     .clientWidget001-root .wof-input { padding: 18px 20px; font-size: 16px; }
     .clientWidget001-root .wof-btn { padding: 22px 30px; font-size: 24px; }
+
+    .clientWidget001-root.wof-position-bottom-left .candle-wof-wrapper,
+    .clientWidget001-root.wof-position-bottom-right .candle-wof-wrapper {
+        max-width: 430px;
+        padding: 34px 28px 30px;
+    }
+
+    .clientWidget001-root.wof-position-bottom-left .wof-content-wrapper,
+    .clientWidget001-root.wof-position-bottom-right .wof-content-wrapper {
+        height: auto;
+    }
 }
 </style>
 </head>
@@ -519,6 +636,12 @@ body {
 
   <div id="clientWidget001-overlay" class="wof-overlay" style="display: flex;">
     <div class="candle-wof-wrapper">
+      <button id="clientWidget001-close" class="wof-close-btn" type="button" aria-label="Закрыть виджет">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M18 6L6 18"></path>
+          <path d="M6 6l12 12"></path>
+        </svg>
+      </button>
       
       <!-- Декоративные звезды -->
       <svg class="comic-star star-1" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -604,6 +727,15 @@ body {
     widget: 'Колесо фортуны для сайта Леры',
     source: 'project-001'
   };
+  const BEHAVIOR_CONFIG = Object.assign({
+    appearanceDelaySeconds: 0,
+    showFrequency: 'always',
+    customFrequencyHours: 24,
+    desktopPosition: 'center',
+    displayStorageKey: 'clientWidget001_last_shown_at'
+  }, window.CLIENT_WIDGET001_BEHAVIOR_CONFIG || {});
+  const params = new URLSearchParams(window.location.search);
+  const isPreview = params.get('preview') === '1';
   
   const prizes = [
     "Бесплатный\nурок",
@@ -620,7 +752,9 @@ body {
   ];
 
   // DOM Элементы
+  const root = document.querySelector('.clientWidget001-root');
   const overlay = document.getElementById('clientWidget001-overlay');
+  const closeBtn = document.getElementById('clientWidget001-close');
   const spinBtn = document.getElementById('clientWidget001-spin-btn');
   const canvas = document.getElementById('clientWidget001-canvas');
   const ctx = canvas ? canvas.getContext('2d') : null;
@@ -651,6 +785,7 @@ body {
     localStorage.removeItem(LEGACY_STORAGE_KEY + '_expiry');
 
     if (spinBtn) spinBtn.addEventListener('click', handleSpin);
+    if (closeBtn) closeBtn.addEventListener('click', closeWidget);
     if (form) form.addEventListener('submit', handleFormSubmit);
     if (phoneInput) phoneInput.addEventListener('input', handlePhoneInput);
 
@@ -659,14 +794,76 @@ body {
         drawWheel();
     });
     setTimeout(drawWheel, 100);
-    openWidget();
+    scheduleWidgetAppearance();
+  }
+
+  function getDisplayFrequencyMs() {
+    const hourMs = 60 * 60 * 1000;
+    if (BEHAVIOR_CONFIG.showFrequency === 'once_per_hour') return hourMs;
+    if (BEHAVIOR_CONFIG.showFrequency === 'once_per_day') return 24 * hourMs;
+    if (BEHAVIOR_CONFIG.showFrequency === 'custom') {
+      const hours = Number(BEHAVIOR_CONFIG.customFrequencyHours);
+      return Math.max(0, Number.isFinite(hours) ? hours : 24) * hourMs;
+    }
+    return 0;
+  }
+
+  function canShowWidgetNow() {
+    if (isPreview || BEHAVIOR_CONFIG.showFrequency === 'always') return true;
+    const frequencyMs = getDisplayFrequencyMs();
+    if (!frequencyMs) return true;
+
+    const lastShownAt = Number(localStorage.getItem(BEHAVIOR_CONFIG.displayStorageKey) || 0);
+    return !lastShownAt || Date.now() - lastShownAt >= frequencyMs;
+  }
+
+  function rememberWidgetShown() {
+    if (isPreview || BEHAVIOR_CONFIG.showFrequency === 'always') return;
+    localStorage.setItem(BEHAVIOR_CONFIG.displayStorageKey, String(Date.now()));
+  }
+
+  function applyWidgetPosition() {
+    if (!root) return;
+    root.classList.remove('wof-position-center', 'wof-position-bottom-left', 'wof-position-bottom-right');
+
+    const position = ['center', 'bottom-left', 'bottom-right'].includes(BEHAVIOR_CONFIG.desktopPosition)
+      ? BEHAVIOR_CONFIG.desktopPosition
+      : 'center';
+
+    root.classList.add('wof-position-' + position);
+  }
+
+  function scheduleWidgetAppearance() {
+    applyWidgetPosition();
+
+    if (!canShowWidgetNow()) {
+      if (root) root.classList.remove('is-visible');
+      if (overlay) overlay.style.display = 'none';
+      return;
+    }
+
+    const delaySeconds = Math.max(0, Number(BEHAVIOR_CONFIG.appearanceDelaySeconds) || 0);
+    const delayMs = isPreview ? 0 : delaySeconds * 1000;
+
+    setTimeout(() => {
+      openWidget();
+      rememberWidgetShown();
+    }, delayMs);
   }
 
   function openWidget() {
     selectedPrize = '';
     showStep('spin');
     setTimeout(drawWheel, 50);
+    if (root) root.classList.add('is-visible');
     overlay.style.display = 'flex';
+  }
+
+  function closeWidget() {
+    if (timerInterval) clearInterval(timerInterval);
+    if (root) root.classList.remove('is-visible');
+    if (overlay) overlay.style.display = 'none';
+    if (stepSuccess) stepSuccess.style.display = 'none';
   }
 
   function showStep(step) {
@@ -895,6 +1092,7 @@ body {
     setTimeout(() => {
       if (stepSuccess) stepSuccess.style.display = 'none';
       overlay.style.display = 'none';
+      if (root) root.classList.remove('is-visible');
     }, 4500);
   }
 
