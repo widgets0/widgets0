@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Электронная визитка</title>
+    
+    <!-- Подключение шрифта Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Подключение Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        // === НАСТРОЙКИ ВИЗИТКИ ===
+        // Меняйте данные здесь: имя, должность, ссылки, телефон, аватар.
+        window.BUSINESS_CARD_WIDGET_CONFIG = {
+            firstName: "Андрей",
+            lastName: "Воронин",
+            middleName: "Анатольевич",
+            title: "Руководитель IT-отдела",
+            company: "Detailing Pro",
+            phone: "+7 (999) 123-45-67",
+            phoneDigits: "79991234567",
+            email: "andrey@delta.com",
+            website: "delta.com",
+            websiteUrl: "https://delta.com",
+            telegramUrl: "https://t.me/andrey_voronin",
+            whatsappUrl: "https://wa.me/79991234567",
+            viberUrl: "viber://chat?number=%2B79991234567",
+            vkUrl: "https://vk.com/id0",
+            dzenUrl: "https://dzen.ru/id/0",
+            avatarUrl: "https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&q=80&w=400&h=400"
+        };
+
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Кастомные стили для скроллбара и анимаций -->
+    <style>
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        /* Apple-style анимации появления */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes scaleIn {
+            from { opacity: 0; transform: scale(0.8); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .animate-fade-in-up {
+            animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            opacity: 0;
+        }
+        
+        .animate-scale-in {
+            animation: scaleIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            opacity: 0;
+        }
+
+        .delay-100 { animation-delay: 0.1s; }
+        .delay-200 { animation-delay: 0.2s; }
+        .delay-300 { animation-delay: 0.3s; }
+
+        /* Плавные ховеры для интерактивных элементов */
+        .interactive-element {
+            transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .interactive-element:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.06);
+        }
+        .interactive-element:active {
+            transform: scale(0.96);
+        }
+        .btn-active:active {
+            transform: scale(0.96);
+        }
+
+        .business-card-toast {
+            position: absolute;
+            left: 50%;
+            bottom: 22px;
+            z-index: 80;
+            transform: translateX(-50%) translateY(16px);
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .business-card-toast.is-visible {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+    </style>
+</head>
+<body class="bg-[#f5f5f7] min-h-screen flex items-center justify-center p-4 font-sans text-slate-800 antialiased selection:bg-blue-500/30">
+
+    <!-- Контейнер виджета -->
+    <main class="w-full h-[840px] max-h-[90vh] max-w-[420px] bg-slate-50 rounded-[44px] shadow-2xl shadow-black/10 relative overflow-hidden flex flex-col border-[8px] border-black/10">
+        
+        <!-- Скроллируемая область -->
+        <div class="w-full h-full flex flex-col relative overflow-y-auto no-scrollbar">
+            
+            <!-- Шапка -->
+            <div class="relative bg-white h-[180px] w-full shrink-0 flex flex-col justify-between overflow-hidden">
+                <!-- Волнистый фон -->
+                <svg class="absolute inset-0 w-full h-full object-cover" preserveAspectRatio="none" viewBox="0 0 400 200" fill="none">
+                    <path d="M0 0H400V100C300 130 200 40 0 80V0Z" fill="#e2e8f0" opacity="0.6"/>
+                    <path d="M0 20C150 100 250 10 400 60V0H0V20Z" fill="#cbd5e1" opacity="0.3"/>
+                    <path d="M0 50C100 0 250 150 400 80V0H0V50Z" fill="white" opacity="0.4"/>
+                    <path d="M-10 120C150 150 250 -10 410 70" stroke="white" stroke-width="1" fill="none" opacity="0.8"/>
+                    <path d="M-10 130C150 160 250 0 410 80" stroke="white" stroke-width="0.5" fill="none" opacity="0.6"/>
+                    <path d="M-10 140C150 170 250 10 410 90" stroke="white" stroke-width="0.3" fill="none" opacity="0.4"/>
+                    <path d="M-10 150C150 180 250 20 410 100" stroke="white" stroke-width="0.2" fill="none" opacity="0.3"/>
+                </svg>
+                
+                <!-- Логотип и кнопки -->
+                <div class="absolute top-0 left-0 w-full p-6 z-10 flex items-center justify-between">
+                    <div class="flex items-center gap-3 animate-fade-in-up">
+                        <svg viewBox="0 0 32 32" fill="currentColor" class="w-9 h-9 text-slate-800">
+                            <path d="M16 2a14 14 0 1 0 14 14h-7a7 7 0 1 1-7-7v-7z" />
+                            <rect x="17" y="15" width="7" height="7" rx="1" />
+                        </svg>
+                        <div class="flex flex-col leading-[1.1]">
+                            <span class="font-bold text-[17px] text-slate-800 tracking-tight">Detailing</span>
+                            <span class="font-bold text-[17px] text-slate-800 tracking-tight">Pro</span>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center gap-2">
+                        <button onclick="shareContact()" class="w-10 h-10 rounded-full bg-white/60 backdrop-blur-md flex items-center justify-center text-slate-700 shadow-sm border border-white/40 btn-active interactive-element animate-scale-in delay-100">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" x2="12" y1="2" y2="15"/></svg>
+                        </button>
+                        <button onclick="toggleQR(true)" class="w-10 h-10 rounded-full bg-white/60 backdrop-blur-md flex items-center justify-center text-slate-700 shadow-sm border border-white/40 btn-active interactive-element animate-scale-in delay-200">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect width="5" height="5" x="3" y="3" rx="1"/><rect width="5" height="5" x="16" y="3" rx="1"/><rect width="5" height="5" x="3" y="16" rx="1"/><path d="M21 16h-3a2 2 0 0 0-2 2v3"/><path d="M21 21v.01"/><path d="M12 7v3a2 2 0 0 1-2 2H7"/><path d="M3 12h.01"/><path d="M12 3h.01"/><path d="M12 16v.01"/><path d="M16 12h1"/><path d="M21 12v.01"/><path d="M12 21v-3a2 2 0 0 1 2-2h3"/></svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Профиль -->
+            <div class="flex flex-col items-center px-6 -mt-[76px] z-10 relative animate-fade-in-up delay-100">
+                
+                <div class="relative rounded-full bg-white p-1 shadow-lg shadow-black/5 animate-scale-in delay-200">
+                    <div class="w-[144px] h-[144px] rounded-full border-[3px] border-slate-800 overflow-hidden relative bg-slate-200">
+                        <img
+                            data-card-avatar
+                            src="https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&q=80&w=400&h=400" 
+                            alt="Воронин Андрей Анатольевич" 
+                            class="w-full h-full object-cover z-10 relative"
+                        />
+                    </div>
+                    <!-- Пунктирное кольцо -->
+                    <svg class="absolute inset-0 w-full h-full pointer-events-none" viewBox="0 0 100 100">
+                        <circle cx="50" cy="50" r="48" fill="none" stroke="white" stroke-width="4" stroke-dasharray="10 40" transform="rotate(-45 50 50)" />
+                    </svg>
+                </div>
+
+                <h1 data-card-name class="mt-5 text-[26px] font-bold text-center text-slate-900 leading-[1.2] tracking-tight">
+                    Воронин Андрей<br/>Анатольевич
+                </h1>
+                <p data-card-title class="mt-2 text-[15px] font-medium text-slate-500 text-center">Руководитель IT-отдела</p>
+
+                <button onclick="downloadVCard()" class="mt-6 w-full max-w-[280px] py-[18px] bg-[#1e293b] text-white rounded-[32px] font-medium text-[15px] hover:bg-slate-800 transition-colors shadow-lg shadow-slate-900/10 btn-active interactive-element">
+                    Сохранить в контакты
+                </button>
+            </div>
+
+            <!-- Ссылки -->
+            <div class="px-5 py-8 flex flex-col gap-4 pb-12 animate-fade-in-up delay-200">
+                
+                <!-- Мессенджеры -->
+                <div class="grid grid-cols-2 gap-4">
+                    <a data-card-whatsapp href="https://wa.me/79991234567" target="_blank" rel="noreferrer" class="bg-white rounded-[28px] p-5 flex flex-col items-center justify-center gap-4 shadow-[0_4px_20px_rgba(0,0,0,0.03)] border border-slate-100 interactive-element">
+                        <svg viewBox="0 0 24 24" fill="currentColor" class="w-[42px] h-[42px] text-[#25D366]">
+                            <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a12.8 12.8 0 0 0-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z" />
+                        </svg>
+                        <span class="text-[14px] font-medium text-slate-900 text-center leading-[1.2] tracking-tight">Написать<br/>WhatsApp</span>
+                    </a>
+                    
+                    <a data-card-telegram href="https://t.me/andrey_voronin" target="_blank" rel="noreferrer" class="bg-white rounded-[28px] p-5 flex flex-col items-center justify-center gap-4 shadow-[0_4px_20px_rgba(0,0,0,0.03)] border border-slate-100 interactive-element">
+                        <svg viewBox="0 0 24 24" fill="currentColor" class="w-[42px] h-[42px] text-[#0088cc]">
+                            <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0Zm5.894 8.221-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.446 1.394c-.14.18-.357.295-.6.295-.002 0-.003 0-.005 0l.213-3.054 5.56-5.022c.24-.213-.054-.334-.373-.121l-6.869 4.326-2.96-.924c-.64-.203-.658-.64.135-.954l11.566-4.458c.538-.196 1.006.128.832.94Z" />
+                        </svg>
+                        <span class="text-[14px] font-medium text-slate-900 text-center leading-[1.2] tracking-tight">Написать<br/>Telegram</span>
+                    </a>
+                </div>
+
+                <!-- Сайт -->
+                <a data-card-website-link href="https://delta.com" target="_blank" rel="noopener noreferrer" class="bg-white rounded-[24px] p-4 flex items-center gap-4 shadow-[0_4px_20px_rgba(0,0,0,0.03)] border border-slate-100 interactive-element cursor-pointer">
+                    <div class="w-[46px] h-[46px] rounded-[20px] bg-slate-50 flex items-center justify-center shrink-0">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="text-slate-700"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><path d="M2 12h20"/></svg>
+                    </div>
+                    <div class="flex flex-col justify-center">
+                        <span class="text-[12px] font-medium text-slate-400 mb-0.5">Личный сайт</span>
+                        <span data-card-website class="text-[15px] font-semibold text-slate-800 tracking-tight leading-none">delta.com</span>
+                    </div>
+                </a>
+
+                <!-- Соцсети -->
+                <div class="grid grid-cols-3 gap-4">
+                    <a data-card-viber href="viber://chat?number=%2B79991234567" class="bg-white rounded-[28px] aspect-[1/1.05] flex flex-col items-center justify-center gap-3 shadow-[0_4px_20px_rgba(0,0,0,0.03)] border border-slate-100 interactive-element">
+                        <svg viewBox="0 0 24 24" fill="currentColor" class="w-[36px] h-[36px] text-[#7360f2]">
+                            <path d="M19.1 4.54c-1.31-1.12-3.13-1.56-4.87-1.33-.25.04-.42.27-.39.52.03.25.26.42.51.39 1.48-.2 3.01.17 4.12 1.13 1.1 1 1.76 2.45 1.83 3.94.02.26.24.45.49.44.25-.01.46-.23.45-.48-.09-1.74-.86-3.41-2.14-4.61zm-1.84 1.94c-.81-.72-1.92-.99-3-.83-.25.04-.42.27-.39.52.03.25.27.42.52.38.86-.12 1.74.09 2.39.67.65.57 1.02 1.41 1.06 2.27.02.26.24.45.5.44.25-.01.45-.23.44-.48-.06-1.08-.51-2.1-1.52-2.97zm-1.86 2.06c-.33-.27-.75-.38-1.17-.32-.24.04-.4.27-.36.52.04.24.27.4.52.36.21-.03.43.02.6.17.15.14.24.34.25.55.02.25.23.44.49.44.25-.01.45-.23.44-.48-.02-.38-.17-.74-.47-1.02zM12.98 22h-1c-2.3 0-5.74-1.99-7.98-4.22C1.75 15.54.55 11.23.41 8.87.35 7.6.61 6.36 1.34 5.38 1.92 4.61 2.68 4 3.5 4h.02c.48 0 .94.19 1.28.53L7 6.75c.34.34.53.8.53 1.28 0 .44-.16.85-.45 1.17l-.88.98c.11.22.25.43.39.63.78 1.12 1.8 2.14 2.92 2.92.21.15.42.28.64.4l1-.89c.32-.28.72-.45 1.16-.45.48 0 .94.19 1.28.53l2.22 2.22c.34.34.53.8.53 1.28 0 .82-.61 1.58-1.38 2.16-.98.73-2.22.99-3.48.93z" />
+                        </svg>
+                        <span class="text-[13px] font-medium text-slate-900">Viber</span>
+                    </a>
+                    
+                    <a data-card-vk href="https://vk.com/id0" target="_blank" rel="noreferrer" class="bg-white rounded-[28px] aspect-[1/1.05] flex flex-col items-center justify-center gap-3 shadow-[0_4px_20px_rgba(0,0,0,0.03)] border border-slate-100 interactive-element">
+                        <svg viewBox="0 0 24 24" fill="none" class="w-[36px] h-[36px] text-[#0077FF]">
+                            <rect width="24" height="24" rx="5.5" fill="currentColor" />
+                            <path fill-rule="evenodd" clip-rule="evenodd" d="M12.784 16.48c-4.57 0-7.186-3.136-7.3-8.38h2.62c.074 3.9 1.77 5.6 3.11 5.92V8.1h2.51v3.38c1.32-.15 2.7-1.74 3.18-3.38h2.51c-.35 1.95-1.68 3.32-2.6 3.96.93.51 2.44 1.73 3.02 4.42h-2.7c-.45-1.92-1.84-3.1-3.41-3.3v3.3z" fill="white" />
+                        </svg>
+                        <span class="text-[13px] font-medium text-slate-900">VK</span>
+                    </a>
+                    
+                    <a data-card-dzen href="https://dzen.ru/id/0" target="_blank" rel="noreferrer" class="bg-white rounded-[28px] aspect-[1/1.05] flex flex-col items-center justify-center gap-3 shadow-[0_4px_20px_rgba(0,0,0,0.03)] border border-slate-100 interactive-element">
+                        <svg viewBox="0 0 24 24" fill="currentColor" class="w-[36px] h-[36px] text-black">
+                            <path fill-rule="evenodd" clip-rule="evenodd" d="M12 0a12 12 0 100 24 12 12 0 000-24zm0 2.5c.7 4.5 4.3 8.1 8.8 8.8-4.5.7-8.1 4.3-8.8 8.8-.7-4.5-4.3-8.1-8.8-8.8 4.5-.7 8.1-4.3 8.8-8.8z" />
+                        </svg>
+                        <span class="text-[13px] font-medium text-slate-900">Дзен</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- QR Code Модальное окно (изначально скрыто) -->
+        <div id="qr-modal" class="absolute inset-0 z-50 bg-slate-900/40 backdrop-blur-md flex items-center justify-center p-6 opacity-0 pointer-events-none transition-opacity duration-300" onclick="toggleQR(false)">
+            <div class="bg-white rounded-[32px] p-8 flex flex-col items-center w-full max-w-[320px] shadow-2xl relative interactive-element" onclick="event.stopPropagation()">
+                <button onclick="toggleQR(false)" class="absolute top-4 right-4 w-8 h-8 bg-slate-100 rounded-full flex items-center justify-center text-slate-500 hover:bg-slate-200 transition-colors btn-active">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+                </button>
+                
+                <h2 class="text-[20px] font-bold text-slate-900 mb-2 mt-2">Поделиться</h2>
+                <p class="text-[14px] text-slate-500 text-center mb-8">Наведите камеру на QR-код, чтобы сохранить контакт</p>
+                
+                <div class="w-[200px] h-[200px] bg-slate-50 rounded-[24px] p-4 border border-slate-200 flex items-center justify-center">
+                    <img data-card-qr src="" alt="QR-код визитки" class="w-full h-full object-contain rounded-[16px]" />
+                </div>
+                
+                <button onclick="shareContact()" class="mt-8 w-full py-[16px] bg-slate-100 text-slate-800 rounded-[24px] font-medium text-[15px] hover:bg-slate-200 transition-colors flex items-center justify-center gap-2 btn-active interactive-element">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" x2="12" y1="2" y2="15"/></svg>
+                    Отправить ссылку
+                </button>
+            </div>
+        </div>
+
+        <div id="business-card-toast" class="business-card-toast">
+            <div class="rounded-full bg-slate-900 text-white text-[13px] font-semibold px-5 py-3 shadow-xl shadow-slate-900/20">
+                Ссылка скопирована
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const defaultUserData = {
+            firstName: "Андрей",
+            lastName: "Воронин",
+            middleName: "Анатольевич",
+            title: "Руководитель IT-отдела",
+            company: "Detailing Pro",
+            phone: "+7 (999) 123-45-67",
+            phoneDigits: "79991234567",
+            email: "andrey@delta.com",
+            website: "delta.com",
+            websiteUrl: "https://delta.com",
+            telegramUrl: "https://t.me/andrey_voronin",
+            whatsappUrl: "https://wa.me/79991234567",
+            viberUrl: "viber://chat?number=%2B79991234567",
+            vkUrl: "https://vk.com/id0",
+            dzenUrl: "https://dzen.ru/id/0",
+            avatarUrl: "https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&q=80&w=400&h=400"
+        };
+        const userData = Object.assign({}, defaultUserData, window.BUSINESS_CARD_WIDGET_CONFIG || {});
+
+        function setHref(selector, value) {
+            const el = document.querySelector(selector);
+            if (el && value) el.href = value;
+        }
+
+        function showToast(message) {
+            const toast = document.getElementById('business-card-toast');
+            if (!toast) return;
+            const label = toast.querySelector('div');
+            if (label) label.textContent = message;
+            toast.classList.add('is-visible');
+            clearTimeout(showToast.timer);
+            showToast.timer = setTimeout(() => toast.classList.remove('is-visible'), 2200);
+        }
+
+        function updateCardFromConfig() {
+            const fullName = `${userData.lastName} ${userData.firstName} ${userData.middleName}`.trim();
+            const nameEl = document.querySelector('[data-card-name]');
+            const titleEl = document.querySelector('[data-card-title]');
+            const avatarEl = document.querySelector('[data-card-avatar]');
+            const websiteEl = document.querySelector('[data-card-website]');
+            const qrEl = document.querySelector('[data-card-qr]');
+
+            if (nameEl) nameEl.innerHTML = `${userData.lastName} ${userData.firstName}<br/>${userData.middleName}`.trim();
+            if (titleEl) titleEl.textContent = userData.title;
+            if (avatarEl) {
+                avatarEl.src = userData.avatarUrl;
+                avatarEl.alt = fullName;
+            }
+            if (websiteEl) websiteEl.textContent = userData.website;
+
+            setHref('[data-card-whatsapp]', userData.whatsappUrl);
+            setHref('[data-card-telegram]', userData.telegramUrl);
+            setHref('[data-card-website-link]', userData.websiteUrl);
+            setHref('[data-card-viber]', userData.viberUrl);
+            setHref('[data-card-vk]', userData.vkUrl);
+            setHref('[data-card-dzen]', userData.dzenUrl);
+
+            if (qrEl) {
+                const qrTarget = window.location.href.split('#')[0];
+                qrEl.src = 'https://api.qrserver.com/v1/create-qr-code/?size=220x220&margin=12&data=' + encodeURIComponent(qrTarget);
+            }
+        }
+
+        // Генерация и скачивание контакта (vCard)
+        function downloadVCard() {
+            const vcard = `BEGIN:VCARD
+VERSION:3.0
+FN:${userData.lastName} ${userData.firstName} ${userData.middleName}
+N:${userData.lastName};${userData.firstName};${userData.middleName};;
+TITLE:${userData.title}
+ORG:${userData.company}
+TEL;TYPE=WORK,VOICE:${userData.phone}
+EMAIL;TYPE=WORK,INTERNET:${userData.email}
+URL:${userData.websiteUrl}
+END:VCARD`;
+            
+            const blob = new Blob([vcard], { type: 'text/vcard' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `${userData.firstName}_${userData.lastName}.vcf`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+        }
+
+        // Нативная функция "Поделиться" в iOS / Android
+        async function shareContact() {
+            if (navigator.share) {
+                try {
+                    await navigator.share({
+                        title: `${userData.firstName} ${userData.lastName} - ${userData.title}`,
+                        text: `Визитная карточка: ${userData.firstName} ${userData.lastName}, ${userData.company}`,
+                        url: window.location.href,
+                    });
+                } catch (err) {
+                    console.log('Пользователь отменил или произошла ошибка:', err);
+                }
+            } else {
+                const shareUrl = window.location.href.split('#')[0];
+                try {
+                    await navigator.clipboard.writeText(shareUrl);
+                    showToast('Ссылка скопирована');
+                } catch (err) {
+                    showToast('Скопируйте ссылку из адресной строки');
+                }
+            }
+        }
+
+        // Открытие/закрытие модального окна с QR кодом
+        function toggleQR(show) {
+            const modal = document.getElementById('qr-modal');
+            if (show) {
+                modal.classList.remove('opacity-0', 'pointer-events-none');
+                modal.classList.add('opacity-100');
+            } else {
+                modal.classList.add('opacity-0', 'pointer-events-none');
+                modal.classList.remove('opacity-100');
+            }
+        }
+
+        updateCardFromConfig();
+    </script>
+</body>
+</html>
