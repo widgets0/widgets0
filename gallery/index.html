@@ -1320,15 +1320,20 @@
       }
 
       .modal {
+        align-items: stretch;
+        justify-content: stretch;
+        padding: 0;
         background: #000;
         backdrop-filter: none;
       }
 
       .modal-panel {
         width: 100vw;
+        max-width: 100vw;
         height: 100dvh;
         max-height: none;
         display: block;
+        box-sizing: border-box;
         border: 0;
         border-radius: 0;
         background: #000;
@@ -1367,10 +1372,12 @@
 
       .modal-preview {
         width: 100vw;
+        max-width: 100vw;
         height: 100vh;
         height: 100dvh;
         min-height: 0;
         display: block;
+        box-sizing: border-box;
         padding: 0;
         background: #000;
         overflow: hidden;
@@ -1378,8 +1385,10 @@
 
       .modal-frame {
         width: 100%;
+        max-width: 100vw;
         height: 100%;
         display: block;
+        box-sizing: border-box;
         border-radius: 0;
         transform: none;
         background: #000;
