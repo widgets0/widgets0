@@ -1166,12 +1166,15 @@
     }
 
     .modal {
+      padding: 18px;
       background: rgba(0,0,0,.45);
       backdrop-filter: blur(8px);
       -webkit-backdrop-filter: blur(8px);
     }
 
     .modal-panel {
+      width: min(1320px, 100%);
+      max-height: calc(100dvh - 36px);
       border: 1px solid rgba(0,0,0,.08);
       border-radius: 20px;
       background: #fff;
@@ -1179,7 +1182,7 @@
     }
 
     .modal-head {
-      padding: 16px 20px;
+      padding: 12px 18px;
       border-bottom: 1px solid rgba(0,0,0,.08);
       background: #fff;
     }
@@ -1190,8 +1193,7 @@
     }
 
     .modal-title p {
-      color: var(--muted);
-      font-size: 14px;
+      display: none;
     }
 
     .modal-use {
@@ -1215,13 +1217,26 @@
     }
 
     .modal-preview {
+      height: min(820px, calc(100dvh - 96px));
+      padding: 14px;
       background: #f5f5f7;
     }
 
     .modal-frame {
+      width: min(1160px, 100%);
+      height: 100%;
       border-radius: 16px;
       background: #fff;
       filter: drop-shadow(0 18px 54px rgba(0,0,0,.16));
+    }
+
+    @media (min-width: 721px) {
+      .modal-frame {
+        width: min(1320px, calc(100% / 0.9));
+        height: calc(100% / 0.9);
+        transform: scale(0.9);
+        transform-origin: center;
+      }
     }
 
     @media (max-width: 720px) {
@@ -1316,6 +1331,12 @@
       .modal-preview,
       .modal-frame {
         background: #000;
+      }
+
+      .modal-frame {
+        width: 100%;
+        height: 100%;
+        transform: none;
       }
     }
   </style>
@@ -1893,6 +1914,39 @@
         document.body.style.overflow = 'hidden';
       }
 
+      function fitModalFrame() {
+        if (!modal.classList.contains('is-open')) return;
+
+        var doc;
+        try {
+          doc = modalFrame.contentDocument || modalFrame.contentWindow.document;
+        } catch (error) {
+          return;
+        }
+
+        if (!doc || !doc.body || !doc.documentElement) return;
+
+        doc.documentElement.style.overflow = 'hidden';
+        doc.body.style.overflow = 'hidden';
+        doc.body.style.transformOrigin = 'top center';
+        doc.body.style.zoom = '1';
+
+        var frameWidth = modalFrame.clientWidth;
+        var frameHeight = modalFrame.clientHeight;
+        var contentWidth = Math.max(doc.body.scrollWidth, doc.documentElement.scrollWidth, frameWidth);
+        var contentHeight = Math.max(doc.body.scrollHeight, doc.documentElement.scrollHeight, frameHeight);
+
+        Array.from(doc.body.children).forEach(function (child) {
+          var rect = child.getBoundingClientRect();
+          contentWidth = Math.max(contentWidth, rect.right);
+          contentHeight = Math.max(contentHeight, rect.bottom);
+        });
+
+        var scale = Math.min(1, frameWidth / contentWidth, frameHeight / contentHeight);
+
+        doc.body.style.zoom = String(Math.max(0.48, scale));
+      }
+
       function closeModal() {
         modal.classList.remove('is-open');
         modal.setAttribute('aria-hidden', 'true');
@@ -1921,6 +1975,12 @@
 
       search.addEventListener('input', updateGallery);
       document.querySelector('[data-modal-close]').addEventListener('click', closeModal);
+      modalFrame.addEventListener('load', function () {
+        setTimeout(fitModalFrame, 80);
+        setTimeout(fitModalFrame, 420);
+        setTimeout(fitModalFrame, 1000);
+      });
+      window.addEventListener('resize', fitModalFrame);
       modal.addEventListener('click', function (event) {
         if (event.target === modal) closeModal();
       });
