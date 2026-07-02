@@ -221,6 +221,7 @@
 <script>
   const LEAD_CONFIG = {
     webhookUrl: 'https://widgets0-production.up.railway.app',
+    webhookSecret: '',
     widget: 'Квиз "С чего начать в свечеварении"',
     source: 'candles-quiz'
   };
@@ -525,7 +526,7 @@
     try {
       const response = await fetch(LEAD_CONFIG.webhookUrl, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: Object.assign({ 'Content-Type': 'application/json' }, LEAD_CONFIG.webhookSecret ? { 'X-Webhook-Secret': LEAD_CONFIG.webhookSecret } : {}),
         body: JSON.stringify(lead)
       });
 

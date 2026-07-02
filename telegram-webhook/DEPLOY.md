@@ -15,10 +15,18 @@ Backend stack:
 TELEGRAM_BOT_TOKEN=...
 TELEGRAM_CHAT_ID=...
 ALLOWED_ORIGIN=
+WEBHOOK_SECRET=
 HOST=0.0.0.0
 ```
 
 `PORT` is usually provided by Railway/Render automatically.
+
+`WEBHOOK_SECRET` is optional, but recommended. If it is set on Railway/Render,
+widgets must send the same value in the `X-Webhook-Secret` header. This protects
+the webhook from casual spam requests. Do not publish this value in docs or Git.
+
+`ALLOWED_ORIGIN` can be left empty while testing. For production, set it to the
+client site origin, for example `https://example.com`.
 
 ## Railway
 
@@ -38,6 +46,7 @@ embeddable-tilda/telegram-webhook
 TELEGRAM_BOT_TOKEN=...
 TELEGRAM_CHAT_ID=803748492
 ALLOWED_ORIGIN=
+WEBHOOK_SECRET=your-private-string
 HOST=0.0.0.0
 ```
 
@@ -99,6 +108,7 @@ npm start
 TELEGRAM_BOT_TOKEN=...
 TELEGRAM_CHAT_ID=803748492
 ALLOWED_ORIGIN=
+WEBHOOK_SECRET=your-private-string
 HOST=0.0.0.0
 ```
 
@@ -116,8 +126,8 @@ Use the deployed URL as `webhookUrl`:
 <script>
 window.WIDGET_LEAD_CONFIG = {
   webhookUrl: 'https://your-webhook-url',
-  telegramBotToken: '',
-  telegramChatId: '',
+  webhookSecret: 'same-private-string',
+  source: 'client-or-project-name',
   storageKey: 'widget_leads'
 };
 </script>

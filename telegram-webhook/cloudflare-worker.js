@@ -7,12 +7,13 @@
 // Optional environment variables:
 // ALLOWED_ORIGIN     - your site origin, for example https://example.com
 // SETUP_SECRET       - optional password for /setup?secret=...
+// WEBHOOK_SECRET     - optional secret expected in X-Webhook-Secret header
 
 function corsHeaders(env) {
   return {
     "Access-Control-Allow-Origin": env.ALLOWED_ORIGIN || "*",
     "Access-Control-Allow-Methods": "POST, OPTIONS",
-    "Access-Control-Allow-Headers": "Content-Type",
+    "Access-Control-Allow-Headers": "Content-Type, X-Webhook-Secret",
     "Access-Control-Max-Age": "86400"
   };
 }
@@ -55,6 +56,11 @@ function fieldLabel(key) {
   };
 
   return labels[key] || key;
+}
+
+function isWebhookAuthorized(request, env) {
+  if (!env.WEBHOOK_SECRET) return true;
+  return request.headers.get("X-Webhook-Secret") === env.WEBHOOK_SECRET;
 }
 
 function formatLead(lead, request) {
@@ -157,6 +163,13 @@ export default {
     if (!env.TELEGRAM_BOT_TOKEN || !env.TELEGRAM_CHAT_ID) {
       return new Response(JSON.stringify({ ok: false, error: "Telegram env vars are missing" }), {
         status: 500,
+        headers: { ...headers, "Content-Type": "application/json" }
+      });
+    }
+
+    if (!isWebhookAuthorized(request, env)) {
+      return new Response(JSON.stringify({ ok: false, error: "Unauthorized" }), {
+        status: 401,
         headers: { ...headers, "Content-Type": "application/json" }
       });
     }

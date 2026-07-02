@@ -453,6 +453,7 @@
     (function () {
       const LEAD_CONFIG = {
         webhookUrl: "https://widgets0-production.up.railway.app",
+        webhookSecret: '',
         widget: "Акционная полоса с таймером",
         source: "sale-banner-timer"
       };
@@ -551,7 +552,7 @@
         try {
           const response = await fetch(LEAD_CONFIG.webhookUrl, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: Object.assign({ 'Content-Type': 'application/json' }, LEAD_CONFIG.webhookSecret ? { 'X-Webhook-Secret': LEAD_CONFIG.webhookSecret } : {}),
             body: JSON.stringify({
               widget: LEAD_CONFIG.widget,
               source: LEAD_CONFIG.source,

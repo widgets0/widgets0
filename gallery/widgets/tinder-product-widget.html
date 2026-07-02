@@ -358,6 +358,8 @@
 
   const LEAD_CONFIG = Object.assign({
     webhookUrl: 'https://widgets0-production.up.railway.app',
+    webhookSecret: '',
+    source: 'tinder-product',
     telegramBotToken: '',
     telegramChatId: '',
     storageKey: 'widget_leads'
@@ -384,6 +386,7 @@
 
   async function sendWidgetLead(payload) {
     const lead = Object.assign({}, payload, {
+      source: payload.source || LEAD_CONFIG.source,
       page: window.location.href.split('?')[0],
       createdAt: new Date().toISOString()
     });
@@ -391,7 +394,7 @@
     if (LEAD_CONFIG.webhookUrl) {
       const response = await fetch(LEAD_CONFIG.webhookUrl, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: Object.assign({ 'Content-Type': 'application/json' }, LEAD_CONFIG.webhookSecret ? { 'X-Webhook-Secret': LEAD_CONFIG.webhookSecret } : {}),
         body: JSON.stringify(lead)
       });
       if (!response.ok) throw new Error('Webhook error: ' + response.status);
@@ -416,7 +419,7 @@
     const leads = JSON.parse(localStorage.getItem(LEAD_CONFIG.storageKey) || '[]');
     leads.push(lead);
     localStorage.setItem(LEAD_CONFIG.storageKey, JSON.stringify(leads));
-    console.info('Заявка сохранена локально. Подключите WIDGET_LEAD_CONFIG для отправки.', lead);
+    console.info('Заявка сохранена локально. Подключите WIDGET_LEAD_CONFIG для отправки.');
     return { mode: 'local', lead };
   }
 

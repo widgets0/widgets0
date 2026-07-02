@@ -518,6 +518,7 @@
     (function () {
       const LEAD_CONFIG = {
         webhookUrl: "https://widgets0-production.up.railway.app",
+        webhookSecret: '',
         widget: "Велоигра за бонусы",
         source: "bike-bonus-runner"
       };
@@ -885,7 +886,7 @@
       async function sendLead(data) {
         const response = await fetch(LEAD_CONFIG.webhookUrl, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: Object.assign({ 'Content-Type': 'application/json' }, LEAD_CONFIG.webhookSecret ? { 'X-Webhook-Secret': LEAD_CONFIG.webhookSecret } : {}),
           body: JSON.stringify(Object.assign({
             widget: LEAD_CONFIG.widget,
             source: LEAD_CONFIG.source,

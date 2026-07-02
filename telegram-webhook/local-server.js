@@ -31,7 +31,7 @@ function corsHeaders() {
   return {
     "Access-Control-Allow-Origin": env.ALLOWED_ORIGIN || "*",
     "Access-Control-Allow-Methods": "POST, OPTIONS, GET",
-    "Access-Control-Allow-Headers": "Content-Type",
+    "Access-Control-Allow-Headers": "Content-Type, X-Webhook-Secret",
     "Access-Control-Max-Age": "86400"
   };
 }
@@ -97,6 +97,11 @@ function fieldLabel(key) {
   };
 
   return labels[key] || key;
+}
+
+function isWebhookAuthorized(req) {
+  if (!env.WEBHOOK_SECRET) return true;
+  return req.headers["x-webhook-secret"] === env.WEBHOOK_SECRET;
 }
 
 function formatLead(lead, req) {
@@ -168,12 +173,21 @@ const server = http.createServer(async (req, res) => {
     return;
   }
 
+  if (!isWebhookAuthorized(req)) {
+    sendJson(res, 401, { ok: false, error: "Unauthorized" });
+    return;
+  }
+
   try {
     const body = await readBody(req);
     const lead = JSON.parse(body || "{}");
-    const telegram = await sendToTelegram(lead, req);
-    console.log("Lead sent:", lead);
-    sendJson(res, 200, { ok: true, telegram });
+    await sendToTelegram(lead, req);
+    console.log("Lead sent:", {
+      widget: lead.widget || "",
+      source: lead.source || "",
+      domain: leadDomain(lead, req)
+    });
+    sendJson(res, 200, { ok: true });
   } catch (error) {
     console.error(error);
     sendJson(res, 500, { ok: false, error: error.message });
