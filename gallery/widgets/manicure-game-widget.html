@@ -319,6 +319,20 @@
     }
   }
 
+  function formatPhone(value) {
+    let digits = value.replace(/\D/g, '');
+    if (digits.startsWith('8')) digits = '7' + digits.slice(1);
+    if (!digits.startsWith('7')) digits = '7' + digits;
+    digits = digits.slice(0, 11);
+
+    let result = '+7';
+    if (digits.length > 1) result += ' (' + digits.slice(1, 4);
+    if (digits.length >= 4) result += ') ' + digits.slice(4, 7);
+    if (digits.length >= 7) result += '-' + digits.slice(7, 9);
+    if (digits.length >= 9) result += '-' + digits.slice(9, 11);
+    return result;
+  }
+
   function handleMove(e) {
     const rect = canvas.getBoundingClientRect();
     let clientX = e.touches ? e.touches[0].clientX : e.clientX;
@@ -331,6 +345,16 @@
   canvas.addEventListener('mousemove', handleMove);
   canvas.addEventListener('touchstart', handleMove, { passive: true });
   canvas.addEventListener('touchmove', handleMove, { passive: true });
+
+  const nailPhoneInput = document.getElementById('nail-user-phone');
+  if (nailPhoneInput) {
+    nailPhoneInput.addEventListener('focus', function() {
+      if (!nailPhoneInput.value) nailPhoneInput.value = '+7';
+    });
+    nailPhoneInput.addEventListener('input', function() {
+      nailPhoneInput.value = formatPhone(nailPhoneInput.value);
+    });
+  }
 
   if (closeBtn) {
     closeBtn.addEventListener('click', function() {
@@ -363,8 +387,14 @@
     const btn = document.getElementById('nail-submit-btn');
     const name = document.getElementById('nail-user-name').value;
     const phone = document.getElementById('nail-user-phone').value;
+    const phoneDigits = phone.replace(/\D/g, '');
     const consent = document.getElementById('nail-consent');
     const defaultText = btn.innerHTML;
+
+    if (!name.trim() || phoneDigits.length !== 11) {
+      alert('Введите имя и полный номер телефона.');
+      return;
+    }
 
     if (consent && !consent.checked) {
       alert('Нужно согласие на обработку персональных данных.');
