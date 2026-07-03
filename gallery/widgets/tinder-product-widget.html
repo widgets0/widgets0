@@ -75,6 +75,29 @@
       animation-delay: -.9s;
     }
 
+    .tinder-offer-timer {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      width: 100%;
+      margin: 0 0 18px;
+      padding: 12px 14px;
+      border-radius: 18px;
+      border: 1px solid rgba(24, 24, 27, .08);
+      background: linear-gradient(135deg, rgba(250, 250, 250, .95), rgba(244, 244, 245, .92));
+      color: #18181b;
+      font-size: 13px;
+      font-weight: 800;
+      line-height: 1.25;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, .8);
+    }
+
+    .tinder-offer-timer-value {
+      font-variant-numeric: tabular-nums;
+      letter-spacing: .02em;
+    }
+
     @keyframes tinderFloat {
       0%, 100% { translate: 0 0; }
       50% { translate: 0 -7px; }
@@ -246,6 +269,10 @@
     <div class="text-center mb-8">
       <h2 class="text-2xl font-black text-zinc-950 mb-3">Куда отправить подборку?</h2>
       <p class="text-zinc-500 text-sm">Оставь контакт — пришлём выбранные топы и скидку 10% на первый заказ.</p>
+    </div>
+    <div class="tinder-offer-timer" aria-live="polite">
+      <span>Предложение сгорит через:</span>
+      <span class="tinder-offer-timer-value">23:59:59</span>
     </div>
     <form class="tinder-lead-form space-y-4">
       <div>
@@ -435,6 +462,8 @@
     let isDragging = false;
     let startX = 0;
     let currentX = 0;
+    let offerDeadline = Date.now() + (24 * 60 * 60 * 1000);
+    let offerTimerInterval = null;
 
     function switchState(stateId) {
       ['intro', 'swiping', 'summary', 'lead_form', 'success'].forEach(id => {
@@ -449,6 +478,43 @@
         targetEl.classList.remove('hidden');
         setTimeout(() => { targetEl.style.opacity = '1'; }, 50);
       }
+
+      if (stateId === 'lead_form') {
+        startOfferTimer();
+      } else if (stateId === 'success') {
+        stopOfferTimer();
+      }
+    }
+
+    function formatTimer(msLeft) {
+      const totalSeconds = Math.max(0, Math.floor(msLeft / 1000));
+      const hours = Math.floor(totalSeconds / 3600);
+      const minutes = Math.floor((totalSeconds % 3600) / 60);
+      const seconds = totalSeconds % 60;
+      return [hours, minutes, seconds].map(value => String(value).padStart(2, '0')).join(':');
+    }
+
+    function updateOfferTimer() {
+      const timerEl = widget.querySelector('.tinder-offer-timer-value');
+      if (!timerEl) return;
+
+      const msLeft = offerDeadline - Date.now();
+      if (msLeft <= 0) {
+        offerDeadline = Date.now() + (24 * 60 * 60 * 1000);
+      }
+      timerEl.textContent = formatTimer(offerDeadline - Date.now());
+    }
+
+    function startOfferTimer() {
+      updateOfferTimer();
+      if (offerTimerInterval) return;
+      offerTimerInterval = setInterval(updateOfferTimer, 1000);
+    }
+
+    function stopOfferTimer() {
+      if (!offerTimerInterval) return;
+      clearInterval(offerTimerInterval);
+      offerTimerInterval = null;
     }
 
     function renderCards() {
