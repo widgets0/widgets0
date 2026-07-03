@@ -1,6 +1,6 @@
 Код для вставки на сайт клиента:
 
-<script src="https://widgets0.github.io/widgets0/clients/test-123dd2d3d12.tilda.ws/loader.js?v=1" async></script>
+<script src="https://widgets0.github.io/widgets0/clients/test-123dd2d3d12.tilda.ws/loader.js?v=2d2037f" async></script>
 
 Папка клиента:
 https://widgets0.github.io/widgets0/clients/test-123dd2d3d12.tilda.ws/
