@@ -775,6 +775,7 @@ body {
   if (params.get('position')) {
     BEHAVIOR_CONFIG.desktopPosition = params.get('position');
   }
+  const pageUrl = params.get('pageUrl') || document.referrer || window.location.href.split('?')[0];
   
   const prizes = [
     "Бесплатный\nурок",
@@ -897,6 +898,7 @@ body {
     setTimeout(drawWheel, 50);
     if (root) root.classList.add('is-visible');
     overlay.style.display = 'flex';
+    notifyParentOpen();
   }
 
   function closeWidget() {
@@ -910,6 +912,11 @@ body {
   function notifyParentClose() {
     if (!isEmbed || window.parent === window) return;
     window.parent.postMessage({ type: 'widgets0:close' }, '*');
+  }
+
+  function notifyParentOpen() {
+    if (!isEmbed || window.parent === window) return;
+    window.parent.postMessage({ type: 'widgets0:open' }, '*');
   }
 
   function showStep(step) {
@@ -1111,7 +1118,7 @@ body {
           phone,
           prize,
           'Согласие на обработку персональных данных': 'Да',
-          page: window.location.href.split('?')[0],
+          page: pageUrl,
           createdAt: new Date().toISOString()
         })
       });
