@@ -755,6 +755,26 @@ body {
   }, window.CLIENT_WIDGET001_BEHAVIOR_CONFIG || {});
   const params = new URLSearchParams(window.location.search);
   const isPreview = params.get('preview') === '1';
+  const isEmbed = params.get('embed') === '1';
+
+  if (params.get('webhookUrl')) {
+    LEAD_CONFIG.webhookUrl = params.get('webhookUrl');
+  }
+  if (params.get('webhookSecret')) {
+    LEAD_CONFIG.webhookSecret = params.get('webhookSecret');
+  }
+  if (params.get('source')) {
+    LEAD_CONFIG.source = params.get('source');
+  }
+  if (params.get('delay')) {
+    BEHAVIOR_CONFIG.appearanceDelaySeconds = Number(params.get('delay')) || 0;
+  }
+  if (params.get('frequency')) {
+    BEHAVIOR_CONFIG.showFrequency = params.get('frequency');
+  }
+  if (params.get('position')) {
+    BEHAVIOR_CONFIG.desktopPosition = params.get('position');
+  }
   
   const prizes = [
     "Бесплатный\nурок",
@@ -858,6 +878,7 @@ body {
     if (!canShowWidgetNow()) {
       if (root) root.classList.remove('is-visible');
       if (overlay) overlay.style.display = 'none';
+      notifyParentClose();
       return;
     }
 
@@ -883,6 +904,12 @@ body {
     if (root) root.classList.remove('is-visible');
     if (overlay) overlay.style.display = 'none';
     if (stepSuccess) stepSuccess.style.display = 'none';
+    notifyParentClose();
+  }
+
+  function notifyParentClose() {
+    if (!isEmbed || window.parent === window) return;
+    window.parent.postMessage({ type: 'widgets0:close' }, '*');
   }
 
   function showStep(step) {
@@ -1112,6 +1139,7 @@ body {
       if (stepSuccess) stepSuccess.style.display = 'none';
       overlay.style.display = 'none';
       if (root) root.classList.remove('is-visible');
+      notifyParentClose();
     }, 4500);
   }
 
