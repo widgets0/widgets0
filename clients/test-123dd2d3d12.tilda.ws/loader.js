@@ -22,7 +22,7 @@
     backdropColor: "rgba(0, 0, 0, 0.52)",
 
     // Меняй значение после правок в HTML виджетов, чтобы сбросить кэш браузера.
-    assetVersion: "b98a567",
+    assetVersion: "client-always-20260703",
 
     widgets: [
       {
@@ -34,7 +34,7 @@
         delaySeconds: 2,
 
         // Варианты: always, once_per_hour, once_per_day, once_per_week.
-        frequency: "once_per_day",
+        frequency: "always",
 
         // Варианты для десктопа: center, bottom-left, bottom-right.
         position: "center"
