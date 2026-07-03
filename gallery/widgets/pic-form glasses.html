@@ -1,0 +1,840 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Арт-форма с бонусом (Glass)</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800&display=swap');
+
+    html,
+    body {
+      margin: 0;
+      min-height: 100%;
+    }
+
+    .glass-widget-wrapper {
+      box-sizing: border-box;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      margin: 0;
+      position: fixed;
+      inset: 0;
+      z-index: 2147483000;
+      min-height: 100svh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      background: rgba(2, 6, 23, 0.72);
+      color: #ffffff;
+      overflow: auto;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.28s ease;
+    }
+
+    .glass-widget-wrapper.is-visible {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .glass-widget-wrapper * {
+      box-sizing: border-box;
+    }
+
+    /* Abstract Background */
+    .glass-bg-abstract {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .glass-blob {
+      position: absolute;
+      border-radius: 50%;
+      mix-blend-mode: screen;
+      filter: blur(100px);
+      animation: glassBlobAnim 7s infinite;
+    }
+
+    .glass-blob-1 {
+      top: -10%; left: -10%;
+      width: 50vw; height: 50vw;
+      background-color: rgba(79, 70, 229, 0.4);
+    }
+
+    .glass-blob-2 {
+      top: 20%; right: -10%;
+      width: 40vw; height: 40vw;
+      background-color: rgba(244, 63, 94, 0.3);
+      animation-delay: 2s;
+    }
+
+    .glass-blob-3 {
+      bottom: -20%; left: 20%;
+      width: 60vw; height: 60vw;
+      background-color: rgba(147, 51, 234, 0.3);
+      filter: blur(120px);
+    }
+
+    .glass-noise {
+      position: absolute;
+      inset: 0;
+      opacity: 0.03;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noiseFilter%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.65%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noiseFilter)%22/%3E%3C/svg%3E");
+    }
+
+    @keyframes glassBlobAnim {
+      0% { transform: translate(0px, 0px) scale(1); }
+      33% { transform: translate(30px, -50px) scale(1.1); }
+      66% { transform: translate(-20px, 20px) scale(0.9); }
+      100% { transform: translate(0px, 0px) scale(1); }
+    }
+
+    /* Main Widget */
+    .glass-widget {
+      position: relative;
+      width: 100%;
+      max-width: 1060px;
+      margin: auto;
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(40px);
+      -webkit-backdrop-filter: blur(40px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 3rem;
+      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+      overflow: hidden;
+      z-index: 10;
+      display: flex;
+      flex-direction: column;
+      transform: translateY(16px) scale(0.98);
+      transition: transform 0.28s ease;
+    }
+
+    .glass-widget-wrapper.is-visible .glass-widget {
+      transform: translateY(0) scale(1);
+    }
+    
+    @media (min-width: 768px) {
+      .glass-widget {
+        flex-direction: row;
+        min-height: 500px;
+      }
+    }
+
+    .glass-widget-inner-border {
+      position: absolute;
+      inset: 16px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: calc(3rem - 16px);
+      pointer-events: none;
+      display: none;
+    }
+    
+    @media (min-width: 640px) {
+      .glass-widget-inner-border { display: block; }
+    }
+
+    .glass-close {
+      position: absolute;
+      top: 24px;
+      right: 24px;
+      z-index: 20;
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(0, 0, 0, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 50%;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      color: rgba(255, 255, 255, 0.8);
+      font-size: 24px;
+      cursor: pointer;
+      line-height: 1;
+      padding: 0;
+      transition: all 0.2s ease;
+    }
+
+    .glass-close:hover {
+      background: rgba(0, 0, 0, 0.4);
+      color: #fff;
+      transform: rotate(90deg);
+    }
+
+    .glass-content {
+      flex: 1;
+      padding: 32px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      position: relative;
+      z-index: 10;
+    }
+
+    @media (min-width: 640px) { .glass-content { padding: 48px; } }
+    @media (min-width: 768px) { .glass-content { padding: 64px; } }
+
+    .glass-kicker {
+      display: inline-flex;
+      align-items: center;
+      align-self: flex-start;
+      margin-bottom: 24px;
+      padding: 6px 16px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 9999px;
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, 0.8);
+    }
+
+    .glass-title {
+      margin: 0 0 16px;
+      font-size: 36px;
+      line-height: 1.1;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      background: linear-gradient(to bottom right, #ffffff, rgba(255, 255, 255, 0.7));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    @media (min-width: 640px) { .glass-title { font-size: 48px; } }
+    @media (min-width: 768px) { .glass-title { font-size: 54px; } }
+
+    .glass-text {
+      margin: 0 0 32px;
+      font-size: 16px;
+      line-height: 1.6;
+      color: rgba(255, 255, 255, 0.7);
+      font-weight: 500;
+      max-width: 400px;
+    }
+    
+    @media (min-width: 640px) { .glass-text { font-size: 18px; } }
+
+    .glass-timer-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 32px;
+      padding: 12px 20px;
+      background: rgba(0, 0, 0, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 16px;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+
+    .glass-timer-pill svg {
+      width: 18px;
+      height: 18px;
+      color: #fb7185; 
+    }
+
+    .glass-timer-pill span {
+      font-size: 16px;
+      font-weight: 500;
+      color: rgba(255, 255, 255, 0.8);
+    }
+
+    .glass-timer-pill strong {
+      font-size: 18px;
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+      letter-spacing: 0.025em;
+    }
+
+    .glass-form {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      max-width: 360px;
+    }
+
+    .glass-input-group {
+      position: relative;
+    }
+
+    .glass-input {
+      width: 100%;
+      height: 56px;
+      background: rgba(0, 0, 0, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 16px;
+      padding: 0 20px;
+      color: #ffffff;
+      font-family: inherit;
+      font-size: 16px;
+      font-weight: 500;
+      transition: all 0.2s ease;
+      outline: none;
+    }
+
+    .glass-input::placeholder {
+      color: rgba(255, 255, 255, 0.4);
+    }
+
+    .glass-input:focus {
+      border-color: rgba(255, 255, 255, 0.4);
+      background: rgba(0, 0, 0, 0.3);
+    }
+
+    .glass-consent {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      margin-top: 8px;
+      cursor: pointer;
+    }
+
+    .glass-consent-checkbox {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 20px;
+      height: 20px;
+      margin-top: 2px;
+      flex-shrink: 0;
+    }
+
+    .glass-consent-checkbox input {
+      appearance: none;
+      -webkit-appearance: none;
+      width: 100%;
+      height: 100%;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      border-radius: 6px;
+      background: transparent;
+      transition: all 0.2s ease;
+      cursor: pointer;
+      margin: 0;
+    }
+
+    .glass-consent-checkbox input:checked {
+      background: #ffffff;
+      border-color: #ffffff;
+    }
+
+    .glass-consent-checkbox svg {
+      position: absolute;
+      width: 14px;
+      height: 14px;
+      color: #0f172a;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s ease;
+    }
+
+    .glass-consent-checkbox input:checked + svg {
+      opacity: 1;
+    }
+
+    .glass-consent-text {
+      font-size: 14px;
+      color: rgba(255, 255, 255, 0.6);
+      font-weight: 500;
+      line-height: 1.25;
+      transition: color 0.2s ease;
+    }
+
+    .glass-consent:hover .glass-consent-text {
+      color: rgba(255, 255, 255, 0.8);
+    }
+
+    .glass-error {
+      color: #fb7185;
+      font-size: 14px;
+      font-weight: 500;
+      background: rgba(244, 63, 94, 0.1);
+      border: 1px solid rgba(244, 63, 94, 0.2);
+      border-radius: 12px;
+      padding: 8px 16px;
+      margin-top: 4px;
+      display: none;
+      animation: glassFadeIn 0.3s ease;
+    }
+    
+    .glass-error.is-visible {
+      display: block;
+    }
+
+    .glass-submit {
+      margin-top: 8px;
+      height: 56px;
+      width: 100%;
+      background: #ffffff;
+      color: #0f172a;
+      border: none;
+      border-radius: 16px;
+      font-family: inherit;
+      font-size: 14px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 0.2s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .glass-submit:hover:not(:disabled) {
+      background: rgba(255, 255, 255, 0.9);
+    }
+
+    .glass-submit:active:not(:disabled) {
+      transform: scale(0.98);
+    }
+
+    .glass-submit:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+    }
+
+    .glass-submit-shine {
+      position: absolute;
+      inset: 0;
+      transform: translateX(-100%);
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+    }
+
+    .glass-submit:hover:not(:disabled) .glass-submit-shine {
+      animation: glassShimmer 1.5s infinite;
+    }
+
+    .glass-submit svg {
+      width: 18px;
+      height: 18px;
+      transition: transform 0.2s ease;
+    }
+
+    .glass-submit:hover:not(:disabled) svg {
+      transform: translateX(4px);
+    }
+
+    @keyframes glassShimmer {
+      100% { transform: translateX(100%); }
+    }
+
+    /* Visual Side */
+    .glass-visual {
+      display: none;
+      flex: 1;
+      position: relative;
+      background: rgba(0, 0, 0, 0.1);
+      border-left: 1px solid rgba(255, 255, 255, 0.1);
+      min-height: 300px;
+    }
+
+    @media (min-width: 768px) {
+      .glass-visual { display: block; }
+    }
+
+    .glass-visual-image {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: 0.8;
+      mix-blend-mode: luminosity;
+    }
+
+    .glass-visual-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to bottom right, rgba(99, 102, 241, 0.2), rgba(168, 85, 247, 0.2));
+      backdrop-filter: blur(2px);
+      -webkit-backdrop-filter: blur(2px);
+    }
+
+    .glass-shape-1 {
+      position: absolute;
+      top: 25%;
+      left: 25%;
+      width: 128px;
+      height: 128px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 50%;
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      animation: glassPulse 4s ease-in-out infinite;
+    }
+
+    .glass-shape-2 {
+      position: absolute;
+      bottom: 33%;
+      right: 25%;
+      width: 96px;
+      height: 96px;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      border-radius: 24px;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      transform: rotate(12deg);
+    }
+
+    @keyframes glassPulse {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.05); opacity: 0.8; }
+    }
+
+    /* Success Toast */
+    .glass-success {
+      position: fixed;
+      top: 32px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 100;
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+      border-radius: 24px;
+      padding: 24px;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      width: 90vw;
+      max-width: 340px;
+      color: #ffffff;
+    }
+
+    .glass-success.is-visible {
+      display: flex;
+      animation: glassSlideDown 0.3s ease forwards;
+    }
+
+    .glass-success-icon {
+      width: 48px;
+      height: 48px;
+      background: rgba(16, 185, 129, 0.2);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 16px;
+      color: #34d399; 
+    }
+
+    .glass-success-icon svg {
+      width: 24px;
+      height: 24px;
+    }
+
+    .glass-success h2 {
+      margin: 0 0 8px;
+      font-size: 20px;
+      font-weight: 700;
+    }
+
+    .glass-success p {
+      margin: 0;
+      font-size: 14px;
+      color: rgba(255, 255, 255, 0.7);
+      font-weight: 500;
+    }
+
+    @keyframes glassSlideDown {
+      from { opacity: 0; transform: translate(-50%, -20px); }
+      to { opacity: 1; transform: translate(-50%, 0); }
+    }
+    @keyframes glassFadeIn {
+      from { opacity: 0; transform: translateY(-4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    @media (max-width: 639px) {
+      .glass-widget {
+        border-radius: 2rem;
+        max-height: calc(100svh - 24px);
+        overflow-y: auto;
+      }
+      .glass-title {
+        font-size: 32px;
+      }
+      .glass-content {
+        padding: 24px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="glass-widget-wrapper" id="glass-widget-container" data-delay="0">
+    
+    <!-- Абстрактный размытый фон -->
+    <div class="glass-bg-abstract">
+      <div class="glass-blob glass-blob-1"></div>
+      <div class="glass-blob glass-blob-2"></div>
+      <div class="glass-blob glass-blob-3"></div>
+      <div class="glass-noise"></div>
+    </div>
+
+    <!-- Основной виджет -->
+    <section class="glass-widget" id="glass-widget">
+      <div class="glass-widget-inner-border"></div>
+      
+      <button class="glass-close" id="glass-close" type="button" aria-label="Закрыть">
+        <!-- Иконка крестика (Lucide React) конвертированная в SVG -->
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+      </button>
+
+      <div class="glass-content">
+        <div class="glass-kicker">Лимитированное предложение</div>
+        <h1 class="glass-title">Заберите подарок до конца дня</h1>
+        <p class="glass-text">Оставьте контакты, и мы отправим персональное предложение вместе с бонусом для новых клиентов.</p>
+
+        <div class="glass-timer-pill">
+          <!-- Иконка часов -->
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+          <span>До конца акции:</span>
+          <strong id="glass-timer">03:00:00</strong>
+        </div>
+
+        <form class="glass-form" id="glass-form">
+          <div class="glass-input-group">
+            <input class="glass-input" type="text" name="name" placeholder="Ваше имя" required autocomplete="name">
+          </div>
+          <div class="glass-input-group">
+            <input class="glass-input" type="tel" name="phone" placeholder="+7 (999) 999-99-99" required autocomplete="tel" inputmode="tel">
+          </div>
+          
+          <label class="glass-consent">
+            <div class="glass-consent-checkbox">
+              <input type="checkbox" name="consent" required>
+              <!-- Иконка галочки -->
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            </div>
+            <span class="glass-consent-text">Согласен(на) на обработку персональных данных</span>
+          </label>
+
+          <div class="glass-error" id="glass-error"></div>
+
+          <button class="glass-submit" id="glass-submit" type="submit">
+            <div class="glass-submit-shine"></div>
+            <span class="glass-submit-text">Получить бонус</span>
+            <!-- Иконка стрелки -->
+            <svg class="glass-submit-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+          </button>
+        </form>
+      </div>
+
+      <!-- Правая визуальная часть с картинкой -->
+      <div class="glass-visual">
+        <img class="glass-visual-image" src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=2564&auto=format&fit=crop" alt="Abstract background">
+        <div class="glass-visual-overlay"></div>
+        <div class="glass-shape-1"></div>
+        <div class="glass-shape-2"></div>
+      </div>
+    </section>
+
+    <!-- Всплывающее окно успеха -->
+    <div class="glass-success" id="glass-success">
+      <div class="glass-success-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      </div>
+      <h2>Спасибо за заявку!</h2>
+      <p>Мы получили ваши контакты и скоро свяжемся с вами.</p>
+    </div>
+
+  </div>
+
+  <script>
+    (function () {
+      const LEAD_CONFIG = {
+        webhookUrl: "https://widgets0-production.up.railway.app",
+        webhookSecret: "",
+        widget: "Арт-форма с бонусом (Glass)",
+        source: "organic-lead-form-glass"
+      };
+
+      const params = new URLSearchParams(window.location.search);
+      const isEmbed = params.get('embed') === '1';
+      const pageUrl = params.get('pageUrl') || document.referrer || window.location.href.split('?')[0];
+
+      if (params.get('webhookUrl')) LEAD_CONFIG.webhookUrl = params.get('webhookUrl');
+      if (params.get('webhookSecret')) LEAD_CONFIG.webhookSecret = params.get('webhookSecret');
+      if (params.get('source')) LEAD_CONFIG.source = params.get('source');
+      if (params.get('delay')) {
+        document.getElementById('glass-widget-container').setAttribute('data-delay', String(Math.max(0, Number(params.get('delay')) || 0)));
+      }
+
+      const container = document.getElementById('glass-widget-container');
+      const form = document.getElementById('glass-form');
+      const timerEl = document.getElementById('glass-timer');
+      const closeBtn = document.getElementById('glass-close');
+      const errorEl = document.getElementById('glass-error');
+      const successEl = document.getElementById('glass-success');
+      const submitBtn = document.getElementById('glass-submit');
+      const submitText = submitBtn.querySelector('.glass-submit-text');
+      const submitIcon = submitBtn.querySelector('.glass-submit-icon');
+      
+      const durationMinutes = 180;
+      const deadline = new Date(Date.now() + durationMinutes * 60 * 1000);
+
+      function pad(value) {
+        return value < 10 ? '0' + value : String(value);
+      }
+
+      function updateTimer() {
+        let diff = Math.max(0, deadline - new Date());
+        const hours = Math.floor(diff / 3600000);
+        diff -= hours * 3600000;
+        const minutes = Math.floor(diff / 60000);
+        diff -= minutes * 60000;
+        const seconds = Math.floor(diff / 1000);
+        timerEl.textContent = `${pad(hours)}:${pad(minutes)}:${pad(seconds)}`;
+      }
+
+      function formatPhone(value) {
+        const digits = value.replace(/\D/g, '').replace(/^8/, '7').slice(0, 11);
+        const normalized = digits.startsWith('7') ? digits : '7' + digits;
+        const parts = normalized.slice(1);
+        let result = '+7';
+        if (parts.length > 0) result += ' (' + parts.slice(0, 3);
+        if (parts.length >= 3) result += ')';
+        if (parts.length > 3) result += ' ' + parts.slice(3, 6);
+        if (parts.length > 6) result += '-' + parts.slice(6, 8);
+        if (parts.length > 8) result += '-' + parts.slice(8, 10);
+        return result;
+      }
+
+      updateTimer();
+      setInterval(updateTimer, 1000);
+
+      function notifyParentOpen() {
+        if (!isEmbed || window.parent === window) return;
+        window.parent.postMessage({ type: 'widgets0:open' }, '*');
+      }
+
+      function notifyParentClose() {
+        if (!isEmbed || window.parent === window) return;
+        window.parent.postMessage({ type: 'widgets0:close' }, '*');
+      }
+
+      function openWidget() {
+        container.style.display = 'flex';
+        requestAnimationFrame(function () {
+          container.classList.add('is-visible');
+          notifyParentOpen();
+        });
+      }
+
+      function closeWidget() {
+        container.classList.remove('is-visible');
+        setTimeout(function () {
+          container.style.display = 'none';
+          notifyParentClose();
+        }, 280);
+      }
+
+      container.style.display = 'none';
+      setTimeout(openWidget, Math.max(0, Number(container.getAttribute('data-delay')) || 0) * 1000);
+
+      closeBtn.addEventListener('click', function () {
+        closeWidget();
+      });
+
+      container.addEventListener('click', function (event) {
+        if (event.target === container) closeWidget();
+      });
+
+      form.elements.phone.addEventListener('input', function () {
+        form.elements.phone.value = formatPhone(form.elements.phone.value);
+      });
+
+      function showError(msg) {
+        errorEl.textContent = msg;
+        errorEl.classList.add('is-visible');
+      }
+
+      function hideError() {
+        errorEl.textContent = '';
+        errorEl.classList.remove('is-visible');
+      }
+
+      form.addEventListener('submit', async function (event) {
+        event.preventDefault();
+        
+        const name = form.elements.name.value.trim();
+        const phone = form.elements.phone.value.trim();
+        const consent = form.elements.consent.checked;
+
+        if (!name || phone.replace(/\D/g, '').length !== 11) {
+          showError('Введите имя и полный номер телефона.');
+          return;
+        }
+
+        if (!consent) {
+          showError('Нужно согласие на обработку персональных данных.');
+          return;
+        }
+
+        hideError();
+        submitBtn.disabled = true;
+        submitText.textContent = 'Отправляем...';
+        submitIcon.style.display = 'none';
+
+        try {
+          const response = await fetch(LEAD_CONFIG.webhookUrl, {
+            method: 'POST',
+            headers: Object.assign(
+              { 'Content-Type': 'application/json' },
+              LEAD_CONFIG.webhookSecret ? { 'X-Webhook-Secret': LEAD_CONFIG.webhookSecret } : {}
+            ),
+            body: JSON.stringify({
+              widget: LEAD_CONFIG.widget,
+              source: LEAD_CONFIG.source,
+              name: name,
+              phone: phone,
+              'Оффер': 'Закрытый бонус до конца дня',
+              'Осталось по таймеру': timerEl.textContent,
+              'Согласие на обработку персональных данных': 'Да',
+              page: pageUrl,
+              createdAt: new Date().toISOString()
+            })
+          });
+
+          if (!response.ok) throw new Error('Webhook error');
+
+          successEl.classList.add('is-visible');
+          form.reset();
+          form.elements.consent.checked = false;
+          
+          setTimeout(function () {
+            successEl.classList.remove('is-visible');
+            closeWidget();
+          }, 4500);
+          
+        } catch (error) {
+          showError('Не получилось отправить заявку. Попробуйте ещё раз.');
+        } finally {
+          submitBtn.disabled = false;
+          submitText.textContent = 'Получить бонус';
+          submitIcon.style.display = 'flex';
+        }
+      });
+    })();
+  </script>
+</body>
+</html>
