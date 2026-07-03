@@ -21,6 +21,9 @@
     // Затемнение вокруг всплывающих виджетов.
     backdropColor: "rgba(0, 0, 0, 0.52)",
 
+    // Меняй значение после правок в HTML виджетов, чтобы сбросить кэш браузера.
+    assetVersion: "b98a567",
+
     widgets: [
       {
         id: "wheel-fortune",
@@ -98,6 +101,7 @@
     url.searchParams.set("source", widget.source || CLIENT_CONFIG.source);
     url.searchParams.set("webhookUrl", CLIENT_CONFIG.webhookUrl);
     url.searchParams.set("pageUrl", window.location.href.split("#")[0]);
+    url.searchParams.set("v", CLIENT_CONFIG.assetVersion);
 
     if (CLIENT_CONFIG.webhookSecret) {
       url.searchParams.set("webhookSecret", CLIENT_CONFIG.webhookSecret);
