@@ -1,0 +1,13 @@
+Код для вставки на сайт клиента:
+
+<script src="https://widgets0.github.io/widgets0/clients/test-123dd2d3d12.tilda.ws/loader.js?v=1" async></script>
+
+Папка клиента:
+https://widgets0.github.io/widgets0/clients/test-123dd2d3d12.tilda.ws/
+
+Что лежит в пакете:
+- loader.js — один файл установки и настройки поведения;
+- wheel-fortune-widget.html — колесо фортуны;
+- timer-form-widget.html — форма с таймером.
+
+Настройки показа меняются руками в верхнем блоке файла loader.js.

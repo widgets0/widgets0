@@ -1,0 +1,697 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Форма с таймером</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      background: #07000f;
+      font-family: "Montserrat", system-ui, sans-serif;
+    }
+
+    #bf-widget-overlay {
+      z-index: 999999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      font-family: "Montserrat", system-ui, sans-serif;
+      transition: opacity 0.35s ease;
+    }
+
+    #bf-widget-overlay.bf-overlay-popup {
+      position: fixed;
+      inset: 0;
+      background: rgba(3, 0, 12, 0.92);
+      backdrop-filter: blur(20px);
+      padding: 24px;
+    }
+
+    #bf-widget-overlay.bf-overlay-static {
+      position: relative;
+      background: transparent;
+      opacity: 1 !important;
+    }
+
+    #bf-widget {
+      position: relative;
+      max-width: 1100px;
+      width: min(94vw, 1100px);
+      min-height: 520px;
+      background:
+        radial-gradient(circle at 20% 20%, rgba(139, 92, 246, 0.18) 0%, transparent 50%),
+        radial-gradient(circle at 80% 80%, rgba(236, 72, 153, 0.15) 0%, transparent 50%),
+        radial-gradient(circle at 50% 50%, rgba(255, 184, 0, 0.08) 0%, transparent 60%),
+        #0a001f;
+      color: #fff;
+      border-radius: 36px;
+      overflow: hidden;
+      box-shadow:
+        0 40px 120px rgba(0, 0, 0, 0.8),
+        0 0 0 1.5px rgba(168, 85, 247, 0.25),
+        inset 0 0 80px rgba(139, 92, 246, 0.08);
+      padding: clamp(28px, 4vw, 48px) clamp(20px, 5vw, 64px);
+      animation: bf-pop-in 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    #bf-widget::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(circle at 30% 30%, rgba(168, 85, 247, 0.12), transparent 48%),
+        radial-gradient(circle at 70% 70%, rgba(236, 72, 153, 0.1), transparent 48%);
+      opacity: 1;
+      pointer-events: none;
+    }
+
+    #bf-widget::after {
+      content: "";
+      position: absolute;
+      inset: -60%;
+      background:
+        linear-gradient(15deg, transparent 38%, rgba(236, 72, 153, 0.7) 40%, rgba(168, 85, 247, 0.65) 48%, transparent 50%),
+        linear-gradient(-12deg, transparent 50%, rgba(255, 184, 0, 0.6) 53%, rgba(251, 146, 60, 0.55) 60%, transparent 62%);
+      opacity: 0.35;
+      pointer-events: none;
+      animation: bf-ribbons 22s linear infinite alternate;
+    }
+
+    @keyframes bf-pop-in {
+      from { opacity: 0; transform: translateY(44px) scale(0.96); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    @keyframes bf-ribbons {
+      from { transform: translateX(-3%) rotate(-1.2deg); }
+      to { transform: translateX(3%) rotate(1.2deg); }
+    }
+
+    .bf-inner {
+      position: relative;
+      z-index: 1;
+      min-height: 430px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 28px;
+    }
+
+    .bf-topline {
+      font-size: clamp(13px, 1.4vw, 17px);
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      text-align: center;
+      color: rgba(255,255,255,0.8);
+      margin-bottom: 18px;
+    }
+
+    .bf-title {
+      text-align: center;
+      line-height: 1.02;
+      margin-bottom: 14px;
+    }
+
+    .bf-title-main {
+      font-weight: 900;
+      font-size: clamp(42px, 5.5vw, 78px);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    .bf-title-main span {
+      position: relative;
+      z-index: 1;
+      background: linear-gradient(90deg, #fff, #ffebff, #fff5d1, #fff);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .bf-title-main span::before {
+      content: attr(data-text);
+      position: absolute;
+      inset: 0;
+      z-index: -1;
+      transform: translate(4px, 4px);
+      color: transparent;
+      text-shadow: -3px 3px 0 #ff6bc1, -6px 6px 0 #ffb46b;
+    }
+
+    .bf-subtitle {
+      font-size: clamp(15px, 1.5vw, 19px);
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      text-align: center;
+      color: rgba(255,255,255,0.9);
+      margin-bottom: 30px;
+    }
+
+    .bf-countdown {
+      display: flex;
+      justify-content: center;
+      gap: clamp(14px, 3.5vw, 48px);
+      margin-bottom: 4px;
+      flex-wrap: wrap;
+    }
+
+    .bf-count-item {
+      text-align: center;
+      min-width: 76px;
+    }
+
+    .bf-circle {
+      width: clamp(62px, 5vw, 84px);
+      height: clamp(62px, 5vw, 84px);
+      border-radius: 50%;
+      border: 2.5px solid rgba(255,255,255,0.8);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 12px;
+      background: rgba(255,255,255,0.04);
+      box-shadow: inset 0 0 28px rgba(255,255,255,0.05);
+    }
+
+    .bf-number {
+      font-size: clamp(22px, 2vw, 30px);
+      font-weight: 800;
+    }
+
+    .bf-label {
+      font-size: clamp(10px, 1.1vw, 13px);
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.75);
+    }
+
+    .bf-cta-row {
+      display: flex;
+      justify-content: center;
+    }
+
+    .bf-cta {
+      appearance: none;
+      padding: 18px 40px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, rgba(255, 107, 193, 0.28), rgba(168, 85, 247, 0.18));
+      border: 1.5px solid rgba(236, 72, 153, 0.65);
+      color: #fff;
+      font: inherit;
+      font-weight: 800;
+      letter-spacing: 0.13em;
+      text-transform: uppercase;
+      box-shadow: 0 15px 40px rgba(0,0,0,0.6);
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+
+    .bf-cta:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 25px 60px rgba(236, 72, 153, 0.4);
+      background: linear-gradient(135deg, rgba(236, 72, 153, 0.42), rgba(168, 85, 247, 0.32));
+    }
+
+    .bf-lead-panel,
+    .bf-success {
+      width: min(100%, 520px);
+      margin: 0 auto;
+      padding: 24px;
+      border-radius: 24px;
+      background: rgba(10, 0, 31, 0.72);
+      border: 1px solid rgba(255,255,255,0.14);
+      box-shadow: 0 24px 70px rgba(0,0,0,0.42);
+      backdrop-filter: blur(18px);
+    }
+
+    .bf-lead-panel[hidden],
+    .bf-success[hidden],
+    .bf-hidden {
+      display: none !important;
+    }
+
+    .bf-form-title {
+      margin: 0 0 8px;
+      text-align: center;
+      font-size: 24px;
+      font-weight: 900;
+      color: #fff5d1;
+    }
+
+    .bf-form-text {
+      margin: 0 0 18px;
+      text-align: center;
+      color: rgba(255,255,255,0.76);
+      line-height: 1.5;
+      font-size: 14px;
+    }
+
+    .bf-lead-form {
+      display: grid;
+      gap: 12px;
+    }
+
+    .bf-input {
+      width: 100%;
+      border: 1.5px solid rgba(255,255,255,0.18);
+      border-radius: 16px;
+      background: rgba(255,255,255,0.94);
+      color: #12051f;
+      padding: 16px 18px;
+      font: inherit;
+      font-weight: 700;
+      outline: none;
+    }
+
+    .bf-input:focus {
+      border-color: #ff6bc1;
+      box-shadow: 0 0 0 4px rgba(255, 107, 193, 0.18);
+    }
+
+    .bf-submit {
+      width: 100%;
+      border: 0;
+      border-radius: 16px;
+      padding: 17px 18px;
+      background: linear-gradient(135deg, #ff6bc1, #ffb46b);
+      color: #110019;
+      font: inherit;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      cursor: pointer;
+      box-shadow: 0 18px 38px rgba(236, 72, 153, 0.28);
+    }
+
+    .bf-submit:disabled {
+      opacity: 0.7;
+      cursor: wait;
+    }
+
+    .bf-form-error {
+      min-height: 18px;
+      text-align: center;
+      color: #ffc4dc;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .bf-consent {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      color: rgba(255,255,255,0.72);
+      font-size: 12px;
+      line-height: 1.4;
+      font-weight: 600;
+    }
+
+    .bf-consent input {
+      width: 18px;
+      height: 18px;
+      margin: 0;
+      accent-color: #ff6bc1;
+      flex: 0 0 auto;
+    }
+
+    .bf-success {
+      text-align: center;
+      animation: bf-pop-in 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .bf-success h3 {
+      margin: 0 0 10px;
+      font-size: 30px;
+      color: #fff5d1;
+    }
+
+    .bf-success p {
+      margin: 0;
+      color: rgba(255,255,255,0.82);
+      line-height: 1.55;
+      font-weight: 600;
+    }
+
+    .bf-star {
+      position: absolute;
+      width: clamp(70px, 9vw, 100px);
+      aspect-ratio: 1;
+      background: #ff6bc1;
+      clip-path: polygon(50% 0%, 64% 18%, 85% 15%, 78% 35%, 100% 50%, 78% 65%, 85% 85%, 64% 82%, 50% 100%, 36% 82%, 15% 85%, 22% 65%, 0% 50%, 22% 35%, 15% 15%, 36% 18%);
+      filter: drop-shadow(0 0 30px rgba(255, 107, 193, 0.7));
+      opacity: 0.65;
+      pointer-events: none;
+    }
+
+    .bf-star--tl { left: 20px; top: 20px; }
+    .bf-star--br { right: 20px; bottom: 20px; }
+
+    #bf-widget-close {
+      position: absolute;
+      z-index: 3;
+      top: 18px;
+      right: 22px;
+      width: 34px;
+      height: 34px;
+      background: rgba(255,255,255,0.1);
+      border: 1.5px solid rgba(255,255,255,0.4);
+      border-radius: 50%;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      backdrop-filter: blur(10px);
+      transition: all 0.3s;
+      font-size: 24px;
+      line-height: 1;
+    }
+
+    #bf-widget-close:hover {
+      background: rgba(255, 107, 193, 0.3);
+      transform: scale(1.1);
+    }
+
+    @media (max-width: 768px) {
+      body {
+        padding: 14px;
+      }
+
+      #bf-widget {
+        width: min(100%, 430px);
+        min-height: 680px;
+        border-radius: 28px;
+        padding: 34px 20px 24px;
+      }
+
+      .bf-inner {
+        min-height: 610px;
+      }
+
+      .bf-title-main {
+        font-size: clamp(34px, 12vw, 54px);
+      }
+
+      .bf-subtitle {
+        letter-spacing: 0.1em;
+      }
+
+      .bf-countdown {
+        gap: 12px;
+      }
+
+      .bf-count-item {
+        min-width: 66px;
+      }
+
+      .bf-cta {
+        width: 100%;
+        padding: 16px 18px;
+        letter-spacing: 0.07em;
+        font-size: 14px;
+      }
+
+      .bf-lead-panel,
+      .bf-success {
+        padding: 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="bf-widget-overlay" class="bf-overlay-static" data-mode="static" data-delay="5000">
+    <div id="bf-widget" data-duration-hours="96">
+      <div class="bf-star bf-star--tl"></div>
+      <div class="bf-star bf-star--br"></div>
+      <button id="bf-widget-close" type="button" aria-label="Закрыть">×</button>
+
+      <div class="bf-inner">
+        <div id="bf-offer-view">
+          <div class="bf-topline">Акция действует ограниченное время</div>
+          <div class="bf-title">
+            <div class="bf-title-main"><span data-text="ЧЁРНАЯ">ЧЁРНАЯ</span></div>
+            <div class="bf-title-main"><span data-text="ПЯТНИЦА">ПЯТНИЦА</span></div>
+          </div>
+          <div class="bf-subtitle">в онлайн-школе</div>
+          <div class="bf-countdown" aria-label="Таймер до конца акции">
+            <div class="bf-count-item"><div class="bf-circle"><div class="bf-number" id="bf-days">00</div></div><div class="bf-label">дней</div></div>
+            <div class="bf-count-item"><div class="bf-circle"><div class="bf-number" id="bf-hours">00</div></div><div class="bf-label">часов</div></div>
+            <div class="bf-count-item"><div class="bf-circle"><div class="bf-number" id="bf-mins">00</div></div><div class="bf-label">минут</div></div>
+            <div class="bf-count-item"><div class="bf-circle"><div class="bf-number" id="bf-secs">00</div></div><div class="bf-label">секунд</div></div>
+          </div>
+        </div>
+
+        <div class="bf-cta-row" id="bf-cta-row">
+          <button type="button" class="bf-cta" id="bf-open-form">Только 4 дня: -15% на все курсы</button>
+        </div>
+
+        <div id="bf-lead-panel" class="bf-lead-panel" hidden>
+          <h2 class="bf-form-title">Забрать скидку</h2>
+          <p class="bf-form-text">Оставьте имя и телефон, чтобы мы закрепили бонус за вами.</p>
+          <form id="bf-lead-form" class="bf-lead-form">
+            <input class="bf-input" id="bf-name" name="name" type="text" placeholder="Ваше имя" autocomplete="name" required>
+            <input class="bf-input" id="bf-phone" name="phone" type="tel" placeholder="+7 (999) 999-99-99" autocomplete="tel" inputmode="tel" required>
+            <label class="bf-consent">
+              <input id="bf-consent" type="checkbox" checked required>
+              <span>Согласен(на) на обработку персональных данных</span>
+            </label>
+            <div class="bf-form-error" id="bf-form-error" aria-live="polite"></div>
+            <button type="submit" class="bf-submit" id="bf-submit">Отправить заявку</button>
+          </form>
+        </div>
+
+        <div id="bf-success" class="bf-success" hidden>
+          <h3>Спасибо за заявку!</h3>
+          <p>Мы получили ваши контакты и скоро свяжемся с вами.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      const LEAD_CONFIG = {
+        webhookUrl: "https://widgets0-production.up.railway.app",
+        webhookSecret: '',
+        widget: "Форма с таймером",
+        source: "test-123dd2d3d12-tilda-ws"
+      };
+
+      const params = new URLSearchParams(window.location.search);
+      const isEmbed = params.get("embed") === "1";
+      const pageUrl = params.get("pageUrl") || document.referrer || window.location.href.split("?")[0];
+
+      if (params.get("webhookUrl")) {
+        LEAD_CONFIG.webhookUrl = params.get("webhookUrl");
+      }
+      if (params.get("webhookSecret")) {
+        LEAD_CONFIG.webhookSecret = params.get("webhookSecret");
+      }
+      if (params.get("source")) {
+        LEAD_CONFIG.source = params.get("source");
+      }
+
+      const overlay = document.getElementById("bf-widget-overlay");
+      const widget = document.getElementById("bf-widget");
+      const closeBtn = document.getElementById("bf-widget-close");
+      const offerView = document.getElementById("bf-offer-view");
+      const ctaRow = document.getElementById("bf-cta-row");
+      const openFormBtn = document.getElementById("bf-open-form");
+      const leadPanel = document.getElementById("bf-lead-panel");
+      const leadForm = document.getElementById("bf-lead-form");
+      const nameInput = document.getElementById("bf-name");
+      const phoneInput = document.getElementById("bf-phone");
+      const consentInput = document.getElementById("bf-consent");
+      const errorEl = document.getElementById("bf-form-error");
+      const submitBtn = document.getElementById("bf-submit");
+      const successEl = document.getElementById("bf-success");
+
+      if (!overlay || !widget) return;
+
+      if (params.get("mode")) {
+        overlay.setAttribute("data-mode", params.get("mode"));
+      }
+      if (params.get("delay")) {
+        overlay.setAttribute("data-delay", String(Math.max(0, Number(params.get("delay")) || 0) * 1000));
+      }
+
+      const mode = overlay.getAttribute("data-mode") || "static";
+      const delay = parseInt(overlay.getAttribute("data-delay") || "5000", 10);
+
+      if (mode === "popup") {
+        overlay.classList.remove("bf-overlay-static");
+        overlay.classList.add("bf-overlay-popup");
+        overlay.style.opacity = "0";
+        overlay.style.display = "none";
+        setTimeout(() => {
+          overlay.style.display = "flex";
+          requestAnimationFrame(() => {
+            overlay.style.opacity = "1";
+            notifyParentOpen();
+          });
+        }, isNaN(delay) ? 5000 : delay);
+      } else {
+        overlay.classList.add("bf-overlay-static");
+        overlay.style.display = "flex";
+        notifyParentOpen();
+      }
+
+      function hideWidget() {
+        overlay.style.opacity = "0";
+        setTimeout(() => {
+          overlay.remove();
+          notifyParentClose();
+        }, 400);
+      }
+
+      function notifyParentClose() {
+        if (!isEmbed || window.parent === window) return;
+        window.parent.postMessage({ type: "widgets0:close" }, "*");
+      }
+
+      function notifyParentOpen() {
+        if (!isEmbed || window.parent === window) return;
+        window.parent.postMessage({ type: "widgets0:open" }, "*");
+      }
+
+      if (closeBtn) closeBtn.addEventListener("click", hideWidget);
+      if (mode === "popup") overlay.addEventListener("click", e => e.target === overlay && hideWidget());
+
+      const dEl = document.getElementById("bf-days");
+      const hEl = document.getElementById("bf-hours");
+      const mEl = document.getElementById("bf-mins");
+      const sEl = document.getElementById("bf-secs");
+      const durationHours = parseInt(widget.getAttribute("data-duration-hours") || "96", 10);
+      let deadline = new Date(widget.getAttribute("data-deadline") || "");
+
+      if (Number.isNaN(deadline.getTime()) || deadline <= new Date()) {
+        deadline = new Date(Date.now() + (Number.isNaN(durationHours) ? 96 : durationHours) * 60 * 60 * 1000);
+      }
+
+      function pad(n) {
+        return n < 10 ? "0" + n : String(n);
+      }
+
+      function getTimeLeftText() {
+        return `${dEl.textContent} дней ${hEl.textContent} часов ${mEl.textContent} минут ${sEl.textContent} секунд`;
+      }
+
+      function tick() {
+        let diff = deadline - new Date();
+        if (diff <= 0) diff = 0;
+
+        const days = Math.floor(diff / 86400000);
+        diff -= days * 86400000;
+        const hours = Math.floor(diff / 3600000);
+        diff -= hours * 3600000;
+        const mins = Math.floor(diff / 60000);
+        diff -= mins * 60000;
+        const secs = Math.floor(diff / 1000);
+
+        dEl.textContent = pad(days);
+        hEl.textContent = pad(hours);
+        mEl.textContent = pad(mins);
+        sEl.textContent = pad(secs);
+      }
+
+      const timer = setInterval(tick, 1000);
+      tick();
+
+      function formatPhone(value) {
+        const digits = value.replace(/\D/g, "").replace(/^8/, "7").slice(0, 11);
+        const normalized = digits.startsWith("7") ? digits : "7" + digits;
+        const parts = normalized.slice(1);
+        let result = "+7";
+        if (parts.length > 0) result += " (" + parts.slice(0, 3);
+        if (parts.length >= 3) result += ")";
+        if (parts.length > 3) result += " " + parts.slice(3, 6);
+        if (parts.length > 6) result += "-" + parts.slice(6, 8);
+        if (parts.length > 8) result += "-" + parts.slice(8, 10);
+        return result;
+      }
+
+      if (phoneInput) {
+        phoneInput.addEventListener("input", () => {
+          phoneInput.value = formatPhone(phoneInput.value);
+        });
+      }
+
+      if (openFormBtn) {
+        openFormBtn.addEventListener("click", () => {
+          if (offerView) offerView.classList.add("bf-hidden");
+          if (ctaRow) ctaRow.classList.add("bf-hidden");
+          if (leadPanel) leadPanel.hidden = false;
+          if (nameInput) nameInput.focus();
+        });
+      }
+
+      if (leadForm) {
+        leadForm.addEventListener("submit", async (event) => {
+          event.preventDefault();
+          const name = nameInput.value.trim();
+          const phone = phoneInput.value.trim();
+
+          if (!name || phone.replace(/\D/g, "").length < 11) {
+            errorEl.textContent = "Введите имя и полный номер телефона.";
+            return;
+          }
+
+          if (consentInput && !consentInput.checked) {
+            errorEl.textContent = "Нужно согласие на обработку персональных данных.";
+            return;
+          }
+
+          errorEl.textContent = "";
+          submitBtn.disabled = true;
+          submitBtn.textContent = "Отправляем...";
+
+          const payload = {
+            widget: LEAD_CONFIG.widget,
+            source: LEAD_CONFIG.source,
+            name,
+            phone,
+            "Акция": "Чёрная пятница: скидка 15%",
+            "Осталось по таймеру": getTimeLeftText(),
+            "Согласие на обработку персональных данных": "Да",
+            page: pageUrl,
+            createdAt: new Date().toISOString()
+          };
+
+          try {
+            const response = await fetch(LEAD_CONFIG.webhookUrl, {
+              method: "POST",
+              headers: Object.assign({ "Content-Type": "application/json" }, LEAD_CONFIG.webhookSecret ? { "X-Webhook-Secret": LEAD_CONFIG.webhookSecret } : {}),
+              body: JSON.stringify(payload)
+            });
+
+            if (!response.ok) throw new Error("Request failed");
+
+            leadPanel.hidden = true;
+            successEl.hidden = false;
+            clearInterval(timer);
+            setTimeout(hideWidget, 4500);
+          } catch (error) {
+            errorEl.textContent = "Не получилось отправить заявку. Попробуйте ещё раз.";
+            submitBtn.disabled = false;
+            submitBtn.textContent = "Отправить заявку";
+          }
+        });
+      }
+    })();
+  </script>
+</body>
+</html>
