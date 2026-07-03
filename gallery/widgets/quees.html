@@ -189,7 +189,7 @@
           <input type="text" id="input-contact" required placeholder="Telegram или телефон" autocomplete="tel" class="w-full px-5 sm:px-6 py-3.5 sm:py-4 rounded-2xl bg-gray-50 border-2 border-transparent focus:bg-white focus:border-[#0071e3] focus:ring-4 focus:ring-[#0071e3]/10 text-base sm:text-lg transition-all outline-none text-[#1d1d1f] placeholder:text-gray-400" />
         </div>
         <label class="flex items-start gap-3 text-sm text-[#86868b] font-medium leading-snug">
-          <input id="input-consent" type="checkbox" checked required class="mt-0.5 w-5 h-5 rounded accent-[#0071e3] shrink-0">
+          <input id="input-consent" type="checkbox" required class="mt-0.5 w-5 h-5 rounded accent-[#0071e3] shrink-0">
           <span>Согласен(на) на обработку персональных данных</span>
         </label>
         <p id="lead-error" class="hidden text-sm text-red-600 font-semibold text-center"></p>
@@ -547,7 +547,7 @@
     selectedResultKey = 'Н';
     selectedResult = results[selectedResultKey];
     formLead.reset();
-    elInputConsent.checked = true;
+    elInputConsent.checked = false;
     clearError();
     navigateTo('start');
   }

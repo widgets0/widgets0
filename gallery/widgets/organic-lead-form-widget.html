@@ -422,7 +422,7 @@
           <input class="organic-lead-field" type="text" name="name" placeholder="Ваше имя" autocomplete="name" required>
           <input class="organic-lead-field" type="tel" name="phone" placeholder="+7 (999) 999-99-99" autocomplete="tel" inputmode="tel" required>
           <label class="organic-lead-consent">
-            <input type="checkbox" name="consent" checked required>
+            <input type="checkbox" name="consent" required>
             <span>Согласен(на) на обработку персональных данных</span>
           </label>
           <div class="organic-lead-error" data-organic-error aria-live="polite"></div>
@@ -548,7 +548,7 @@
 
           successEl.classList.add('is-open');
           form.reset();
-          form.elements.consent.checked = true;
+          form.elements.consent.checked = false;
           setTimeout(function () {
             successEl.classList.remove('is-open');
           }, 4500);
