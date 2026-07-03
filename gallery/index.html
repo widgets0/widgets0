@@ -1905,6 +1905,12 @@
       var modalDescription = document.querySelector('[data-modal-description]');
       var modalUse = document.querySelector('[data-modal-use]');
       var modalFrame = document.querySelector('[data-modal-frame]');
+      var galleryVersion = new URLSearchParams(window.location.search).get('v') || '20260703-tinder-timer';
+
+      function withGalleryVersion(src) {
+        if (!src || /(?:^|[?&])v=/.test(src)) return src;
+        return src + (src.indexOf('?') === -1 ? '?' : '&') + 'v=' + encodeURIComponent(galleryVersion);
+      }
 
       function widgetWord(number) {
         if (number % 10 === 1 && number % 100 !== 11) return 'виджет';
@@ -1961,14 +1967,21 @@
 
       function openModal(card) {
         var src = card.getAttribute('data-widget-src');
+        var versionedSrc = withGalleryVersion(src);
         modalTitle.textContent = card.getAttribute('data-widget-title') || 'Превью виджета';
         modalDescription.textContent = card.getAttribute('data-widget-description') || '';
-        modalUse.href = src;
-        modalFrame.src = src;
+        modalUse.href = versionedSrc;
+        modalFrame.src = versionedSrc;
         modal.classList.add('is-open');
         modal.setAttribute('aria-hidden', 'false');
         document.body.style.overflow = 'hidden';
       }
+
+      document.querySelectorAll('.widget-preview-frame').forEach(function (frame) {
+        var src = frame.getAttribute('src');
+        var versionedSrc = withGalleryVersion(src);
+        if (versionedSrc !== src) frame.setAttribute('src', versionedSrc);
+      });
 
       function fitModalFrame() {
         if (!modal.classList.contains('is-open')) return;
