@@ -385,6 +385,11 @@
         widget: "Виджет с гифкой",
         source: "gif-contact-widget"
       };
+      const leadParams = new URLSearchParams(window.location.search);
+      if (leadParams.get('webhookUrl')) LEAD_CONFIG.webhookUrl = leadParams.get('webhookUrl');
+      if (leadParams.get('webhookSecret')) LEAD_CONFIG.webhookSecret = leadParams.get('webhookSecret');
+      if (leadParams.get('source')) LEAD_CONFIG.source = leadParams.get('source');
+      const pageUrl = leadParams.get('pageUrl') || document.referrer || window.location.href.split('?')[0];
 
       const openBtn = document.querySelector('[data-cat-open]');
       const modal = document.querySelector('[data-cat-modal]');
@@ -461,7 +466,7 @@
               phone,
               question: question || 'Вопрос не указан',
               'Согласие на обработку персональных данных': 'Да',
-              page: window.location.href.split('?')[0],
+              page: pageUrl,
               createdAt: new Date().toISOString()
             })
           });

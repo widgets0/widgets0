@@ -344,7 +344,8 @@
 
   <script>
     (function () {
-      const isPreview = new URLSearchParams(window.location.search).has('preview');
+      const leadParams = new URLSearchParams(window.location.search);
+      const isPreview = leadParams.has('preview');
 
       const LEAD_CONFIG = {
         webhookUrl: "https://widgets0-production.up.railway.app",
@@ -352,6 +353,10 @@
         widget: "Мобильная акция",
         source: "mobile-sale-card"
       };
+      if (leadParams.get('webhookUrl')) LEAD_CONFIG.webhookUrl = leadParams.get('webhookUrl');
+      if (leadParams.get('webhookSecret')) LEAD_CONFIG.webhookSecret = leadParams.get('webhookSecret');
+      if (leadParams.get('source')) LEAD_CONFIG.source = leadParams.get('source');
+      const pageUrl = leadParams.get('pageUrl') || document.referrer || window.location.href.split('?')[0];
 
       const widget = document.querySelector('.mobile-sale-widget');
       const timerEl = document.querySelector('[data-mobile-sale-timer]');
@@ -458,7 +463,7 @@
               'Акция': 'Мобильная акция на обучение',
               'Осталось по таймеру': timerEl.textContent,
               'Согласие на обработку персональных данных': 'Да',
-              page: window.location.href.split('?')[0],
+              page: pageUrl,
               createdAt: new Date().toISOString()
             })
           });

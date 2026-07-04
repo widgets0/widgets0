@@ -228,7 +228,9 @@
 
   const params = new URLSearchParams(window.location.search);
   if (params.get('webhookUrl')) LEAD_CONFIG.webhookUrl = params.get('webhookUrl');
+  if (params.get('webhookSecret')) LEAD_CONFIG.webhookSecret = params.get('webhookSecret');
   if (params.get('source')) LEAD_CONFIG.source = params.get('source');
+  const pageUrl = params.get('pageUrl') || document.referrer || window.location.href.split('?')[0];
 
   const questions = [
     {
@@ -546,7 +548,7 @@
         return `${q.title}: ${answer ? answer.text : '-'}${answer ? ' (' + answer.score + ')' : ''}`;
       }).join('; '),
       'Согласие на обработку персональных данных': 'Да',
-      page: window.location.href.split('?')[0],
+      page: pageUrl,
       createdAt: new Date().toISOString()
     };
 

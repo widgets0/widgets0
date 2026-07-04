@@ -127,6 +127,13 @@
   if (leadParams.get('webhookUrl')) {
     LEAD_CONFIG.webhookUrl = leadParams.get('webhookUrl');
   }
+  if (leadParams.get('webhookSecret')) {
+    LEAD_CONFIG.webhookSecret = leadParams.get('webhookSecret');
+  }
+  if (leadParams.get('source')) {
+    LEAD_CONFIG.source = leadParams.get('source');
+  }
+  const pageUrl = leadParams.get('pageUrl') || document.referrer || window.location.href.split('?')[0];
 
   function formatLeadMessage(lead) {
     return [
@@ -144,7 +151,7 @@
   async function sendWidgetLead(payload) {
     const lead = Object.assign({}, payload, {
       source: payload.source || LEAD_CONFIG.source,
-      page: window.location.href.split('?')[0],
+      page: pageUrl,
       createdAt: new Date().toISOString()
     });
 

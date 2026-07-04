@@ -454,6 +454,11 @@
         widget: "Арт-форма с бонусом",
         source: "organic-lead-form"
       };
+      const leadParams = new URLSearchParams(window.location.search);
+      if (leadParams.get('webhookUrl')) LEAD_CONFIG.webhookUrl = leadParams.get('webhookUrl');
+      if (leadParams.get('webhookSecret')) LEAD_CONFIG.webhookSecret = leadParams.get('webhookSecret');
+      if (leadParams.get('source')) LEAD_CONFIG.source = leadParams.get('source');
+      const pageUrl = leadParams.get('pageUrl') || document.referrer || window.location.href.split('?')[0];
 
       const widget = document.querySelector('[data-organic-widget]');
       const form = document.querySelector('[data-organic-form]');
@@ -539,7 +544,7 @@
               'Осталось по таймеру': timerEl.textContent,
               'Осталось мест': placesEl.textContent,
               'Согласие на обработку персональных данных': 'Да',
-              page: window.location.href.split('?')[0],
+              page: pageUrl,
               createdAt: new Date().toISOString()
             })
           });

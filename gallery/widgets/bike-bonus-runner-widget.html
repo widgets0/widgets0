@@ -524,6 +524,10 @@
       };
 
       const params = new URLSearchParams(window.location.search);
+      if (params.get('webhookUrl')) LEAD_CONFIG.webhookUrl = params.get('webhookUrl');
+      if (params.get('webhookSecret')) LEAD_CONFIG.webhookSecret = params.get('webhookSecret');
+      if (params.get('source')) LEAD_CONFIG.source = params.get('source');
+      const pageUrl = params.get('pageUrl') || document.referrer || window.location.href.split('?')[0];
       const isPreviewPlaying = params.get('preview') === 'playing';
       const widget = document.querySelector('[data-bike-widget]');
       const canvas = document.querySelector('[data-bike-canvas]');
@@ -890,7 +894,7 @@
           body: JSON.stringify(Object.assign({
             widget: LEAD_CONFIG.widget,
             source: LEAD_CONFIG.source,
-            page: window.location.href.split('?')[0],
+            page: pageUrl,
             createdAt: new Date().toISOString()
           }, data))
         });
