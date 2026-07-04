@@ -18,6 +18,11 @@
       box-sizing: border-box;
     }
 
+    .tinder-widget-container {
+      height: min(640px, calc(100vh - 48px)) !important;
+      min-height: 0;
+    }
+
     .tinder-brand-mark {
       width: 120px;
       height: 120px;
@@ -226,17 +231,113 @@
       box-shadow: none !important;
       padding: 18px 24px !important;
       font-size: 18px !important;
+      cursor: not-allowed;
     }
 
-    .tinder-state-lead_form .tinder-submit-btn:hover {
+    .tinder-state-lead_form .tinder-submit-btn.is-ready {
       background: #211d18 !important;
       color: #fff !important;
+      box-shadow: 0 16px 36px rgba(33, 29, 24, .16) !important;
+      cursor: pointer;
+    }
+
+    .tinder-state-lead_form .tinder-submit-btn.is-ready:hover {
+      background: #0d0c0a !important;
       transform: none !important;
     }
 
     @keyframes tinderFloat {
       0%, 100% { translate: 0 0; }
       50% { translate: 0 -7px; }
+    }
+
+    @media (min-width: 521px) {
+      body {
+        padding: 16px;
+      }
+
+      .tinder-widget-container {
+        height: min(620px, calc(100vh - 32px)) !important;
+      }
+
+      .tinder-state-intro {
+        padding: 20px !important;
+      }
+
+      .tinder-brand-mark {
+        width: 96px;
+        height: 96px;
+        border-width: 5px;
+      }
+
+      .tinder-intro-showcase {
+        height: 160px;
+        margin-bottom: 14px;
+      }
+
+      .tinder-intro-product {
+        width: 112px;
+        height: 144px;
+      }
+
+      .tinder-intro-product:nth-child(1) {
+        transform: translateX(-80px) rotate(-9deg);
+      }
+
+      .tinder-intro-product:nth-child(2) {
+        width: 136px;
+        height: 164px;
+      }
+
+      .tinder-intro-product:nth-child(3) {
+        transform: translateX(80px) rotate(9deg);
+      }
+
+      .tinder-state-intro h2 {
+        font-size: 29px !important;
+        margin-bottom: 10px !important;
+      }
+
+      .tinder-state-intro p {
+        font-size: 15px !important;
+        line-height: 1.45 !important;
+        margin-bottom: 14px !important;
+      }
+
+      .tinder-state-intro .tinder-social-proof {
+        margin-bottom: 16px;
+      }
+
+      .tinder-btn-start {
+        padding: 14px 20px !important;
+      }
+
+      .tinder-state-lead_form {
+        padding: 22px !important;
+      }
+
+      .tinder-lead-title {
+        font-size: 33px;
+        margin-bottom: 10px;
+      }
+
+      .tinder-lead-subtitle {
+        margin-bottom: 16px;
+      }
+
+      .tinder-state-lead_form .tinder-social-proof {
+        margin-bottom: 18px;
+      }
+
+      .tinder-state-lead_form .tinder-user-name,
+      .tinder-state-lead_form .tinder-user-phone {
+        padding: 15px 18px !important;
+      }
+
+      .tinder-state-lead_form .tinder-submit-btn {
+        padding: 16px 20px !important;
+        font-size: 17px !important;
+      }
     }
 
     @media (max-width: 520px) {
@@ -1026,6 +1127,24 @@
           }
         });
       }
+
+      const leadNameInput = widget.querySelector('.tinder-user-name');
+      const consentInputForReady = widget.querySelector('.tinder-consent');
+      const submitButtonForReady = widget.querySelector('.tinder-submit-btn');
+
+      function syncSubmitReady() {
+        const hasName = leadNameInput && leadNameInput.value.trim().length > 0;
+        const hasContact = maskedContactInput && maskedContactInput.value.trim().length > 0;
+        const hasConsent = consentInputForReady && consentInputForReady.checked;
+        if (submitButtonForReady) {
+          submitButtonForReady.classList.toggle('is-ready', !!(hasName && hasContact && hasConsent));
+        }
+      }
+
+      if (leadNameInput) leadNameInput.addEventListener('input', syncSubmitReady);
+      if (maskedContactInput) maskedContactInput.addEventListener('input', syncSubmitReady);
+      if (consentInputForReady) consentInputForReady.addEventListener('change', syncSubmitReady);
+      syncSubmitReady();
 
       leadForm.addEventListener('submit', async function(e) {
         e.preventDefault();
