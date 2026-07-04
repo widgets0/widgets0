@@ -72,6 +72,56 @@ function valueToText(value) {
   return String(value || "");
 }
 
+function isEmptyValue(value) {
+  if (value === undefined || value === null || value === "") return true;
+  if (Array.isArray(value) && value.length === 0) return true;
+  return false;
+}
+
+function compactArray(value) {
+  if (!Array.isArray(value)) return [];
+  return value
+    .map(item => valueToText(item).trim())
+    .filter(Boolean);
+}
+
+function normalizeWidgetName(value) {
+  const widget = String(value || "").trim();
+  if (widget.startsWith("Товарный Тиндер")) return "Товарный Тиндер";
+  return widget || "не указан";
+}
+
+function formatMoscowTime(value) {
+  const date = value ? new Date(value) : new Date();
+  const safeDate = Number.isNaN(date.getTime()) ? new Date() : date;
+  const moscow = new Date(safeDate.getTime() + 3 * 60 * 60 * 1000);
+  const pad = number => String(number).padStart(2, "0");
+
+  return [
+    pad(moscow.getUTCDate()),
+    pad(moscow.getUTCMonth() + 1),
+    moscow.getUTCFullYear()
+  ].join(".") + ", " + pad(moscow.getUTCHours()) + ":" + pad(moscow.getUTCMinutes()) + " (МСК)";
+}
+
+function findConsentValue(lead) {
+  const key = Object.keys(lead).find(item => item.toLowerCase().includes("согласие") || item.toLowerCase().includes("consent"));
+  return key ? lead[key] : "";
+}
+
+function formatSelectedProducts(lead) {
+  const products = compactArray(lead.selectedProducts);
+  const links = compactArray(lead.productLinks);
+  if (!products.length) return [];
+
+  const lines = ["<b>Выбрала:</b>"];
+  products.forEach((product, index) => {
+    lines.push(`${index + 1}. ${escapeHtml(product)}`);
+    if (links[index]) lines.push(escapeHtml(links[index]));
+  });
+  return lines;
+}
+
 function leadDomain(lead, req) {
   const fallback = req.headers.origin || "";
   const source = lead.page || fallback;
@@ -105,28 +155,67 @@ function isWebhookAuthorized(req) {
 }
 
 function formatLead(lead, req) {
-  const preferredKeys = ["widget", "source", "name", "phone", "prize", "selectedTours", "score"];
-  const technicalKeys = new Set(["page", "createdAt"]);
+  const selectedProductLines = formatSelectedProducts(lead);
+  const consent = findConsentValue(lead);
+  const preferredKeys = ["source", "prize", "discount", "selectedTours", "score"];
+  const technicalKeys = new Set([
+    "widget",
+    "name",
+    "phone",
+    "selectedProducts",
+    "productLinks",
+    "page",
+    "createdAt"
+  ]);
+  Object.keys(lead).forEach(key => {
+    if (key.toLowerCase().includes("согласие") || key.toLowerCase().includes("consent")) {
+      technicalKeys.add(key);
+    }
+  });
   const usedKeys = new Set([...preferredKeys, ...technicalKeys]);
-  const lines = ["<b>Новая заявка с сайта:</b> " + escapeHtml(leadDomain(lead, req))];
+  const lines = [
+    "📩 <b>Новая заявка — " + escapeHtml(leadDomain(lead, req)) + "</b>",
+    "<b>Виджет:</b> " + escapeHtml(normalizeWidgetName(lead.widget)),
+    ""
+  ];
+
+  if (!isEmptyValue(lead.name)) lines.push("👤 " + escapeHtml(valueToText(lead.name)));
+  if (!isEmptyValue(lead.phone)) lines.push("📞 " + escapeHtml(valueToText(lead.phone)));
+  if (!isEmptyValue(lead.name) || !isEmptyValue(lead.phone)) lines.push("");
+
+  if (selectedProductLines.length) {
+    lines.push(...selectedProductLines, "");
+  }
 
   preferredKeys.forEach(key => {
     const value = lead[key];
-    if (value === undefined || value === null || value === "") return;
-    if (Array.isArray(value) && value.length === 0) return;
+    if (isEmptyValue(value)) return;
+
+    if (key === "discount") {
+      lines.push("🎁 <b>Скидка:</b> " + escapeHtml(valueToText(value)));
+      return;
+    }
+
+    if (key === "prize") {
+      lines.push("🎁 <b>Приз:</b> " + escapeHtml(valueToText(value)));
+      return;
+    }
+
     lines.push("<b>" + fieldLabel(key) + ":</b> " + escapeHtml(valueToText(value)));
   });
+
+  if (consent) lines.push("✅ <b>Согласие на ПД получено</b>");
 
   Object.keys(lead).forEach(key => {
     if (usedKeys.has(key)) return;
     const value = lead[key];
-    if (value === undefined || value === null || value === "") return;
-    if (Array.isArray(value) && value.length === 0) return;
+    if (isEmptyValue(value)) return;
     lines.push("<b>" + escapeHtml(fieldLabel(key)) + ":</b> " + escapeHtml(valueToText(value)));
   });
 
-  if (lead.page) lines.push("<b>Страница:</b> " + escapeHtml(lead.page));
-  if (lead.createdAt) lines.push("<b>Время:</b> " + escapeHtml(lead.createdAt));
+  if (lead.page || lead.createdAt) lines.push("");
+  if (lead.page) lines.push("📄 <b>Страница:</b> " + escapeHtml(lead.page));
+  lines.push("🕐 " + escapeHtml(formatMoscowTime(lead.createdAt)));
 
   return lines.join("\n");
 }
