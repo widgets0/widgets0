@@ -154,6 +154,30 @@ function isWebhookAuthorized(req) {
   return req.headers["x-webhook-secret"] === env.WEBHOOK_SECRET;
 }
 
+function parseClientChatIds() {
+  if (!env.CLIENT_CHAT_IDS) return {};
+
+  try {
+    const parsed = JSON.parse(env.CLIENT_CHAT_IDS);
+    return parsed && typeof parsed === "object" && !Array.isArray(parsed) ? parsed : {};
+  } catch (error) {
+    console.warn("CLIENT_CHAT_IDS is not valid JSON");
+    return {};
+  }
+}
+
+function getTargetChatIds(lead) {
+  const adminChatId = env.ADMIN_CHAT_ID || env.TELEGRAM_CHAT_ID || "";
+  const source = String(lead.source || "").trim();
+  const clientChatIds = parseClientChatIds();
+  const chatIds = [];
+
+  if (adminChatId) chatIds.push(adminChatId);
+  if (source && clientChatIds[source]) chatIds.push(clientChatIds[source]);
+
+  return [...new Set(chatIds.map(String).filter(Boolean))];
+}
+
 function formatLead(lead, req) {
   const selectedProductLines = formatSelectedProducts(lead);
   const consent = findConsentValue(lead);
@@ -221,28 +245,37 @@ function formatLead(lead, req) {
 }
 
 async function sendToTelegram(lead, req) {
-  if (!env.TELEGRAM_BOT_TOKEN || !env.TELEGRAM_CHAT_ID) {
-    throw new Error("TELEGRAM_BOT_TOKEN or TELEGRAM_CHAT_ID is missing in .env");
+  if (!env.TELEGRAM_BOT_TOKEN) {
+    throw new Error("TELEGRAM_BOT_TOKEN is missing in .env");
   }
 
-  const response = await fetch(
-    "https://api.telegram.org/bot" + env.TELEGRAM_BOT_TOKEN + "/sendMessage",
-    {
+  const chatIds = getTargetChatIds(lead);
+  if (!chatIds.length) {
+    throw new Error("No Telegram chat target configured. Set TELEGRAM_CHAT_ID, ADMIN_CHAT_ID, or CLIENT_CHAT_IDS.");
+  }
+
+  const text = formatLead(lead, req);
+  const results = [];
+
+  for (const chatId of chatIds) {
+    const response = await fetch("https://api.telegram.org/bot" + env.TELEGRAM_BOT_TOKEN + "/sendMessage", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        chat_id: env.TELEGRAM_CHAT_ID,
+        chat_id: chatId,
         parse_mode: "HTML",
-        text: formatLead(lead, req)
+        text
       })
-    }
-  );
+    });
 
-  if (!response.ok) {
-    throw new Error(await response.text());
+    if (!response.ok) {
+      throw new Error(await response.text());
+    }
+
+    results.push(await response.json());
   }
 
-  return response.json();
+  return results;
 }
 
 const server = http.createServer(async (req, res) => {

@@ -113,6 +113,30 @@ function isWebhookAuthorized(request, env) {
   return request.headers.get("X-Webhook-Secret") === env.WEBHOOK_SECRET;
 }
 
+function parseClientChatIds(env) {
+  if (!env.CLIENT_CHAT_IDS) return {};
+
+  try {
+    const parsed = JSON.parse(env.CLIENT_CHAT_IDS);
+    return parsed && typeof parsed === "object" && !Array.isArray(parsed) ? parsed : {};
+  } catch (error) {
+    console.warn("CLIENT_CHAT_IDS is not valid JSON");
+    return {};
+  }
+}
+
+function getTargetChatIds(lead, env) {
+  const adminChatId = env.ADMIN_CHAT_ID || env.TELEGRAM_CHAT_ID || "";
+  const source = String(lead.source || "").trim();
+  const clientChatIds = parseClientChatIds(env);
+  const chatIds = [];
+
+  if (adminChatId) chatIds.push(adminChatId);
+  if (source && clientChatIds[source]) chatIds.push(clientChatIds[source]);
+
+  return [...new Set(chatIds.map(String).filter(Boolean))];
+}
+
 function formatLead(lead, request) {
   const selectedProductLines = formatSelectedProducts(lead);
   const consent = findConsentValue(lead);
@@ -248,7 +272,7 @@ export default {
       });
     }
 
-    if (!env.TELEGRAM_BOT_TOKEN || !env.TELEGRAM_CHAT_ID) {
+    if (!env.TELEGRAM_BOT_TOKEN) {
       return new Response(JSON.stringify({ ok: false, error: "Telegram env vars are missing" }), {
         status: 500,
         headers: { ...headers, "Content-Type": "application/json" }
@@ -272,25 +296,34 @@ export default {
       });
     }
 
-    const telegramResponse = await fetch(
-      "https://api.telegram.org/bot" + env.TELEGRAM_BOT_TOKEN + "/sendMessage",
-      {
+    const chatIds = getTargetChatIds(lead, env);
+    if (!chatIds.length) {
+      return new Response(JSON.stringify({ ok: false, error: "No Telegram chat target configured" }), {
+        status: 500,
+        headers: { ...headers, "Content-Type": "application/json" }
+      });
+    }
+
+    const text = formatLead(lead, request);
+
+    for (const chatId of chatIds) {
+      const telegramResponse = await fetch("https://api.telegram.org/bot" + env.TELEGRAM_BOT_TOKEN + "/sendMessage", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          chat_id: env.TELEGRAM_CHAT_ID,
+          chat_id: chatId,
           parse_mode: "HTML",
-          text: formatLead(lead, request)
+          text
         })
-      }
-    );
-
-    if (!telegramResponse.ok) {
-      const details = await telegramResponse.text();
-      return new Response(JSON.stringify({ ok: false, error: "Telegram error", details }), {
-        status: 502,
-        headers: { ...headers, "Content-Type": "application/json" }
       });
+
+      if (!telegramResponse.ok) {
+        const details = await telegramResponse.text();
+        return new Response(JSON.stringify({ ok: false, error: "Telegram error", details }), {
+          status: 502,
+          headers: { ...headers, "Content-Type": "application/json" }
+        });
+      }
     }
 
     return new Response(JSON.stringify({ ok: true }), {
