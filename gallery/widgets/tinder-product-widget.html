@@ -75,27 +75,163 @@
       animation-delay: -.9s;
     }
 
+    .tinder-social-proof {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      margin: 0 0 22px;
+      color: #6d665e;
+      font-size: 15px;
+      font-weight: 900;
+      line-height: 1;
+      letter-spacing: -.01em;
+    }
+
+    .tinder-proof-avatars {
+      display: flex;
+      align-items: center;
+      flex: 0 0 auto;
+    }
+
+    .tinder-proof-avatar {
+      width: 34px;
+      height: 34px;
+      margin-left: -8px;
+      border: 2px solid #fff;
+      border-radius: 999px;
+      display: grid;
+      place-items: center;
+      background: #c69257;
+      color: #fff;
+      font-size: 13px;
+      font-weight: 950;
+      box-shadow: 0 8px 20px rgba(50, 42, 34, .14);
+    }
+
+    .tinder-proof-avatar:first-child {
+      margin-left: 0;
+    }
+
+    .tinder-proof-avatar:nth-child(2) { background: #b27b45; }
+    .tinder-proof-avatar:nth-child(3) { background: #8f6a43; }
+    .tinder-proof-avatar:nth-child(4) { background: #5d5144; }
+
+    .tinder-lead-dots {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
+      margin: 0 0 20px;
+    }
+
+    .tinder-lead-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 999px;
+      background: #e2dfda;
+    }
+
+    .tinder-lead-dot.is-active {
+      width: 34px;
+      background: #b17b42;
+    }
+
     .tinder-offer-timer {
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      gap: 8px;
-      width: 100%;
-      margin: 0 0 18px;
-      padding: 12px 14px;
-      border-radius: 18px;
-      border: 1px solid rgba(24, 24, 27, .08);
-      background: linear-gradient(135deg, rgba(250, 250, 250, .95), rgba(244, 244, 245, .92));
-      color: #18181b;
-      font-size: 13px;
+      gap: 13px;
+      width: auto;
+      margin: 0 0 22px;
+      padding: 0;
+      border: 0;
+      background: transparent;
+      color: #8b8177;
+      font-size: 18px;
       font-weight: 800;
       line-height: 1.25;
-      box-shadow: inset 0 1px 0 rgba(255, 255, 255, .8);
+      box-shadow: none;
+    }
+
+    .tinder-discount-pill {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 120px;
+      padding: 14px 24px;
+      border-radius: 999px;
+      background: #211d18;
+      color: #f3c88b;
+      font-size: 24px;
+      font-weight: 950;
+      line-height: 1;
     }
 
     .tinder-offer-timer-value {
       font-variant-numeric: tabular-nums;
       letter-spacing: .02em;
+      color: #211d18;
+      font-size: 20px;
+      font-weight: 950;
+    }
+
+    .tinder-lead-title {
+      margin: 0 0 14px;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(29px, 6vw, 40px);
+      font-weight: 500;
+      line-height: 1.08;
+      letter-spacing: -.035em;
+      color: #211d18;
+    }
+
+    .tinder-lead-subtitle {
+      margin: 0 0 22px;
+      color: #8d857b;
+      font-size: 16px;
+      font-weight: 700;
+      line-height: 1.35;
+      letter-spacing: -.02em;
+    }
+
+    .tinder-state-lead_form .tinder-social-proof {
+      margin-bottom: 24px;
+    }
+
+    .tinder-state-lead_form .tinder-user-name,
+    .tinder-state-lead_form .tinder-user-phone {
+      border-color: #e7e1d9 !important;
+      background: #fbf8f5 !important;
+      color: #211d18 !important;
+      border-radius: 24px !important;
+      padding: 17px 20px !important;
+      font-size: 18px !important;
+      font-weight: 700 !important;
+    }
+
+    .tinder-state-lead_form .tinder-user-name::placeholder,
+    .tinder-state-lead_form .tinder-user-phone::placeholder {
+      color: #aaa398;
+    }
+
+    .tinder-state-lead_form .tinder-consent {
+      accent-color: #211d18;
+    }
+
+    .tinder-state-lead_form .tinder-submit-btn {
+      border-radius: 999px !important;
+      background: #ded8cc !important;
+      color: #9e978c !important;
+      box-shadow: none !important;
+      padding: 18px 24px !important;
+      font-size: 18px !important;
+    }
+
+    .tinder-state-lead_form .tinder-submit-btn:hover {
+      background: #211d18 !important;
+      color: #fff !important;
+      transform: none !important;
     }
 
     @keyframes tinderFloat {
@@ -197,6 +333,47 @@
       .tinder-intro-product:nth-child(3) {
         transform: translateX(96px) rotate(9deg);
       }
+
+      .tinder-social-proof {
+        gap: 12px;
+        margin-bottom: 22px;
+        font-size: 16px;
+      }
+
+      .tinder-proof-avatar {
+        width: 32px;
+        height: 32px;
+        font-size: 12px;
+      }
+
+      .tinder-lead-dots {
+        margin-bottom: 24px;
+      }
+
+      .tinder-offer-timer {
+        gap: 10px;
+        margin-bottom: 26px;
+        font-size: 16px;
+        flex-wrap: wrap;
+      }
+
+      .tinder-discount-pill {
+        min-width: 116px;
+        padding: 13px 22px;
+        font-size: 24px;
+      }
+
+      .tinder-offer-timer-value {
+        font-size: 20px;
+      }
+
+      .tinder-lead-title {
+        font-size: clamp(31px, 8vw, 38px);
+      }
+
+      .tinder-lead-subtitle {
+        font-size: 16px;
+      }
     }
   </style>
 </head>
@@ -223,6 +400,15 @@
     </div>
     <h2 class="text-3xl font-black text-zinc-950 mb-3 leading-tight">Подбери свой<br/>топ на лето</h2>
     <p class="text-zinc-500 mb-5 text-base leading-relaxed">Свайпай вправо, если нравится. Влево — если не твоё. В конце соберём подборку и пришлём со скидкой 10% на первый заказ.</p>
+    <div class="tinder-social-proof" aria-label="1240 человек выбрали подборку">
+      <div class="tinder-proof-avatars" aria-hidden="true">
+        <span class="tinder-proof-avatar">A</span>
+        <span class="tinder-proof-avatar">M</span>
+        <span class="tinder-proof-avatar">E</span>
+        <span class="tinder-proof-avatar">K</span>
+      </div>
+      <span>1 240 выбрали подборку</span>
+    </div>
     <button class="tinder-btn-start w-full bg-zinc-950 hover:bg-zinc-800 text-white font-bold py-4 px-6 rounded-2xl transition-all shadow-lg shadow-zinc-300 flex items-center justify-center gap-2 text-lg hover:scale-[1.02]">
       Поехали
       <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
@@ -265,14 +451,30 @@
   </div>
 
   <!-- Lead Form State -->
-  <div class="tinder-state-lead_form flex-1 flex flex-col justify-center p-8 bg-white hidden transition-opacity duration-300">
-    <div class="text-center mb-8">
-      <h2 class="text-2xl font-black text-zinc-950 mb-3">Куда отправить подборку?</h2>
-      <p class="text-zinc-500 text-sm">Оставь контакт — пришлём выбранные топы и скидку 10% на первый заказ.</p>
+  <div class="tinder-state-lead_form flex-1 flex flex-col justify-start p-8 bg-white hidden transition-opacity duration-300">
+    <div class="tinder-lead-dots" aria-hidden="true">
+      <span class="tinder-lead-dot"></span>
+      <span class="tinder-lead-dot"></span>
+      <span class="tinder-lead-dot is-active"></span>
+      <span class="tinder-lead-dot"></span>
     </div>
     <div class="tinder-offer-timer" aria-live="polite">
-      <span>Предложение сгорит через:</span>
+      <span class="tinder-discount-pill">-10%</span>
+      <span>закреплено на</span>
       <span class="tinder-offer-timer-value">23:59:59</span>
+    </div>
+    <div class="text-center">
+      <h2 class="tinder-lead-title">Куда отправить подборку?</h2>
+      <p class="tinder-lead-subtitle">Пришлём выбранные модели, актуальные размеры и бонус на первый заказ.</p>
+    </div>
+    <div class="tinder-social-proof" aria-label="1240 клиентов уже получили подборку">
+      <div class="tinder-proof-avatars" aria-hidden="true">
+        <span class="tinder-proof-avatar">A</span>
+        <span class="tinder-proof-avatar">M</span>
+        <span class="tinder-proof-avatar">E</span>
+        <span class="tinder-proof-avatar">K</span>
+      </div>
+      <span>1 240 клиентов уже получили подборку</span>
     </div>
     <form class="tinder-lead-form space-y-4">
       <div>
@@ -286,7 +488,7 @@
         <span>Согласен(на) на обработку персональных данных</span>
       </label>
       <button type="submit" class="tinder-submit-btn w-full bg-zinc-950 hover:bg-zinc-800 text-white font-bold py-4 px-6 rounded-2xl transition-all shadow-lg shadow-zinc-300 flex items-center justify-center mt-4">
-        Получить подборку и скидку
+        Получить подборку и бонус
       </button>
     </form>
   </div>
@@ -515,6 +717,13 @@
       if (!offerTimerInterval) return;
       clearInterval(offerTimerInterval);
       offerTimerInterval = null;
+    }
+
+    function updateLeadCopy() {
+      const subtitle = widget.querySelector('.tinder-lead-subtitle');
+      if (!subtitle) return;
+
+      subtitle.innerText = 'Пришлём выбранные модели, актуальные размеры и бонус на первый заказ.';
     }
 
     function renderCards() {
@@ -795,6 +1004,7 @@
     const btnLead = widget.querySelector('.tinder-btn-lead');
     if (btnLead) {
       btnLead.addEventListener('click', () => {
+        updateLeadCopy();
         switchState('lead_form');
       });
     }
