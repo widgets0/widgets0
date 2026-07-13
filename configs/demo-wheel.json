@@ -1,0 +1,21 @@
+{
+  "id": "demo-wheel",
+  "name": "Колесо фортуны — демо",
+  "client": "Демо-клиент",
+  "domain": "example.com",
+  "source": "demo-wheel",
+  "widget": "wheel-fortune",
+  "enabled": true,
+  "webhookUrl": "https://widgets0-production.up.railway.app",
+  "display": {
+    "mode": "modal",
+    "trigger": "auto",
+    "delaySeconds": 2,
+    "frequency": "always",
+    "position": "center",
+    "dimColor": "rgba(0, 0, 0, 0.58)"
+  },
+  "theme": {
+    "accentColor": "#1f1f1f"
+  }
+}

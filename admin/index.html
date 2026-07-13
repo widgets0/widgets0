@@ -1,0 +1,702 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Widgets0 Admin MVP</title>
+  <style>
+    :root {
+      --bg: #f5f5f7;
+      --panel: rgba(255, 255, 255, 0.86);
+      --text: #1d1d1f;
+      --muted: #6e6e73;
+      --line: rgba(0, 0, 0, 0.1);
+      --soft: #ececf0;
+      --accent: #1d1d1f;
+      --ok: #1f9d55;
+      --bad: #b42318;
+      --radius: 28px;
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: radial-gradient(circle at top, #ffffff 0, var(--bg) 42%, #eeeeef 100%);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Arial, sans-serif;
+    }
+
+    button, input, select, textarea { font: inherit; }
+
+    .page {
+      width: min(1440px, calc(100% - 40px));
+      margin: 0 auto;
+      padding: 34px 0 56px;
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 24px;
+      align-items: end;
+      margin-bottom: 26px;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(38px, 5vw, 78px);
+      line-height: 0.95;
+      letter-spacing: -0.055em;
+    }
+
+    .lead {
+      max-width: 760px;
+      margin: 18px 0 0;
+      color: var(--muted);
+      font-size: clamp(17px, 1.5vw, 23px);
+      line-height: 1.45;
+      font-weight: 650;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .btn {
+      border: 0;
+      border-radius: 999px;
+      padding: 15px 22px;
+      background: var(--accent);
+      color: #fff;
+      cursor: pointer;
+      font-weight: 800;
+      box-shadow: 0 16px 36px rgba(0, 0, 0, 0.14);
+    }
+
+    .btn.secondary {
+      background: #fff;
+      color: var(--text);
+      border: 1px solid var(--line);
+      box-shadow: none;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(300px, 430px) 1fr;
+      gap: 20px;
+      align-items: start;
+    }
+
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: 0 24px 80px rgba(0, 0, 0, 0.08);
+      backdrop-filter: blur(18px);
+      overflow: hidden;
+    }
+
+    .panel-head {
+      padding: 20px;
+      border-bottom: 1px solid var(--line);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .panel-title {
+      margin: 0;
+      font-size: 19px;
+      letter-spacing: -0.02em;
+    }
+
+    .count {
+      min-width: 38px;
+      height: 38px;
+      display: grid;
+      place-items: center;
+      border-radius: 999px;
+      background: var(--soft);
+      color: var(--muted);
+      font-weight: 900;
+    }
+
+    .list {
+      display: grid;
+      gap: 8px;
+      padding: 12px;
+    }
+
+    .item {
+      width: 100%;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 10px;
+      text-align: left;
+      padding: 15px;
+      border: 1px solid transparent;
+      border-radius: 20px;
+      background: transparent;
+      cursor: pointer;
+      color: inherit;
+    }
+
+    .item:hover, .item.active {
+      background: #fff;
+      border-color: var(--line);
+    }
+
+    .item strong {
+      display: block;
+      font-size: 16px;
+      margin-bottom: 5px;
+    }
+
+    .item span {
+      display: block;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.35;
+    }
+
+    .badge {
+      align-self: start;
+      border-radius: 999px;
+      padding: 6px 10px;
+      font-size: 12px;
+      font-weight: 900;
+      background: rgba(31, 157, 85, 0.12);
+      color: var(--ok);
+    }
+
+    .badge.off {
+      background: rgba(180, 35, 24, 0.1);
+      color: var(--bad);
+    }
+
+    .form {
+      padding: 22px;
+      display: grid;
+      gap: 18px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    label {
+      display: grid;
+      gap: 8px;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: rgba(255, 255, 255, 0.9);
+      color: var(--text);
+      padding: 14px 15px;
+      outline: none;
+    }
+
+    textarea {
+      min-height: 116px;
+      resize: vertical;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    input:focus, select:focus, textarea:focus {
+      border-color: rgba(0, 0, 0, 0.32);
+      box-shadow: 0 0 0 4px rgba(0, 0, 0, 0.06);
+    }
+
+    .switch-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      padding: 14px 16px;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: #fff;
+      color: var(--text);
+      font-weight: 800;
+    }
+
+    .switch-row input {
+      width: 22px;
+      height: 22px;
+      accent-color: #1d1d1f;
+    }
+
+    .codebox {
+      padding: 18px;
+      border-radius: 22px;
+      background: #111114;
+      color: #f5f5f7;
+      overflow: auto;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 13px;
+      line-height: 1.6;
+      white-space: pre-wrap;
+      word-break: break-all;
+    }
+
+    .result-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .hint {
+      margin: 0;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.45;
+      font-weight: 650;
+    }
+
+    .toast {
+      position: fixed;
+      left: 50%;
+      bottom: 26px;
+      transform: translateX(-50%) translateY(20px);
+      opacity: 0;
+      pointer-events: none;
+      transition: 180ms ease;
+      padding: 13px 17px;
+      border-radius: 999px;
+      background: #1d1d1f;
+      color: #fff;
+      font-weight: 800;
+      z-index: 20;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%);
+    }
+
+    @media (max-width: 980px) {
+      .hero { grid-template-columns: 1fr; }
+      .hero-actions { justify-content: flex-start; }
+      .layout { grid-template-columns: 1fr; }
+      .grid { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 640px) {
+      .page {
+        width: min(100% - 24px, 1440px);
+        padding-top: 22px;
+      }
+      h1 { font-size: 42px; }
+      .panel-head, .form { padding: 16px; }
+      .btn { width: 100%; }
+      .result-actions .btn { width: auto; flex: 1; }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <section class="hero">
+      <div>
+        <h1>Админка виджетов</h1>
+        <p class="lead">MVP для настройки подключений: клиент, домен, виджет, задержка, частота показа, позиция и короткий код для вставки на сайт.</p>
+      </div>
+      <div class="hero-actions">
+        <button class="btn" id="createBtn">Создать виджет</button>
+        <button class="btn secondary" id="resetBtn">Вернуть демо</button>
+      </div>
+    </section>
+
+    <section class="layout">
+      <aside class="panel">
+        <div class="panel-head">
+          <h2 class="panel-title">Запущенные виджеты</h2>
+          <div class="count" id="count">0</div>
+        </div>
+        <div class="list" id="instancesList"></div>
+      </aside>
+
+      <section class="panel">
+        <div class="panel-head">
+          <h2 class="panel-title" id="editorTitle">Настройки</h2>
+          <span class="badge" id="statusBadge">Активен</span>
+        </div>
+
+        <form class="form" id="editorForm">
+          <div class="grid">
+            <label>Название
+              <input name="name" required>
+            </label>
+            <label>Клиент
+              <input name="client" required>
+            </label>
+            <label>Домен клиента
+              <input name="domain" placeholder="site.ru">
+            </label>
+            <label>Source для заявок
+              <input name="source" required>
+            </label>
+            <label>Виджет
+              <select name="widget">
+                <option value="wheel-fortune">Колесо фортуны</option>
+                <option value="tinder-product">Товарный Тиндер</option>
+              </select>
+            </label>
+            <label>Путь к JSON-конфигу
+              <input name="configPath" placeholder="configs/client-widget.json">
+            </label>
+          </div>
+
+          <label class="switch-row">
+            <span>Виджет включён</span>
+            <input name="enabled" type="checkbox">
+          </label>
+
+          <div class="grid">
+            <label>Режим показа
+              <select name="mode">
+                <option value="modal">Popup / окно поверх сайта</option>
+                <option value="inline">Встроить блоком на страницу</option>
+              </select>
+            </label>
+            <label>Запуск
+              <select name="trigger">
+                <option value="auto">Автоматически</option>
+                <option value="button">С кнопки</option>
+              </select>
+            </label>
+            <label>Задержка, секунд
+              <input name="delaySeconds" type="number" min="0" step="1">
+            </label>
+            <label>Частота показа
+              <select name="frequency">
+                <option value="always">Всегда</option>
+                <option value="once_per_hour">Раз в час</option>
+                <option value="once_per_day">Раз в день</option>
+                <option value="once_per_week">Раз в неделю</option>
+              </select>
+            </label>
+            <label>Позиция на десктопе
+              <select name="position">
+                <option value="center">По центру</option>
+                <option value="bottom-right">Справа снизу</option>
+                <option value="bottom-left">Слева снизу</option>
+              </select>
+            </label>
+            <label>Затемнение фона
+              <input name="dimColor" placeholder="rgba(0, 0, 0, 0.58)">
+            </label>
+          </div>
+
+          <div class="grid">
+            <label>Webhook URL
+              <input name="webhookUrl">
+            </label>
+            <label>Акцентный цвет
+              <input name="accentColor" placeholder="#1f1f1f">
+            </label>
+          </div>
+
+          <div class="result-actions">
+            <button class="btn" type="submit">Сохранить в браузере</button>
+            <button class="btn secondary" type="button" id="copyCodeBtn">Скопировать код</button>
+            <button class="btn secondary" type="button" id="copyJsonBtn">Скопировать JSON</button>
+          </div>
+
+          <p class="hint">Если указан путь к JSON-конфигу, код будет коротким через <b>data-config</b>. Если путь пустой, админка соберёт код прямо из атрибутов скрипта.</p>
+
+          <label>Код для вставки на сайт клиента
+            <div class="codebox" id="embedCode"></div>
+          </label>
+
+          <label>JSON-конфиг для сохранения в репозитории
+            <textarea id="jsonOutput" spellcheck="false"></textarea>
+          </label>
+        </form>
+      </section>
+    </section>
+  </main>
+
+  <div class="toast" id="toast">Скопировано</div>
+
+  <script>
+    (function() {
+      const STORAGE_KEY = "widgets0-admin-instances-v1";
+      const LOADER_URL = "https://widgets0.github.io/widgets0/widget-loader.js";
+      const DEFAULT_WEBHOOK = "https://widgets0-production.up.railway.app";
+      const demoInstances = [
+        {
+          id: "demo-wheel",
+          name: "Колесо фортуны — демо",
+          client: "Демо-клиент",
+          domain: "example.com",
+          source: "demo-wheel",
+          widget: "wheel-fortune",
+          enabled: true,
+          configPath: "configs/demo-wheel.json",
+          webhookUrl: DEFAULT_WEBHOOK,
+          display: {
+            mode: "modal",
+            trigger: "auto",
+            delaySeconds: 2,
+            frequency: "always",
+            position: "center",
+            dimColor: "rgba(0, 0, 0, 0.58)"
+          },
+          theme: { accentColor: "#1f1f1f" }
+        },
+        {
+          id: "demo-tinder",
+          name: "Товарный Тиндер — демо",
+          client: "Демо-клиент",
+          domain: "example.com",
+          source: "demo-tinder",
+          widget: "tinder-product",
+          enabled: true,
+          configPath: "configs/demo-tinder.json",
+          webhookUrl: DEFAULT_WEBHOOK,
+          display: {
+            mode: "modal",
+            trigger: "auto",
+            delaySeconds: 1,
+            frequency: "always",
+            position: "center",
+            dimColor: "rgba(0, 0, 0, 0.58)"
+          },
+          theme: { accentColor: "#1f1f1f" }
+        }
+      ];
+
+      const listEl = document.getElementById("instancesList");
+      const countEl = document.getElementById("count");
+      const form = document.getElementById("editorForm");
+      const editorTitle = document.getElementById("editorTitle");
+      const statusBadge = document.getElementById("statusBadge");
+      const embedCodeEl = document.getElementById("embedCode");
+      const jsonOutput = document.getElementById("jsonOutput");
+      const toast = document.getElementById("toast");
+      let instances = loadInstances();
+      let selectedId = instances[0] ? instances[0].id : null;
+
+      function loadInstances() {
+        try {
+          const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "null");
+          return Array.isArray(saved) && saved.length ? saved : demoInstances;
+        } catch (error) {
+          return demoInstances;
+        }
+      }
+
+      function saveInstances() {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(instances, null, 2));
+      }
+
+      function slugify(value) {
+        return String(value || "widget")
+          .toLowerCase()
+          .replace(/https?:\/\//g, "")
+          .replace(/[^a-z0-9а-яё]+/gi, "-")
+          .replace(/^-+|-+$/g, "")
+          .slice(0, 64) || "widget";
+      }
+
+      function selectedInstance() {
+        return instances.find((item) => item.id === selectedId) || instances[0];
+      }
+
+      function instanceFromForm() {
+        const data = new FormData(form);
+        const current = selectedInstance() || {};
+        const domain = data.get("domain").trim();
+        const widget = data.get("widget");
+        return {
+          id: current.id || `${slugify(domain || data.get("client"))}-${widget}-${Date.now()}`,
+          name: data.get("name").trim(),
+          client: data.get("client").trim(),
+          domain,
+          source: data.get("source").trim(),
+          widget,
+          enabled: data.get("enabled") === "on",
+          configPath: data.get("configPath").trim(),
+          webhookUrl: data.get("webhookUrl").trim() || DEFAULT_WEBHOOK,
+          display: {
+            mode: data.get("mode"),
+            trigger: data.get("trigger"),
+            delaySeconds: Number(data.get("delaySeconds") || 0),
+            frequency: data.get("frequency"),
+            position: data.get("position"),
+            dimColor: data.get("dimColor").trim() || "rgba(0, 0, 0, 0.58)"
+          },
+          theme: {
+            accentColor: data.get("accentColor").trim() || "#1f1f1f"
+          }
+        };
+      }
+
+      function fillForm(instance) {
+        if (!instance) return;
+        editorTitle.textContent = instance.name || "Настройки";
+        statusBadge.textContent = instance.enabled ? "Активен" : "Выключен";
+        statusBadge.classList.toggle("off", !instance.enabled);
+
+        form.elements.name.value = instance.name || "";
+        form.elements.client.value = instance.client || "";
+        form.elements.domain.value = instance.domain || "";
+        form.elements.source.value = instance.source || "";
+        form.elements.widget.value = instance.widget || "wheel-fortune";
+        form.elements.configPath.value = instance.configPath || "";
+        form.elements.enabled.checked = instance.enabled !== false;
+        form.elements.mode.value = instance.display && instance.display.mode || "modal";
+        form.elements.trigger.value = instance.display && instance.display.trigger || "auto";
+        form.elements.delaySeconds.value = instance.display && instance.display.delaySeconds || 0;
+        form.elements.frequency.value = instance.display && instance.display.frequency || "always";
+        form.elements.position.value = instance.display && instance.display.position || "center";
+        form.elements.dimColor.value = instance.display && instance.display.dimColor || "rgba(0, 0, 0, 0.58)";
+        form.elements.webhookUrl.value = instance.webhookUrl || DEFAULT_WEBHOOK;
+        form.elements.accentColor.value = instance.theme && instance.theme.accentColor || "#1f1f1f";
+        renderOutputs(instance);
+      }
+
+      function escapeAttr(value) {
+        return String(value || "").replace(/"/g, "&quot;");
+      }
+
+      function buildEmbedCode(instance) {
+        if (instance.configPath) {
+          return `<script src="${LOADER_URL}" data-config="${escapeAttr(instance.configPath)}" async><\/script>`;
+        }
+
+        const parts = [
+          `src="${LOADER_URL}"`,
+          `data-widget="${escapeAttr(instance.widget)}"`,
+          `data-source="${escapeAttr(instance.source)}"`,
+          `data-mode="${escapeAttr(instance.display.mode)}"`,
+          `data-trigger="${escapeAttr(instance.display.trigger)}"`,
+          `data-delay="${escapeAttr(instance.display.delaySeconds)}"`,
+          `data-frequency="${escapeAttr(instance.display.frequency)}"`,
+          `data-position="${escapeAttr(instance.display.position)}"`,
+          `data-webhook-url="${escapeAttr(instance.webhookUrl)}"`,
+          `data-dim-color="${escapeAttr(instance.display.dimColor)}"`,
+          `data-enabled="${instance.enabled ? "true" : "false"}"`,
+          "async"
+        ];
+        return `<script ${parts.join(" ")}><\/script>`;
+      }
+
+      function renderOutputs(instance) {
+        const current = instance || instanceFromForm();
+        embedCodeEl.textContent = buildEmbedCode(current);
+        jsonOutput.value = JSON.stringify(current, null, 2);
+      }
+
+      function renderList() {
+        countEl.textContent = instances.length;
+        listEl.innerHTML = "";
+        instances.forEach((instance) => {
+          const button = document.createElement("button");
+          button.type = "button";
+          button.className = `item ${instance.id === selectedId ? "active" : ""}`;
+          button.innerHTML = `
+            <span>
+              <strong>${instance.name}</strong>
+              <span>${instance.client || "Без клиента"} · ${instance.domain || "домен не указан"} · ${instance.widget}</span>
+            </span>
+            <em class="badge ${instance.enabled ? "" : "off"}">${instance.enabled ? "on" : "off"}</em>
+          `;
+          button.addEventListener("click", () => {
+            selectedId = instance.id;
+            render();
+          });
+          listEl.appendChild(button);
+        });
+      }
+
+      function render() {
+        renderList();
+        fillForm(selectedInstance());
+      }
+
+      function showToast(text) {
+        toast.textContent = text || "Скопировано";
+        toast.classList.add("show");
+        window.setTimeout(() => toast.classList.remove("show"), 1600);
+      }
+
+      async function copyText(text) {
+        try {
+          await navigator.clipboard.writeText(text);
+          showToast();
+        } catch (error) {
+          showToast("Не удалось скопировать");
+        }
+      }
+
+      form.addEventListener("input", () => renderOutputs());
+      form.addEventListener("change", () => renderOutputs());
+      form.addEventListener("submit", (event) => {
+        event.preventDefault();
+        const updated = instanceFromForm();
+        const index = instances.findIndex((item) => item.id === updated.id);
+        if (index >= 0) instances[index] = updated;
+        else instances.unshift(updated);
+        selectedId = updated.id;
+        saveInstances();
+        render();
+        showToast("Сохранено");
+      });
+
+      document.getElementById("copyCodeBtn").addEventListener("click", () => copyText(embedCodeEl.textContent));
+      document.getElementById("copyJsonBtn").addEventListener("click", () => copyText(jsonOutput.value));
+      document.getElementById("resetBtn").addEventListener("click", () => {
+        instances = JSON.parse(JSON.stringify(demoInstances));
+        selectedId = instances[0].id;
+        saveInstances();
+        render();
+      });
+      document.getElementById("createBtn").addEventListener("click", () => {
+        const id = `new-widget-${Date.now()}`;
+        const created = {
+          id,
+          name: "Новый виджет",
+          client: "Новый клиент",
+          domain: "",
+          source: id,
+          widget: "wheel-fortune",
+          enabled: true,
+          configPath: "",
+          webhookUrl: DEFAULT_WEBHOOK,
+          display: {
+            mode: "modal",
+            trigger: "auto",
+            delaySeconds: 2,
+            frequency: "always",
+            position: "center",
+            dimColor: "rgba(0, 0, 0, 0.58)"
+          },
+          theme: { accentColor: "#1f1f1f" }
+        };
+        instances.unshift(created);
+        selectedId = id;
+        saveInstances();
+        render();
+      });
+
+      render();
+    })();
+  </script>
+</body>
+</html>

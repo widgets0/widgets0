@@ -100,6 +100,20 @@
   }
 
   function parseWidgetIds() {
+    if (remoteConfig) {
+      var configuredWidgets = remoteConfig.widgets || remoteConfig.widget;
+      if (Array.isArray(configuredWidgets)) {
+        return configuredWidgets.map(function(item) {
+          return String(item).trim();
+        }).filter(Boolean);
+      }
+      if (typeof configuredWidgets === "string" && configuredWidgets.trim()) {
+        return configuredWidgets.split(",").map(function(item) {
+          return item.trim();
+        }).filter(Boolean);
+      }
+    }
+
     var list = attr("data-widgets", "");
     if (!list) list = attr("data-widget", "wheel-fortune");
     if (list === "all") {
@@ -143,6 +157,41 @@
   var zIndex = attr("data-z-index", "2147483000");
   var dimColor = attr("data-dim-color", "rgba(0, 0, 0, 0.52)");
   var activeLayer = null;
+  var remoteConfig = null;
+
+  function configDisplay() {
+    return remoteConfig && remoteConfig.display ? remoteConfig.display : {};
+  }
+
+  function configValue(object, key, fallback) {
+    return object && object[key] !== undefined && object[key] !== null && object[key] !== "" ? object[key] : fallback;
+  }
+
+  function getConfigUrl(path) {
+    if (!path) return "";
+    try {
+      return new URL(path, baseUrl).href;
+    } catch (error) {
+      return "";
+    }
+  }
+
+  function applyRemoteConfig(config) {
+    remoteConfig = config || null;
+    if (!remoteConfig) return true;
+    if (remoteConfig.enabled === false) return false;
+
+    var display = configDisplay();
+    source = configValue(remoteConfig, "source", source);
+    webhookUrl = configValue(remoteConfig, "webhookUrl", webhookUrl);
+    webhookSecret = configValue(remoteConfig, "webhookSecret", webhookSecret);
+    frequency = configValue(display, "frequency", frequency);
+    position = configValue(display, "position", position);
+    version = configValue(remoteConfig, "version", version);
+    zIndex = String(configValue(remoteConfig, "zIndex", zIndex));
+    dimColor = configValue(display, "dimColor", dimColor);
+    return true;
+  }
 
   function getStorageKey(widgetId) {
     return "widgets0:" + (source || "default") + ":" + widgetId + ":shownAt";
@@ -173,6 +222,13 @@
     addParam(url.searchParams, "source", source || widgetId);
     addParam(url.searchParams, "webhookUrl", webhookUrl);
     addParam(url.searchParams, "webhookSecret", webhookSecret);
+
+    if (remoteConfig) {
+      addParam(url.searchParams, "client", remoteConfig.client);
+      addParam(url.searchParams, "domain", remoteConfig.domain);
+      addParam(url.searchParams, "instanceId", remoteConfig.id);
+    }
+
     return url.href;
   }
 
@@ -304,6 +360,40 @@
     rememberShown(widgetId);
   }
 
+  function mountLauncher(widgetId, widget) {
+    if (!canShow(widgetId)) return;
+
+    var display = configDisplay();
+    var button = document.createElement("button");
+    button.type = "button";
+    button.textContent = configValue(display, "buttonText", widget.title || "Открыть виджет");
+    button.setAttribute("data-widgets0-launcher", widgetId);
+    button.style.position = "fixed";
+    button.style.zIndex = zIndex;
+    button.style.border = "0";
+    button.style.borderRadius = "999px";
+    button.style.padding = "16px 22px";
+    button.style.background = configValue(remoteConfig && remoteConfig.theme, "accentColor", "#1f1f1f");
+    button.style.color = "#ffffff";
+    button.style.font = "700 16px/1.2 -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif";
+    button.style.boxShadow = "0 18px 45px rgba(0, 0, 0, 0.22)";
+    button.style.cursor = "pointer";
+    button.style.right = "24px";
+    button.style.bottom = "24px";
+
+    if (position === "bottom-left" || position === "left-bottom") {
+      button.style.left = "24px";
+      button.style.right = "auto";
+    }
+
+    button.addEventListener("click", function() {
+      if (button.parentNode) button.parentNode.removeChild(button);
+      mountModal(widgetId, widget);
+    });
+
+    document.body.appendChild(button);
+  }
+
   function mountWidget(widgetId, index) {
     var widget = WIDGETS[widgetId];
     if (!widget) {
@@ -311,12 +401,17 @@
       return;
     }
 
-    var modeOverride = attr("data-mode", "");
+    var display = configDisplay();
+    var modeOverride = configValue(display, "mode", attr("data-mode", ""));
     var mode = modeOverride || widget.mode || "modal";
-    var delay = Math.max(0, Number(attr("data-delay", "")) || 0) + index * 0.8;
+    var delayValue = configValue(display, "delaySeconds", attr("data-delay", ""));
+    var delay = Math.max(0, Number(delayValue) || 0) + index * 0.8;
+    var trigger = configValue(display, "trigger", attr("data-trigger", "auto"));
 
     window.setTimeout(function() {
-      if (mode === "inline") {
+      if (trigger === "button" && mode !== "inline") {
+        mountLauncher(widgetId, widget);
+      } else if (mode === "inline") {
         mountInline(widgetId, widget);
       } else {
         mountModal(widgetId, widget);
@@ -325,12 +420,33 @@
   }
 
   function init() {
+    if (attr("data-enabled", "true") === "false") return;
     parseWidgetIds().forEach(mountWidget);
   }
 
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", init, { once: true });
+  function start() {
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", init, { once: true });
+    } else {
+      init();
+    }
+  }
+
+  var configUrl = getConfigUrl(attr("data-config", ""));
+  if (configUrl) {
+    fetch(configUrl, { cache: "no-store" })
+      .then(function(response) {
+        if (!response.ok) throw new Error("Config load failed");
+        return response.json();
+      })
+      .then(function(config) {
+        if (applyRemoteConfig(config)) start();
+      })
+      .catch(function(error) {
+        console.warn("[widgets0] Config was not loaded:", error);
+        start();
+      });
   } else {
-    init();
+    start();
   }
 })();

@@ -1,0 +1,21 @@
+{
+  "id": "demo-tinder",
+  "name": "Товарный Тиндер — демо",
+  "client": "Демо-клиент",
+  "domain": "example.com",
+  "source": "demo-tinder",
+  "widget": "tinder-product",
+  "enabled": true,
+  "webhookUrl": "https://widgets0-production.up.railway.app",
+  "display": {
+    "mode": "modal",
+    "trigger": "auto",
+    "delaySeconds": 1,
+    "frequency": "always",
+    "position": "center",
+    "dimColor": "rgba(0, 0, 0, 0.58)"
+  },
+  "theme": {
+    "accentColor": "#1f1f1f"
+  }
+}

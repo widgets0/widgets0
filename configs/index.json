@@ -1,0 +1,44 @@
+[
+  {
+    "id": "demo-wheel",
+    "name": "Колесо фортуны — демо",
+    "client": "Демо-клиент",
+    "domain": "example.com",
+    "source": "demo-wheel",
+    "widget": "wheel-fortune",
+    "enabled": true,
+    "configPath": "configs/demo-wheel.json",
+    "display": {
+      "mode": "modal",
+      "trigger": "auto",
+      "delaySeconds": 2,
+      "frequency": "always",
+      "position": "center",
+      "dimColor": "rgba(0, 0, 0, 0.58)"
+    },
+    "theme": {
+      "accentColor": "#1f1f1f"
+    }
+  },
+  {
+    "id": "demo-tinder",
+    "name": "Товарный Тиндер — демо",
+    "client": "Демо-клиент",
+    "domain": "example.com",
+    "source": "demo-tinder",
+    "widget": "tinder-product",
+    "enabled": true,
+    "configPath": "configs/demo-tinder.json",
+    "display": {
+      "mode": "modal",
+      "trigger": "auto",
+      "delaySeconds": 1,
+      "frequency": "always",
+      "position": "center",
+      "dimColor": "rgba(0, 0, 0, 0.58)"
+    },
+    "theme": {
+      "accentColor": "#1f1f1f"
+    }
+  }
+]
