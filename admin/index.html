@@ -86,9 +86,17 @@
 
     .layout {
       display: grid;
-      grid-template-columns: minmax(300px, 430px) 1fr;
+      grid-template-columns: minmax(260px, 320px) minmax(420px, 1fr) minmax(340px, 430px);
       gap: 20px;
       align-items: start;
+    }
+
+    .widgets-panel,
+    .settings-panel {
+      position: sticky;
+      top: 18px;
+      max-height: calc(100vh - 36px);
+      overflow: auto;
     }
 
     .panel {
@@ -185,6 +193,40 @@
       gap: 18px;
     }
 
+    .settings-tabs {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+      padding: 14px;
+      border-bottom: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.62);
+    }
+
+    .tab-btn {
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 11px 12px;
+      background: #fff;
+      color: var(--muted);
+      cursor: pointer;
+      font-weight: 850;
+    }
+
+    .tab-btn.active {
+      background: var(--accent);
+      color: #fff;
+      border-color: var(--accent);
+    }
+
+    .settings-section {
+      display: none;
+      gap: 18px;
+    }
+
+    .settings-section.active {
+      display: grid;
+    }
+
     .grid {
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -268,13 +310,14 @@
       font-weight: 650;
     }
 
+    .preview-panel {
+      min-height: calc(100vh - 170px);
+    }
+
     .preview-card {
       display: grid;
       gap: 14px;
-      padding: 14px;
-      border: 1px solid var(--line);
-      border-radius: 24px;
-      background: #fff;
+      padding: 16px;
     }
 
     .preview-head {
@@ -298,8 +341,28 @@
       font-weight: 750;
     }
 
+    .preview-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 2px;
+    }
+
+    .meta-pill {
+      display: inline-flex;
+      align-items: center;
+      min-height: 30px;
+      padding: 7px 10px;
+      border-radius: 999px;
+      background: var(--soft);
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 850;
+    }
+
     .preview-shell {
-      height: 560px;
+      height: min(720px, calc(100vh - 310px));
+      min-height: 520px;
       border-radius: 22px;
       overflow: hidden;
       border: 1px solid var(--line);
@@ -337,11 +400,24 @@
       transform: translateX(-50%);
     }
 
-    @media (max-width: 980px) {
+    .save-state {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 850;
+    }
+
+    @media (max-width: 1180px) {
       .hero { grid-template-columns: 1fr; }
       .hero-actions { justify-content: flex-start; }
-      .layout { grid-template-columns: 1fr; }
+      .layout { grid-template-columns: 280px 1fr; }
+      .settings-panel { grid-column: 1 / -1; position: static; max-height: none; }
       .grid { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 860px) {
+      .layout { grid-template-columns: 1fr; }
+      .widgets-panel, .settings-panel { position: static; max-height: none; }
+      .preview-shell { height: 620px; min-height: 520px; }
     }
 
     @media (max-width: 640px) {
@@ -353,6 +429,8 @@
       .panel-head, .form { padding: 16px; }
       .btn { width: 100%; }
       .result-actions .btn { width: auto; flex: 1; }
+      .settings-tabs { grid-template-columns: 1fr; }
+      .preview-shell { height: 560px; min-height: 500px; }
     }
   </style>
 </head>
@@ -365,12 +443,11 @@
       </div>
       <div class="hero-actions">
         <button class="btn" id="createBtn">Создать виджет</button>
-        <button class="btn secondary" id="resetBtn">Вернуть демо</button>
       </div>
     </section>
 
     <section class="layout">
-      <aside class="panel">
+      <aside class="panel widgets-panel">
         <div class="panel-head">
           <h2 class="panel-title">Запущенные виджеты</h2>
           <div class="count" id="count">0</div>
@@ -378,115 +455,147 @@
         <div class="list" id="instancesList"></div>
       </aside>
 
-      <section class="panel">
+      <section class="panel preview-panel">
         <div class="panel-head">
-          <h2 class="panel-title" id="editorTitle">Настройки</h2>
+          <div>
+            <h2 class="panel-title">Превью</h2>
+            <div class="preview-meta">
+              <span class="meta-pill" id="metaClient">Клиент</span>
+              <span class="meta-pill" id="metaDomain">Домен</span>
+              <span class="meta-pill" id="metaWidget">Виджет</span>
+            </div>
+          </div>
+          <button class="btn secondary" type="button" id="refreshPreviewBtn">Обновить</button>
+        </div>
+        <div class="preview-card">
+          <div class="preview-head">
+            <div class="preview-title">
+              Живое превью
+              <span>Меняешь настройки справа — смотришь результат здесь</span>
+            </div>
+          </div>
+          <div class="preview-shell">
+            <iframe class="preview-frame" id="previewFrame" title="Превью виджета"></iframe>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel settings-panel">
+        <div class="panel-head">
+          <div>
+            <h2 class="panel-title" id="editorTitle">Настройки</h2>
+            <span class="save-state" id="saveState">Автосохранение включено</span>
+          </div>
           <span class="badge" id="statusBadge">Активен</span>
+        </div>
+        <div class="settings-tabs" role="tablist" aria-label="Разделы настроек">
+          <button class="tab-btn active" type="button" data-tab="main">Основное</button>
+          <button class="tab-btn" type="button" data-tab="display">Показ</button>
+          <button class="tab-btn" type="button" data-tab="integrations">Интеграции</button>
+          <button class="tab-btn" type="button" data-tab="code">Код</button>
         </div>
 
         <form class="form" id="editorForm">
-          <div class="grid">
-            <label>Название
-              <input name="name" required>
-            </label>
-            <label>Клиент
-              <input name="client" required>
-            </label>
-            <label>Домен клиента
-              <input name="domain" placeholder="site.ru">
-            </label>
-            <label>Source для заявок
-              <input name="source" required>
-            </label>
-            <label>Виджет
-              <select name="widget">
-                <option value="wheel-fortune">Колесо фортуны</option>
-                <option value="tinder-product">Товарный Тиндер</option>
-              </select>
-            </label>
-            <label>Путь к JSON-конфигу
-              <input name="configPath" placeholder="configs/client-widget.json">
-            </label>
-          </div>
-
-          <label class="switch-row">
-            <span>Виджет включён</span>
-            <input name="enabled" type="checkbox">
-          </label>
-
-          <div class="grid">
-            <label>Режим показа
-              <select name="mode">
-                <option value="modal">Popup / окно поверх сайта</option>
-                <option value="inline">Встроить блоком на страницу</option>
-              </select>
-            </label>
-            <label>Запуск
-              <select name="trigger">
-                <option value="auto">Автоматически</option>
-                <option value="button">С кнопки</option>
-              </select>
-            </label>
-            <label>Задержка, секунд
-              <input name="delaySeconds" type="number" min="0" step="1">
-            </label>
-            <label>Частота показа
-              <select name="frequency">
-                <option value="always">Всегда</option>
-                <option value="once_per_hour">Раз в час</option>
-                <option value="once_per_day">Раз в день</option>
-                <option value="once_per_week">Раз в неделю</option>
-              </select>
-            </label>
-            <label>Позиция на десктопе
-              <select name="position">
-                <option value="center">По центру</option>
-                <option value="bottom-right">Справа снизу</option>
-                <option value="bottom-left">Слева снизу</option>
-              </select>
-            </label>
-            <label>Затемнение фона
-              <input name="dimColor" placeholder="rgba(0, 0, 0, 0.58)">
-            </label>
-          </div>
-
-          <div class="grid">
-            <label>Webhook URL
-              <input name="webhookUrl">
-            </label>
-            <label>Акцентный цвет
-              <input name="accentColor" placeholder="#1f1f1f">
-            </label>
-          </div>
-
-          <section class="preview-card" aria-label="Живое превью виджета">
-            <div class="preview-head">
-              <div class="preview-title">
-                Живое превью
-                <span>Обновляется при изменении настроек</span>
-              </div>
-              <button class="btn secondary" type="button" id="refreshPreviewBtn">Обновить</button>
+          <section class="settings-section active" data-tab-panel="main">
+            <div class="grid">
+              <label>Название
+                <input name="name" required>
+              </label>
+              <label>Клиент
+                <input name="client" required>
+              </label>
+              <label>Домен клиента
+                <input name="domain" placeholder="site.ru">
+              </label>
+              <label>Source для заявок
+                <input name="source" required>
+              </label>
+              <label>Виджет
+                <select name="widget">
+                  <option value="wheel-fortune">Колесо фортуны</option>
+                  <option value="tinder-product">Товарный Тиндер</option>
+                </select>
+              </label>
+              <label>Путь к JSON-конфигу
+                <input name="configPath" placeholder="configs/client-widget.json">
+              </label>
             </div>
-            <div class="preview-shell">
-              <iframe class="preview-frame" id="previewFrame" title="Превью виджета"></iframe>
+            <label class="switch-row">
+              <span>Виджет включён</span>
+              <input name="enabled" type="checkbox">
+            </label>
+          </section>
+
+          <section class="settings-section" data-tab-panel="display">
+            <div class="grid">
+              <label>Режим показа
+                <select name="mode">
+                  <option value="modal">Popup / окно поверх сайта</option>
+                  <option value="inline">Встроить блоком на страницу</option>
+                </select>
+              </label>
+              <label>Запуск
+                <select name="trigger">
+                  <option value="auto">Автоматически</option>
+                  <option value="button">С кнопки</option>
+                </select>
+              </label>
+              <label>Задержка, секунд
+                <input name="delaySeconds" type="number" min="0" step="1">
+              </label>
+              <label>Частота показа
+                <select name="frequency">
+                  <option value="always">Всегда</option>
+                  <option value="once_per_hour">Раз в час</option>
+                  <option value="once_per_day">Раз в день</option>
+                  <option value="once_per_week">Раз в неделю</option>
+                </select>
+              </label>
+              <label>Позиция на десктопе
+                <select name="position">
+                  <option value="center">По центру</option>
+                  <option value="bottom-right">Справа снизу</option>
+                  <option value="bottom-left">Слева снизу</option>
+                </select>
+              </label>
+              <label>Затемнение фона
+                <input name="dimColor" placeholder="rgba(0, 0, 0, 0.58)">
+              </label>
+              <label>Акцентный цвет
+                <input name="accentColor" placeholder="#1f1f1f">
+              </label>
             </div>
           </section>
 
-          <div class="result-actions">
-            <button class="btn" type="submit">Сохранить в браузере</button>
-            <button class="btn secondary" type="button" id="copyCodeBtn">Скопировать код</button>
-            <button class="btn secondary" type="button" id="copyJsonBtn">Скопировать JSON</button>
-          </div>
+          <section class="settings-section" data-tab-panel="integrations">
+            <div class="grid">
+              <label>Webhook URL
+                <input name="webhookUrl">
+              </label>
+            </div>
+            <p class="hint">Заявки уходят на этот webhook. Source и домен помогают понять, от какого клиента пришла заявка.</p>
+          </section>
 
-          <p class="hint">Если указан путь к JSON-конфигу, код будет коротким через <b>data-config</b>. Если путь пустой, админка соберёт код прямо из атрибутов скрипта.</p>
+          <section class="settings-section" data-tab-panel="code">
+            <div class="result-actions">
+              <button class="btn" type="submit">Сохранить сейчас</button>
+              <button class="btn secondary" type="button" id="copyCodeBtn">Скопировать код</button>
+              <button class="btn secondary" type="button" id="copyJsonBtn">Скопировать JSON</button>
+            </div>
 
-          <label>Код для вставки на сайт клиента
-            <div class="codebox" id="embedCode"></div>
-          </label>
+            <p class="hint">Настройки сохраняются автоматически в этом браузере. Чтобы получить постоянную короткую ссылку через <b>data-config</b>, JSON нужно положить в репозиторий по указанному пути.</p>
 
-          <label>JSON-конфиг для сохранения в репозитории
-            <textarea id="jsonOutput" spellcheck="false"></textarea>
-          </label>
+            <label>Код для вставки на сайт клиента
+              <div class="codebox" id="embedCode"></div>
+            </label>
+
+            <label>JSON-конфиг для сохранения в репозитории
+              <textarea id="jsonOutput" spellcheck="false"></textarea>
+            </label>
+
+            <button class="btn secondary" type="button" id="resetBtn">Сбросить локальные изменения</button>
+            <p class="hint">Эта кнопка просто возвращает два демо-виджета в админке. На сайты клиентов она не влияет.</p>
+          </section>
         </form>
       </section>
     </section>
@@ -547,11 +656,16 @@
       const form = document.getElementById("editorForm");
       const editorTitle = document.getElementById("editorTitle");
       const statusBadge = document.getElementById("statusBadge");
+      const saveState = document.getElementById("saveState");
+      const metaClient = document.getElementById("metaClient");
+      const metaDomain = document.getElementById("metaDomain");
+      const metaWidget = document.getElementById("metaWidget");
       const embedCodeEl = document.getElementById("embedCode");
       const jsonOutput = document.getElementById("jsonOutput");
       const toast = document.getElementById("toast");
       let instances = loadInstances();
       let selectedId = instances[0] ? instances[0].id : null;
+      let autoSaveTimer = 0;
 
       function loadInstances() {
         try {
@@ -577,6 +691,24 @@
 
       function selectedInstance() {
         return instances.find((item) => item.id === selectedId) || instances[0];
+      }
+
+      function widgetLabel(widget) {
+        const labels = {
+          "wheel-fortune": "Колесо фортуны",
+          "tinder-product": "Товарный Тиндер"
+        };
+        return labels[widget] || widget || "Виджет";
+      }
+
+      function updateEditorChrome(instance) {
+        if (!instance) return;
+        editorTitle.textContent = instance.name || "Настройки";
+        statusBadge.textContent = instance.enabled ? "Активен" : "Выключен";
+        statusBadge.classList.toggle("off", !instance.enabled);
+        metaClient.textContent = instance.client || "Клиент не указан";
+        metaDomain.textContent = instance.domain || "Домен не указан";
+        metaWidget.textContent = widgetLabel(instance.widget);
       }
 
       function instanceFromForm() {
@@ -610,9 +742,7 @@
 
       function fillForm(instance) {
         if (!instance) return;
-        editorTitle.textContent = instance.name || "Настройки";
-        statusBadge.textContent = instance.enabled ? "Активен" : "Выключен";
-        statusBadge.classList.toggle("off", !instance.enabled);
+        updateEditorChrome(instance);
 
         form.elements.name.value = instance.name || "";
         form.elements.client.value = instance.client || "";
@@ -630,6 +760,7 @@
         form.elements.webhookUrl.value = instance.webhookUrl || DEFAULT_WEBHOOK;
         form.elements.accentColor.value = instance.theme && instance.theme.accentColor || "#1f1f1f";
         renderOutputs(instance);
+        saveState.textContent = "Сохранено";
       }
 
       function escapeAttr(value) {
@@ -696,9 +827,28 @@
 
       function renderOutputs(instance) {
         const current = instance || instanceFromForm();
+        updateEditorChrome(current);
         embedCodeEl.textContent = buildEmbedCode(current);
         jsonOutput.value = JSON.stringify(current, null, 2);
         renderPreview(current);
+      }
+
+      function persistCurrentFromForm() {
+        const updated = instanceFromForm();
+        const index = instances.findIndex((item) => item.id === updated.id);
+        if (index >= 0) instances[index] = updated;
+        else instances.unshift(updated);
+        selectedId = updated.id;
+        saveInstances();
+        renderList();
+        updateEditorChrome(updated);
+        saveState.textContent = "Сохранено автоматически";
+      }
+
+      function scheduleAutoSave() {
+        saveState.textContent = "Сохраняю...";
+        window.clearTimeout(autoSaveTimer);
+        autoSaveTimer = window.setTimeout(persistCurrentFromForm, 450);
       }
 
       function renderList() {
@@ -743,8 +893,14 @@
         }
       }
 
-      form.addEventListener("input", () => renderOutputs());
-      form.addEventListener("change", () => renderOutputs());
+      form.addEventListener("input", () => {
+        renderOutputs();
+        scheduleAutoSave();
+      });
+      form.addEventListener("change", () => {
+        renderOutputs();
+        scheduleAutoSave();
+      });
       form.addEventListener("submit", (event) => {
         event.preventDefault();
         const updated = instanceFromForm();
@@ -755,6 +911,18 @@
         saveInstances();
         render();
         showToast("Сохранено");
+      });
+
+      document.querySelectorAll("[data-tab]").forEach((button) => {
+        button.addEventListener("click", () => {
+          const target = button.dataset.tab;
+          document.querySelectorAll("[data-tab]").forEach((item) => {
+            item.classList.toggle("active", item === button);
+          });
+          document.querySelectorAll("[data-tab-panel]").forEach((panel) => {
+            panel.classList.toggle("active", panel.dataset.tabPanel === target);
+          });
+        });
       });
 
       document.getElementById("copyCodeBtn").addEventListener("click", () => copyText(embedCodeEl.textContent));
