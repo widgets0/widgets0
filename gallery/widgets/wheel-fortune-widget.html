@@ -756,6 +756,7 @@ body {
   const params = new URLSearchParams(window.location.search);
   const isPreview = params.get('preview') === '1';
   const isEmbed = params.get('embed') === '1';
+  const accentColor = params.get('accentColor') || '#C4A47C';
 
   if (params.get('webhookUrl')) {
     LEAD_CONFIG.webhookUrl = params.get('webhookUrl');
@@ -787,12 +788,15 @@ body {
   ];
 
   const colors = [
-    "#F4EBD9", "#C4A47C", "#F4EBD9", 
-    "#C4A47C", "#F4EBD9", "#C4A47C"
+    "#F4EBD9", accentColor, "#F4EBD9", 
+    accentColor, "#F4EBD9", accentColor
   ];
 
   // DOM Элементы
   const root = document.querySelector('.clientWidget001-root');
+  if (root && params.get('accentColor')) {
+    root.style.setProperty('--accent-yellow', accentColor);
+  }
   const overlay = document.getElementById('clientWidget001-overlay');
   const closeBtn = document.getElementById('clientWidget001-close');
   const spinBtn = document.getElementById('clientWidget001-spin-btn');

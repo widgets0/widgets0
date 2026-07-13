@@ -19,6 +19,9 @@
     }
 
     .tinder-widget-container {
+      --tinder-accent: #211d18;
+      --tinder-accent-muted: #ded8cc;
+      --tinder-accent-warm: #f3c88b;
       height: min(640px, calc(100vh - 48px)) !important;
       min-height: 0;
     }
@@ -36,7 +39,7 @@
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      background: #050505;
+      background: var(--tinder-accent);
       color: #fff;
     }
 
@@ -153,7 +156,7 @@
 
     .tinder-lead-dot.is-active {
       width: 34px;
-      background: #b17b42;
+      background: var(--tinder-accent);
     }
 
     .tinder-offer-timer {
@@ -180,8 +183,8 @@
       min-width: 120px;
       padding: 14px 24px;
       border-radius: 999px;
-      background: #211d18;
-      color: #f3c88b;
+      background: var(--tinder-accent);
+      color: var(--tinder-accent-warm);
       font-size: 24px;
       font-weight: 950;
       line-height: 1;
@@ -190,7 +193,7 @@
     .tinder-offer-timer-value {
       font-variant-numeric: tabular-nums;
       letter-spacing: .02em;
-      color: #211d18;
+      color: var(--tinder-accent);
       font-size: 20px;
       font-weight: 950;
     }
@@ -235,12 +238,12 @@
     }
 
     .tinder-state-lead_form .tinder-consent {
-      accent-color: #211d18;
+      accent-color: var(--tinder-accent);
     }
 
     .tinder-state-lead_form .tinder-submit-btn {
       border-radius: 999px !important;
-      background: #ded8cc !important;
+      background: var(--tinder-accent-muted) !important;
       color: #9e978c !important;
       box-shadow: none !important;
       padding: 18px 24px !important;
@@ -249,14 +252,14 @@
     }
 
     .tinder-state-lead_form .tinder-submit-btn.is-ready {
-      background: #211d18 !important;
+      background: var(--tinder-accent) !important;
       color: #fff !important;
       box-shadow: 0 16px 36px rgba(33, 29, 24, .16) !important;
       cursor: pointer;
     }
 
     .tinder-state-lead_form .tinder-submit-btn.is-ready:hover {
-      background: #0d0c0a !important;
+      background: var(--tinder-accent) !important;
       transform: none !important;
     }
 
@@ -714,6 +717,7 @@
   }, window.WIDGET_LEAD_CONFIG || {});
 
   const leadParams = new URLSearchParams(window.location.search);
+  const accentColor = leadParams.get('accentColor');
   if (leadParams.get('webhookUrl')) {
     LEAD_CONFIG.webhookUrl = leadParams.get('webhookUrl');
   }
@@ -724,6 +728,12 @@
     LEAD_CONFIG.source = leadParams.get('source');
   }
   const pageUrl = leadParams.get('pageUrl') || document.referrer || window.location.href.split('?')[0];
+
+  function applyAccentColor(widget) {
+    if (!accentColor || !widget) return;
+    widget.style.setProperty('--tinder-accent', accentColor);
+    widget.style.setProperty('--tinder-accent-muted', accentColor + '33');
+  }
 
   function formatLeadMessage(lead) {
     return [
@@ -783,6 +793,7 @@
   
   widgets.forEach(widget => {
     widget.classList.add('tinder-initialized');
+    applyAccentColor(widget);
 
     let currentCards = [...PRODUCTS];
     let likedItems = [];

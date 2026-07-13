@@ -268,6 +268,54 @@
       font-weight: 650;
     }
 
+    .preview-card {
+      display: grid;
+      gap: 14px;
+      padding: 14px;
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      background: #fff;
+    }
+
+    .preview-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .preview-title {
+      display: grid;
+      gap: 3px;
+      color: var(--text);
+      font-size: 16px;
+      font-weight: 900;
+    }
+
+    .preview-title span {
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 750;
+    }
+
+    .preview-shell {
+      height: 560px;
+      border-radius: 22px;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      background:
+        radial-gradient(circle at 20% 0%, rgba(0, 0, 0, 0.08), transparent 28%),
+        linear-gradient(135deg, #f6f6f8, #ffffff);
+    }
+
+    .preview-frame {
+      display: block;
+      width: 100%;
+      height: 100%;
+      border: 0;
+      background: transparent;
+    }
+
     .toast {
       position: fixed;
       left: 50%;
@@ -410,6 +458,19 @@
               <input name="accentColor" placeholder="#1f1f1f">
             </label>
           </div>
+
+          <section class="preview-card" aria-label="Живое превью виджета">
+            <div class="preview-head">
+              <div class="preview-title">
+                Живое превью
+                <span>Обновляется при изменении настроек</span>
+              </div>
+              <button class="btn secondary" type="button" id="refreshPreviewBtn">Обновить</button>
+            </div>
+            <div class="preview-shell">
+              <iframe class="preview-frame" id="previewFrame" title="Превью виджета"></iframe>
+            </div>
+          </section>
 
           <div class="result-actions">
             <button class="btn" type="submit">Сохранить в браузере</button>
@@ -591,16 +652,53 @@
           `data-position="${escapeAttr(instance.display.position)}"`,
           `data-webhook-url="${escapeAttr(instance.webhookUrl)}"`,
           `data-dim-color="${escapeAttr(instance.display.dimColor)}"`,
+          `data-accent-color="${escapeAttr(instance.theme && instance.theme.accentColor)}"`,
           `data-enabled="${instance.enabled ? "true" : "false"}"`,
           "async"
         ];
         return `<script ${parts.join(" ")}><\/script>`;
       }
 
+      function widgetPreviewPath(widget) {
+        const map = {
+          "wheel-fortune": "../gallery/widgets/wheel-fortune-widget.html",
+          "tinder-product": "../gallery/widgets/tinder-product-widget.html"
+        };
+        return map[widget] || map["wheel-fortune"];
+      }
+
+      function buildPreviewUrl(instance) {
+        const url = new URL(widgetPreviewPath(instance.widget), window.location.href);
+        url.searchParams.set("embed", "1");
+        url.searchParams.set("preview", "1");
+        url.searchParams.set("delay", "0");
+        url.searchParams.set("frequency", "always");
+        url.searchParams.set("position", instance.display.position || "center");
+        url.searchParams.set("pageUrl", `https://${instance.domain || "client-site.example"}/`);
+        url.searchParams.set("source", instance.source || instance.widget);
+        url.searchParams.set("webhookUrl", instance.webhookUrl || DEFAULT_WEBHOOK);
+        url.searchParams.set("v", Date.now().toString());
+        if (instance.theme && instance.theme.accentColor) {
+          url.searchParams.set("accentColor", instance.theme.accentColor);
+        }
+        return url.href;
+      }
+
+      let previewTimer = 0;
+      function renderPreview(instance) {
+        const frame = document.getElementById("previewFrame");
+        if (!frame) return;
+        window.clearTimeout(previewTimer);
+        previewTimer = window.setTimeout(() => {
+          frame.src = buildPreviewUrl(instance || instanceFromForm());
+        }, 180);
+      }
+
       function renderOutputs(instance) {
         const current = instance || instanceFromForm();
         embedCodeEl.textContent = buildEmbedCode(current);
         jsonOutput.value = JSON.stringify(current, null, 2);
+        renderPreview(current);
       }
 
       function renderList() {
@@ -661,6 +759,7 @@
 
       document.getElementById("copyCodeBtn").addEventListener("click", () => copyText(embedCodeEl.textContent));
       document.getElementById("copyJsonBtn").addEventListener("click", () => copyText(jsonOutput.value));
+      document.getElementById("refreshPreviewBtn").addEventListener("click", () => renderPreview(instanceFromForm()));
       document.getElementById("resetBtn").addEventListener("click", () => {
         instances = JSON.parse(JSON.stringify(demoInstances));
         selectedId = instances[0].id;

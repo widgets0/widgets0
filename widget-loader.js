@@ -156,6 +156,7 @@
   var version = attr("data-version", "20260704-universal-loader");
   var zIndex = attr("data-z-index", "2147483000");
   var dimColor = attr("data-dim-color", "rgba(0, 0, 0, 0.52)");
+  var accentColor = attr("data-accent-color", "");
   var activeLayer = null;
   var remoteConfig = null;
 
@@ -190,6 +191,7 @@
     version = configValue(remoteConfig, "version", version);
     zIndex = String(configValue(remoteConfig, "zIndex", zIndex));
     dimColor = configValue(display, "dimColor", dimColor);
+    accentColor = configValue(remoteConfig.theme, "accentColor", accentColor);
     return true;
   }
 
@@ -222,6 +224,7 @@
     addParam(url.searchParams, "source", source || widgetId);
     addParam(url.searchParams, "webhookUrl", webhookUrl);
     addParam(url.searchParams, "webhookSecret", webhookSecret);
+    addParam(url.searchParams, "accentColor", accentColor);
 
     if (remoteConfig) {
       addParam(url.searchParams, "client", remoteConfig.client);
