@@ -161,7 +161,7 @@
 
     .dashboard {
       display: grid;
-      gap: 20px;
+      gap: 28px;
     }
 
     .stats-grid {
@@ -171,8 +171,8 @@
     }
 
     .stat-card {
-      min-height: 118px;
-      padding: 18px 20px;
+      min-height: 108px;
+      padding: 17px 20px;
       border: 1px solid var(--line);
       border-radius: 20px;
       background: rgba(255, 255, 255, 0.96);
@@ -189,14 +189,14 @@
     .stat-card strong {
       display: block;
       margin-top: 10px;
-      font-size: 32px;
+      font-size: 30px;
       line-height: 1;
       letter-spacing: -0.04em;
     }
 
     .stat-card small {
       display: block;
-      margin-top: 12px;
+      margin-top: 10px;
       color: #8a8a91;
       font-weight: 750;
     }
@@ -246,7 +246,7 @@
     }
 
     .row-title strong {
-      font-size: 20px;
+      font-size: 18px;
       letter-spacing: -0.025em;
     }
 
@@ -361,7 +361,7 @@
 
     .panel-title {
       margin: 0;
-      font-size: 19px;
+      font-size: 18px;
       letter-spacing: -0.02em;
     }
 
@@ -437,7 +437,7 @@
 
     .settings-tabs {
       display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(112px, 1fr));
       gap: 8px;
       padding: 14px;
       border-bottom: 1px solid var(--line);
@@ -447,7 +447,7 @@
     .tab-btn {
       border: 1px solid var(--line);
       border-radius: 999px;
-      padding: 11px 12px;
+      padding: 10px 11px;
       background: #fff;
       color: var(--muted);
       cursor: pointer;
@@ -511,6 +511,17 @@
       grid-template-columns: 48px minmax(0, 1fr);
       gap: 10px;
       align-items: center;
+    }
+
+    .section-note {
+      margin: 0;
+      padding: 12px 14px;
+      border-radius: 16px;
+      background: var(--soft);
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.45;
+      font-weight: 700;
     }
 
     input[type="color"] {
@@ -788,13 +799,14 @@
       display: grid;
       grid-template-rows: auto 1fr;
       background:
+        radial-gradient(circle at 50% 16%, rgba(16, 75, 54, 0.08), transparent 38%),
         linear-gradient(45deg, rgba(16, 75, 54, 0.035) 25%, transparent 25%),
         linear-gradient(-45deg, rgba(16, 75, 54, 0.035) 25%, transparent 25%),
         linear-gradient(45deg, transparent 75%, rgba(16, 75, 54, 0.035) 75%),
         linear-gradient(-45deg, transparent 75%, rgba(16, 75, 54, 0.035) 75%),
         #f4f5f4;
-      background-position: 0 0, 0 12px, 12px -12px, -12px 0;
-      background-size: 24px 24px;
+      background-position: center, 0 0, 0 12px, 12px -12px, -12px 0;
+      background-size: auto, 24px 24px, 24px 24px, 24px 24px, 24px 24px;
     }
 
     .builder-canvas-head {
@@ -835,7 +847,7 @@
       height: min(760px, calc(100vh - 350px));
       min-height: 560px;
       border-radius: 24px;
-      background: #fff;
+      background: var(--admin-preview-surface, #fff);
       box-shadow: 0 22px 80px rgba(20, 32, 55, 0.14);
     }
 
@@ -947,7 +959,7 @@
     </section>
 
     <nav class="app-tabs" aria-label="Разделы админки">
-      <button class="app-tab active" type="button" data-app-tab="dashboard">Запущенные виджеты</button>
+      <button class="app-tab active" type="button" data-app-tab="dashboard">Статистика</button>
       <button class="app-tab" type="button" data-app-tab="builder">Конструктор</button>
     </nav>
 
@@ -993,7 +1005,7 @@
       <section class="builder-frame">
         <div class="builder-topbar">
           <div class="builder-title">
-            <button class="mini-btn" id="backToDashboardBtn" type="button">← Запущенные</button>
+            <button class="mini-btn" id="backToDashboardBtn" type="button">← Статистика</button>
             <span>Конструктор /</span>
             <b id="builderWidgetName">Виджет</b>
             <em class="builder-chip" id="builderWidgetType">Виджет</em>
@@ -1018,6 +1030,7 @@
             <div class="settings-tabs" role="tablist" aria-label="Разделы настроек">
               <button class="tab-btn active" type="button" data-tab="main">Основное</button>
               <button class="tab-btn" type="button" data-tab="display">Показ</button>
+              <button class="tab-btn" type="button" data-tab="design">Дизайн</button>
               <button class="tab-btn" type="button" data-tab="integrations">Интеграции</button>
               <button class="tab-btn" type="button" data-tab="code">Код</button>
             </div>
@@ -1085,6 +1098,12 @@
                       <option value="bottom-left">Слева снизу</option>
                     </select>
                   </label>
+                </div>
+              </section>
+
+              <section class="settings-section" data-tab-panel="design">
+                <p class="section-note">Пока это базовая палитра для виджета. Сначала меняем главное: кнопку, акцент, текст и фон.</p>
+                <div class="grid">
                   <label>Затемнение фона
                     <input name="dimColor" placeholder="rgba(0, 0, 0, 0.58)">
                   </label>
@@ -1092,6 +1111,24 @@
                     <span class="color-field">
                       <input name="accentColorPicker" type="color" value="#1f1f1f" aria-label="Выбрать акцентный цвет">
                       <input name="accentColor" placeholder="#1f1f1f">
+                    </span>
+                  </label>
+                  <label>Цвет кнопки
+                    <span class="color-field">
+                      <input name="buttonColorPicker" type="color" value="#134e3a" aria-label="Выбрать цвет кнопки">
+                      <input name="buttonColor" placeholder="#134e3a">
+                    </span>
+                  </label>
+                  <label>Цвет текста
+                    <span class="color-field">
+                      <input name="textColorPicker" type="color" value="#0f172a" aria-label="Выбрать цвет текста">
+                      <input name="textColor" placeholder="#0f172a">
+                    </span>
+                  </label>
+                  <label>Фон виджета
+                    <span class="color-field">
+                      <input name="surfaceColorPicker" type="color" value="#ffffff" aria-label="Выбрать фон виджета">
+                      <input name="surfaceColor" placeholder="#ffffff">
                     </span>
                   </label>
                 </div>
@@ -1178,7 +1215,12 @@
             position: "center",
             dimColor: "rgba(0, 0, 0, 0.58)"
           },
-          theme: { accentColor: "#1f1f1f" }
+          theme: {
+            accentColor: "#1f1f1f",
+            buttonColor: "#134e3a",
+            textColor: "#0f172a",
+            surfaceColor: "#ffffff"
+          }
         },
         {
           id: "demo-tinder",
@@ -1198,7 +1240,12 @@
             position: "center",
             dimColor: "rgba(0, 0, 0, 0.58)"
           },
-          theme: { accentColor: "#1f1f1f" }
+          theme: {
+            accentColor: "#1f1f1f",
+            buttonColor: "#134e3a",
+            textColor: "#0f172a",
+            surfaceColor: "#ffffff"
+          }
         }
       ];
 
@@ -1270,6 +1317,21 @@
         return labels[value] || value || "не указано";
       }
 
+      function normalizeHexColor(value, fallback) {
+        const color = String(value || "").trim();
+        return /^#[0-9a-f]{6}$/i.test(color) ? color : fallback;
+      }
+
+      function formColorValue(name, fallback) {
+        return normalizeHexColor(form.elements[name].value, form.elements[`${name}Picker`].value || fallback);
+      }
+
+      function setColorField(name, value, fallback) {
+        const color = normalizeHexColor(value, fallback);
+        form.elements[name].value = color;
+        form.elements[`${name}Picker`].value = color;
+      }
+
       function openAppView(view) {
         document.querySelectorAll("[data-app-tab]").forEach((button) => {
           button.classList.toggle("active", button.dataset.appTab === view);
@@ -1296,7 +1358,10 @@
         const current = selectedInstance() || {};
         const domain = data.get("domain").trim();
         const widget = data.get("widget");
-        const accentColor = data.get("accentColor").trim() || data.get("accentColorPicker") || "#1f1f1f";
+        const accentColor = formColorValue("accentColor", "#1f1f1f");
+        const buttonColor = formColorValue("buttonColor", "#134e3a");
+        const textColor = formColorValue("textColor", "#0f172a");
+        const surfaceColor = formColorValue("surfaceColor", "#ffffff");
         return {
           id: current.id || `${slugify(domain || data.get("client"))}-${widget}-${Date.now()}`,
           name: data.get("name").trim(),
@@ -1317,7 +1382,10 @@
             dimColor: data.get("dimColor").trim() || "rgba(0, 0, 0, 0.58)"
           },
           theme: {
-            accentColor
+            accentColor,
+            buttonColor,
+            textColor,
+            surfaceColor
           }
         };
       }
@@ -1340,11 +1408,10 @@
         form.elements.position.value = instance.display && instance.display.position || "center";
         form.elements.dimColor.value = instance.display && instance.display.dimColor || "rgba(0, 0, 0, 0.58)";
         form.elements.webhookUrl.value = instance.webhookUrl || DEFAULT_WEBHOOK;
-        const accentColor = instance.theme && instance.theme.accentColor || "#1f1f1f";
-        form.elements.accentColor.value = accentColor;
-        if (/^#[0-9a-f]{6}$/i.test(accentColor)) {
-          form.elements.accentColorPicker.value = accentColor;
-        }
+        setColorField("accentColor", instance.theme && instance.theme.accentColor, "#1f1f1f");
+        setColorField("buttonColor", instance.theme && instance.theme.buttonColor, "#134e3a");
+        setColorField("textColor", instance.theme && instance.theme.textColor, "#0f172a");
+        setColorField("surfaceColor", instance.theme && instance.theme.surfaceColor, "#ffffff");
         renderOutputs(instance);
         saveState.textContent = "Сохранено";
       }
@@ -1370,6 +1437,9 @@
           `data-webhook-url="${escapeAttr(instance.webhookUrl)}"`,
           `data-dim-color="${escapeAttr(instance.display.dimColor)}"`,
           `data-accent-color="${escapeAttr(instance.theme && instance.theme.accentColor)}"`,
+          `data-button-color="${escapeAttr(instance.theme && instance.theme.buttonColor)}"`,
+          `data-text-color="${escapeAttr(instance.theme && instance.theme.textColor)}"`,
+          `data-surface-color="${escapeAttr(instance.theme && instance.theme.surfaceColor)}"`,
           `data-enabled="${instance.enabled ? "true" : "false"}"`,
           "async"
         ];
@@ -1409,13 +1479,30 @@
         if (instance.theme && instance.theme.accentColor) {
           url.searchParams.set("accentColor", instance.theme.accentColor);
         }
+        if (instance.theme && instance.theme.buttonColor) {
+          url.searchParams.set("buttonColor", instance.theme.buttonColor);
+        }
+        if (instance.theme && instance.theme.textColor) {
+          url.searchParams.set("textColor", instance.theme.textColor);
+        }
+        if (instance.theme && instance.theme.surfaceColor) {
+          url.searchParams.set("surfaceColor", instance.theme.surfaceColor);
+        }
         return url.href;
       }
 
       let previewTimer = 0;
+      function updatePreviewThemeVars() {
+        const canvas = document.querySelector(".builder-canvas");
+        if (!canvas || !form.elements.accentColor) return;
+        canvas.style.setProperty("--admin-preview-accent", formColorValue("accentColor", "#134e3a"));
+        canvas.style.setProperty("--admin-preview-surface", formColorValue("surfaceColor", "#ffffff"));
+      }
+
       function renderPreview(instance) {
         const frame = document.getElementById("previewFrame");
         if (!frame) return;
+        updatePreviewThemeVars();
         window.clearTimeout(previewTimer);
         previewTimer = window.setTimeout(() => {
           frame.src = buildPreviewUrl(instance || instanceFromForm());
@@ -1560,11 +1647,17 @@
       }
 
       form.addEventListener("input", (event) => {
-        if (event.target.name === "accentColorPicker") {
-          form.elements.accentColor.value = event.target.value;
-        }
-        if (event.target.name === "accentColor" && /^#[0-9a-f]{6}$/i.test(event.target.value.trim())) {
-          form.elements.accentColorPicker.value = event.target.value.trim();
+        const colorNames = ["accentColor", "buttonColor", "textColor", "surfaceColor"];
+        colorNames.forEach((name) => {
+          if (event.target.name === `${name}Picker`) {
+            form.elements[name].value = event.target.value;
+          }
+          if (event.target.name === name && /^#[0-9a-f]{6}$/i.test(event.target.value.trim())) {
+            form.elements[`${name}Picker`].value = event.target.value.trim();
+          }
+        });
+        if (colorNames.includes(event.target.name) || colorNames.map((name) => `${name}Picker`).includes(event.target.name)) {
+          updatePreviewThemeVars();
         }
         renderOutputs();
         scheduleAutoSave();
@@ -1632,7 +1725,12 @@
             position: "center",
             dimColor: "rgba(0, 0, 0, 0.58)"
           },
-          theme: { accentColor: "#1f1f1f" }
+          theme: {
+            accentColor: "#1f1f1f",
+            buttonColor: "#134e3a",
+            textColor: "#0f172a",
+            surfaceColor: "#ffffff"
+          }
         };
         instances.unshift(created);
         selectedId = id;
