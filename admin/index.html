@@ -1502,6 +1502,555 @@
         min-height: 500px;
       }
     }
+
+    /* Widgets0 admin v2: closer to product-dashboard mockups */
+    .page {
+      width: min(1440px, calc(100% - 56px));
+    }
+
+    .hero {
+      width: min(100vw, 100%);
+      min-height: 230px;
+      margin: 0 auto 0;
+      padding: 34px clamp(28px, 6vw, 120px) 82px;
+      border-radius: 0 0 24px 24px;
+      box-shadow: none;
+    }
+
+    .hero-copy {
+      width: min(1180px, 100%);
+      grid-template-columns: 1fr;
+      gap: 26px;
+      margin: 0 auto;
+    }
+
+    .brand {
+      width: max-content;
+      min-width: 0;
+      padding-right: 0;
+      border-right: 0;
+      gap: 10px;
+      font-size: 13px;
+      letter-spacing: 0.22em;
+    }
+
+    .brand-mark {
+      width: 28px;
+      height: 28px;
+      border-radius: 9px;
+      font-size: 13px;
+    }
+
+    .eyebrow {
+      margin-bottom: 10px;
+      font-size: 11px;
+      letter-spacing: 0.17em;
+    }
+
+    h1 {
+      max-width: 760px;
+      font-size: clamp(30px, 3vw, 44px);
+      letter-spacing: -0.05em;
+    }
+
+    .lead {
+      max-width: 720px;
+      margin-top: 12px;
+      font-size: 16px;
+      color: rgba(255, 255, 255, 0.64);
+    }
+
+    .hero-actions {
+      position: absolute;
+      top: 30px;
+      right: max(28px, calc((100vw - 1180px) / 2));
+    }
+
+    .hero .btn {
+      min-height: 42px;
+      padding: 10px 16px;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.14);
+    }
+
+    .app-tabs {
+      width: max-content;
+      max-width: 100%;
+      margin-left: max(0px, calc((100% - 1180px) / 2));
+      margin-right: auto;
+      margin-top: -34px;
+      margin-bottom: 22px;
+      position: relative;
+      z-index: 3;
+    }
+
+    .dashboard {
+      gap: 18px;
+      margin-top: 0;
+      position: relative;
+      z-index: 2;
+    }
+
+    .stats-grid {
+      width: min(1180px, 100%);
+      margin: 0 auto 10px;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    .stat-card {
+      min-height: 118px;
+      border-radius: 18px;
+      padding: 18px 20px;
+    }
+
+    .dashboard-panel {
+      width: min(1180px, 100%);
+      margin: 0 auto;
+      border-radius: 18px;
+    }
+
+    .dashboard-tools {
+      display: grid;
+      grid-template-columns: auto auto minmax(260px, 1fr) auto;
+      gap: 18px;
+      align-items: center;
+      padding: 16px 20px;
+    }
+
+    .dashboard-tools::before {
+      content: "Ваши виджеты";
+      order: 1;
+      font-size: 18px;
+      font-weight: 950;
+      letter-spacing: -0.035em;
+    }
+
+    .dashboard-tools::after {
+      content: "Всего " attr(data-total);
+      order: 2;
+      justify-self: start;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 850;
+    }
+
+    .dashboard-tools .btn {
+      order: 4;
+      justify-self: end;
+      min-height: 42px;
+      padding: 10px 16px;
+      background: var(--accent);
+      color: #fff;
+    }
+
+    .dashboard-tools input {
+      order: 3;
+      width: min(360px, 100%);
+      max-width: none;
+      margin-left: auto;
+      min-height: 42px;
+      justify-self: end;
+    }
+
+    .table-row {
+      grid-template-columns: minmax(270px, 1.2fr) minmax(260px, 1fr) minmax(125px, 0.45fr) max-content;
+      gap: 22px;
+      padding: 20px;
+    }
+
+    .row-cell:nth-child(4) {
+      display: none;
+    }
+
+    .row-kicker {
+      display: block;
+      margin-bottom: 6px;
+      color: #98a2b3;
+      font-size: 11px;
+      font-weight: 950;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .stat-pills {
+      display: inline-grid;
+      gap: 6px;
+      justify-items: start;
+    }
+
+    .row-actions {
+      flex-wrap: nowrap;
+      justify-content: flex-end;
+    }
+
+    .stat-pill {
+      display: inline-flex;
+      align-items: center;
+      min-height: 24px;
+      padding: 4px 9px;
+      border-radius: 999px;
+      background: #fff1f1;
+      color: #e84c4c;
+      font-size: 12px;
+      font-weight: 900;
+    }
+
+    .stat-pill.blue {
+      background: #edf4ff;
+      color: #3272d9;
+    }
+
+    .row-actions .mini-btn.delete {
+      width: 38px;
+      padding: 0;
+      color: #98a2b3;
+      border-radius: 999px;
+    }
+
+    body[data-view="builder"] .page {
+      width: 100%;
+      max-width: none;
+      padding: 0;
+    }
+
+    body[data-view="builder"] .builder-frame {
+      min-height: 100vh;
+      border-radius: 0;
+      box-shadow: none;
+    }
+
+    body[data-view="builder"] .builder-topbar {
+      min-height: 54px;
+      padding: 10px 24px;
+      border-radius: 0;
+      background: #0d3d2d;
+    }
+
+    body[data-view="builder"] .builder-title {
+      font-size: 13px;
+    }
+
+    body[data-view="builder"] .builder-body {
+      min-height: calc(100vh - 54px);
+      grid-template-columns: 430px minmax(0, 1fr);
+    }
+
+    body[data-view="builder"] .builder-settings {
+      display: grid;
+      grid-template-columns: 88px minmax(0, 1fr);
+      max-height: calc(100vh - 54px);
+      border-right: 1px solid var(--line);
+      background: #fff;
+    }
+
+    body[data-view="builder"] .builder-settings .panel-head {
+      grid-column: 1 / -1;
+      padding: 26px 22px 22px;
+      border-bottom: 1px solid var(--line);
+      background: #fff;
+    }
+
+    body[data-view="builder"] .settings-tabs {
+      display: grid;
+      grid-template-columns: 1fr;
+      align-content: start;
+      gap: 10px;
+      padding: 18px 10px;
+      border-right: 1px solid var(--line);
+      background: #fbfcfb;
+    }
+
+    body[data-view="builder"] .tab-btn {
+      min-height: 72px;
+      justify-content: center;
+      text-align: center;
+      padding: 9px 8px;
+      border-radius: 14px;
+      font-size: 12px;
+      color: #667085;
+      background: transparent;
+      box-shadow: none;
+    }
+
+    body[data-view="builder"] .tab-btn.active {
+      background: #eef6f1;
+      color: #124f3a;
+      border-color: rgba(20, 83, 61, 0.15);
+      box-shadow: none;
+    }
+
+    body[data-view="builder"] .tab-btn::before {
+      display: block;
+      margin: 0 auto 8px;
+      font-size: 18px;
+      line-height: 1;
+    }
+
+    body[data-view="builder"] .tab-btn[data-tab="main"]::before { content: "⚙"; }
+    body[data-view="builder"] .tab-btn[data-tab="display"]::before { content: "◉"; }
+    body[data-view="builder"] .tab-btn[data-tab="design"]::before { content: "◒"; }
+    body[data-view="builder"] .tab-btn[data-tab="integrations"]::before { content: "▦"; }
+    body[data-view="builder"] .tab-btn[data-tab="code"]::before { content: "</>"; font-size: 13px; }
+
+    body[data-view="builder"] .form {
+      max-height: calc(100vh - 184px);
+      padding: 20px 20px 30px;
+      border-top: 0;
+      overflow: auto;
+    }
+
+    body[data-view="builder"] .builder-canvas-head {
+      min-height: 64px;
+      padding: 14px 24px;
+      background: #fff;
+    }
+
+    .device-toggle {
+      display: inline-flex;
+      gap: 6px;
+      padding: 5px;
+      border-radius: 999px;
+      background: #edf1ee;
+    }
+
+    .device-toggle button {
+      min-height: 32px;
+      padding: 7px 12px;
+      border: 0;
+      border-radius: 999px;
+      background: transparent;
+      color: #667085;
+      font-weight: 900;
+      cursor: pointer;
+    }
+
+    .device-toggle button.active {
+      background: #fff;
+      color: #124f3a;
+      box-shadow: 0 4px 12px rgba(16, 24, 40, 0.08);
+    }
+
+    body[data-view="builder"] .builder-canvas-stage {
+      min-height: calc(100vh - 118px);
+      padding: 38px;
+    }
+
+    body[data-preview-device="desktop"] .builder-canvas .preview-shell {
+      width: min(1040px, 100%);
+      height: min(620px, calc(100vh - 176px));
+      min-height: 520px;
+      border-radius: 28px;
+    }
+
+    body[data-preview-device="mobile"] .builder-canvas .preview-shell {
+      width: min(390px, 100%);
+      height: min(790px, calc(100vh - 158px));
+      min-height: 660px;
+      border-radius: 34px;
+    }
+
+    .template-modal {
+      position: fixed;
+      inset: 0;
+      display: none;
+      place-items: center;
+      padding: 24px;
+      background: rgba(7, 12, 18, 0.48);
+      backdrop-filter: blur(14px);
+      z-index: 60;
+    }
+
+    .template-modal.open {
+      display: grid;
+    }
+
+    .template-dialog {
+      width: min(1040px, 100%);
+      max-height: min(780px, calc(100vh - 48px));
+      overflow: auto;
+      border-radius: 28px;
+      background: #fff;
+      box-shadow: 0 30px 100px rgba(0, 0, 0, 0.22);
+    }
+
+    .template-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 18px;
+      align-items: start;
+      padding: 26px 30px 18px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .template-head h2 {
+      margin: 0;
+      font-size: 26px;
+      letter-spacing: -0.045em;
+    }
+
+    .template-head p {
+      margin: 7px 0 0;
+      color: var(--muted);
+      font-weight: 700;
+    }
+
+    .template-close {
+      width: 44px;
+      height: 44px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: #f8faf9;
+      color: #667085;
+      cursor: pointer;
+      font-size: 24px;
+      line-height: 1;
+    }
+
+    .template-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 16px;
+      padding: 22px 30px 30px;
+    }
+
+    .template-card {
+      display: grid;
+      gap: 14px;
+      align-content: start;
+      min-height: 300px;
+      padding: 14px;
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      background: #fbfbfa;
+      text-align: left;
+    }
+
+    .template-preview {
+      height: 132px;
+      border-radius: 16px;
+      overflow: hidden;
+      display: grid;
+      place-items: center;
+      background: linear-gradient(135deg, #f6f4ef, #ffffff);
+      border: 1px solid rgba(16, 24, 40, 0.06);
+    }
+
+    .template-preview.wheel {
+      background: radial-gradient(circle at 34% 44%, #d1ae7b 0 20%, transparent 21%), linear-gradient(135deg, #2e261f, #15110e);
+    }
+
+    .template-preview.tinder {
+      background: linear-gradient(135deg, #ffffff, #eef2f0);
+    }
+
+    .template-preview.quiz {
+      background: linear-gradient(135deg, #eef5ff, #ffffff);
+    }
+
+    .template-preview.discount {
+      background: linear-gradient(135deg, #ffe9ef, #fff7d7);
+    }
+
+    .template-mini {
+      width: 72%;
+      height: 76%;
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.9);
+      box-shadow: 0 18px 36px rgba(16, 24, 40, 0.14);
+    }
+
+    .template-card h3 {
+      margin: 0;
+      font-size: 18px;
+      letter-spacing: -0.035em;
+    }
+
+    .template-card p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.4;
+      font-weight: 700;
+    }
+
+    .template-card .mini-btn {
+      align-self: end;
+      justify-content: center;
+      width: 100%;
+      min-height: 42px;
+    }
+
+    @media (max-width: 1100px) {
+      .stats-grid,
+      .dashboard-panel {
+        width: 100%;
+      }
+
+      .template-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      body[data-view="builder"] .builder-body {
+        grid-template-columns: 1fr;
+      }
+
+      body[data-view="builder"] .builder-settings {
+        grid-template-columns: 1fr;
+        max-height: none;
+      }
+
+      body[data-view="builder"] .settings-tabs {
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+        border-right: 0;
+        border-bottom: 1px solid var(--line);
+      }
+    }
+
+    @media (max-width: 720px) {
+      .page {
+        width: min(100% - 24px, 1440px);
+      }
+
+      .hero {
+        padding: 24px 18px 64px;
+      }
+
+      .hero-actions {
+        position: static;
+      }
+
+      .dashboard {
+        margin-top: -28px;
+      }
+
+      .stats-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .dashboard-tools {
+        grid-template-columns: 1fr;
+      }
+
+      .dashboard-tools::after,
+      .dashboard-tools .btn,
+      .dashboard-tools input {
+        justify-self: stretch;
+        width: 100%;
+        margin-left: 0;
+      }
+
+      .template-grid {
+        grid-template-columns: 1fr;
+      }
+
+      body[data-view="builder"] .settings-tabs {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+
+      body[data-view="builder"] .builder-canvas-stage {
+        padding: 16px;
+      }
+    }
   </style>
 </head>
 <body>
@@ -1619,6 +2168,8 @@
                     <select name="widget">
                       <option value="wheel-fortune">Колесо фортуны</option>
                       <option value="tinder-product">Товарный Тиндер</option>
+                      <option value="quiz-candle">Квиз</option>
+                      <option value="discount-popup">Поп-ап со скидкой</option>
                     </select>
                   </label>
                   <label>Путь к JSON-конфигу
@@ -1738,6 +2289,10 @@
                 <span>Меняешь настройки слева — сразу проверяешь поведение здесь.</span>
               </div>
               <div class="preview-meta">
+                <span class="device-toggle" aria-label="Размер превью">
+                  <button class="active" type="button" data-preview-device="desktop">Десктоп</button>
+                  <button type="button" data-preview-device="mobile">Мобайл</button>
+                </span>
                 <span class="meta-pill" id="metaClient">Клиент</span>
                 <span class="meta-pill" id="metaDomain">Домен</span>
                 <span class="meta-pill" id="metaWidget">Виджет</span>
@@ -1755,6 +2310,19 @@
   </main>
 
   <div class="toast" id="toast">Скопировано</div>
+
+  <div class="template-modal" id="templateModal" aria-hidden="true">
+    <section class="template-dialog" role="dialog" aria-modal="true" aria-labelledby="templateTitle">
+      <div class="template-head">
+        <div>
+          <h2 id="templateTitle">Выберите шаблон виджета</h2>
+          <p>Сначала выбираем механику, потом настраиваем показ, цвета и короткий код.</p>
+        </div>
+        <button class="template-close" type="button" id="templateCloseBtn" aria-label="Закрыть">×</button>
+      </div>
+      <div class="template-grid" id="templateGrid"></div>
+    </section>
+  </div>
 
   <script>
     (function() {
@@ -1813,6 +2381,36 @@
           }
         }
       ];
+      const templateOptions = [
+        {
+          widget: "wheel-fortune",
+          title: "Колесо фортуны",
+          type: "Розыгрыш",
+          previewClass: "wheel",
+          description: "Крутит бонус, собирает контакт и отправляет заявку в Telegram."
+        },
+        {
+          widget: "tinder-product",
+          title: "Товарный Тиндер",
+          type: "Подборка",
+          previewClass: "tinder",
+          description: "Посетитель свайпает товары, а виджет собирает персональную подборку."
+        },
+        {
+          widget: "quiz-candle",
+          title: "Квиз",
+          type: "Квиз",
+          previewClass: "quiz",
+          description: "Ведёт по вопросам, показывает рекомендацию и собирает заявку."
+        },
+        {
+          widget: "discount-popup",
+          title: "Поп-ап со скидкой",
+          type: "Форма",
+          previewClass: "discount",
+          description: "Показывает оффер с дедлайном и собирает имя с телефоном."
+        }
+      ];
 
       const listEl = document.getElementById("instancesList");
       const countEl = document.getElementById("count");
@@ -1827,6 +2425,7 @@
       const metaWidget = document.getElementById("metaWidget");
       const dashboardTable = document.getElementById("dashboardTable");
       const dashboardSearch = document.getElementById("dashboardSearch");
+      const dashboardTools = document.querySelector(".dashboard-tools");
       const statTotal = document.getElementById("statTotal");
       const statActive = document.getElementById("statActive");
       const statDomains = document.getElementById("statDomains");
@@ -1834,9 +2433,13 @@
       const embedCodeEl = document.getElementById("embedCode");
       const jsonOutput = document.getElementById("jsonOutput");
       const toast = document.getElementById("toast");
+      const templateModal = document.getElementById("templateModal");
+      const templateGrid = document.getElementById("templateGrid");
+      const templateCloseBtn = document.getElementById("templateCloseBtn");
       let instances = loadInstances();
       let selectedId = instances[0] ? instances[0].id : null;
       let autoSaveTimer = 0;
+      let previewDevice = localStorage.getItem("widgets0-admin-preview-device") || "desktop";
 
       function loadInstances() {
         try {
@@ -1867,7 +2470,9 @@
       function widgetLabel(widget) {
         const labels = {
           "wheel-fortune": "Колесо фортуны",
-          "tinder-product": "Товарный Тиндер"
+          "tinder-product": "Товарный Тиндер",
+          "quiz-candle": "Квиз",
+          "discount-popup": "Поп-ап со скидкой"
         };
         return labels[widget] || widget || "Виджет";
       }
@@ -1907,6 +2512,15 @@
           section.hidden = !isActive;
         });
         document.body.dataset.view = view;
+      }
+
+      function setPreviewDevice(device) {
+        previewDevice = device === "mobile" ? "mobile" : "desktop";
+        document.body.dataset.previewDevice = previewDevice;
+        localStorage.setItem("widgets0-admin-preview-device", previewDevice);
+        document.querySelectorAll("[data-preview-device]").forEach((button) => {
+          button.classList.toggle("active", button.dataset.previewDevice === previewDevice);
+        });
       }
 
       function updateEditorChrome(instance) {
@@ -2028,7 +2642,9 @@
       function widgetPreviewPath(widget) {
         const map = {
           "wheel-fortune": "../gallery/widgets/wheel-fortune-widget.html",
-          "tinder-product": "../gallery/widgets/tinder-product-widget.html"
+          "tinder-product": "../gallery/widgets/tinder-product-widget.html",
+          "quiz-candle": "../gallery/widgets/quees.html",
+          "discount-popup": "../gallery/widgets/black-friday-timer-form-widget.html"
         };
         return map[widget] || map["wheel-fortune"];
       }
@@ -2137,6 +2753,7 @@
         statActive.textContent = activeCount;
         statDomains.textContent = domainsCount;
         statLeads.textContent = leadsCount;
+        if (dashboardTools) dashboardTools.dataset.total = instances.length;
 
         dashboardTable.innerHTML = "";
         if (!visible.length) {
@@ -2150,24 +2767,29 @@
           row.innerHTML = `
             <div class="row-title">
               <strong>${instance.name || "Без названия"} <em class="badge ${instance.enabled !== false ? "" : "off"}">${instance.enabled !== false ? "Активен" : "Выключен"}</em></strong>
-              <span>${instance.client || "Клиент не указан"} · source: ${instance.source || "не указан"}</span>
+              <span>${instance.source || "source не указан"}</span>
+              <span>Клиент: <b>${instance.client || "не указан"}</b></span>
             </div>
             <div class="row-cell">
+              <span class="row-kicker">Правила показа</span>
               <b>${instance.domain || "Домен не указан"}</b>
-              <span>${widgetLabel(instance.widget)}</span>
-            </div>
-            <div class="row-cell">
-              <b>${instance.display && instance.display.mode === "inline" ? "Блок на странице" : "Popup"}</b>
               <span>${frequencyLabel(instance.display && instance.display.frequency)} · задержка ${instance.display && instance.display.delaySeconds || 0} сек.</span>
             </div>
             <div class="row-cell">
-              <b>${Number(instance.stats && instance.stats.leads || 0)}</b>
-              <span>заявок</span>
+              <span class="stat-pills">
+                <em class="stat-pill">Показы: ${Number(instance.stats && instance.stats.views || 0)}</em>
+                <em class="stat-pill blue">Заявки: ${Number(instance.stats && instance.stats.leads || 0)}</em>
+              </span>
+            </div>
+            <div class="row-cell">
+              <b>${instance.display && instance.display.mode === "inline" ? "Блок" : "Popup"}</b>
+              <span>${widgetLabel(instance.widget)}</span>
             </div>
             <div class="row-actions">
               <button class="mini-btn primary" type="button" data-row-action="edit">Настроить</button>
               <button class="mini-btn" type="button" data-row-action="copy">Код</button>
               <button class="mini-btn ${instance.enabled !== false ? "danger" : ""}" type="button" data-row-action="toggle">${instance.enabled !== false ? "Отключить" : "Включить"}</button>
+              <button class="mini-btn delete" type="button" data-row-action="delete" aria-label="Удалить">⌫</button>
             </div>
           `;
 
@@ -2189,6 +2811,14 @@
             showToast(instance.enabled ? "Виджет включен" : "Виджет выключен");
           });
 
+          row.querySelector('[data-row-action="delete"]').addEventListener("click", () => {
+            instances = instances.filter((item) => item.id !== instance.id);
+            selectedId = instances[0] ? instances[0].id : null;
+            saveInstances();
+            render();
+            showToast("Виджет удалён из локальной админки");
+          });
+
           dashboardTable.appendChild(row);
         });
       }
@@ -2197,6 +2827,72 @@
         renderList();
         renderDashboard();
         fillForm(selectedInstance());
+      }
+
+      function renderTemplateGrid() {
+        if (!templateGrid) return;
+        templateGrid.innerHTML = templateOptions.map((template) => `
+          <article class="template-card">
+            <div class="template-preview ${template.previewClass}">
+              <div class="template-mini"></div>
+            </div>
+            <div>
+              <span class="row-kicker">${template.type}</span>
+              <h3>${template.title}</h3>
+              <p>${template.description}</p>
+            </div>
+            <button class="mini-btn primary" type="button" data-template-widget="${template.widget}">Использовать этот</button>
+          </article>
+        `).join("");
+      }
+
+      function openTemplateModal() {
+        renderTemplateGrid();
+        templateModal.classList.add("open");
+        templateModal.setAttribute("aria-hidden", "false");
+      }
+
+      function closeTemplateModal() {
+        templateModal.classList.remove("open");
+        templateModal.setAttribute("aria-hidden", "true");
+      }
+
+      function createInstanceFromTemplate(widget) {
+        const id = `new-widget-${Date.now()}`;
+        const label = widgetLabel(widget);
+        const created = {
+          id,
+          name: `${label} — новый`,
+          client: "Новый клиент",
+          domain: "",
+          source: id,
+          widget,
+          enabled: true,
+          configPath: "",
+          webhookUrl: DEFAULT_WEBHOOK,
+          stats: { views: 0, leads: 0 },
+          display: {
+            mode: "modal",
+            trigger: "auto",
+            delaySeconds: widget === "tinder-product" ? 1 : 2,
+            frequency: "always",
+            position: "center",
+            dimColor: "rgba(0, 0, 0, 0.58)"
+          },
+          theme: {
+            accentColor: "#1f1f1f",
+            buttonColor: "#134e3a",
+            textColor: "#0f172a",
+            surfaceColor: "#ffffff"
+          }
+        };
+        instances.unshift(created);
+        selectedId = id;
+        saveInstances();
+        render();
+        openAppView("builder");
+        setPreviewDevice(previewDevice);
+        window.history.replaceState(null, "", "#builder");
       }
 
       function showToast(text) {
@@ -2265,6 +2961,34 @@
         });
       });
 
+      document.querySelectorAll("[data-preview-device]").forEach((button) => {
+        button.addEventListener("click", () => {
+          setPreviewDevice(button.dataset.previewDevice);
+        });
+      });
+
+      if (templateGrid) {
+        templateGrid.addEventListener("click", (event) => {
+          const button = event.target.closest("[data-template-widget]");
+          if (!button) return;
+          closeTemplateModal();
+          createInstanceFromTemplate(button.dataset.templateWidget);
+        });
+      }
+
+      if (templateCloseBtn) templateCloseBtn.addEventListener("click", closeTemplateModal);
+      if (templateModal) {
+        templateModal.addEventListener("click", (event) => {
+          if (event.target === templateModal) closeTemplateModal();
+        });
+      }
+
+      document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape" && templateModal.classList.contains("open")) {
+          closeTemplateModal();
+        }
+      });
+
       document.getElementById("backToDashboardBtn").addEventListener("click", () => {
         openAppView("dashboard");
         window.history.replaceState(null, "", "#dashboard");
@@ -2279,45 +3003,13 @@
         saveInstances();
         render();
       });
-      document.getElementById("createBtn").addEventListener("click", () => {
-        const id = `new-widget-${Date.now()}`;
-        const created = {
-          id,
-          name: "Новый виджет",
-          client: "Новый клиент",
-          domain: "",
-          source: id,
-          widget: "wheel-fortune",
-          enabled: true,
-          configPath: "",
-          webhookUrl: DEFAULT_WEBHOOK,
-          display: {
-            mode: "modal",
-            trigger: "auto",
-            delaySeconds: 2,
-            frequency: "always",
-            position: "center",
-            dimColor: "rgba(0, 0, 0, 0.58)"
-          },
-          theme: {
-            accentColor: "#1f1f1f",
-            buttonColor: "#134e3a",
-            textColor: "#0f172a",
-            surfaceColor: "#ffffff"
-          }
-        };
-        instances.unshift(created);
-        selectedId = id;
-        saveInstances();
-        render();
-        openAppView("builder");
-        window.history.replaceState(null, "", "#builder");
-      });
+      document.getElementById("createBtn").addEventListener("click", openTemplateModal);
       document.getElementById("dashboardCreateBtn").addEventListener("click", () => {
-        document.getElementById("createBtn").click();
+        openTemplateModal();
       });
 
       render();
+      setPreviewDevice(previewDevice);
       openAppView(window.location.hash === "#builder" ? "builder" : "dashboard");
     })();
   </script>
