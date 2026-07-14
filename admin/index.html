@@ -16,13 +16,16 @@
       --ok: #1f9d55;
       --bad: #b42318;
       --radius: 28px;
+      --green: #104b36;
+      --green-2: #176647;
+      --dark: #0f0f10;
     }
 
     * { box-sizing: border-box; }
     body {
       margin: 0;
       min-height: 100vh;
-      background: radial-gradient(circle at top, #ffffff 0, var(--bg) 42%, #eeeeef 100%);
+      background: #f3f3f1;
       color: var(--text);
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Arial, sans-serif;
     }
@@ -30,9 +33,9 @@
     button, input, select, textarea { font: inherit; }
 
     .page {
-      width: min(1440px, calc(100% - 40px));
+      width: min(1800px, calc(100% - 48px));
       margin: 0 auto;
-      padding: 34px 0 56px;
+      padding: 26px 0 56px;
     }
 
     .hero {
@@ -40,7 +43,14 @@
       grid-template-columns: 1fr auto;
       gap: 24px;
       align-items: end;
-      margin-bottom: 26px;
+      margin-bottom: 18px;
+      padding: 28px 32px;
+      border-radius: 30px;
+      background:
+        radial-gradient(circle at 92% 0%, rgba(255, 255, 255, 0.14), transparent 26%),
+        linear-gradient(135deg, #0d3d2d, var(--green));
+      color: #fff;
+      box-shadow: 0 24px 80px rgba(16, 75, 54, 0.18);
     }
 
     h1 {
@@ -53,7 +63,7 @@
     .lead {
       max-width: 760px;
       margin: 18px 0 0;
-      color: var(--muted);
+      color: rgba(255, 255, 255, 0.68);
       font-size: clamp(17px, 1.5vw, 23px);
       line-height: 1.45;
       font-weight: 650;
@@ -70,10 +80,10 @@
       display: inline-flex;
       gap: 8px;
       padding: 6px;
-      margin: 0 0 18px;
+      margin: 0 0 22px;
       border: 1px solid var(--line);
       border-radius: 999px;
-      background: rgba(255, 255, 255, 0.72);
+      background: rgba(255, 255, 255, 0.9);
       box-shadow: 0 14px 40px rgba(0, 0, 0, 0.05);
     }
 
@@ -88,7 +98,7 @@
     }
 
     .app-tab.active {
-      background: var(--accent);
+      background: var(--green);
       color: #fff;
     }
 
@@ -116,7 +126,7 @@
       padding: 22px;
       border: 1px solid var(--line);
       border-radius: 24px;
-      background: rgba(255, 255, 255, 0.88);
+      background: rgba(255, 255, 255, 0.96);
       box-shadow: 0 22px 60px rgba(0, 0, 0, 0.06);
     }
 
@@ -150,7 +160,7 @@
       display: flex;
       align-items: center;
       gap: 12px;
-      padding: 16px 18px;
+      padding: 18px 22px;
       border-bottom: 1px solid var(--line);
       background: rgba(255, 255, 255, 0.7);
     }
@@ -231,8 +241,8 @@
     }
 
     .mini-btn.primary {
-      background: #176647;
-      border-color: #176647;
+      background: var(--green-2);
+      border-color: var(--green-2);
       color: #fff;
     }
 
@@ -562,6 +572,184 @@
       background: transparent;
     }
 
+    .builder-frame {
+      min-height: calc(100vh - 170px);
+      border: 1px solid rgba(0, 0, 0, 0.2);
+      border-radius: 30px;
+      overflow: hidden;
+      background: #0d0d0e;
+      box-shadow: 0 30px 100px rgba(0, 0, 0, 0.16);
+    }
+
+    .builder-topbar {
+      min-height: 70px;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      align-items: center;
+      gap: 18px;
+      padding: 14px 18px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+      background: #070707;
+      color: #fff;
+    }
+
+    .builder-title {
+      min-width: 0;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: rgba(255, 255, 255, 0.62);
+      font-size: 15px;
+      font-weight: 850;
+    }
+
+    .builder-title b {
+      color: #fff;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .builder-chip {
+      display: inline-flex;
+      align-items: center;
+      min-height: 30px;
+      padding: 7px 11px;
+      border-radius: 999px;
+      background: #4f46e5;
+      color: #fff;
+      font-size: 12px;
+      font-style: normal;
+      font-weight: 900;
+      white-space: nowrap;
+    }
+
+    .builder-actions {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 10px;
+    }
+
+    .builder-body {
+      min-height: calc(100vh - 240px);
+      display: grid;
+      grid-template-columns: minmax(360px, 470px) 1fr;
+    }
+
+    .builder-settings {
+      max-height: calc(100vh - 240px);
+      overflow: auto;
+      border-right: 1px solid rgba(255, 255, 255, 0.12);
+      background: #101011;
+      color: #fff;
+    }
+
+    .builder-settings .panel-head,
+    .builder-settings .settings-tabs {
+      border-color: rgba(255, 255, 255, 0.12);
+      background: #101011;
+    }
+
+    .builder-settings .panel-title {
+      color: #fff;
+    }
+
+    .builder-settings label,
+    .builder-settings .hint,
+    .builder-settings .save-state {
+      color: rgba(255, 255, 255, 0.62);
+    }
+
+    .builder-settings input,
+    .builder-settings select,
+    .builder-settings textarea {
+      border-color: rgba(255, 255, 255, 0.16);
+      background: #1f1f21;
+      color: #fff;
+    }
+
+    .builder-settings input:focus,
+    .builder-settings select:focus,
+    .builder-settings textarea:focus {
+      border-color: rgba(255, 255, 255, 0.44);
+      box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.08);
+    }
+
+    .builder-settings .tab-btn {
+      border-color: rgba(255, 255, 255, 0.12);
+      background: #1b1b1d;
+      color: rgba(255, 255, 255, 0.62);
+    }
+
+    .builder-settings .tab-btn.active {
+      border-color: #4f46e5;
+      background: #4f46e5;
+      color: #fff;
+    }
+
+    .builder-settings .switch-row {
+      border-color: rgba(255, 255, 255, 0.13);
+      background: #19191b;
+      color: #fff;
+    }
+
+    .builder-canvas {
+      min-width: 0;
+      display: grid;
+      grid-template-rows: auto 1fr;
+      background:
+        linear-gradient(45deg, rgba(79, 70, 229, 0.05) 25%, transparent 25%),
+        linear-gradient(-45deg, rgba(79, 70, 229, 0.05) 25%, transparent 25%),
+        linear-gradient(45deg, transparent 75%, rgba(79, 70, 229, 0.05) 75%),
+        linear-gradient(-45deg, transparent 75%, rgba(79, 70, 229, 0.05) 75%),
+        #f6f6f8;
+      background-position: 0 0, 0 12px, 12px -12px, -12px 0;
+      background-size: 24px 24px;
+    }
+
+    .builder-canvas-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      padding: 18px 24px;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+      background: rgba(255, 255, 255, 0.82);
+      backdrop-filter: blur(14px);
+    }
+
+    .builder-canvas-title {
+      display: grid;
+      gap: 4px;
+      font-size: 18px;
+      font-weight: 950;
+      letter-spacing: -0.03em;
+    }
+
+    .builder-canvas-title span {
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 750;
+      letter-spacing: 0;
+    }
+
+    .builder-canvas-stage {
+      min-height: 0;
+      display: grid;
+      place-items: center;
+      padding: 24px;
+    }
+
+    .builder-canvas .preview-shell {
+      width: min(1180px, 100%);
+      height: min(760px, calc(100vh - 350px));
+      min-height: 560px;
+      border-radius: 26px;
+      background: #fff;
+      box-shadow: 0 26px 90px rgba(0, 0, 0, 0.16);
+    }
+
     .toast {
       position: fixed;
       left: 50%;
@@ -597,6 +785,12 @@
       .row-actions { justify-content: flex-start; grid-column: 1 / -1; }
       .layout { grid-template-columns: 280px 1fr; }
       .settings-panel { grid-column: 1 / -1; position: static; max-height: none; }
+      .builder-body { grid-template-columns: 1fr; }
+      .builder-settings {
+        max-height: none;
+        border-right: 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+      }
       .grid { grid-template-columns: 1fr; }
     }
 
@@ -604,6 +798,9 @@
       .layout { grid-template-columns: 1fr; }
       .widgets-panel, .settings-panel { position: static; max-height: none; }
       .preview-shell { height: 620px; min-height: 520px; }
+      .builder-topbar { grid-template-columns: 1fr; }
+      .builder-actions { justify-content: flex-start; flex-wrap: wrap; }
+      .builder-canvas .preview-shell { height: 620px; min-height: 520px; }
     }
 
     @media (max-width: 640px) {
@@ -623,6 +820,11 @@
       .table-row { grid-template-columns: 1fr; padding: 18px; }
       .settings-tabs { grid-template-columns: 1fr; }
       .preview-shell { height: 560px; min-height: 500px; }
+      .builder-frame { border-radius: 22px; }
+      .builder-title { flex-wrap: wrap; }
+      .builder-canvas-head { display: grid; }
+      .builder-canvas-stage { padding: 12px; }
+      .builder-canvas .preview-shell { height: 560px; min-height: 500px; border-radius: 20px; }
     }
   </style>
 </head>
@@ -677,158 +879,166 @@
     </section>
 
     <section class="app-view" id="builderView">
-      <section class="layout">
-      <aside class="panel widgets-panel">
-        <div class="panel-head">
-          <h2 class="panel-title">Запущенные виджеты</h2>
-          <div class="count" id="count">0</div>
-        </div>
+      <div hidden>
+        <div class="count" id="count">0</div>
         <div class="list" id="instancesList"></div>
-      </aside>
+      </div>
 
-      <section class="panel preview-panel">
-        <div class="panel-head">
-          <div>
-            <h2 class="panel-title">Превью</h2>
-            <div class="preview-meta">
-              <span class="meta-pill" id="metaClient">Клиент</span>
-              <span class="meta-pill" id="metaDomain">Домен</span>
-              <span class="meta-pill" id="metaWidget">Виджет</span>
-            </div>
+      <section class="builder-frame">
+        <div class="builder-topbar">
+          <div class="builder-title">
+            <button class="mini-btn" id="backToDashboardBtn" type="button">← Запущенные</button>
+            <span>Конструктор /</span>
+            <b id="builderWidgetName">Виджет</b>
+            <em class="builder-chip" id="builderWidgetType">Виджет</em>
           </div>
-          <button class="btn secondary" type="button" id="refreshPreviewBtn">Обновить</button>
-        </div>
-        <div class="preview-card">
-          <div class="preview-head">
-            <div class="preview-title">
-              Живое превью
-              <span>Меняешь настройки справа — смотришь результат здесь</span>
-            </div>
-          </div>
-          <div class="preview-shell">
-            <iframe class="preview-frame" id="previewFrame" title="Превью виджета"></iframe>
-          </div>
-        </div>
-      </section>
-
-      <section class="panel settings-panel">
-        <div class="panel-head">
-          <div>
-            <h2 class="panel-title" id="editorTitle">Настройки</h2>
+          <div class="builder-actions">
             <span class="save-state" id="saveState">Автосохранение включено</span>
+            <span class="badge" id="statusBadge">Активен</span>
+            <button class="btn secondary" type="button" id="refreshPreviewBtn">Обновить</button>
+            <button class="btn" type="submit" form="editorForm">Сохранить</button>
           </div>
-          <span class="badge" id="statusBadge">Активен</span>
-        </div>
-        <div class="settings-tabs" role="tablist" aria-label="Разделы настроек">
-          <button class="tab-btn active" type="button" data-tab="main">Основное</button>
-          <button class="tab-btn" type="button" data-tab="display">Показ</button>
-          <button class="tab-btn" type="button" data-tab="integrations">Интеграции</button>
-          <button class="tab-btn" type="button" data-tab="code">Код</button>
         </div>
 
-        <form class="form" id="editorForm">
-          <section class="settings-section active" data-tab-panel="main">
-            <div class="grid">
-              <label>Название
-                <input name="name" required>
-              </label>
-              <label>Клиент
-                <input name="client" required>
-              </label>
-              <label>Домен клиента
-                <input name="domain" placeholder="site.ru">
-              </label>
-              <label>Source для заявок
-                <input name="source" required>
-              </label>
-              <label>Виджет
-                <select name="widget">
-                  <option value="wheel-fortune">Колесо фортуны</option>
-                  <option value="tinder-product">Товарный Тиндер</option>
-                </select>
-              </label>
-              <label>Путь к JSON-конфигу
-                <input name="configPath" placeholder="configs/client-widget.json">
-              </label>
-            </div>
-            <label class="switch-row">
-              <span>Виджет включён</span>
-              <input name="enabled" type="checkbox">
-            </label>
-          </section>
-
-          <section class="settings-section" data-tab-panel="display">
-            <div class="grid">
-              <label>Режим показа
-                <select name="mode">
-                  <option value="modal">Popup / окно поверх сайта</option>
-                  <option value="inline">Встроить блоком на страницу</option>
-                </select>
-              </label>
-              <label>Запуск
-                <select name="trigger">
-                  <option value="auto">Автоматически</option>
-                  <option value="button">С кнопки</option>
-                </select>
-              </label>
-              <label>Задержка, секунд
-                <input name="delaySeconds" type="number" min="0" step="1">
-              </label>
-              <label>Частота показа
-                <select name="frequency">
-                  <option value="always">Всегда</option>
-                  <option value="once_per_hour">Раз в час</option>
-                  <option value="once_per_day">Раз в день</option>
-                  <option value="once_per_week">Раз в неделю</option>
-                </select>
-              </label>
-              <label>Позиция на десктопе
-                <select name="position">
-                  <option value="center">По центру</option>
-                  <option value="bottom-right">Справа снизу</option>
-                  <option value="bottom-left">Слева снизу</option>
-                </select>
-              </label>
-              <label>Затемнение фона
-                <input name="dimColor" placeholder="rgba(0, 0, 0, 0.58)">
-              </label>
-              <label>Акцентный цвет
-                <input name="accentColor" placeholder="#1f1f1f">
-              </label>
-            </div>
-          </section>
-
-          <section class="settings-section" data-tab-panel="integrations">
-            <div class="grid">
-              <label>Webhook URL
-                <input name="webhookUrl">
-              </label>
-            </div>
-            <p class="hint">Заявки уходят на этот webhook. Source и домен помогают понять, от какого клиента пришла заявка.</p>
-          </section>
-
-          <section class="settings-section" data-tab-panel="code">
-            <div class="result-actions">
-              <button class="btn" type="submit">Сохранить сейчас</button>
-              <button class="btn secondary" type="button" id="copyCodeBtn">Скопировать код</button>
-              <button class="btn secondary" type="button" id="copyJsonBtn">Скопировать JSON</button>
+        <div class="builder-body">
+          <aside class="builder-settings">
+            <div class="panel-head">
+              <div>
+                <h2 class="panel-title" id="editorTitle">Настройки</h2>
+                <span class="save-state">Открывай разделы и меняй только то, что нужно сейчас.</span>
+              </div>
             </div>
 
-            <p class="hint">Настройки сохраняются автоматически в этом браузере. Чтобы получить постоянную короткую ссылку через <b>data-config</b>, JSON нужно положить в репозиторий по указанному пути.</p>
+            <div class="settings-tabs" role="tablist" aria-label="Разделы настроек">
+              <button class="tab-btn active" type="button" data-tab="main">Основное</button>
+              <button class="tab-btn" type="button" data-tab="display">Показ</button>
+              <button class="tab-btn" type="button" data-tab="integrations">Интеграции</button>
+              <button class="tab-btn" type="button" data-tab="code">Код</button>
+            </div>
 
-            <label>Код для вставки на сайт клиента
-              <div class="codebox" id="embedCode"></div>
-            </label>
+            <form class="form" id="editorForm">
+              <section class="settings-section active" data-tab-panel="main">
+                <div class="grid">
+                  <label>Название
+                    <input name="name" required>
+                  </label>
+                  <label>Клиент
+                    <input name="client" required>
+                  </label>
+                  <label>Домен клиента
+                    <input name="domain" placeholder="site.ru">
+                  </label>
+                  <label>Source для заявок
+                    <input name="source" required>
+                  </label>
+                  <label>Виджет
+                    <select name="widget">
+                      <option value="wheel-fortune">Колесо фортуны</option>
+                      <option value="tinder-product">Товарный Тиндер</option>
+                    </select>
+                  </label>
+                  <label>Путь к JSON-конфигу
+                    <input name="configPath" placeholder="configs/client-widget.json">
+                  </label>
+                </div>
+                <label class="switch-row">
+                  <span>Виджет включён</span>
+                  <input name="enabled" type="checkbox">
+                </label>
+              </section>
 
-            <label>JSON-конфиг для сохранения в репозитории
-              <textarea id="jsonOutput" spellcheck="false"></textarea>
-            </label>
+              <section class="settings-section" data-tab-panel="display">
+                <div class="grid">
+                  <label>Режим показа
+                    <select name="mode">
+                      <option value="modal">Popup / окно поверх сайта</option>
+                      <option value="inline">Встроить блоком на страницу</option>
+                    </select>
+                  </label>
+                  <label>Запуск
+                    <select name="trigger">
+                      <option value="auto">Автоматически</option>
+                      <option value="button">С кнопки</option>
+                    </select>
+                  </label>
+                  <label>Задержка, секунд
+                    <input name="delaySeconds" type="number" min="0" step="1">
+                  </label>
+                  <label>Частота показа
+                    <select name="frequency">
+                      <option value="always">Всегда</option>
+                      <option value="once_per_hour">Раз в час</option>
+                      <option value="once_per_day">Раз в день</option>
+                      <option value="once_per_week">Раз в неделю</option>
+                    </select>
+                  </label>
+                  <label>Позиция на десктопе
+                    <select name="position">
+                      <option value="center">По центру</option>
+                      <option value="bottom-right">Справа снизу</option>
+                      <option value="bottom-left">Слева снизу</option>
+                    </select>
+                  </label>
+                  <label>Затемнение фона
+                    <input name="dimColor" placeholder="rgba(0, 0, 0, 0.58)">
+                  </label>
+                  <label>Акцентный цвет
+                    <input name="accentColor" placeholder="#1f1f1f">
+                  </label>
+                </div>
+              </section>
 
-            <button class="btn secondary" type="button" id="resetBtn">Сбросить локальные изменения</button>
-            <p class="hint">Эта кнопка просто возвращает два демо-виджета в админке. На сайты клиентов она не влияет.</p>
+              <section class="settings-section" data-tab-panel="integrations">
+                <div class="grid">
+                  <label>Webhook URL
+                    <input name="webhookUrl">
+                  </label>
+                </div>
+                <p class="hint">Заявки уходят на этот webhook. Source и домен помогают понять, от какого клиента пришла заявка.</p>
+              </section>
+
+              <section class="settings-section" data-tab-panel="code">
+                <div class="result-actions">
+                  <button class="btn" type="submit">Сохранить сейчас</button>
+                  <button class="btn secondary" type="button" id="copyCodeBtn">Скопировать код</button>
+                  <button class="btn secondary" type="button" id="copyJsonBtn">Скопировать JSON</button>
+                </div>
+
+                <p class="hint">Настройки сохраняются автоматически в этом браузере. Чтобы получить постоянную короткую ссылку через <b>data-config</b>, JSON нужно положить в репозиторий по указанному пути.</p>
+
+                <label>Код для вставки на сайт клиента
+                  <div class="codebox" id="embedCode"></div>
+                </label>
+
+                <label>JSON-конфиг для сохранения в репозитории
+                  <textarea id="jsonOutput" spellcheck="false"></textarea>
+                </label>
+
+                <button class="btn secondary" type="button" id="resetBtn">Вернуть демо-виджеты</button>
+                <p class="hint">Возвращает только тестовые записи внутри этой админки. Клиентские сайты не меняет.</p>
+              </section>
+            </form>
+          </aside>
+
+          <section class="builder-canvas">
+            <div class="builder-canvas-head">
+              <div class="builder-canvas-title">
+                Живое превью
+                <span>Меняешь настройки слева — сразу проверяешь поведение здесь.</span>
+              </div>
+              <div class="preview-meta">
+                <span class="meta-pill" id="metaClient">Клиент</span>
+                <span class="meta-pill" id="metaDomain">Домен</span>
+                <span class="meta-pill" id="metaWidget">Виджет</span>
+              </div>
+            </div>
+            <div class="builder-canvas-stage">
+              <div class="preview-shell">
+                <iframe class="preview-frame" id="previewFrame" title="Превью виджета"></iframe>
+              </div>
+            </div>
           </section>
-        </form>
-      </section>
+        </div>
       </section>
     </section>
   </main>
@@ -887,6 +1097,8 @@
       const countEl = document.getElementById("count");
       const form = document.getElementById("editorForm");
       const editorTitle = document.getElementById("editorTitle");
+      const builderWidgetName = document.getElementById("builderWidgetName");
+      const builderWidgetType = document.getElementById("builderWidgetType");
       const statusBadge = document.getElementById("statusBadge");
       const saveState = document.getElementById("saveState");
       const metaClient = document.getElementById("metaClient");
@@ -961,6 +1173,8 @@
       function updateEditorChrome(instance) {
         if (!instance) return;
         editorTitle.textContent = instance.name || "Настройки";
+        builderWidgetName.textContent = instance.name || "Виджет";
+        builderWidgetType.textContent = widgetLabel(instance.widget);
         statusBadge.textContent = instance.enabled ? "Активен" : "Выключен";
         statusBadge.classList.toggle("off", !instance.enabled);
         metaClient.textContent = instance.client || "Клиент не указан";
@@ -1267,6 +1481,7 @@
         button.addEventListener("click", () => openAppView(button.dataset.appTab));
       });
 
+      document.getElementById("backToDashboardBtn").addEventListener("click", () => openAppView("dashboard"));
       document.getElementById("copyCodeBtn").addEventListener("click", () => copyText(embedCodeEl.textContent));
       document.getElementById("copyJsonBtn").addEventListener("click", () => copyText(jsonOutput.value));
       document.getElementById("refreshPreviewBtn").addEventListener("click", () => renderPreview(instanceFromForm()));
