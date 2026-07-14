@@ -66,6 +66,189 @@
       justify-content: flex-end;
     }
 
+    .app-tabs {
+      display: inline-flex;
+      gap: 8px;
+      padding: 6px;
+      margin: 0 0 18px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.72);
+      box-shadow: 0 14px 40px rgba(0, 0, 0, 0.05);
+    }
+
+    .app-tab {
+      border: 0;
+      border-radius: 999px;
+      padding: 12px 18px;
+      background: transparent;
+      color: var(--muted);
+      cursor: pointer;
+      font-weight: 900;
+    }
+
+    .app-tab.active {
+      background: var(--accent);
+      color: #fff;
+    }
+
+    .app-view {
+      display: none;
+    }
+
+    .app-view.active {
+      display: block;
+    }
+
+    .dashboard {
+      display: grid;
+      gap: 20px;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .stat-card {
+      min-height: 132px;
+      padding: 22px;
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      background: rgba(255, 255, 255, 0.88);
+      box-shadow: 0 22px 60px rgba(0, 0, 0, 0.06);
+    }
+
+    .stat-card span {
+      display: block;
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 850;
+    }
+
+    .stat-card strong {
+      display: block;
+      margin-top: 10px;
+      font-size: 38px;
+      line-height: 1;
+      letter-spacing: -0.04em;
+    }
+
+    .stat-card small {
+      display: block;
+      margin-top: 12px;
+      color: #8a8a91;
+      font-weight: 750;
+    }
+
+    .dashboard-panel {
+      overflow: hidden;
+    }
+
+    .dashboard-tools {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 16px 18px;
+      border-bottom: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.7);
+    }
+
+    .dashboard-tools input {
+      max-width: 440px;
+      margin-left: auto;
+    }
+
+    .instances-table {
+      display: grid;
+    }
+
+    .table-row {
+      display: grid;
+      grid-template-columns: minmax(230px, 1.15fr) minmax(190px, 0.9fr) minmax(160px, 0.65fr) minmax(90px, 0.35fr) auto;
+      gap: 18px;
+      align-items: center;
+      padding: 20px 24px;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.07);
+    }
+
+    .table-row:last-child {
+      border-bottom: 0;
+    }
+
+    .table-row:hover {
+      background: rgba(255, 255, 255, 0.55);
+    }
+
+    .row-title {
+      display: grid;
+      gap: 7px;
+    }
+
+    .row-title strong {
+      font-size: 19px;
+      letter-spacing: -0.025em;
+    }
+
+    .row-title span,
+    .row-cell span {
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 750;
+      line-height: 1.35;
+    }
+
+    .row-cell {
+      display: grid;
+      gap: 6px;
+      min-width: 0;
+    }
+
+    .row-cell b {
+      font-size: 15px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .row-actions {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      gap: 8px;
+    }
+
+    .mini-btn {
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 10px 13px;
+      background: #fff;
+      color: var(--text);
+      cursor: pointer;
+      font-weight: 850;
+      white-space: nowrap;
+    }
+
+    .mini-btn.primary {
+      background: #176647;
+      border-color: #176647;
+      color: #fff;
+    }
+
+    .mini-btn.danger {
+      border-color: rgba(180, 35, 24, 0.18);
+      color: var(--bad);
+      background: rgba(180, 35, 24, 0.04);
+    }
+
+    .empty-state {
+      padding: 36px 24px;
+      color: var(--muted);
+      font-weight: 750;
+      text-align: center;
+    }
+
     .btn {
       border: 0;
       border-radius: 999px;
@@ -86,7 +269,7 @@
 
     .layout {
       display: grid;
-      grid-template-columns: minmax(260px, 320px) minmax(420px, 1fr) minmax(340px, 430px);
+      grid-template-columns: minmax(260px, 320px) minmax(420px, 1fr) minmax(390px, 500px);
       gap: 20px;
       align-items: start;
     }
@@ -409,6 +592,9 @@
     @media (max-width: 1180px) {
       .hero { grid-template-columns: 1fr; }
       .hero-actions { justify-content: flex-start; }
+      .stats-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .table-row { grid-template-columns: 1fr 1fr; }
+      .row-actions { justify-content: flex-start; grid-column: 1 / -1; }
       .layout { grid-template-columns: 280px 1fr; }
       .settings-panel { grid-column: 1 / -1; position: static; max-height: none; }
       .grid { grid-template-columns: 1fr; }
@@ -429,6 +615,12 @@
       .panel-head, .form { padding: 16px; }
       .btn { width: 100%; }
       .result-actions .btn { width: auto; flex: 1; }
+      .app-tabs { width: 100%; }
+      .app-tab { flex: 1; padding-inline: 10px; }
+      .stats-grid { grid-template-columns: 1fr; }
+      .dashboard-tools { display: grid; }
+      .dashboard-tools input { max-width: none; margin-left: 0; }
+      .table-row { grid-template-columns: 1fr; padding: 18px; }
       .settings-tabs { grid-template-columns: 1fr; }
       .preview-shell { height: 560px; min-height: 500px; }
     }
@@ -446,7 +638,46 @@
       </div>
     </section>
 
-    <section class="layout">
+    <nav class="app-tabs" aria-label="Разделы админки">
+      <button class="app-tab active" type="button" data-app-tab="dashboard">Запущенные виджеты</button>
+      <button class="app-tab" type="button" data-app-tab="builder">Конструктор</button>
+    </nav>
+
+    <section class="app-view active dashboard" id="dashboardView">
+      <div class="stats-grid">
+        <article class="stat-card">
+          <span>Всего виджетов</span>
+          <strong id="statTotal">0</strong>
+          <small>в локальной админке</small>
+        </article>
+        <article class="stat-card">
+          <span>Активных</span>
+          <strong id="statActive">0</strong>
+          <small>можно ставить на сайты</small>
+        </article>
+        <article class="stat-card">
+          <span>Клиентских сайтов</span>
+          <strong id="statDomains">0</strong>
+          <small>по указанным доменам</small>
+        </article>
+        <article class="stat-card">
+          <span>Заявок собрано</span>
+          <strong id="statLeads">0</strong>
+          <small>место под будущую статистику</small>
+        </article>
+      </div>
+
+      <section class="panel dashboard-panel">
+        <div class="dashboard-tools">
+          <button class="btn secondary" type="button" id="dashboardCreateBtn">Создать виджет</button>
+          <input id="dashboardSearch" type="search" placeholder="Поиск по клиенту, домену, виджету или source">
+        </div>
+        <div class="instances-table" id="dashboardTable"></div>
+      </section>
+    </section>
+
+    <section class="app-view" id="builderView">
+      <section class="layout">
       <aside class="panel widgets-panel">
         <div class="panel-head">
           <h2 class="panel-title">Запущенные виджеты</h2>
@@ -598,6 +829,7 @@
           </section>
         </form>
       </section>
+      </section>
     </section>
   </main>
 
@@ -660,6 +892,12 @@
       const metaClient = document.getElementById("metaClient");
       const metaDomain = document.getElementById("metaDomain");
       const metaWidget = document.getElementById("metaWidget");
+      const dashboardTable = document.getElementById("dashboardTable");
+      const dashboardSearch = document.getElementById("dashboardSearch");
+      const statTotal = document.getElementById("statTotal");
+      const statActive = document.getElementById("statActive");
+      const statDomains = document.getElementById("statDomains");
+      const statLeads = document.getElementById("statLeads");
       const embedCodeEl = document.getElementById("embedCode");
       const jsonOutput = document.getElementById("jsonOutput");
       const toast = document.getElementById("toast");
@@ -701,6 +939,25 @@
         return labels[widget] || widget || "Виджет";
       }
 
+      function frequencyLabel(value) {
+        const labels = {
+          always: "всегда",
+          once_per_hour: "раз в час",
+          once_per_day: "раз в день",
+          once_per_week: "раз в неделю"
+        };
+        return labels[value] || value || "не указано";
+      }
+
+      function openAppView(view) {
+        document.querySelectorAll("[data-app-tab]").forEach((button) => {
+          button.classList.toggle("active", button.dataset.appTab === view);
+        });
+        document.querySelectorAll(".app-view").forEach((section) => {
+          section.classList.toggle("active", section.id === `${view}View`);
+        });
+      }
+
       function updateEditorChrome(instance) {
         if (!instance) return;
         editorTitle.textContent = instance.name || "Настройки";
@@ -726,6 +983,7 @@
           enabled: data.get("enabled") === "on",
           configPath: data.get("configPath").trim(),
           webhookUrl: data.get("webhookUrl").trim() || DEFAULT_WEBHOOK,
+          stats: current.stats || { leads: 0 },
           display: {
             mode: data.get("mode"),
             trigger: data.get("trigger"),
@@ -790,6 +1048,17 @@
         return `<script ${parts.join(" ")}><\/script>`;
       }
 
+      function buildInstanceSearchText(instance) {
+        return [
+          instance.name,
+          instance.client,
+          instance.domain,
+          instance.source,
+          widgetLabel(instance.widget),
+          instance.widget
+        ].join(" ").toLowerCase();
+      }
+
       function widgetPreviewPath(widget) {
         const map = {
           "wheel-fortune": "../gallery/widgets/wheel-fortune-widget.html",
@@ -841,6 +1110,7 @@
         selectedId = updated.id;
         saveInstances();
         renderList();
+        renderDashboard();
         updateEditorChrome(updated);
         saveState.textContent = "Сохранено автоматически";
       }
@@ -873,8 +1143,76 @@
         });
       }
 
+      function renderDashboard() {
+        const query = (dashboardSearch && dashboardSearch.value || "").trim().toLowerCase();
+        const visible = instances.filter((instance) => !query || buildInstanceSearchText(instance).includes(query));
+        const activeCount = instances.filter((instance) => instance.enabled !== false).length;
+        const domainsCount = new Set(instances.map((instance) => instance.domain).filter(Boolean)).size;
+        const leadsCount = instances.reduce((sum, instance) => sum + Number(instance.stats && instance.stats.leads || 0), 0);
+
+        statTotal.textContent = instances.length;
+        statActive.textContent = activeCount;
+        statDomains.textContent = domainsCount;
+        statLeads.textContent = leadsCount;
+
+        dashboardTable.innerHTML = "";
+        if (!visible.length) {
+          dashboardTable.innerHTML = '<div class="empty-state">Ничего не найдено. Попробуй изменить поиск или создай новый виджет.</div>';
+          return;
+        }
+
+        visible.forEach((instance) => {
+          const row = document.createElement("article");
+          row.className = "table-row";
+          row.innerHTML = `
+            <div class="row-title">
+              <strong>${instance.name || "Без названия"} <em class="badge ${instance.enabled !== false ? "" : "off"}">${instance.enabled !== false ? "Активен" : "Выключен"}</em></strong>
+              <span>${instance.client || "Клиент не указан"} · source: ${instance.source || "не указан"}</span>
+            </div>
+            <div class="row-cell">
+              <b>${instance.domain || "Домен не указан"}</b>
+              <span>${widgetLabel(instance.widget)}</span>
+            </div>
+            <div class="row-cell">
+              <b>${instance.display && instance.display.mode === "inline" ? "Блок на странице" : "Popup"}</b>
+              <span>${frequencyLabel(instance.display && instance.display.frequency)} · задержка ${instance.display && instance.display.delaySeconds || 0} сек.</span>
+            </div>
+            <div class="row-cell">
+              <b>${Number(instance.stats && instance.stats.leads || 0)}</b>
+              <span>заявок</span>
+            </div>
+            <div class="row-actions">
+              <button class="mini-btn primary" type="button" data-row-action="edit">Настроить</button>
+              <button class="mini-btn" type="button" data-row-action="copy">Код</button>
+              <button class="mini-btn ${instance.enabled !== false ? "danger" : ""}" type="button" data-row-action="toggle">${instance.enabled !== false ? "Отключить" : "Включить"}</button>
+            </div>
+          `;
+
+          row.querySelector('[data-row-action="edit"]').addEventListener("click", () => {
+            selectedId = instance.id;
+            render();
+            openAppView("builder");
+          });
+
+          row.querySelector('[data-row-action="copy"]').addEventListener("click", () => {
+            copyText(buildEmbedCode(instance));
+          });
+
+          row.querySelector('[data-row-action="toggle"]').addEventListener("click", () => {
+            instance.enabled = instance.enabled === false;
+            saveInstances();
+            if (selectedId === instance.id) fillForm(instance);
+            render();
+            showToast(instance.enabled ? "Виджет включен" : "Виджет выключен");
+          });
+
+          dashboardTable.appendChild(row);
+        });
+      }
+
       function render() {
         renderList();
+        renderDashboard();
         fillForm(selectedInstance());
       }
 
@@ -925,9 +1263,14 @@
         });
       });
 
+      document.querySelectorAll("[data-app-tab]").forEach((button) => {
+        button.addEventListener("click", () => openAppView(button.dataset.appTab));
+      });
+
       document.getElementById("copyCodeBtn").addEventListener("click", () => copyText(embedCodeEl.textContent));
       document.getElementById("copyJsonBtn").addEventListener("click", () => copyText(jsonOutput.value));
       document.getElementById("refreshPreviewBtn").addEventListener("click", () => renderPreview(instanceFromForm()));
+      if (dashboardSearch) dashboardSearch.addEventListener("input", renderDashboard);
       document.getElementById("resetBtn").addEventListener("click", () => {
         instances = JSON.parse(JSON.stringify(demoInstances));
         selectedId = instances[0].id;
@@ -960,6 +1303,10 @@
         selectedId = id;
         saveInstances();
         render();
+        openAppView("builder");
+      });
+      document.getElementById("dashboardCreateBtn").addEventListener("click", () => {
+        document.getElementById("createBtn").click();
       });
 
       render();
