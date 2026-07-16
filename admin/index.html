@@ -6513,6 +6513,413 @@
     }
   </style>
   <style>
+    /* Constructor menu final fix: keep settings as a wide panel with top tabs. */
+    body[data-view="builder"] .page {
+      width: 100%;
+      max-width: none;
+      padding: 0;
+      overflow: hidden;
+    }
+
+    body[data-view="builder"] .builder-frame {
+      min-height: 100vh;
+      border: 0;
+      border-radius: 0;
+      background: #fff;
+      box-shadow: none;
+      overflow: hidden;
+    }
+
+    body[data-view="builder"] .builder-topbar {
+      height: 64px !important;
+      min-height: 64px !important;
+      display: grid !important;
+      grid-template-columns: minmax(260px, 1fr) auto !important;
+      align-items: center !important;
+      gap: 18px !important;
+      padding: 0 30px !important;
+      border-bottom: 1px solid rgba(22, 22, 18, 0.08) !important;
+      background: rgba(255, 255, 255, 0.98) !important;
+      box-shadow: 0 4px 18px rgba(18, 18, 15, 0.045) !important;
+    }
+
+    body[data-view="builder"] .builder-title {
+      display: flex !important;
+      align-items: center !important;
+      gap: 14px !important;
+      min-width: 0 !important;
+      color: #8d8d87 !important;
+      font-size: 14px !important;
+      font-weight: 800 !important;
+    }
+
+    body[data-view="builder"] .builder-title .mini-btn {
+      width: 34px !important;
+      min-height: 34px !important;
+      padding: 0 !important;
+      border: 0 !important;
+      background: transparent !important;
+      box-shadow: none !important;
+      color: transparent !important;
+      overflow: hidden !important;
+      position: relative !important;
+    }
+
+    body[data-view="builder"] .builder-title .mini-btn::before {
+      content: "←";
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      color: #5f5f59;
+      font-size: 19px;
+      font-weight: 800;
+    }
+
+    body[data-view="builder"] .builder-title span {
+      color: #9a9a94 !important;
+    }
+
+    body[data-view="builder"] .builder-title b {
+      color: #1d1d1f !important;
+      font-size: 17px !important;
+      font-weight: 950 !important;
+      letter-spacing: -0.03em !important;
+    }
+
+    body[data-view="builder"] .builder-chip,
+    body[data-view="builder"] .builder-actions .badge {
+      display: inline-flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      min-height: 30px !important;
+      padding: 6px 14px !important;
+      border: 0 !important;
+      border-radius: 999px !important;
+      background: #e6f8ed !important;
+      color: #137a43 !important;
+      font-size: 12px !important;
+      font-weight: 950 !important;
+      text-transform: uppercase !important;
+      letter-spacing: 0.02em !important;
+    }
+
+    body[data-view="builder"] .builder-actions {
+      display: flex !important;
+      align-items: center !important;
+      justify-content: flex-end !important;
+      gap: 12px !important;
+    }
+
+    body[data-view="builder"] .builder-actions .save-state {
+      color: #8c8c86 !important;
+      font-size: 13px !important;
+      font-weight: 850 !important;
+    }
+
+    body[data-view="builder"] .builder-actions .btn {
+      min-height: 40px !important;
+      padding: 9px 20px !important;
+      border-radius: 14px !important;
+      font-size: 14px !important;
+      font-weight: 950 !important;
+      letter-spacing: -0.02em !important;
+    }
+
+    body[data-view="builder"] .builder-actions .btn.secondary {
+      border: 1px solid rgba(22, 22, 18, 0.1) !important;
+      background: #fff !important;
+      color: #1d1d1f !important;
+      box-shadow: 0 6px 18px rgba(18, 18, 15, 0.07) !important;
+    }
+
+    body[data-view="builder"] .builder-actions .btn:not(.secondary) {
+      border: 0 !important;
+      background: #0a3d2d !important;
+      color: #fff !important;
+      box-shadow: 0 10px 22px rgba(10, 61, 45, 0.2) !important;
+    }
+
+    body[data-view="builder"] .builder-body {
+      height: calc(100vh - 64px) !important;
+      min-height: 0 !important;
+      display: grid !important;
+      grid-template-columns: 376px minmax(0, 1fr) !important;
+      background: #f7f6f2 !important;
+      overflow: hidden !important;
+    }
+
+    body[data-view="builder"] .builder-settings {
+      width: 376px !important;
+      max-height: calc(100vh - 64px) !important;
+      display: flex !important;
+      flex-direction: column !important;
+      border-right: 1px solid rgba(22, 22, 18, 0.08) !important;
+      background: #fff !important;
+      box-shadow: none !important;
+      overflow: hidden !important;
+    }
+
+    body[data-view="builder"] .builder-settings .panel-head {
+      display: none !important;
+    }
+
+    body[data-view="builder"] .settings-tabs {
+      display: grid !important;
+      grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+      flex: 0 0 auto !important;
+      gap: 0 !important;
+      width: 100% !important;
+      padding: 0 !important;
+      border: 0 !important;
+      border-bottom: 1px solid rgba(22, 22, 18, 0.08) !important;
+      background: #fff !important;
+    }
+
+    body[data-view="builder"] .settings-tabs .tab-btn {
+      min-width: 0 !important;
+      min-height: 88px !important;
+      display: flex !important;
+      flex-direction: column !important;
+      align-items: center !important;
+      justify-content: center !important;
+      gap: 8px !important;
+      padding: 12px 4px 14px !important;
+      border: 0 !important;
+      border-radius: 0 !important;
+      border-bottom: 3px solid transparent !important;
+      background: #fff !important;
+      box-shadow: none !important;
+      color: #9a9a94 !important;
+      font-size: 12px !important;
+      line-height: 1.05 !important;
+      font-weight: 950 !important;
+      letter-spacing: 0.035em !important;
+      text-transform: uppercase !important;
+    }
+
+    body[data-view="builder"] .settings-tabs .tab-btn::before {
+      display: block !important;
+      margin: 0 !important;
+      color: currentColor !important;
+      font-size: 18px !important;
+      line-height: 1 !important;
+    }
+
+    body[data-view="builder"] .settings-tabs .tab-btn[data-tab="main"]::before {
+      content: "⚙";
+    }
+
+    body[data-view="builder"] .settings-tabs .tab-btn[data-tab="display"]::before {
+      content: "◉";
+    }
+
+    body[data-view="builder"] .settings-tabs .tab-btn[data-tab="design"]::before {
+      content: "◌";
+    }
+
+    body[data-view="builder"] .settings-tabs .tab-btn[data-tab="code"]::before {
+      content: "▦";
+    }
+
+    body[data-view="builder"] .settings-tabs .tab-btn.active {
+      border-bottom-color: #0a4a34 !important;
+      background: #fff !important;
+      color: #0a4a34 !important;
+      box-shadow: none !important;
+    }
+
+    body[data-view="builder"] .form {
+      flex: 1 1 auto !important;
+      grid-column: auto !important;
+      grid-row: auto !important;
+      max-height: none !important;
+      padding: 26px 24px 40px !important;
+      overflow: auto !important;
+      background: #fff !important;
+    }
+
+    body[data-view="builder"] .settings-section.active {
+      display: grid !important;
+      gap: 22px !important;
+    }
+
+    body[data-view="builder"] .settings-section .grid {
+      display: grid !important;
+      grid-template-columns: 1fr !important;
+      gap: 22px !important;
+    }
+
+    body[data-view="builder"] label {
+      display: grid !important;
+      gap: 10px !important;
+      color: #1f1f1d !important;
+      font-size: 13px !important;
+      line-height: 1.25 !important;
+      font-weight: 900 !important;
+      letter-spacing: -0.01em !important;
+    }
+
+    body[data-view="builder"] input,
+    body[data-view="builder"] select,
+    body[data-view="builder"] textarea {
+      width: 100% !important;
+      min-height: 48px !important;
+      padding: 12px 15px !important;
+      border: 1px solid rgba(22, 22, 18, 0.09) !important;
+      border-radius: 14px !important;
+      background: #fff !important;
+      color: #1d1d1f !important;
+      box-shadow: 0 5px 14px rgba(18, 18, 15, 0.055) !important;
+      font-size: 14px !important;
+      font-weight: 800 !important;
+    }
+
+    body[data-view="builder"] .switch-row,
+    body[data-view="builder"] .system-card {
+      padding: 18px !important;
+      border: 1px solid rgba(22, 22, 18, 0.08) !important;
+      border-radius: 16px !important;
+      background: #fff !important;
+      box-shadow: 0 8px 22px rgba(18, 18, 15, 0.055) !important;
+    }
+
+    body[data-view="builder"] .color-field {
+      display: grid !important;
+      grid-template-columns: 48px 1fr !important;
+      gap: 10px !important;
+      align-items: center !important;
+    }
+
+    body[data-view="builder"] .color-field input[type="color"] {
+      height: 48px !important;
+      min-height: 48px !important;
+      padding: 4px !important;
+      cursor: pointer !important;
+    }
+
+    body[data-view="builder"] .builder-canvas {
+      display: grid !important;
+      grid-template-rows: 72px minmax(0, 1fr) !important;
+      min-width: 0 !important;
+      min-height: 0 !important;
+      overflow: hidden !important;
+      background-color: #f7f6f2 !important;
+      background-image:
+        linear-gradient(45deg, rgba(15, 67, 47, 0.035) 25%, transparent 25%),
+        linear-gradient(-45deg, rgba(15, 67, 47, 0.035) 25%, transparent 25%),
+        linear-gradient(45deg, transparent 75%, rgba(15, 67, 47, 0.035) 75%),
+        linear-gradient(-45deg, transparent 75%, rgba(15, 67, 47, 0.035) 75%) !important;
+      background-position: 0 0, 0 13px, 13px -13px, -13px 0 !important;
+      background-size: 26px 26px !important;
+    }
+
+    body[data-view="builder"] .builder-canvas-head {
+      height: 72px !important;
+      min-height: 72px !important;
+      display: grid !important;
+      grid-template-columns: 1fr !important;
+      place-items: center !important;
+      padding: 0 24px !important;
+      border: 0 !important;
+      border-bottom: 1px solid rgba(22, 22, 18, 0.08) !important;
+      background: rgba(255, 255, 255, 0.96) !important;
+      backdrop-filter: blur(12px) !important;
+    }
+
+    body[data-view="builder"] .builder-canvas-title,
+    body[data-view="builder"] .meta-pill {
+      display: none !important;
+    }
+
+    body[data-view="builder"] .preview-meta {
+      grid-column: 1 !important;
+      width: auto !important;
+      justify-content: center !important;
+      margin: 0 !important;
+    }
+
+    body[data-view="builder"] .device-toggle {
+      position: static !important;
+      transform: none !important;
+      display: inline-flex !important;
+      min-height: 46px !important;
+      padding: 5px !important;
+      border: 1px solid rgba(22, 22, 18, 0.09) !important;
+      border-radius: 16px !important;
+      background: #fff !important;
+      box-shadow: 0 6px 18px rgba(18, 18, 15, 0.08) !important;
+    }
+
+    body[data-view="builder"] .device-toggle button {
+      min-width: 116px !important;
+      min-height: 36px !important;
+      border: 0 !important;
+      border-radius: 12px !important;
+      background: transparent !important;
+      color: #9a9a94 !important;
+      font-size: 14px !important;
+      font-weight: 950 !important;
+    }
+
+    body[data-view="builder"] .device-toggle button.active {
+      background: #fff !important;
+      color: #1d1d1f !important;
+      box-shadow: 0 4px 12px rgba(18, 18, 15, 0.09) !important;
+    }
+
+    body[data-view="builder"] .builder-canvas-stage {
+      height: auto !important;
+      min-height: 0 !important;
+      display: grid !important;
+      place-items: center !important;
+      padding: 34px 46px 42px !important;
+      overflow: auto !important;
+    }
+
+    body[data-preview-device="desktop"] .builder-canvas .preview-shell {
+      width: min(1180px, calc(100vw - 500px)) !important;
+      height: min(640px, calc(100vh - 190px)) !important;
+      min-height: 500px !important;
+      border-radius: 30px !important;
+      background: #fff !important;
+      box-shadow: 0 24px 70px rgba(18, 18, 15, 0.1) !important;
+    }
+
+    body[data-preview-device="mobile"] .builder-canvas .preview-shell {
+      width: min(390px, calc(100vw - 460px)) !important;
+      height: min(760px, calc(100vh - 160px)) !important;
+      min-height: 620px !important;
+      border-radius: 34px !important;
+      background: #fff !important;
+      box-shadow: 0 24px 70px rgba(18, 18, 15, 0.14) !important;
+    }
+
+    @media (max-width: 980px) {
+      body[data-view="builder"] .builder-body {
+        grid-template-columns: 1fr !important;
+        overflow: auto !important;
+      }
+
+      body[data-view="builder"] .builder-settings {
+        width: 100% !important;
+        max-height: none !important;
+        border-right: 0 !important;
+        border-bottom: 1px solid rgba(22, 22, 18, 0.08) !important;
+      }
+
+      body[data-view="builder"] .form {
+        max-height: none !important;
+      }
+
+      body[data-preview-device="desktop"] .builder-canvas .preview-shell,
+      body[data-preview-device="mobile"] .builder-canvas .preview-shell {
+        width: min(100%, calc(100vw - 32px)) !important;
+        min-height: 520px !important;
+      }
+    }
+  </style>
+  <style>
     html,
     body {
       width: 100%;
@@ -7030,6 +7437,773 @@
       }
     }
   </style>
+
+  <style>
+    /* Final builder layout lock: wide settings panel with top tabs, like the approved mockup. */
+    body[data-view="builder"] {
+      overflow: hidden !important;
+      background: #f7f7f4 !important;
+    }
+
+    body[data-view="builder"] .page {
+      width: 100vw !important;
+      height: 100vh !important;
+      max-width: none !important;
+      padding: 0 !important;
+      margin: 0 !important;
+      overflow: hidden !important;
+    }
+
+    body[data-view="builder"] .hero,
+    body[data-view="builder"] .app-tabs,
+    body[data-view="builder"] .dashboard {
+      display: none !important;
+    }
+
+    body[data-view="builder"] #builderView,
+    body[data-view="builder"] .builder-frame {
+      display: block !important;
+      width: 100vw !important;
+      height: 100vh !important;
+      max-width: none !important;
+      min-height: 0 !important;
+      margin: 0 !important;
+      padding: 0 !important;
+      border: 0 !important;
+      border-radius: 0 !important;
+      background: #fff !important;
+      box-shadow: none !important;
+      overflow: hidden !important;
+    }
+
+    body[data-view="builder"] .builder-topbar {
+      display: grid !important;
+      grid-template-columns: minmax(0, 1fr) auto !important;
+      align-items: center !important;
+      gap: 24px !important;
+      height: 68px !important;
+      padding: 0 36px !important;
+      background: rgba(255, 255, 255, 0.96) !important;
+      border-bottom: 1px solid #e8e8e4 !important;
+      box-shadow: 0 1px 0 rgba(15, 23, 42, 0.03) !important;
+      position: relative !important;
+      z-index: 20 !important;
+    }
+
+    body[data-view="builder"] .builder-title {
+      display: flex !important;
+      align-items: center !important;
+      min-width: 0 !important;
+      gap: 16px !important;
+      color: #191919 !important;
+      font-size: 20px !important;
+      font-weight: 850 !important;
+      line-height: 1 !important;
+    }
+
+    body[data-view="builder"] .builder-title span {
+      display: none !important;
+    }
+
+    body[data-view="builder"] .builder-title .mini-btn {
+      width: 42px !important;
+      height: 42px !important;
+      padding: 0 !important;
+      border: 0 !important;
+      border-right: 1px solid #e3e2dd !important;
+      border-radius: 0 !important;
+      background: transparent !important;
+      color: transparent !important;
+      box-shadow: none !important;
+      position: relative !important;
+      flex: 0 0 56px !important;
+    }
+
+    body[data-view="builder"] .builder-title .mini-btn::before {
+      content: "←";
+      position: absolute;
+      inset: 0 14px 0 0;
+      display: grid;
+      place-items: center;
+      color: #6d6d68;
+      font-size: 24px;
+      font-weight: 650;
+    }
+
+    body[data-view="builder"] .builder-title b {
+      overflow: hidden !important;
+      text-overflow: ellipsis !important;
+      white-space: nowrap !important;
+      max-width: 48vw !important;
+    }
+
+    body[data-view="builder"] .builder-chip,
+    body[data-view="builder"] #statusBadge {
+      display: inline-flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      min-height: 30px !important;
+      padding: 0 16px !important;
+      border-radius: 999px !important;
+      background: #e5f7ea !important;
+      color: #168246 !important;
+      border: 0 !important;
+      font-size: 14px !important;
+      font-style: normal !important;
+      font-weight: 900 !important;
+      letter-spacing: 0.02em !important;
+      text-transform: uppercase !important;
+    }
+
+    body[data-view="builder"] .builder-actions {
+      display: flex !important;
+      align-items: center !important;
+      gap: 14px !important;
+    }
+
+    body[data-view="builder"] .builder-actions .save-state {
+      color: #9a9a95 !important;
+      font-size: 16px !important;
+      font-weight: 750 !important;
+    }
+
+    body[data-view="builder"] .builder-actions .save-state::before {
+      content: "✓ ";
+      color: #9a9a95;
+    }
+
+    body[data-view="builder"] .builder-actions .btn {
+      height: 48px !important;
+      min-width: 150px !important;
+      padding: 0 24px !important;
+      border-radius: 16px !important;
+      font-size: 17px !important;
+      font-weight: 850 !important;
+      box-shadow: 0 8px 20px rgba(10, 50, 32, 0.12) !important;
+    }
+
+    body[data-view="builder"] .builder-actions .btn.secondary {
+      background: #fff !important;
+      color: #1d1d1f !important;
+      border: 1px solid #e5e5e0 !important;
+    }
+
+    body[data-view="builder"] .builder-body {
+      display: grid !important;
+      grid-template-columns: 500px minmax(0, 1fr) !important;
+      width: 100vw !important;
+      height: calc(100vh - 68px) !important;
+      min-height: 0 !important;
+      gap: 0 !important;
+      background: #fff !important;
+      overflow: hidden !important;
+    }
+
+    body[data-view="builder"] .builder-settings {
+      display: flex !important;
+      flex-direction: column !important;
+      width: 500px !important;
+      min-width: 500px !important;
+      height: calc(100vh - 68px) !important;
+      min-height: 0 !important;
+      padding: 0 !important;
+      margin: 0 !important;
+      background: #fff !important;
+      border-right: 1px solid #e9e9e5 !important;
+      border-radius: 0 !important;
+      box-shadow: none !important;
+      overflow: hidden !important;
+    }
+
+    body[data-view="builder"] .builder-settings .panel-head {
+      display: none !important;
+    }
+
+    body[data-view="builder"] .settings-tabs {
+      display: grid !important;
+      grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+      width: 100% !important;
+      min-height: 104px !important;
+      padding: 0 !important;
+      margin: 0 !important;
+      gap: 0 !important;
+      background: #fff !important;
+      border-bottom: 1px solid #ecece8 !important;
+      border-radius: 0 !important;
+      box-shadow: none !important;
+      overflow: visible !important;
+    }
+
+    body[data-view="builder"] .settings-tabs .tab-btn {
+      appearance: none !important;
+      display: flex !important;
+      flex-direction: column !important;
+      align-items: center !important;
+      justify-content: center !important;
+      gap: 9px !important;
+      height: 104px !important;
+      padding: 0 8px !important;
+      margin: 0 !important;
+      border: 0 !important;
+      border-radius: 0 !important;
+      background: #fff !important;
+      color: #9b9b97 !important;
+      box-shadow: none !important;
+      font-size: 14px !important;
+      font-weight: 900 !important;
+      letter-spacing: 0.04em !important;
+      text-transform: uppercase !important;
+      position: relative !important;
+    }
+
+    body[data-view="builder"] .settings-tabs .tab-btn::before {
+      display: block !important;
+      width: auto !important;
+      height: auto !important;
+      margin: 0 !important;
+      background: transparent !important;
+      color: currentColor !important;
+      opacity: 1 !important;
+      font-size: 23px !important;
+      line-height: 1 !important;
+      box-shadow: none !important;
+      border: 0 !important;
+      transform: none !important;
+    }
+
+    body[data-view="builder"] .settings-tabs .tab-btn[data-tab="main"]::before { content: "⚙"; }
+    body[data-view="builder"] .settings-tabs .tab-btn[data-tab="display"]::before { content: "◉"; }
+    body[data-view="builder"] .settings-tabs .tab-btn[data-tab="design"]::before { content: "◌"; }
+    body[data-view="builder"] .settings-tabs .tab-btn[data-tab="code"]::before { content: "▦"; }
+
+    body[data-view="builder"] .settings-tabs .tab-btn.active {
+      color: #0f5138 !important;
+      background: #fff !important;
+    }
+
+    body[data-view="builder"] .settings-tabs .tab-btn.active::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: -1px;
+      height: 3px;
+      background: #0f5138;
+      border-radius: 99px 99px 0 0;
+    }
+
+    body[data-view="builder"] .builder-settings .form {
+      flex: 1 1 auto !important;
+      min-height: 0 !important;
+      overflow: auto !important;
+      padding: 28px 28px 36px !important;
+      margin: 0 !important;
+      background: #fff !important;
+      border: 0 !important;
+      border-radius: 0 !important;
+      box-shadow: none !important;
+    }
+
+    body[data-view="builder"] .builder-settings .settings-section {
+      display: none !important;
+      gap: 28px !important;
+    }
+
+    body[data-view="builder"] .builder-settings .settings-section.active {
+      display: grid !important;
+    }
+
+    body[data-view="builder"] .builder-settings .grid {
+      display: grid !important;
+      grid-template-columns: 1fr !important;
+      gap: 26px !important;
+      width: 100% !important;
+    }
+
+    body[data-view="builder"] .builder-settings label {
+      display: grid !important;
+      gap: 12px !important;
+      color: #1d1d1f !important;
+      font-size: 16px !important;
+      font-weight: 850 !important;
+      line-height: 1.25 !important;
+    }
+
+    body[data-view="builder"] .builder-settings input,
+    body[data-view="builder"] .builder-settings select,
+    body[data-view="builder"] .builder-settings textarea {
+      width: 100% !important;
+      min-height: 56px !important;
+      padding: 0 20px !important;
+      border: 1px solid #e7e7e3 !important;
+      border-radius: 14px !important;
+      background: #fff !important;
+      color: #1d1d1f !important;
+      box-shadow: 0 3px 10px rgba(15, 23, 42, 0.06) !important;
+      font-size: 16px !important;
+      font-weight: 700 !important;
+    }
+
+    body[data-view="builder"] .builder-settings input:focus,
+    body[data-view="builder"] .builder-settings select:focus,
+    body[data-view="builder"] .builder-settings textarea:focus {
+      border-color: #0f5138 !important;
+      box-shadow: 0 0 0 4px rgba(15, 81, 56, 0.12) !important;
+      outline: none !important;
+    }
+
+    body[data-view="builder"] .builder-settings .switch-row {
+      display: flex !important;
+      align-items: center !important;
+      justify-content: space-between !important;
+      min-height: 72px !important;
+      padding: 16px 20px !important;
+      border: 1px solid #ecece8 !important;
+      border-radius: 18px !important;
+      background: #fff !important;
+      box-shadow: 0 8px 24px rgba(15, 23, 42, 0.04) !important;
+    }
+
+    body[data-view="builder"] .builder-settings .switch-row input[type="checkbox"] {
+      width: 28px !important;
+      height: 28px !important;
+      min-height: 28px !important;
+      padding: 0 !important;
+      accent-color: #0f5138 !important;
+    }
+
+    body[data-view="builder"] .builder-canvas {
+      display: grid !important;
+      grid-template-rows: 80px minmax(0, 1fr) !important;
+      min-width: 0 !important;
+      min-height: 0 !important;
+      height: calc(100vh - 68px) !important;
+      background: #fff !important;
+      overflow: hidden !important;
+    }
+
+    body[data-view="builder"] .builder-canvas-head {
+      display: grid !important;
+      place-items: center !important;
+      height: 80px !important;
+      padding: 0 !important;
+      background: #fff !important;
+      border-bottom: 1px solid #ededeb !important;
+    }
+
+    body[data-view="builder"] .builder-canvas-title,
+    body[data-view="builder"] .preview-meta .meta-pill {
+      display: none !important;
+    }
+
+    body[data-view="builder"] .preview-meta {
+      display: flex !important;
+      justify-content: center !important;
+      width: auto !important;
+    }
+
+    body[data-view="builder"] .device-toggle {
+      display: inline-grid !important;
+      grid-template-columns: 1fr 1fr !important;
+      gap: 6px !important;
+      padding: 6px !important;
+      border: 1px solid #e5e5e0 !important;
+      border-radius: 18px !important;
+      background: #fff !important;
+      box-shadow: 0 5px 16px rgba(15, 23, 42, 0.1) !important;
+    }
+
+    body[data-view="builder"] .device-toggle button {
+      min-width: 130px !important;
+      height: 42px !important;
+      border: 0 !important;
+      border-radius: 13px !important;
+      background: transparent !important;
+      color: #9d9d99 !important;
+      font-size: 15px !important;
+      font-weight: 850 !important;
+    }
+
+    body[data-view="builder"] .device-toggle button.active {
+      background: #fff !important;
+      color: #1d1d1f !important;
+      box-shadow: 0 2px 9px rgba(15, 23, 42, 0.1) !important;
+    }
+
+    body[data-view="builder"] .builder-canvas-stage {
+      min-width: 0 !important;
+      min-height: 0 !important;
+      height: 100% !important;
+      padding: 42px 48px !important;
+      display: grid !important;
+      place-items: center !important;
+      overflow: auto !important;
+      background-color: #fafaf8 !important;
+      background-image:
+        linear-gradient(45deg, #ececea 25%, transparent 25%),
+        linear-gradient(-45deg, #ececea 25%, transparent 25%),
+        linear-gradient(45deg, transparent 75%, #ececea 75%),
+        linear-gradient(-45deg, transparent 75%, #ececea 75%) !important;
+      background-size: 24px 24px !important;
+      background-position: 0 0, 0 12px, 12px -12px, -12px 0 !important;
+    }
+
+    body[data-view="builder"] .preview-shell {
+      width: min(1240px, calc(100vw - 610px)) !important;
+      height: min(650px, calc(100vh - 220px)) !important;
+      min-height: 500px !important;
+      max-height: 760px !important;
+      padding: 48px !important;
+      display: grid !important;
+      place-items: center !important;
+      border-radius: 42px !important;
+      background: #fff !important;
+      box-shadow: 0 22px 80px rgba(15, 23, 42, 0.12) !important;
+      overflow: hidden !important;
+    }
+
+    body[data-view="builder"] .preview-shell.is-mobile {
+      width: 410px !important;
+      height: min(760px, calc(100vh - 190px)) !important;
+      min-height: 560px !important;
+      padding: 18px !important;
+      border-radius: 40px !important;
+    }
+
+    body[data-view="builder"] .admin-preview-widget {
+      width: 100% !important;
+      max-width: 100% !important;
+      height: auto !important;
+      max-height: 100% !important;
+    }
+
+    body[data-view="builder"] .preview-frame {
+      width: 100% !important;
+      height: 100% !important;
+      border: 0 !important;
+      background: transparent !important;
+    }
+
+    @media (max-width: 1100px) {
+      body[data-view="builder"] {
+        overflow: auto !important;
+      }
+
+      body[data-view="builder"] .page,
+      body[data-view="builder"] #builderView,
+      body[data-view="builder"] .builder-frame {
+        height: auto !important;
+        min-height: 100vh !important;
+        overflow: visible !important;
+      }
+
+      body[data-view="builder"] .builder-topbar {
+        height: auto !important;
+        grid-template-columns: 1fr !important;
+        padding: 16px !important;
+      }
+
+      body[data-view="builder"] .builder-actions {
+        justify-content: stretch !important;
+        flex-wrap: wrap !important;
+      }
+
+      body[data-view="builder"] .builder-actions .btn {
+        flex: 1 1 180px !important;
+      }
+
+      body[data-view="builder"] .builder-body {
+        grid-template-columns: 1fr !important;
+        height: auto !important;
+        overflow: visible !important;
+      }
+
+      body[data-view="builder"] .builder-settings {
+        width: 100% !important;
+        min-width: 0 !important;
+        height: auto !important;
+        border-right: 0 !important;
+        border-bottom: 1px solid #e9e9e5 !important;
+      }
+
+      body[data-view="builder"] .builder-canvas {
+        height: auto !important;
+        min-height: 720px !important;
+      }
+
+      body[data-view="builder"] .preview-shell,
+      body[data-view="builder"] .preview-shell.is-mobile {
+        width: min(100%, 760px) !important;
+        height: auto !important;
+        min-height: 520px !important;
+      }
+    }
+
+    /* Builder settings hard lock: prevents older sidebar styles from turning tabs into a vertical rail. */
+    body[data-view="builder"] .builder-body > aside.builder-settings {
+      display: flex !important;
+      flex-direction: column !important;
+      flex-wrap: nowrap !important;
+      align-self: stretch !important;
+      width: 500px !important;
+      min-width: 500px !important;
+      max-width: 500px !important;
+      padding: 0 !important;
+      gap: 0 !important;
+      background: #fff !important;
+      overflow: hidden !important;
+    }
+
+    body[data-view="builder"] .builder-body > aside.builder-settings > .settings-tabs {
+      position: static !important;
+      inset: auto !important;
+      order: 0 !important;
+      display: grid !important;
+      grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+      grid-auto-flow: column !important;
+      flex: 0 0 104px !important;
+      width: 100% !important;
+      min-width: 100% !important;
+      max-width: 100% !important;
+      height: 104px !important;
+      min-height: 104px !important;
+      max-height: 104px !important;
+      padding: 0 !important;
+      margin: 0 !important;
+      gap: 0 !important;
+      border: 0 !important;
+      border-bottom: 1px solid #ecece8 !important;
+      border-radius: 0 !important;
+      background: #fff !important;
+      box-shadow: none !important;
+      transform: none !important;
+    }
+
+    body[data-view="builder"] .builder-body > aside.builder-settings > .settings-tabs > .tab-btn {
+      position: relative !important;
+      display: flex !important;
+      flex: none !important;
+      flex-direction: column !important;
+      align-items: center !important;
+      justify-content: center !important;
+      width: auto !important;
+      min-width: 0 !important;
+      height: 104px !important;
+      min-height: 104px !important;
+      padding: 0 8px !important;
+      margin: 0 !important;
+      border: 0 !important;
+      border-radius: 0 !important;
+      background: #fff !important;
+      color: #9b9b97 !important;
+      box-shadow: none !important;
+      transform: none !important;
+      writing-mode: horizontal-tb !important;
+      text-align: center !important;
+      white-space: normal !important;
+    }
+
+    body[data-view="builder"] .builder-body > aside.builder-settings > .form {
+      order: 1 !important;
+      display: block !important;
+      flex: 1 1 auto !important;
+      width: 100% !important;
+      min-width: 0 !important;
+      min-height: 0 !important;
+      overflow: auto !important;
+    }
+
+    @media (max-width: 1100px) {
+      body[data-view="builder"] .builder-body > aside.builder-settings {
+        width: 100% !important;
+        min-width: 0 !important;
+        max-width: none !important;
+      }
+    }
+
+    /* Constructor layout absolute override.
+       The admin file has older builder styles above; this block pins the approved
+       constructor layout even if the body view flag or cached styles lag behind. */
+    #builderView.active .builder-body,
+    body[data-view="builder"] #builderView .builder-body {
+      display: grid !important;
+      grid-template-columns: 500px minmax(0, 1fr) !important;
+      min-height: calc(100vh - 70px) !important;
+      height: calc(100vh - 70px) !important;
+      overflow: hidden !important;
+      background: #f7f6f1 !important;
+    }
+
+    #builderView.active .builder-body > aside.builder-settings,
+    body[data-view="builder"] #builderView .builder-body > aside.builder-settings {
+      position: relative !important;
+      display: grid !important;
+      grid-template-rows: 104px minmax(0, 1fr) !important;
+      align-self: stretch !important;
+      width: 500px !important;
+      min-width: 500px !important;
+      max-width: 500px !important;
+      height: 100% !important;
+      min-height: 0 !important;
+      padding: 0 !important;
+      margin: 0 !important;
+      border-right: 1px solid #e6e5df !important;
+      border-bottom: 0 !important;
+      border-radius: 0 !important;
+      background: #fff !important;
+      box-shadow: none !important;
+      overflow: hidden !important;
+      transform: none !important;
+    }
+
+    #builderView.active .builder-body > aside.builder-settings > .panel-head,
+    body[data-view="builder"] #builderView .builder-body > aside.builder-settings > .panel-head {
+      display: none !important;
+    }
+
+    #builderView.active .builder-body > aside.builder-settings > .settings-tabs,
+    body[data-view="builder"] #builderView .builder-body > aside.builder-settings > .settings-tabs {
+      grid-row: 1 !important;
+      position: relative !important;
+      inset: auto !important;
+      z-index: 2 !important;
+      display: grid !important;
+      grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+      grid-template-rows: 104px !important;
+      grid-auto-flow: column !important;
+      place-items: stretch !important;
+      width: 100% !important;
+      min-width: 100% !important;
+      max-width: 100% !important;
+      height: 104px !important;
+      min-height: 104px !important;
+      max-height: 104px !important;
+      padding: 0 !important;
+      margin: 0 !important;
+      gap: 0 !important;
+      border: 0 !important;
+      border-bottom: 1px solid #e7e6e0 !important;
+      border-radius: 0 !important;
+      background: #fff !important;
+      box-shadow: none !important;
+      transform: none !important;
+      writing-mode: horizontal-tb !important;
+      overflow: visible !important;
+    }
+
+    #builderView.active .builder-body > aside.builder-settings > .settings-tabs > .tab-btn,
+    body[data-view="builder"] #builderView .builder-body > aside.builder-settings > .settings-tabs > .tab-btn {
+      position: relative !important;
+      inset: auto !important;
+      display: flex !important;
+      flex: none !important;
+      flex-direction: column !important;
+      align-items: center !important;
+      justify-content: center !important;
+      width: 100% !important;
+      min-width: 0 !important;
+      max-width: none !important;
+      height: 104px !important;
+      min-height: 104px !important;
+      max-height: 104px !important;
+      padding: 18px 8px 20px !important;
+      margin: 0 !important;
+      border: 0 !important;
+      border-radius: 0 !important;
+      background: #fff !important;
+      box-shadow: none !important;
+      color: #9c9c98 !important;
+      font-size: 13px !important;
+      font-weight: 900 !important;
+      line-height: 1.15 !important;
+      letter-spacing: .04em !important;
+      text-transform: uppercase !important;
+      text-align: center !important;
+      white-space: normal !important;
+      writing-mode: horizontal-tb !important;
+      transform: none !important;
+      cursor: pointer !important;
+    }
+
+    #builderView.active .builder-body > aside.builder-settings > .settings-tabs > .tab-btn::before,
+    body[data-view="builder"] #builderView .builder-body > aside.builder-settings > .settings-tabs > .tab-btn::before {
+      display: block !important;
+      margin: 0 0 10px !important;
+      color: currentColor !important;
+      font-size: 22px !important;
+      line-height: 1 !important;
+      opacity: .95 !important;
+    }
+
+    #builderView.active .builder-body > aside.builder-settings > .settings-tabs > .tab-btn[data-tab="main"]::before,
+    body[data-view="builder"] #builderView .builder-body > aside.builder-settings > .settings-tabs > .tab-btn[data-tab="main"]::before { content: "⚙" !important; }
+
+    #builderView.active .builder-body > aside.builder-settings > .settings-tabs > .tab-btn[data-tab="display"]::before,
+    body[data-view="builder"] #builderView .builder-body > aside.builder-settings > .settings-tabs > .tab-btn[data-tab="display"]::before { content: "◉" !important; }
+
+    #builderView.active .builder-body > aside.builder-settings > .settings-tabs > .tab-btn[data-tab="design"]::before,
+    body[data-view="builder"] #builderView .builder-body > aside.builder-settings > .settings-tabs > .tab-btn[data-tab="design"]::before { content: "◌" !important; }
+
+    #builderView.active .builder-body > aside.builder-settings > .settings-tabs > .tab-btn[data-tab="code"]::before,
+    body[data-view="builder"] #builderView .builder-body > aside.builder-settings > .settings-tabs > .tab-btn[data-tab="code"]::before { content: "▦" !important; }
+
+    #builderView.active .builder-body > aside.builder-settings > .settings-tabs > .tab-btn.active,
+    body[data-view="builder"] #builderView .builder-body > aside.builder-settings > .settings-tabs > .tab-btn.active {
+      color: #0f513a !important;
+      background: #fff !important;
+    }
+
+    #builderView.active .builder-body > aside.builder-settings > .settings-tabs > .tab-btn.active::after,
+    body[data-view="builder"] #builderView .builder-body > aside.builder-settings > .settings-tabs > .tab-btn.active::after {
+      content: "" !important;
+      position: absolute !important;
+      left: 0 !important;
+      right: 0 !important;
+      bottom: 0 !important;
+      height: 3px !important;
+      border-radius: 999px 999px 0 0 !important;
+      background: #0f513a !important;
+    }
+
+    #builderView.active .builder-body > aside.builder-settings > .form,
+    body[data-view="builder"] #builderView .builder-body > aside.builder-settings > .form {
+      grid-row: 2 !important;
+      display: block !important;
+      width: 100% !important;
+      min-width: 0 !important;
+      min-height: 0 !important;
+      height: 100% !important;
+      padding: 28px !important;
+      margin: 0 !important;
+      overflow: auto !important;
+      background: #fff !important;
+    }
+
+    #builderView.active .builder-canvas,
+    body[data-view="builder"] #builderView .builder-canvas {
+      min-width: 0 !important;
+      height: 100% !important;
+      overflow: hidden !important;
+      background: #f7f6f1 !important;
+    }
+
+    @media (max-width: 1100px) {
+      #builderView.active .builder-body,
+      body[data-view="builder"] #builderView .builder-body {
+        grid-template-columns: 1fr !important;
+        height: auto !important;
+        overflow: visible !important;
+      }
+
+      #builderView.active .builder-body > aside.builder-settings,
+      body[data-view="builder"] #builderView .builder-body > aside.builder-settings {
+        width: 100% !important;
+        min-width: 0 !important;
+        max-width: none !important;
+        height: auto !important;
+      }
+    }
+  </style>
 </head>
 <body>
   <main class="page">
@@ -7513,6 +8687,182 @@
         const color = normalizeHexColor(value, fallback);
         form.elements[name].value = color;
         form.elements[`${name}Picker`].value = color;
+      }
+
+      function installBuilderMenuFix() {
+        if (document.getElementById("widgets0-builder-menu-final")) return;
+        const style = document.createElement("style");
+        style.id = "widgets0-builder-menu-final";
+        style.textContent = `
+          body[data-view="builder"] #builderView.active .builder-body {
+            display: grid !important;
+            grid-template-columns: 500px minmax(0, 1fr) !important;
+            height: calc(100vh - 70px) !important;
+            min-height: calc(100vh - 70px) !important;
+            overflow: hidden !important;
+            background: #f6f5f0 !important;
+          }
+
+          body[data-view="builder"] #builderView.active .builder-body > aside.builder-settings {
+            position: relative !important;
+            display: grid !important;
+            grid-template-rows: 104px minmax(0, 1fr) !important;
+            align-self: stretch !important;
+            width: 500px !important;
+            min-width: 500px !important;
+            max-width: 500px !important;
+            height: 100% !important;
+            min-height: 0 !important;
+            padding: 0 !important;
+            margin: 0 !important;
+            border-right: 1px solid #e7e5dc !important;
+            border-bottom: 0 !important;
+            border-radius: 0 !important;
+            background: #fff !important;
+            box-shadow: none !important;
+            overflow: hidden !important;
+            transform: none !important;
+          }
+
+          body[data-view="builder"] #builderView.active .builder-body > aside.builder-settings > .panel-head {
+            display: none !important;
+          }
+
+          body[data-view="builder"] #builderView.active .builder-body > aside.builder-settings > .settings-tabs {
+            grid-row: 1 !important;
+            position: relative !important;
+            inset: auto !important;
+            z-index: 2 !important;
+            display: grid !important;
+            grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+            grid-template-rows: 104px !important;
+            grid-auto-flow: column !important;
+            width: 100% !important;
+            min-width: 100% !important;
+            max-width: 100% !important;
+            height: 104px !important;
+            min-height: 104px !important;
+            max-height: 104px !important;
+            padding: 0 !important;
+            margin: 0 !important;
+            gap: 0 !important;
+            border: 0 !important;
+            border-bottom: 1px solid #e7e5dc !important;
+            border-radius: 0 !important;
+            background: #fff !important;
+            box-shadow: none !important;
+            transform: none !important;
+            writing-mode: horizontal-tb !important;
+            overflow: visible !important;
+          }
+
+          body[data-view="builder"] #builderView.active .builder-body > aside.builder-settings > .settings-tabs > .tab-btn {
+            position: relative !important;
+            inset: auto !important;
+            display: flex !important;
+            flex: none !important;
+            flex-direction: column !important;
+            align-items: center !important;
+            justify-content: center !important;
+            gap: 8px !important;
+            width: 100% !important;
+            min-width: 0 !important;
+            max-width: none !important;
+            height: 104px !important;
+            min-height: 104px !important;
+            max-height: 104px !important;
+            padding: 18px 8px 20px !important;
+            margin: 0 !important;
+            border: 0 !important;
+            border-radius: 0 !important;
+            background: #fff !important;
+            box-shadow: none !important;
+            color: #9b9b96 !important;
+            font-size: 13px !important;
+            font-weight: 900 !important;
+            line-height: 1.15 !important;
+            letter-spacing: .04em !important;
+            text-transform: uppercase !important;
+            text-align: center !important;
+            white-space: normal !important;
+            writing-mode: horizontal-tb !important;
+            transform: none !important;
+            cursor: pointer !important;
+          }
+
+          body[data-view="builder"] #builderView.active .builder-body > aside.builder-settings > .settings-tabs > .tab-btn::before {
+            display: block !important;
+            margin: 0 0 2px !important;
+            color: currentColor !important;
+            font-size: 22px !important;
+            line-height: 1 !important;
+            opacity: .96 !important;
+          }
+
+          body[data-view="builder"] #builderView.active .settings-tabs > .tab-btn[data-tab="main"]::before { content: "⚙" !important; }
+          body[data-view="builder"] #builderView.active .settings-tabs > .tab-btn[data-tab="display"]::before { content: "◉" !important; }
+          body[data-view="builder"] #builderView.active .settings-tabs > .tab-btn[data-tab="design"]::before { content: "◌" !important; }
+          body[data-view="builder"] #builderView.active .settings-tabs > .tab-btn[data-tab="code"]::before { content: "▦" !important; }
+
+          body[data-view="builder"] #builderView.active .builder-body > aside.builder-settings > .settings-tabs > .tab-btn.active {
+            color: #0d4b36 !important;
+            background: #fff !important;
+          }
+
+          body[data-view="builder"] #builderView.active .builder-body > aside.builder-settings > .settings-tabs > .tab-btn.active::after {
+            content: "" !important;
+            position: absolute !important;
+            left: 0 !important;
+            right: 0 !important;
+            bottom: 0 !important;
+            height: 3px !important;
+            border-radius: 999px 999px 0 0 !important;
+            background: #0d4b36 !important;
+          }
+
+          body[data-view="builder"] #builderView.active .builder-body > aside.builder-settings > .form {
+            grid-row: 2 !important;
+            display: block !important;
+            width: 100% !important;
+            min-width: 0 !important;
+            min-height: 0 !important;
+            height: 100% !important;
+            padding: 28px !important;
+            margin: 0 !important;
+            overflow: auto !important;
+            background: #fff !important;
+          }
+
+          body[data-view="builder"] #builderView.active .builder-body > aside.builder-settings > .form .settings-section {
+            display: none !important;
+          }
+
+          body[data-view="builder"] #builderView.active .builder-body > aside.builder-settings > .form .settings-section.active {
+            display: block !important;
+          }
+
+          body[data-view="builder"] #builderView.active .builder-canvas {
+            min-width: 0 !important;
+            height: 100% !important;
+            overflow: hidden !important;
+          }
+
+          @media (max-width: 1100px) {
+            body[data-view="builder"] #builderView.active .builder-body {
+              grid-template-columns: 1fr !important;
+              height: auto !important;
+              overflow: visible !important;
+            }
+
+            body[data-view="builder"] #builderView.active .builder-body > aside.builder-settings {
+              width: 100% !important;
+              min-width: 0 !important;
+              max-width: none !important;
+              height: auto !important;
+            }
+          }
+        `;
+        document.head.appendChild(style);
       }
 
       function openAppView(view) {
@@ -8102,6 +9452,7 @@
         openTemplateModal();
       });
 
+      installBuilderMenuFix();
       render();
       setPreviewDevice(previewDevice);
       openAppView(window.location.hash === "#builder" ? "builder" : "dashboard");
