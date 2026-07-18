@@ -1,0 +1,7 @@
+<!-- Колесо фортуны Леры: popup без iframe, кнопки видны Яндекс.Метрике -->
+<script
+  src="https://widgets0.github.io/widgets0/clients/lera-dnevnik-svechnika/loader.js?v=20260718"
+  data-delay="0"
+  data-frequency="always"
+  data-position="center"
+  async></script>
