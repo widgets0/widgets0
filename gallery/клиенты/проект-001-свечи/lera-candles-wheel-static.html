@@ -74,6 +74,43 @@ body {
     display: flex;
 }
 
+.clientWidget001-root.is-preview-visible,
+.clientWidget001-root.is-preview-visible .wof-overlay,
+.clientWidget001-root.is-preview-visible .candle-wof-wrapper {
+    opacity: 1 !important;
+    animation: none !important;
+}
+
+.clientWidget001-root.is-preview-visible .stagger-1,
+.clientWidget001-root.is-preview-visible .stagger-2,
+.clientWidget001-root.is-preview-visible .stagger-3,
+.clientWidget001-root.is-preview-visible .comic-star {
+    opacity: 1 !important;
+    transform: none !important;
+    animation: none !important;
+}
+
+.clientWidget001-root.is-preview-visible .wof-wheel-container::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 4;
+    border-radius: 50%;
+    border: 8px solid #1A1512;
+    background:
+        radial-gradient(circle at center, #C4A47C 0 9%, #1A1512 9.5% 11%, transparent 11.5%),
+        conic-gradient(
+            #F4EBD9 0deg 60deg,
+            var(--accent-yellow) 60deg 120deg,
+            #F4EBD9 120deg 180deg,
+            var(--accent-yellow) 180deg 240deg,
+            #F4EBD9 240deg 300deg,
+            var(--accent-yellow) 300deg 360deg
+        );
+    box-shadow: 8px 10px 0 rgba(0, 0, 0, 0.42);
+    box-sizing: border-box;
+}
+
 .clientWidget001-root .wof-overlay {
     position: relative;
     z-index: 1;
@@ -246,6 +283,8 @@ body {
     margin-top: 10px;
     display: block;
     box-sizing: border-box;
+    text-align: center;
+    text-decoration: none;
 }
 
 .clientWidget001-root .wof-btn:hover:not(:disabled) {
@@ -689,16 +728,16 @@ body {
             <p class="wof-subtitle stagger-2">Крути колесо — каждая участница получает приз. Без исключений!</p>
             
             <div class="stagger-3 wof-form-container">
-                <button id="clientWidget001-spin-btn" class="wof-btn" type="button">КРУТИТЬ!</button>
+                <button id="clientWidget001-spin-btn" class="wof-btn" type="button" data-track="wheel-spin">КРУТИТЬ!</button>
             </div>
           </div>
 
-          <!-- Экран 2: Форма -->
+          <!-- Экран 2: Приз -->
           <div id="clientWidget001-step-form" class="wof-prize-card stagger-1" style="display: none;">
             <div class="wof-prize-label">Твой Приз:</div>
             <div id="clientWidget001-prize-value" class="wof-prize-value"></div>
             <p class="wof-subtitle-dark stagger-2" style="margin-bottom: 15px;">
-              Поздравляем! Твой приз зарезервирован. Оставь контакт — мастер пришлёт его в течение часа
+              Поздравляем! Твой приз готов. Нажми кнопку ниже - передадим выигрыш в анкету автоматически.
             </p>
 
             <div class="wof-timer-container">
@@ -706,22 +745,9 @@ body {
               <span id="clientWidget001-timer">Предложение сгорит через: 23:59:59</span>
             </div>
             
-            <form id="clientWidget001-form" class="wof-form-container stagger-3">
-              <div class="wof-input-wrapper">
-                  <input type="text" id="clientWidget001-name" placeholder="Как тебя зовут?" class="wof-input">
-              </div>
-              <div class="wof-input-wrapper">
-                  <input type="tel" id="clientWidget001-phone" placeholder="+7 (999) 000-00-00" class="wof-input">
-              </div>
-              <label class="wof-consent">
-                <input type="checkbox" id="clientWidget001-consent" required>
-                <span>Согласен(на) на обработку персональных данных</span>
-              </label>
-              
-              <div id="clientWidget001-form-error" style="color: #ef4444; font-weight: bold; font-size: 14px; text-align: center; padding: 0 8px; margin-bottom: 4px; min-height: 20px;"></div>
-              
-              <button type="submit" class="wof-btn" style="margin-top: 8px;">ЗАБРАТЬ ПРИЗ!</button>
-            </form>
+            <div class="wof-form-container stagger-3">
+              <a id="clientWidget001-prize-link" class="wof-btn" href="https://lk.dnevniksvechnika.ru/anketa" style="margin-top: 8px;" data-track="wheel-get-prize">ЗАБРАТЬ ПРИЗ!</a>
+            </div>
           </div>
 
         </div>
@@ -729,23 +755,10 @@ body {
     </div>
   </div>
 
-  <!-- Мини-окно успеха -->
-  <div id="clientWidget001-step-success" class="wof-success-layer" style="display: none;" aria-live="polite">
-    <div class="wof-toast">
-      <div class="wof-toast-title">Спасибо!</div>
-      <p class="wof-toast-text">Заявка отправлена. Мы скоро свяжемся с вами.</p>
-    </div>
-  </div>
-
 <script>
 (function() {
   const LEGACY_STORAGE_KEY = 'clientWidget001_wof_v1';
-  const LEAD_CONFIG = {
-    webhookUrl: 'https://widgets0-production.up.railway.app',
-    webhookSecret: '',
-    widget: 'Колесо фортуны для сайта Леры',
-    source: 'project-001'
-  };
+  const ANKETA_URL = 'https://lk.dnevniksvechnika.ru/anketa';
   const BEHAVIOR_CONFIG = Object.assign({
     appearanceDelaySeconds: 0,
     showFrequency: 'always',
@@ -755,6 +768,18 @@ body {
   }, window.CLIENT_WIDGET001_BEHAVIOR_CONFIG || {});
   const params = new URLSearchParams(window.location.search);
   const isPreview = params.get('preview') === '1';
+  const isEmbed = params.get('embed') === '1';
+  const accentColor = params.get('accentColor') || '#C4A47C';
+
+  if (params.get('delay')) {
+    BEHAVIOR_CONFIG.appearanceDelaySeconds = Number(params.get('delay')) || 0;
+  }
+  if (params.get('frequency')) {
+    BEHAVIOR_CONFIG.showFrequency = params.get('frequency');
+  }
+  if (params.get('position')) {
+    BEHAVIOR_CONFIG.desktopPosition = params.get('position');
+  }
   
   const prizes = [
     "Бесплатный\nурок",
@@ -766,12 +791,18 @@ body {
   ];
 
   const colors = [
-    "#F4EBD9", "#C4A47C", "#F4EBD9", 
-    "#C4A47C", "#F4EBD9", "#C4A47C"
+    "#F4EBD9", accentColor, "#F4EBD9", 
+    accentColor, "#F4EBD9", accentColor
   ];
 
   // DOM Элементы
   const root = document.querySelector('.clientWidget001-root');
+  if (root && isPreview) {
+    root.classList.add('is-preview-visible');
+  }
+  if (root && params.get('accentColor')) {
+    root.style.setProperty('--accent-yellow', accentColor);
+  }
   const overlay = document.getElementById('clientWidget001-overlay');
   const closeBtn = document.getElementById('clientWidget001-close');
   const spinBtn = document.getElementById('clientWidget001-spin-btn');
@@ -781,15 +812,10 @@ body {
   
   const stepSpin = document.getElementById('clientWidget001-step-spin');
   const stepForm = document.getElementById('clientWidget001-step-form');
-  const stepSuccess = document.getElementById('clientWidget001-step-success');
   
   const prizeValueEl = document.getElementById('clientWidget001-prize-value');
+  const prizeLink = document.getElementById('clientWidget001-prize-link');
   const timerEl = document.getElementById('clientWidget001-timer');
-  const form = document.getElementById('clientWidget001-form');
-  const nameInput = document.getElementById('clientWidget001-name');
-  const phoneInput = document.getElementById('clientWidget001-phone');
-  const consentInput = document.getElementById('clientWidget001-consent');
-  const formError = document.getElementById('clientWidget001-form-error');
 
   let isSpinning = false;
   let rotation = 0;
@@ -805,8 +831,6 @@ body {
 
     if (spinBtn) spinBtn.addEventListener('click', handleSpin);
     if (closeBtn) closeBtn.addEventListener('click', closeWidget);
-    if (form) form.addEventListener('submit', handleFormSubmit);
-    if (phoneInput) phoneInput.addEventListener('input', handlePhoneInput);
 
     // Рисуем колесо
     document.fonts.ready.then(() => {
@@ -858,6 +882,7 @@ body {
     if (!canShowWidgetNow()) {
       if (root) root.classList.remove('is-visible');
       if (overlay) overlay.style.display = 'none';
+      notifyParentClose();
       return;
     }
 
@@ -876,19 +901,29 @@ body {
     setTimeout(drawWheel, 50);
     if (root) root.classList.add('is-visible');
     overlay.style.display = 'flex';
+    notifyParentOpen();
   }
 
   function closeWidget() {
     if (timerInterval) clearInterval(timerInterval);
     if (root) root.classList.remove('is-visible');
     if (overlay) overlay.style.display = 'none';
-    if (stepSuccess) stepSuccess.style.display = 'none';
+    notifyParentClose();
+  }
+
+  function notifyParentClose() {
+    if (!isEmbed || window.parent === window) return;
+    window.parent.postMessage({ type: 'widgets0:close' }, '*');
+  }
+
+  function notifyParentOpen() {
+    if (!isEmbed || window.parent === window) return;
+    window.parent.postMessage({ type: 'widgets0:open' }, '*');
   }
 
   function showStep(step) {
     if (stepSpin) stepSpin.style.display = step === 'spin' ? 'block' : 'none';
     if (stepForm) stepForm.style.display = step === 'form' ? 'flex' : 'none';
-    if (stepSuccess) stepSuccess.style.display = step === 'success' ? 'grid' : 'none';
 
     if (step === 'form') {
       wheelWrapper.classList.add('hidden-on-mobile');
@@ -1004,9 +1039,10 @@ body {
         const actualDeg = (360 - (rotation % 360) + 270) % 360;
         const index = Math.floor(actualDeg / degPerSector);
         
-	        const winText = prizes[index];
-	        selectedPrize = winText;
-	        prizeValueEl.innerText = winText.replace(/\n/g, ' ');
+        const winText = formatPrizeText(prizes[index]);
+        selectedPrize = winText;
+        if (prizeValueEl) prizeValueEl.innerText = winText;
+        updatePrizeLink(winText);
         
         showStep('form');
         
@@ -1028,91 +1064,14 @@ body {
     }());
   }
 
-  function handlePhoneInput(e) {
-    let val = e.target.value.replace(/\D/g, '');
-    if (val === '') {
-      phoneInput.value = '';
-      formError.innerText = '';
-      return;
-    }
-    if (val.startsWith('7') || val.startsWith('8')) {
-      val = val.substring(1);
-    }
-    let formatted = '+7';
-    if (val.length > 0) formatted += ' (' + val.substring(0, 3);
-    if (val.length >= 3) formatted += ') ' + val.substring(3, 6);
-    if (val.length >= 6) formatted += '-' + val.substring(6, 8);
-    if (val.length >= 8) formatted += '-' + val.substring(8, 10);
-    
-    phoneInput.value = formatted;
-    formError.innerText = '';
+  function formatPrizeText(prize) {
+    return String(prize || '').replace(/\s*\n\s*/g, ' ').replace(/\s+/g, ' ').trim();
   }
 
-  async function handleFormSubmit(e) {
-    e.preventDefault();
-    const name = nameInput.value.trim();
-    const phone = phoneInput.value;
-    const submitBtn = form.querySelector('button[type="submit"]');
-    const defaultSubmitText = submitBtn ? submitBtn.innerText : '';
-    
-    if (!name || phone.length < 18) {
-      formError.innerText = "Пожалуйста, корректно заполните все поля";
-      return;
-    }
-
-    if (consentInput && !consentInput.checked) {
-      formError.innerText = "Нужно согласие на обработку персональных данных";
-      return;
-    }
-    
-    const prize = selectedPrize || 'Приз не выбран';
-
-    formError.innerText = '';
-    if (submitBtn) {
-      submitBtn.disabled = true;
-      submitBtn.innerText = 'ОТПРАВЛЯЕМ...';
-    }
-
-    try {
-      const response = await fetch(LEAD_CONFIG.webhookUrl, {
-        method: 'POST',
-        headers: Object.assign({ 'Content-Type': 'application/json' }, LEAD_CONFIG.webhookSecret ? { 'X-Webhook-Secret': LEAD_CONFIG.webhookSecret } : {}),
-        body: JSON.stringify({
-          widget: LEAD_CONFIG.widget,
-          source: LEAD_CONFIG.source,
-          name,
-          phone,
-          prize,
-          'Согласие на обработку персональных данных': 'Да',
-          page: window.location.href.split('?')[0],
-          createdAt: new Date().toISOString()
-        })
-      });
-
-      if (!response.ok) {
-        throw new Error('Webhook error: ' + response.status);
-      }
-
-      showSuccessAndClose();
-    } catch (error) {
-      console.error(error);
-      formError.innerText = "Не получилось отправить заявку. Попробуйте еще раз.";
-      if (submitBtn) {
-        submitBtn.disabled = false;
-        submitBtn.innerText = defaultSubmitText;
-      }
-    }
-  }
-
-  function showSuccessAndClose() {
-    var wrapper = document.querySelector('.clientWidget001-root .candle-wof-wrapper');
-    if (wrapper) wrapper.style.display = 'none';
-    showStep('success');
-    setTimeout(() => {
-      if (stepSuccess) stepSuccess.style.display = 'none';
-      overlay.style.display = 'none';
-      if (root) root.classList.remove('is-visible');
-    }, 4500);
+  function updatePrizeLink(prize) {
+    if (!prizeLink) return;
+    const value = formatPrizeText(prize || 'Приз');
+    prizeLink.href = `${ANKETA_URL}?priz=${encodeURIComponent(value)}`;
   }
 
   function startTimer() {
