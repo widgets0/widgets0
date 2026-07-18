@@ -64,7 +64,7 @@
     var style = document.createElement('style');
     if (id) style.id = id;
     style.textContent = css;
-    document.head.appendChild(style);
+    (document.head || document.documentElement).appendChild(style);
   }
 
   function loadExternalScript(src) {
@@ -84,14 +84,14 @@
       script.dataset.widgets0Loaded = '1';
       script.onload = resolve;
       script.onerror = reject;
-      document.head.appendChild(script);
+      (document.head || document.documentElement).appendChild(script);
     });
   }
 
   function runInlineScript(code) {
     var script = document.createElement('script');
     script.text = code;
-    document.body.appendChild(script);
+    (document.body || document.documentElement).appendChild(script);
   }
 
   function injectWidget() {
@@ -121,7 +121,7 @@
       if (node.nodeType === 1 && node.tagName === 'SCRIPT') return;
       fragment.appendChild(document.importNode(node, true));
     });
-    document.body.appendChild(fragment);
+    (document.body || document.documentElement).appendChild(fragment);
 
     var root = document.querySelector('.clientWidget001-root');
     if (root) {
@@ -149,9 +149,21 @@
     });
   }
 
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', injectWidget, { once: true });
-  } else {
-    injectWidget();
+  function onDocumentReady(callback) {
+    function runWhenReady() {
+      if (document.head && document.body) {
+        callback();
+        return;
+      }
+      setTimeout(runWhenReady, 30);
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', runWhenReady, { once: true });
+    } else {
+      runWhenReady();
+    }
   }
+
+  onDocumentReady(injectWidget);
 })();
