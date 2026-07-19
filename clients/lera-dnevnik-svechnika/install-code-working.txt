@@ -1,2 +1,2 @@
 <!-- Виджет "Колесо фортуны" для Леры. Вставить в HTML-блок Tilda. -->
-<script src="https://widgets0.github.io/widgets0/clients/lera-dnevnik-svechnika/loader.js?v=20260719-2" data-delay="0" data-frequency="always" data-position="center" async></script>
+<script src="https://widgets0.github.io/widgets0/clients/lera-dnevnik-svechnika/loader.js?v=20260719-3" data-delay="0" data-frequency="always" data-position="center" async></script>

@@ -51,6 +51,33 @@
     }
   }
 
+  function addFonts() {
+    if (!document.getElementById('lw-google-fonts-preconnect')) {
+      const preconnect = document.createElement('link');
+      preconnect.id = 'lw-google-fonts-preconnect';
+      preconnect.rel = 'preconnect';
+      preconnect.href = 'https://fonts.googleapis.com';
+      document.head.appendChild(preconnect);
+    }
+
+    if (!document.getElementById('lw-google-fonts-static-preconnect')) {
+      const preconnectStatic = document.createElement('link');
+      preconnectStatic.id = 'lw-google-fonts-static-preconnect';
+      preconnectStatic.rel = 'preconnect';
+      preconnectStatic.href = 'https://fonts.gstatic.com';
+      preconnectStatic.crossOrigin = 'anonymous';
+      document.head.appendChild(preconnectStatic);
+    }
+
+    if (!document.getElementById('lw-google-fonts')) {
+      const link = document.createElement('link');
+      link.id = 'lw-google-fonts';
+      link.rel = 'stylesheet';
+      link.href = 'https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;800;900&family=Playfair+Display:wght@600;700&display=swap';
+      document.head.appendChild(link);
+    }
+  }
+
   function addStyles() {
     if (document.getElementById('lw-loader-styles')) return;
 
@@ -66,7 +93,7 @@
         align-items: center;
         justify-content: center;
         padding: 28px;
-        font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        font-family: "Montserrat", Arial, sans-serif;
         pointer-events: auto;
       }
       .lw-root[data-position="bottom-left"] { align-items: flex-end; justify-content: flex-start; }
@@ -160,11 +187,11 @@
       .lw-title {
         margin: 0 0 18px;
         max-width: 520px;
-        font-family: Georgia, "Times New Roman", serif;
+        font-family: "Playfair Display", Georgia, "Times New Roman", serif;
         font-size: clamp(40px, 5.5vw, 66px);
         line-height: .95;
-        font-weight: 900;
-        letter-spacing: -.03em;
+        font-weight: 600;
+        letter-spacing: 0;
         color: #d1ad7e;
         text-transform: uppercase;
       }
@@ -185,8 +212,8 @@
         color: #201914;
         box-shadow: 7px 9px 0 #17110d;
         cursor: pointer;
-        font: 900 clamp(24px, 3.3vw, 40px)/1 Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-        letter-spacing: .02em;
+        font: 900 clamp(24px, 3.3vw, 40px)/1 "Montserrat", Arial, sans-serif;
+        letter-spacing: 0;
         text-transform: uppercase;
         text-decoration: none;
         display: inline-flex;
@@ -227,7 +254,7 @@
         margin: 0 0 8px;
         font-size: 16px;
         font-weight: 900;
-        letter-spacing: .08em;
+        letter-spacing: 0;
         text-transform: uppercase;
         color: #6b5140;
         text-align: center;
@@ -385,7 +412,7 @@
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
       ctx.fillStyle = '#221914';
-      ctx.font = '900 38px Inter, Arial, sans-serif';
+      ctx.font = '900 38px Montserrat, Arial, sans-serif';
 
       const lines = wrapText(ctx, prize, 245);
       const lineHeight = 42;
@@ -488,6 +515,13 @@
     drawWheel(wheel);
     drawWheel(resultWheel);
 
+    if (document.fonts?.ready) {
+      document.fonts.ready.then(() => {
+        drawWheel(wheel);
+        drawWheel(resultWheel);
+      }).catch(() => {});
+    }
+
     root.addEventListener('click', (event) => {
       if (event.target.closest('[data-lw-close]')) closeWidget();
     });
@@ -524,6 +558,7 @@
   function init() {
     if (!canShow()) return;
     markShown();
+    addFonts();
     addStyles();
 
     window.setTimeout(() => {
