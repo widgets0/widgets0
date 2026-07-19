@@ -1,576 +1,205 @@
+/*
+ * Inline popup loader for Lera candles wheel.
+ * Installs the widget directly into the client's page, without iframe,
+ * so Yandex.Metrika can see regular button clicks and data-track attributes.
+ */
 (function () {
   'use strict';
 
-  const currentScript = document.currentScript || Array.from(document.scripts).find((script) => {
-    return /clients\/lera-dnevnik-svechnika\/loader\.js/.test(script.src || '');
-  });
-
-  const settings = {
-    delaySeconds: Number(currentScript?.dataset.delay || 0),
-    frequency: currentScript?.dataset.frequency || 'always',
-    position: currentScript?.dataset.position || 'center',
-    source: currentScript?.dataset.source || 'lera-dnevnik-svechnika',
-    quizUrl: currentScript?.dataset.quizUrl || 'https://lk.dnevniksvechnika.ru/anketa',
-    storageKey: currentScript?.dataset.storageKey || 'lw_lera_wheel_last_show'
+  var DEFAULT_SETTINGS = {
+    enabled: true,
+    appearanceDelaySeconds: 0,
+    showFrequency: 'always', // always | once_per_hour | once_per_day | custom
+    customFrequencyHours: 24,
+    desktopPosition: 'center', // center | bottom-left | bottom-right
+    displayStorageKey: 'lera_candles_wheel_last_shown_at',
+    backdropColor: 'rgba(12, 10, 8, 0.58)',
+    zIndex: 2147483000
   };
 
-  const prizes = [
-    'Бесплатный урок',
-    'Чек-лист поставщиков',
-    'МК новичку за 490 ₽',
-    '−15% на тариф ПРОФИ',
-    'Гайд новичку',
-    '−2000 ₽ на тариф ВИП'
-  ];
+  var WIDGET_HTML = "<!DOCTYPE html>\n<html lang=\"ru\">\n<head>\n<meta charset=\"UTF-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n<title>Wheel of Fortune Widget</title>\n<!-- Библиотека для конфетти -->\n<script src=\"https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js\"></script>\n\n<script>\n// === НАСТРОЙКИ ПОВЕДЕНИЯ ВИДЖЕТА ===\n// Меняйте только этот блок, если нужно настроить показ колеса для клиента.\nwindow.CLIENT_WIDGET001_BEHAVIOR_CONFIG = {\n    // Через сколько секунд после загрузки страницы показать виджет.\n    // Пример: 0 - сразу, 2 - через 2 секунды, 10 - через 10 секунд.\n    appearanceDelaySeconds: 0,\n\n    // Как часто показывать виджет одному пользователю.\n    // Варианты:\n    // 'always' - показывать всегда;\n    // 'once_per_hour' - показывать не чаще одного раза в час;\n    // 'once_per_day' - показывать не чаще одного раза в день;\n    // 'custom' - использовать customFrequencyHours ниже.\n    showFrequency: 'always',\n\n    // Используется только если showFrequency: 'custom'.\n    // Например: 6 - показывать не чаще одного раза в 6 часов.\n    customFrequencyHours: 24,\n\n    // Позиция на десктопе.\n    // Варианты: 'center' - по центру страницы, 'bottom-left' - слева снизу, 'bottom-right' - справа снизу.\n    desktopPosition: 'center',\n\n    // Ключ localStorage для запоминания последнего показа.\n    // Обычно менять не нужно. Меняйте только если на странице стоит несколько таких виджетов.\n    displayStorageKey: 'clientWidget001_last_shown_at'\n};\n</script>\n\n<style>\n@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;800;900&family=Playfair+Display:wght@600&display=swap');\n\nhtml,\nbody {\n    margin: 0;\n    min-height: 100%;\n}\n\nbody {\n    min-height: 100vh;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n}\n\n/* === CSS VARIABLES (DARK WARM THEME) === */\n.clientWidget001-root {\n    --bg-dark: rgba(0, 0, 0, 0.85);\n    --brand-main: #2A231E; \n    --brand-light: #3A322C; \n    --accent-yellow: #C4A47C; \n    --accent-light: #F4EBD9; \n    --comic-border: #1A1512; \n    --text-main: #FFFFFF;\n    --text-dark: #2A231E;\n    width: 100%;\n    min-height: 100vh;\n    display: none;\n    align-items: center;\n    justify-content: center;\n}\n\n.clientWidget001-root.is-visible {\n    display: flex;\n}\n\n.clientWidget001-root.is-preview-visible,\n.clientWidget001-root.is-preview-visible .wof-overlay,\n.clientWidget001-root.is-preview-visible .candle-wof-wrapper {\n    opacity: 1 !important;\n    animation: none !important;\n}\n\n.clientWidget001-root.is-preview-visible .stagger-1,\n.clientWidget001-root.is-preview-visible .stagger-2,\n.clientWidget001-root.is-preview-visible .stagger-3,\n.clientWidget001-root.is-preview-visible .comic-star {\n    opacity: 1 !important;\n    transform: none !important;\n    animation: none !important;\n}\n\n.clientWidget001-root.is-preview-visible .wof-wheel-container::before {\n    content: \"\";\n    position: absolute;\n    inset: 0;\n    z-index: 4;\n    border-radius: 50%;\n    border: 8px solid #1A1512;\n    background:\n        radial-gradient(circle at center, #C4A47C 0 9%, #1A1512 9.5% 11%, transparent 11.5%),\n        conic-gradient(\n            #F4EBD9 0deg 60deg,\n            var(--accent-yellow) 60deg 120deg,\n            #F4EBD9 120deg 180deg,\n            var(--accent-yellow) 180deg 240deg,\n            #F4EBD9 240deg 300deg,\n            var(--accent-yellow) 300deg 360deg\n        );\n    box-shadow: 8px 10px 0 rgba(0, 0, 0, 0.42);\n    box-sizing: border-box;\n}\n\n.clientWidget001-root .wof-overlay {\n    position: relative;\n    z-index: 1;\n    width: 100%;\n    min-height: 100vh;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    background: transparent;\n    padding: 20px;\n    animation: fadeInWof 0.4s ease forwards;\n    overflow: visible;\n}\n\n@keyframes fadeInWof {\n    from { opacity: 0; transform: scale(1.03); }\n    to { opacity: 1; transform: scale(1); }\n}\n\n.clientWidget001-root .candle-wof-wrapper {\n    margin: 0 auto;\n    background-color: var(--brand-main);\n    background-image: repeating-conic-gradient(\n        var(--brand-main) 0deg 15deg,\n        var(--brand-light) 15deg 30deg\n    );\n    color: var(--text-main);\n    position: relative;\n    border-radius: 24px;\n    border: 5px solid var(--comic-border);\n    box-shadow: 10px 12px 0px rgba(0, 0, 0, 0.9);\n    display: flex;\n    box-sizing: border-box;\n    width: 100%;\n    z-index: 2;\n    animation: popInWof 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;\n}\n\n@keyframes popInWof {\n    0% { transform: scale(0.85) translateY(20px); opacity: 0; }\n    100% { transform: scale(1) translateY(0); opacity: 1; }\n}\n\n.clientWidget001-root .wof-inner {\n    width: 100%;\n    display: flex;\n    position: relative;\n    z-index: 2;\n    box-sizing: border-box;\n}\n\n.clientWidget001-root .wof-close-btn {\n    position: absolute;\n    top: 14px;\n    right: 14px;\n    z-index: 200;\n    width: 38px;\n    height: 38px;\n    border: 1px solid rgba(244, 235, 217, 0.26);\n    border-radius: 999px;\n    background: rgba(244, 235, 217, 0.16);\n    color: rgba(244, 235, 217, 0.72);\n    box-shadow: none;\n    backdrop-filter: blur(10px);\n    -webkit-backdrop-filter: blur(10px);\n    cursor: pointer;\n    display: grid;\n    place-items: center;\n    transition: all 0.18s ease;\n    -webkit-tap-highlight-color: transparent;\n}\n\n.clientWidget001-root .wof-close-btn:hover {\n    transform: scale(1.04);\n    background: rgba(244, 235, 217, 0.26);\n    color: var(--accent-light);\n}\n.clientWidget001-root .wof-close-btn:active {\n    transform: scale(0.96);\n}\n\n.clientWidget001-root .wof-title {\n    font-family: 'Playfair Display', serif;\n    font-size: 28px;\n    margin-bottom: 16px;\n    color: var(--accent-yellow);\n    font-weight: 600;\n    line-height: 1.2;\n    text-transform: uppercase;\n    margin-top: 0;\n}\n\n.clientWidget001-root .wof-subtitle {\n    font-family: 'Montserrat', sans-serif;\n    font-size: 16px;\n    color: var(--accent-light);\n    opacity: 0.8;\n    margin-bottom: 30px;\n    font-weight: 400;\n    line-height: 1.5;\n    margin-top: 0;\n}\n\n.clientWidget001-root .comic-star {\n    position: absolute;\n    z-index: 100;\n    pointer-events: none;\n    animation: twinkleWof 3s infinite alternate;\n}\n.clientWidget001-root .star-1 { top: -20px; left: -20px; width: 50px; }\n.clientWidget001-root .star-2 { bottom: -10px; right: 30px; width: 40px; }\n\n@keyframes twinkleWof {\n    0% { transform: scale(0.9) rotate(-10deg); }\n    100% { transform: scale(1.1) rotate(10deg); }\n}\n\n.clientWidget001-root .wof-wheel-wrapper {\n    position: relative;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    z-index: 10;\n}\n\n.clientWidget001-root .wof-wheel-container {\n    position: relative;\n    width: 100%;\n    aspect-ratio: 1 / 1;\n}\n\n.clientWidget001-root .wof-pointer {\n    position: absolute;\n    top: -24px;\n    left: 50%;\n    transform: translateX(-50%);\n    width: 50px;\n    height: 70px;\n    z-index: 20;\n    filter: drop-shadow(4px 4px 0px rgba(0,0,0,0.8));\n}\n\n.clientWidget001-root .wof-canvas {\n    width: 100%;\n    height: 100%;\n    border-radius: 50%;\n    transition: transform 5s cubic-bezier(0.2, 0, 0.1, 1);\n    position: relative;\n    z-index: 5;\n    filter: drop-shadow(8px 10px 0px rgba(0,0,0,0.7));\n}\n\n.clientWidget001-root .wof-btn {\n    width: 100%;\n    background: var(--accent-yellow);\n    color: var(--text-dark);\n    border: 4px solid var(--comic-border);\n    padding: 20px 24px;\n    font-family: 'Montserrat', sans-serif;\n    font-size: 24px;\n    font-weight: 900;\n    border-radius: 16px;\n    cursor: pointer;\n    transition: all 0.1s ease-in-out;\n    box-shadow: 4px 6px 0px var(--comic-border);\n    text-transform: uppercase;\n    letter-spacing: 1px;\n    outline: none;\n    position: relative;\n    margin-top: 10px;\n    display: block;\n    box-sizing: border-box;\n    text-align: center;\n    text-decoration: none;\n}\n\n.clientWidget001-root .wof-btn:hover:not(:disabled) {\n    transform: translate(-2px, -2px);\n    box-shadow: 6px 8px 0px var(--comic-border);\n    background: #D4B48C;\n}\n\n.clientWidget001-root .wof-btn:active:not(:disabled) {\n    transform: translate(4px, 6px);\n    box-shadow: 0px 0px 0px var(--comic-border);\n}\n\n.clientWidget001-root .wof-btn:disabled {\n    background: #504439;\n    color: #9A8C7F;\n    cursor: not-allowed;\n    transform: translate(4px, 6px);\n    box-shadow: 0px 0px 0px var(--comic-border);\n}\n\n.clientWidget001-root .wof-form-container {\n    display: flex;\n    flex-direction: column;\n    gap: 16px;\n    width: 100%;\n}\n\n.clientWidget001-root .wof-input-wrapper {\n    position: relative;\n    width: 100%;\n}\n\n.clientWidget001-root .wof-input {\n    width: 100%;\n    background: var(--accent-light);\n    border: 3px solid var(--comic-border);\n    color: var(--text-dark);\n    padding: 18px 20px;\n    border-radius: 12px;\n    font-family: 'Montserrat', sans-serif;\n    font-size: 16px;\n    font-weight: 700;\n    outline: none;\n    transition: all 0.2s;\n    box-shadow: inset 3px 3px 0px rgba(0,0,0,0.04);\n    box-sizing: border-box;\n}\n\n.clientWidget001-root .wof-input:focus {\n    background: #FFFFFF;\n    border-color: var(--accent-yellow);\n    box-shadow: inset 3px 3px 0px rgba(0,0,0,0.04), 0 0 0 3px var(--accent-yellow);\n    transform: translate(-1px, -1px);\n}\n\n.clientWidget001-root .wof-input::placeholder {\n    color: #8C7C6D;\n    font-weight: 700;\n}\n\n.clientWidget001-root .wof-consent {\n    display: flex;\n    align-items: flex-start;\n    gap: 10px;\n    color: #4F443A;\n    font-family: 'Montserrat', sans-serif;\n    font-size: 12px;\n    font-weight: 700;\n    line-height: 1.35;\n    text-align: left;\n}\n\n.clientWidget001-root .wof-consent input {\n    width: 18px;\n    height: 18px;\n    margin: 0;\n    accent-color: var(--accent-yellow);\n    flex: 0 0 auto;\n}\n\n.clientWidget001-root .wof-prize-card {\n    width: 100%;\n    background: var(--accent-light); \n    border: 4px solid var(--comic-border); \n    border-radius: 20px;\n    padding: 30px 24px;\n    box-shadow: 6px 8px 0px rgba(0,0,0,1);\n    position: relative;\n    text-align: center;\n    display: flex;\n    flex-direction: column;\n    box-sizing: border-box;\n}\n\n.clientWidget001-root .wof-prize-label {\n    font-family: 'Montserrat', sans-serif;\n    font-weight: 900;\n    font-size: 14px;\n    text-transform: uppercase;\n    letter-spacing: 2px;\n    color: var(--text-dark);\n    margin-bottom: 8px;\n}\n\n.clientWidget001-root .wof-prize-value {\n    font-family: 'Montserrat', sans-serif;\n    font-size: 34px;\n    font-weight: 900;\n    color: var(--accent-yellow);\n    line-height: 1.15;\n    margin-bottom: 16px;\n    -webkit-text-stroke: 1.5px var(--comic-border);\n    text-shadow: 2px 2px 0px var(--comic-border);\n    text-transform: uppercase;\n}\n\n.clientWidget001-root .wof-subtitle-dark {\n    font-family: 'Montserrat', sans-serif;\n    font-size: 15px;\n    color: var(--text-dark);\n    opacity: 0.9;\n    font-weight: 700;\n    margin-bottom: 25px;\n    line-height: 1.4;\n    margin-top: 0;\n}\n\n.clientWidget001-root .wof-timer-container {\n    background: rgba(0,0,0,0.05);\n    padding: 12px;\n    border-radius: 12px;\n    border: 2px solid var(--comic-border);\n    color: #b91c1c; \n    font-weight: 800;\n    font-size: 14px;\n    margin-bottom: 20px;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    font-variant-numeric: tabular-nums;\n    font-family: 'Montserrat', sans-serif;\n}\n\n.clientWidget001-root .wof-toast {\n    position: relative;\n    z-index: 1000000;\n    width: min(360px, calc(100vw - 32px));\n    padding: 24px 22px;\n    border: 4px solid var(--comic-border);\n    border-radius: 20px;\n    background: var(--accent-light);\n    color: var(--text-dark);\n    box-shadow: 8px 10px 0px rgba(0,0,0,1);\n    text-align: center;\n    transform: scale(0.92);\n    animation: toastInWof 0.32s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;\n}\n\n.clientWidget001-root .wof-success-layer {\n    position: fixed;\n    inset: 0;\n    z-index: 1000000;\n    display: grid;\n    place-items: center;\n    padding: 24px;\n    pointer-events: none;\n}\n\n.clientWidget001-root .wof-toast-title {\n    margin: 0 0 8px;\n    font-family: 'Playfair Display', serif;\n    font-size: 30px;\n    line-height: 1.1;\n    color: var(--accent-yellow);\n    text-transform: uppercase;\n    -webkit-text-stroke: 1px var(--comic-border);\n    text-shadow: 2px 2px 0px var(--comic-border);\n}\n\n.clientWidget001-root .wof-toast-text {\n    margin: 0;\n    font-family: 'Montserrat', sans-serif;\n    font-size: 15px;\n    line-height: 1.45;\n    font-weight: 800;\n}\n\n@keyframes toastInWof {\n    from { opacity: 0; transform: translateY(-12px) scale(0.92); }\n    to { opacity: 1; transform: translateY(0) scale(1); }\n}\n\n.clientWidget001-root .stagger-1 { animation: popBounceWof 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 0.1s both; }\n.clientWidget001-root .stagger-2 { animation: popBounceWof 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 0.15s both; }\n.clientWidget001-root .stagger-3 { animation: popBounceWof 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 0.2s both; }\n\n@keyframes popBounceWof {\n    0% { opacity: 0; transform: scale(0.9) translateY(15px); }\n    70% { transform: scale(1.02) translateY(-2px); }\n    100% { opacity: 1; transform: scale(1) translateY(0); }\n}\n\n@media (max-width: 767px) {\n    .clientWidget001-root .wof-overlay {\n        padding: 16px;\n    }\n\n    .clientWidget001-root .candle-wof-wrapper {\n        margin: 0 auto; \n        padding: 40px 20px 30px; \n        flex-direction: column;\n        max-width: 100%;\n        min-height: auto;\n        border-radius: 24px;\n        display: flex;\n        justify-content: center;\n    }\n\n    .clientWidget001-root .wof-close-btn {\n        top: 15px;\n        right: 15px;\n    }\n\n    .clientWidget001-root .star-1 {\n        top: 10px;\n        left: 10px;\n        width: 40px;\n    }\n\n    .clientWidget001-root .star-2 {\n        bottom: 20px;\n        right: 20px;\n        width: 35px;\n    }\n\n    .clientWidget001-root .wof-inner {\n        flex-direction: column;\n        gap: 15px;\n    }\n\n    .clientWidget001-root .wof-wheel-wrapper {\n        width: 100%;\n        max-width: 280px;\n        margin: 0 auto;\n    }\n\n    .clientWidget001-root .hidden-on-mobile {\n        display: none !important;\n    }\n\n    .clientWidget001-root .wof-content-wrapper {\n        width: 100%;\n        text-align: center;\n        display: flex;\n        flex-direction: column;\n        align-items: center;\n        justify-content: flex-start;\n        height: auto;\n    }\n    \n    .clientWidget001-root .wof-title { font-size: 24px; margin-bottom: 12px; }\n    .clientWidget001-root .wof-subtitle { font-size: 15px; margin-bottom: 20px; }\n    \n    .clientWidget001-root .wof-pointer {\n        top: -18px;\n        width: 40px;\n        height: 56px;\n    }\n    \n    .clientWidget001-root .wof-prize-card {\n        padding: 20px 16px;\n    }\n\n    .clientWidget001-root .wof-prize-value {\n        font-size: 28px;\n    }\n\n    .clientWidget001-root .wof-input { padding: 16px; font-size: 15px; }\n    .clientWidget001-root .wof-btn { padding: 18px 24px; font-size: 20px; }\n}\n\n@media (min-width: 768px) {\n    .clientWidget001-root .wof-close-btn {\n        top: -20px;\n        right: -20px;\n        width: 40px;\n        height: 40px;\n        background: rgba(255, 255, 255, 0.92);\n        color: rgba(42, 35, 30, 0.56);\n        border-color: rgba(42, 35, 30, 0.08);\n        box-shadow: 0 12px 28px rgba(0, 0, 0, 0.16);\n    }\n\n    .clientWidget001-root .wof-close-btn:hover {\n        background: #ffffff;\n        color: rgba(42, 35, 30, 0.82);\n    }\n\n    .clientWidget001-root.wof-position-bottom-left,\n    .clientWidget001-root.wof-position-bottom-right {\n        position: fixed;\n        bottom: 24px;\n        z-index: 999999;\n        width: min(430px, calc(100vw - 48px));\n        min-height: 0;\n    }\n\n    .clientWidget001-root.wof-position-bottom-left {\n        left: 24px;\n    }\n\n    .clientWidget001-root.wof-position-bottom-right {\n        right: 24px;\n    }\n\n    .clientWidget001-root.wof-position-bottom-left.is-visible,\n    .clientWidget001-root.wof-position-bottom-right.is-visible {\n        display: block;\n    }\n\n    .clientWidget001-root.wof-position-bottom-left .wof-overlay,\n    .clientWidget001-root.wof-position-bottom-right .wof-overlay {\n        min-height: 0;\n        padding: 0;\n    }\n\n    .clientWidget001-root.wof-position-bottom-left .candle-wof-wrapper,\n    .clientWidget001-root.wof-position-bottom-right .candle-wof-wrapper {\n        max-width: 430px;\n        padding: 34px 28px 30px;\n    }\n\n    .clientWidget001-root.wof-position-bottom-left .wof-inner,\n    .clientWidget001-root.wof-position-bottom-right .wof-inner {\n        flex-direction: column;\n        gap: 24px;\n    }\n\n    .clientWidget001-root.wof-position-bottom-left .wof-content-wrapper,\n    .clientWidget001-root.wof-position-bottom-right .wof-content-wrapper,\n    .clientWidget001-root.wof-position-bottom-left .wof-wheel-wrapper,\n    .clientWidget001-root.wof-position-bottom-right .wof-wheel-wrapper {\n        width: 100%;\n    }\n\n    .clientWidget001-root.wof-position-bottom-left .wof-content-wrapper,\n    .clientWidget001-root.wof-position-bottom-right .wof-content-wrapper {\n        height: auto;\n    }\n\n    .clientWidget001-root.wof-position-bottom-left .wof-title,\n    .clientWidget001-root.wof-position-bottom-right .wof-title {\n        font-size: 26px;\n    }\n\n    .clientWidget001-root .candle-wof-wrapper {\n        max-width: 880px; \n        padding: 50px 50px;\n    }\n\n    .clientWidget001-root .wof-inner {\n        flex-direction: row;\n        align-items: center;\n        gap: 50px;\n    }\n\n    .clientWidget001-root .wof-content-wrapper {\n        width: 50%; \n        position: relative;\n        z-index: 10;\n        box-sizing: border-box;\n        display: flex;\n        flex-direction: column;\n        justify-content: center;\n        height: 480px;\n    }\n\n    .clientWidget001-root .wof-wheel-wrapper {\n        width: 50%;\n        z-index: 5;\n    }\n\n    .clientWidget001-root .wof-title { font-size: 36px; }\n    .clientWidget001-root .wof-subtitle { font-size: 18px; margin-bottom: 40px; }\n    .clientWidget001-root .wof-input { padding: 18px 20px; font-size: 16px; }\n    .clientWidget001-root .wof-btn { padding: 22px 30px; font-size: 24px; }\n\n    .clientWidget001-root.wof-position-bottom-left .candle-wof-wrapper,\n    .clientWidget001-root.wof-position-bottom-right .candle-wof-wrapper {\n        max-width: 430px;\n        padding: 34px 28px 30px;\n    }\n\n    .clientWidget001-root.wof-position-bottom-left .wof-content-wrapper,\n    .clientWidget001-root.wof-position-bottom-right .wof-content-wrapper {\n        height: auto;\n    }\n}\n</style>\n</head>\n<body>\n\n<!-- Начало блока для Тильды (можно скопировать всё начиная отсюда и выше в блок T123) -->\n<div class=\"clientWidget001-root\">\n\n  <div id=\"clientWidget001-overlay\" class=\"wof-overlay\" style=\"display: flex;\">\n    <div class=\"candle-wof-wrapper\">\n      <button id=\"clientWidget001-close\" class=\"wof-close-btn\" type=\"button\" aria-label=\"Закрыть виджет\">\n        <svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.4\" stroke-linecap=\"round\" stroke-linejoin=\"round\">\n          <path d=\"M18 6L6 18\"></path>\n          <path d=\"M6 6l12 12\"></path>\n        </svg>\n      </button>\n      \n      <!-- Декоративные звезды -->\n      <svg class=\"comic-star star-1\" viewBox=\"0 0 100 100\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\n        <path d=\"M50 0L61 39L100 50L61 61L50 100L39 61L0 50L39 39L50 0Z\" fill=\"#C4A47C\" stroke=\"#1A1512\" stroke-width=\"6\" stroke-linejoin=\"round\"/>\n      </svg>\n      <svg class=\"comic-star star-2\" viewBox=\"0 0 100 100\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\n        <path d=\"M50 0L61 39L100 50L61 61L50 100L39 61L0 50L39 39L50 0Z\" fill=\"#C4A47C\" stroke=\"#1A1512\" stroke-width=\"6\" stroke-linejoin=\"round\"/>\n      </svg>\n      \n      <div class=\"wof-inner\">\n        \n        <div id=\"clientWidget001-wheel-wrapper\" class=\"wof-wheel-wrapper\">\n          <div class=\"wof-wheel-container\">\n            <svg class=\"wof-pointer\" viewBox=\"0 0 60 80\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\n              <path d=\"M30 80 L8 35 C0 20 8 2 30 2 C52 2 60 20 52 35 Z\" fill=\"#C4A47C\" stroke=\"#1A1512\" stroke-width=\"5\" stroke-linejoin=\"round\"/>\n              <circle cx=\"30\" cy=\"24\" r=\"10\" fill=\"#F4EBD9\" stroke=\"#1A1512\" stroke-width=\"5\"/>\n            </svg>\n            <canvas id=\"clientWidget001-canvas\" class=\"wof-canvas\" width=\"1000\" height=\"1000\"></canvas>\n          </div>\n        </div>\n\n        <div class=\"wof-content-wrapper\">\n          \n          <!-- Экран 1: Колесо -->\n          <div id=\"clientWidget001-step-spin\" style=\"display: block;\">\n            <h1 class=\"wof-title stagger-1\">Твой подарок от школы ждёт!</h1>\n            <p class=\"wof-subtitle stagger-2\">Крути колесо — каждая участница получает приз. Без исключений!</p>\n            \n            <div class=\"stagger-3 wof-form-container\">\n                <button id=\"clientWidget001-spin-btn\" class=\"wof-btn\" type=\"button\" data-track=\"wheel-spin\">КРУТИТЬ!</button>\n            </div>\n          </div>\n\n          <!-- Экран 2: Приз -->\n          <div id=\"clientWidget001-step-form\" class=\"wof-prize-card stagger-1\" style=\"display: none;\">\n            <div class=\"wof-prize-label\">Твой Приз:</div>\n            <div id=\"clientWidget001-prize-value\" class=\"wof-prize-value\"></div>\n            <p class=\"wof-subtitle-dark stagger-2\" style=\"margin-bottom: 15px;\">\n              Поздравляем! Твой приз готов. Нажми кнопку ниже - передадим выигрыш в анкету автоматически.\n            </p>\n\n            <div class=\"wof-timer-container\">\n              <svg width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" style=\"margin-right: 8px; display: inline-block; vertical-align: middle;\"><circle cx=\"12\" cy=\"12\" r=\"10\"></circle><polyline points=\"12 6 12 12 16 14\"></polyline></svg>\n              <span id=\"clientWidget001-timer\">Предложение сгорит через: 23:59:59</span>\n            </div>\n            \n            <div class=\"wof-form-container stagger-3\">\n              <a id=\"clientWidget001-prize-link\" class=\"wof-btn\" href=\"https://lk.dnevniksvechnika.ru/anketa\" style=\"margin-top: 8px;\" data-track=\"wheel-get-prize\">ЗАБРАТЬ ПРИЗ!</a>\n            </div>\n          </div>\n\n        </div>\n      </div>\n    </div>\n  </div>\n\n<script>\n(function() {\n  const LEGACY_STORAGE_KEY = 'clientWidget001_wof_v1';\n  const ANKETA_URL = 'https://lk.dnevniksvechnika.ru/anketa';\n  const BEHAVIOR_CONFIG = Object.assign({\n    appearanceDelaySeconds: 0,\n    showFrequency: 'always',\n    customFrequencyHours: 24,\n    desktopPosition: 'center',\n    displayStorageKey: 'clientWidget001_last_shown_at'\n  }, window.CLIENT_WIDGET001_BEHAVIOR_CONFIG || {});\n  const params = new URLSearchParams(window.location.search);\n  const isPreview = params.get('preview') === '1';\n  const isEmbed = params.get('embed') === '1';\n  const accentColor = params.get('accentColor') || '#C4A47C';\n\n  if (params.get('delay')) {\n    BEHAVIOR_CONFIG.appearanceDelaySeconds = Number(params.get('delay')) || 0;\n  }\n  if (params.get('frequency')) {\n    BEHAVIOR_CONFIG.showFrequency = params.get('frequency');\n  }\n  if (params.get('position')) {\n    BEHAVIOR_CONFIG.desktopPosition = params.get('position');\n  }\n  \n  const prizes = [\n    \"Бесплатный\\nурок\",\n    \"Чек-лист\\nпоставщиков\",\n    \"МК новичку\\nза 490 ₽\",\n    \"−15% на тариф\\nПРОФИ\",\n    \"Гайд\\nновичку\",\n    \"−2000 ₽\\nна тариф ВИП\"\n  ];\n\n  const colors = [\n    \"#F4EBD9\", accentColor, \"#F4EBD9\", \n    accentColor, \"#F4EBD9\", accentColor\n  ];\n\n  // DOM Элементы\n  const root = document.querySelector('.clientWidget001-root');\n  if (root && isPreview) {\n    root.classList.add('is-preview-visible');\n  }\n  if (root && params.get('accentColor')) {\n    root.style.setProperty('--accent-yellow', accentColor);\n  }\n  const overlay = document.getElementById('clientWidget001-overlay');\n  const closeBtn = document.getElementById('clientWidget001-close');\n  const spinBtn = document.getElementById('clientWidget001-spin-btn');\n  const canvas = document.getElementById('clientWidget001-canvas');\n  const ctx = canvas ? canvas.getContext('2d') : null;\n  const wheelWrapper = document.getElementById('clientWidget001-wheel-wrapper');\n  \n  const stepSpin = document.getElementById('clientWidget001-step-spin');\n  const stepForm = document.getElementById('clientWidget001-step-form');\n  \n  const prizeValueEl = document.getElementById('clientWidget001-prize-value');\n  const prizeLink = document.getElementById('clientWidget001-prize-link');\n  const timerEl = document.getElementById('clientWidget001-timer');\n\n  let isSpinning = false;\n  let rotation = 0;\n  let timerInterval;\n  let selectedPrize = '';\n\n  function init() {\n    if (!overlay) return;\n\n    localStorage.removeItem(LEGACY_STORAGE_KEY);\n    localStorage.removeItem(LEGACY_STORAGE_KEY + '_prize');\n    localStorage.removeItem(LEGACY_STORAGE_KEY + '_expiry');\n\n    if (spinBtn) spinBtn.addEventListener('click', handleSpin);\n    if (closeBtn) closeBtn.addEventListener('click', closeWidget);\n\n    // Рисуем колесо\n    document.fonts.ready.then(() => {\n        drawWheel();\n    });\n    setTimeout(drawWheel, 100);\n    scheduleWidgetAppearance();\n  }\n\n  function getDisplayFrequencyMs() {\n    const hourMs = 60 * 60 * 1000;\n    if (BEHAVIOR_CONFIG.showFrequency === 'once_per_hour') return hourMs;\n    if (BEHAVIOR_CONFIG.showFrequency === 'once_per_day') return 24 * hourMs;\n    if (BEHAVIOR_CONFIG.showFrequency === 'custom') {\n      const hours = Number(BEHAVIOR_CONFIG.customFrequencyHours);\n      return Math.max(0, Number.isFinite(hours) ? hours : 24) * hourMs;\n    }\n    return 0;\n  }\n\n  function canShowWidgetNow() {\n    if (isPreview || BEHAVIOR_CONFIG.showFrequency === 'always') return true;\n    const frequencyMs = getDisplayFrequencyMs();\n    if (!frequencyMs) return true;\n\n    const lastShownAt = Number(localStorage.getItem(BEHAVIOR_CONFIG.displayStorageKey) || 0);\n    return !lastShownAt || Date.now() - lastShownAt >= frequencyMs;\n  }\n\n  function rememberWidgetShown() {\n    if (isPreview || BEHAVIOR_CONFIG.showFrequency === 'always') return;\n    localStorage.setItem(BEHAVIOR_CONFIG.displayStorageKey, String(Date.now()));\n  }\n\n  function applyWidgetPosition() {\n    if (!root) return;\n    root.classList.remove('wof-position-center', 'wof-position-bottom-left', 'wof-position-bottom-right');\n\n    const position = ['center', 'bottom-left', 'bottom-right'].includes(BEHAVIOR_CONFIG.desktopPosition)\n      ? BEHAVIOR_CONFIG.desktopPosition\n      : 'center';\n\n    root.classList.add('wof-position-' + position);\n  }\n\n  function scheduleWidgetAppearance() {\n    applyWidgetPosition();\n\n    if (!canShowWidgetNow()) {\n      if (root) root.classList.remove('is-visible');\n      if (overlay) overlay.style.display = 'none';\n      notifyParentClose();\n      return;\n    }\n\n    const delaySeconds = Math.max(0, Number(BEHAVIOR_CONFIG.appearanceDelaySeconds) || 0);\n    const delayMs = isPreview ? 0 : delaySeconds * 1000;\n\n    setTimeout(() => {\n      openWidget();\n      rememberWidgetShown();\n    }, delayMs);\n  }\n\n  function openWidget() {\n    selectedPrize = '';\n    showStep('spin');\n    setTimeout(drawWheel, 50);\n    if (root) root.classList.add('is-visible');\n    overlay.style.display = 'flex';\n    notifyParentOpen();\n  }\n\n  function closeWidget() {\n    if (timerInterval) clearInterval(timerInterval);\n    if (root) root.classList.remove('is-visible');\n    if (overlay) overlay.style.display = 'none';\n    notifyParentClose();\n  }\n\n  function notifyParentClose() {\n    if (!isEmbed || window.parent === window) return;\n    window.parent.postMessage({ type: 'widgets0:close' }, '*');\n  }\n\n  function notifyParentOpen() {\n    if (!isEmbed || window.parent === window) return;\n    window.parent.postMessage({ type: 'widgets0:open' }, '*');\n  }\n\n  function showStep(step) {\n    if (stepSpin) stepSpin.style.display = step === 'spin' ? 'block' : 'none';\n    if (stepForm) stepForm.style.display = step === 'form' ? 'flex' : 'none';\n\n    if (step === 'form') {\n      wheelWrapper.classList.add('hidden-on-mobile');\n      startTimer();\n    } else if (step === 'success') {\n      wheelWrapper.style.display = 'none';\n    } else {\n      wheelWrapper.classList.remove('hidden-on-mobile');\n      wheelWrapper.style.display = 'block';\n    }\n  }\n\n  function drawWheel() {\n    if (!ctx || !canvas) return;\n    const num = prizes.length;\n    const arc = (2 * Math.PI) / num;\n    const cx = canvas.width / 2;\n    const cy = canvas.height / 2;\n    const r = (canvas.width / 2) - 40;\n\n    ctx.clearRect(0, 0, canvas.width, canvas.height);\n\n    ctx.beginPath(); \n    ctx.arc(cx, cy, r + 24, 0, 2 * Math.PI); \n    ctx.fillStyle = \"#C4A47C\"; \n    ctx.fill();\n    ctx.lineWidth = 10;\n    ctx.strokeStyle = \"#2A231E\";\n    ctx.stroke();\n\n    ctx.beginPath();\n    ctx.arc(cx, cy, r, 0, 2 * Math.PI);\n    ctx.lineWidth = 10;\n    ctx.stroke();\n\n    for(let i = 0; i < num; i++) {\n        const ang = i * arc;\n        \n        ctx.beginPath();\n        ctx.moveTo(cx, cy);\n        ctx.arc(cx, cy, r, ang, ang + arc);\n        ctx.fillStyle = colors[i % colors.length];\n        ctx.fill();\n        \n        ctx.lineWidth = 8;\n        ctx.strokeStyle = \"#1A1512\";\n        ctx.stroke();\n\n        ctx.save();\n        ctx.translate(cx, cy);\n        \n        const textAngle = ang + arc / 2;\n        ctx.rotate(textAngle);\n        \n        const isUpsideDown = textAngle > Math.PI / 2 && textAngle < (3 * Math.PI) / 2;\n        \n        ctx.textAlign = isUpsideDown ? \"left\" : \"right\";\n        ctx.textBaseline = \"middle\"; \n        \n        ctx.font = \"800 38px 'Montserrat', sans-serif\"; \n        \n        const lines = prizes[i].split('\\n');\n        const lineHeight = 46;\n        const startY = -((lines.length - 1) * lineHeight) / 2;\n        \n        if (isUpsideDown) {\n            ctx.rotate(Math.PI);\n            lines.forEach((line, index) => {\n                const yPos = - (startY + (index * lineHeight));\n                const xPos = -(r - 55); \n                \n                ctx.fillStyle = \"#2A231E\";\n                ctx.fillText(line, xPos, yPos);\n            });\n        } else {\n            lines.forEach((line, index) => {\n                const yPos = startY + (index * lineHeight);\n                const xPos = r - 55;\n                \n                ctx.fillStyle = \"#2A231E\";\n                ctx.fillText(line, xPos, yPos);\n            });\n        }\n        ctx.restore();\n    }\n    \n    ctx.beginPath(); ctx.arc(cx, cy, 65, 0, 2 * Math.PI); \n    ctx.fillStyle = \"#C4A47C\"; ctx.fill();\n    ctx.lineWidth = 10; ctx.stroke();\n    \n    ctx.beginPath(); ctx.arc(cx, cy, 30, 0, 2 * Math.PI); \n    ctx.fillStyle = \"#2A231E\"; ctx.fill();\n    ctx.lineWidth = 4; ctx.stroke();\n  }\n\n  function handleSpin() {\n    if (isSpinning) return;\n    isSpinning = true;\n    spinBtn.innerText = \"ВРАЩАЕМ...\";\n    spinBtn.disabled = true;\n\n    const spin = Math.floor(2800 + Math.random() * 2000);\n    rotation += spin;\n    \n    canvas.style.transform = `rotate(${rotation}deg)`;\n\n    setTimeout(() => {\n        isSpinning = false;\n        spinBtn.innerText = \"КРУТИТЬ!\";\n        spinBtn.disabled = false;\n        \n        const degPerSector = 360 / prizes.length;\n        const actualDeg = (360 - (rotation % 360) + 270) % 360;\n        const index = Math.floor(actualDeg / degPerSector);\n        \n        const winText = formatPrizeText(prizes[index]);\n        selectedPrize = winText;\n        if (prizeValueEl) prizeValueEl.innerText = winText;\n        updatePrizeLink(winText);\n        \n        showStep('form');\n        \n        if (typeof confetti !== 'undefined') {\n            launchConfettiWidget();\n        }\n    }, 5000);\n  }\n\n  function launchConfettiWidget() {\n    const duration = 2500;\n    const end = Date.now() + duration;\n    const confettiColors = ['#C4A47C', '#F4EBD9', '#FFFFFF', '#8B6D45']; \n\n    (function frame() {\n        confetti({ particleCount: 5, angle: 60, spread: 60, origin: { x: 0 }, colors: confettiColors, zIndex: 9999999 });\n        confetti({ particleCount: 5, angle: 120, spread: 60, origin: { x: 1 }, colors: confettiColors, zIndex: 9999999 });\n        if (Date.now() < end) requestAnimationFrame(frame);\n    }());\n  }\n\n  function formatPrizeText(prize) {\n    return String(prize || '').replace(/\\s*\\n\\s*/g, ' ').replace(/\\s+/g, ' ').trim();\n  }\n\n  function updatePrizeLink(prize) {\n    if (!prizeLink) return;\n    const value = formatPrizeText(prize || 'Приз');\n    prizeLink.href = `${ANKETA_URL}?priz=${encodeURIComponent(value)}`;\n  }\n\n  function startTimer() {\n    if (timerInterval) clearInterval(timerInterval);\n    \n    const expiryTime = Date.now() + 24 * 60 * 60 * 1000;\n    \n    const updateTimer = () => {\n      const now = Date.now();\n      const remaining = Math.max(0, Math.floor((expiryTime - now) / 1000));\n      \n      const h = Math.floor(remaining / 3600).toString().padStart(2, '0');\n      const m = Math.floor((remaining % 3600) / 60).toString().padStart(2, '0');\n      const s = (remaining % 60).toString().padStart(2, '0');\n      \n      timerEl.innerText = `Предложение сгорит через: ${h}:${m}:${s}`;\n      \n      if (remaining <= 0) clearInterval(timerInterval);\n    };\n    \n    updateTimer();\n    timerInterval = setInterval(updateTimer, 1000);\n  }\n\n  // Запуск\n  if (document.readyState === 'loading') {\n    document.addEventListener('DOMContentLoaded', init);\n  } else {\n    init();\n  }\n})();\n</script>\n</div>\n<!-- Конец блока для Тильды -->\n\n</body>\n</html>\n";
+  var POPUP_CSS = "\n      .clientWidget001-root.widgets0-inline-popup {\n        position: fixed !important;\n        inset: 0 !important;\n        width: 100vw !important;\n        min-height: 100vh !important;\n        z-index: var(--widgets0-z-index, 2147483000) !important;\n        background: var(--widgets0-backdrop, rgba(12, 10, 8, 0.58)) !important;\n        box-sizing: border-box !important;\n      }\n      .clientWidget001-root.widgets0-inline-popup.is-visible,\n      .clientWidget001-root.widgets0-inline-popup.widgets0-force-visible {\n        display: flex !important;\n        opacity: 1 !important;\n        visibility: visible !important;\n      }\n      .clientWidget001-root.widgets0-inline-popup .wof-overlay {\n        width: 100% !important;\n        min-height: 100vh !important;\n        padding: 20px !important;\n        box-sizing: border-box !important;\n      }\n      @supports (height: 100dvh) {\n        .clientWidget001-root.widgets0-inline-popup,\n        .clientWidget001-root.widgets0-inline-popup .wof-overlay {\n          min-height: 100dvh !important;\n        }\n      }\n      @media (max-width: 767px) {\n        .clientWidget001-root.widgets0-inline-popup .wof-overlay {\n          padding: 12px !important;\n        }\n      }\n";
 
-  let selectedPrize = prizes[0];
-  let rootEl = null;
+  if (window.__WIDGETS0_LERA_CANDLES_WHEEL_LOADED__) return;
+  window.__WIDGETS0_LERA_CANDLES_WHEEL_LOADED__ = true;
 
-  function canShow() {
-    if (settings.frequency === 'always') return true;
+  var currentScript = document.currentScript || (function () {
+    var scripts = document.getElementsByTagName('script');
+    return scripts[scripts.length - 1];
+  })();
 
-    try {
-      const lastShown = Number(localStorage.getItem(settings.storageKey) || 0);
-      const now = Date.now();
+  function readBool(value, fallback) {
+    if (value == null || value === '') return fallback;
+    return String(value).toLowerCase() !== 'false' && value !== '0';
+  }
 
-      if (settings.frequency === 'once') return !lastShown;
-      if (settings.frequency === 'hour') return now - lastShown > 60 * 60 * 1000;
-      if (settings.frequency === 'day') return now - lastShown > 24 * 60 * 60 * 1000;
-    } catch (error) {
-      return true;
+  function readNumber(value, fallback) {
+    var parsed = Number(value);
+    return Number.isFinite(parsed) ? parsed : fallback;
+  }
+
+  function getSettings() {
+    var globalSettings = window.WIDGETS0_LERA_CANDLES_WHEEL || {};
+    var settings = Object.assign({}, DEFAULT_SETTINGS, globalSettings);
+    if (currentScript && currentScript.dataset) {
+      settings.enabled = readBool(currentScript.dataset.enabled, settings.enabled);
+      settings.appearanceDelaySeconds = readNumber(currentScript.dataset.delay, settings.appearanceDelaySeconds);
+      settings.showFrequency = currentScript.dataset.frequency || settings.showFrequency;
+      settings.customFrequencyHours = readNumber(currentScript.dataset.customFrequencyHours, settings.customFrequencyHours);
+      settings.desktopPosition = currentScript.dataset.position || settings.desktopPosition;
+      settings.displayStorageKey = currentScript.dataset.storageKey || settings.displayStorageKey;
+      settings.backdropColor = currentScript.dataset.backdrop || settings.backdropColor;
+    }
+    return settings;
+  }
+
+  function sanitizeCss(css) {
+    return css
+      .replace(/html\s*,\s*body\s*\{[\s\S]*?\}\s*body\s*\{[\s\S]*?\}/g, '')
+      .replace(/(^|\n)\s*body\s*\{[\s\S]*?\}/g, '$1');
+  }
+
+  function appendStyle(css, id) {
+    if (id && document.getElementById(id)) return;
+    var style = document.createElement('style');
+    if (id) style.id = id;
+    style.textContent = css;
+    (document.head || document.documentElement).appendChild(style);
+  }
+
+  function loadExternalScript(src) {
+    return new Promise(function (resolve, reject) {
+      if (!src) return resolve();
+      var safeSrc = src.replace(/"/g, '\\"');
+      var existing = document.querySelector('script[src="' + safeSrc + '"]');
+      if (existing) {
+        if (existing.dataset.widgets0Loaded === '1') return resolve();
+        var existingTimeout = setTimeout(function () {
+          reject(new Error('Timed out loading ' + src));
+        }, 2500);
+        existing.addEventListener('load', function () {
+          clearTimeout(existingTimeout);
+          resolve();
+        }, { once: true });
+        existing.addEventListener('error', function () {
+          clearTimeout(existingTimeout);
+          reject(new Error('Failed to load ' + src));
+        }, { once: true });
+        return;
+      }
+      var didFinish = false;
+      var timeout = setTimeout(function () {
+        if (didFinish) return;
+        didFinish = true;
+        reject(new Error('Timed out loading ' + src));
+      }, 2500);
+      var script = document.createElement('script');
+      script.src = src;
+      script.async = false;
+      script.onload = function () {
+        if (didFinish) return;
+        didFinish = true;
+        clearTimeout(timeout);
+        script.dataset.widgets0Loaded = '1';
+        resolve();
+      };
+      script.onerror = function () {
+        if (didFinish) return;
+        didFinish = true;
+        clearTimeout(timeout);
+        reject(new Error('Failed to load ' + src));
+      };
+      (document.head || document.documentElement).appendChild(script);
+    });
+  }
+
+  function runInlineScript(code) {
+    var script = document.createElement('script');
+    script.text = code;
+    (document.body || document.documentElement).appendChild(script);
+  }
+
+  function removeScripts(node) {
+    if (node.nodeType !== 1) return node;
+    if (node.tagName === 'SCRIPT') return null;
+    Array.prototype.forEach.call(node.querySelectorAll('script'), function (script) {
+      script.remove();
+    });
+    return node;
+  }
+
+  function injectWidget() {
+    var settings = getSettings();
+    if (!settings.enabled) return;
+
+    var parser = new DOMParser();
+    var doc = parser.parseFromString(WIDGET_HTML, 'text/html');
+
+    var css = Array.prototype.map.call(doc.querySelectorAll('style'), function (style) {
+      return sanitizeCss(style.textContent || '');
+    }).join('\n');
+
+    appendStyle(css, 'widgets0-lera-candles-wheel-styles');
+    appendStyle(POPUP_CSS, 'widgets0-lera-candles-wheel-popup-overrides');
+
+    window.CLIENT_WIDGET001_BEHAVIOR_CONFIG = {
+      appearanceDelaySeconds: settings.appearanceDelaySeconds,
+      showFrequency: settings.showFrequency,
+      customFrequencyHours: settings.customFrequencyHours,
+      desktopPosition: settings.desktopPosition,
+      displayStorageKey: settings.displayStorageKey
+    };
+
+    var fragment = document.createDocumentFragment();
+    Array.prototype.forEach.call(doc.body.childNodes, function (node) {
+      var importedNode = removeScripts(document.importNode(node, true));
+      if (importedNode) fragment.appendChild(importedNode);
+    });
+    (document.body || document.documentElement).appendChild(fragment);
+
+    var root = document.querySelector('.clientWidget001-root');
+    if (root) {
+      root.classList.add('widgets0-inline-popup');
+      root.style.setProperty('--widgets0-backdrop', settings.backdropColor);
+      root.style.setProperty('--widgets0-z-index', String(settings.zIndex));
     }
 
-    return true;
-  }
-
-  function markShown() {
-    try {
-      localStorage.setItem(settings.storageKey, String(Date.now()));
-    } catch (error) {
-      // localStorage can be unavailable in strict privacy modes.
-    }
-  }
-
-  function addFonts() {
-    if (!document.getElementById('lw-google-fonts-preconnect')) {
-      const preconnect = document.createElement('link');
-      preconnect.id = 'lw-google-fonts-preconnect';
-      preconnect.rel = 'preconnect';
-      preconnect.href = 'https://fonts.googleapis.com';
-      document.head.appendChild(preconnect);
-    }
-
-    if (!document.getElementById('lw-google-fonts-static-preconnect')) {
-      const preconnectStatic = document.createElement('link');
-      preconnectStatic.id = 'lw-google-fonts-static-preconnect';
-      preconnectStatic.rel = 'preconnect';
-      preconnectStatic.href = 'https://fonts.gstatic.com';
-      preconnectStatic.crossOrigin = 'anonymous';
-      document.head.appendChild(preconnectStatic);
-    }
-
-    if (!document.getElementById('lw-google-fonts')) {
-      const link = document.createElement('link');
-      link.id = 'lw-google-fonts';
-      link.rel = 'stylesheet';
-      link.href = 'https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;800;900&family=Playfair+Display:wght@600;700&display=swap';
-      document.head.appendChild(link);
-    }
-  }
-
-  function addStyles() {
-    if (document.getElementById('lw-loader-styles')) return;
-
-    const style = document.createElement('style');
-    style.id = 'lw-loader-styles';
-    style.textContent = `
-      .lw-root, .lw-root * { box-sizing: border-box; }
-      .lw-root {
-        position: fixed;
-        inset: 0;
-        z-index: 2147483000;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: 28px;
-        font-family: "Montserrat", Arial, sans-serif;
-        pointer-events: auto;
-      }
-      .lw-root[data-position="bottom-left"] { align-items: flex-end; justify-content: flex-start; }
-      .lw-root[data-position="bottom-right"] { align-items: flex-end; justify-content: flex-end; }
-      .lw-backdrop {
-        position: absolute;
-        inset: 0;
-        background: rgba(0, 0, 0, .62);
-        backdrop-filter: blur(4px);
-        -webkit-backdrop-filter: blur(4px);
-      }
-      .lw-modal {
-        position: relative;
-        z-index: 2;
-        width: min(1120px, calc(100vw - 56px));
-        min-height: 560px;
-        border: 5px solid #17110d;
-        border-radius: 24px;
-        overflow: visible;
-        color: #f4ead9;
-        background:
-          repeating-conic-gradient(from 0deg at 50% 50%, rgba(255,255,255,.055) 0deg 10deg, rgba(0,0,0,.08) 10deg 20deg),
-          linear-gradient(135deg, #382f28, #241c17);
-        box-shadow: 16px 18px 0 rgba(0,0,0,.72), 0 30px 90px rgba(0,0,0,.42);
-      }
-      .lw-content {
-        display: grid;
-        grid-template-columns: minmax(360px, .95fr) minmax(340px, 1fr);
-        gap: 54px;
-        align-items: center;
-        min-height: 560px;
-        padding: 58px 72px;
-      }
-      .lw-close {
-        position: absolute;
-        top: -26px;
-        right: -26px;
-        z-index: 8;
-        width: 54px;
-        height: 54px;
-        border: 0;
-        border-radius: 50%;
-        background: rgba(255,255,255,.96);
-        color: #7b736a;
-        cursor: pointer;
-        box-shadow: 0 10px 28px rgba(0,0,0,.18);
-        display: grid;
-        place-items: center;
-        transition: transform .18s ease, background .18s ease;
-      }
-      .lw-close:hover { transform: scale(1.04); background: #fff; }
-      .lw-close svg { width: 28px; height: 28px; pointer-events: none; }
-      .lw-star {
-        position: absolute;
-        width: 58px;
-        height: 58px;
-        color: #d5b586;
-        filter: drop-shadow(4px 5px 0 rgba(0,0,0,.6));
-        pointer-events: none;
-      }
-      .lw-star-1 { top: -32px; left: -31px; }
-      .lw-star-2 { right: 28px; bottom: 18px; width: 46px; height: 46px; }
-      .lw-wheel-wrap {
-        position: relative;
-        display: grid;
-        place-items: center;
-        min-width: 0;
-      }
-      .lw-pointer {
-        position: absolute;
-        top: -23px;
-        left: 50%;
-        z-index: 5;
-        width: 62px;
-        transform: translateX(-50%);
-        filter: drop-shadow(5px 7px 0 rgba(0,0,0,.72));
-        pointer-events: none;
-      }
-      .lw-wheel {
-        width: min(420px, 100%);
-        aspect-ratio: 1;
-        border-radius: 50%;
-        filter: drop-shadow(12px 14px 0 rgba(0,0,0,.65));
-        transition: transform 4.8s cubic-bezier(.14, .82, .12, 1);
-      }
-      .lw-copy {
-        position: relative;
-        z-index: 2;
-        min-width: 0;
-      }
-      .lw-title {
-        margin: 0 0 18px;
-        max-width: 520px;
-        font-family: "Playfair Display", Georgia, "Times New Roman", serif;
-        font-size: clamp(40px, 5.5vw, 66px);
-        line-height: .95;
-        font-weight: 600;
-        letter-spacing: 0;
-        color: #d1ad7e;
-        text-transform: uppercase;
-      }
-      .lw-text {
-        margin: 0 0 44px;
-        max-width: 500px;
-        color: #f3eadc;
-        font-size: clamp(18px, 2.1vw, 27px);
-        line-height: 1.35;
-      }
-      .lw-spin,
-      .lw-prize-link {
-        width: 100%;
-        min-height: 86px;
-        border: 4px solid #17110d;
-        border-radius: 16px;
-        background: #c8a77b;
-        color: #201914;
-        box-shadow: 7px 9px 0 #17110d;
-        cursor: pointer;
-        font: 900 clamp(24px, 3.3vw, 40px)/1 "Montserrat", Arial, sans-serif;
-        letter-spacing: 0;
-        text-transform: uppercase;
-        text-decoration: none;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        text-align: center;
-        padding: 20px 24px;
-        transition: transform .14s ease, box-shadow .14s ease, filter .14s ease;
-      }
-      .lw-spin:hover,
-      .lw-prize-link:hover { transform: translate(-2px, -2px); box-shadow: 9px 11px 0 #17110d; filter: brightness(1.04); }
-      .lw-spin:active,
-      .lw-prize-link:active { transform: translate(5px, 7px); box-shadow: 2px 2px 0 #17110d; }
-      .lw-result {
-        display: none;
-        position: relative;
-        z-index: 4;
-        min-height: 560px;
-        grid-template-columns: .82fr 1fr;
-        gap: 34px;
-        align-items: center;
-        padding: 48px 58px;
-      }
-      .lw-modal.is-result .lw-content { display: none; }
-      .lw-modal.is-result .lw-result { display: grid; }
-      .lw-result-card {
-        min-height: 520px;
-        border-left: 2px solid rgba(23,17,13,.2);
-        background: #fbf1dd;
-        color: #251d17;
-        padding: 42px 42px 36px;
-        box-shadow: -8px 0 0 rgba(0,0,0,.18);
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-      }
-      .lw-prize-label {
-        margin: 0 0 8px;
-        font-size: 16px;
-        font-weight: 900;
-        letter-spacing: 0;
-        text-transform: uppercase;
-        color: #6b5140;
-        text-align: center;
-      }
-      .lw-prize-title {
-        margin: 0 0 22px;
-        font-size: clamp(34px, 4vw, 56px);
-        line-height: .92;
-        font-weight: 1000;
-        text-align: center;
-        color: #241b14;
-        text-transform: uppercase;
-      }
-      .lw-prize-text {
-        margin: 0 0 28px;
-        text-align: center;
-        color: #3b2e25;
-        font-size: 20px;
-        line-height: 1.35;
-        font-weight: 800;
-      }
-      .lw-prize-link { min-height: 78px; font-size: clamp(22px, 2.6vw, 34px); }
-      .lw-confetti {
-        position: absolute;
-        inset: 0;
-        overflow: hidden;
-        pointer-events: none;
-        border-radius: 20px;
-      }
-      .lw-confetti span {
-        position: absolute;
-        top: -20px;
-        width: 9px;
-        height: 15px;
-        background: #d5b586;
-        opacity: .82;
-        animation: lwFall 3.4s linear infinite;
-      }
-      @keyframes lwFall {
-        from { transform: translate3d(0, -30px, 0) rotate(0deg); }
-        to { transform: translate3d(var(--x, 30px), 620px, 0) rotate(420deg); }
-      }
-      @media (max-width: 760px) {
-        .lw-root { padding: 20px 12px; align-items: center; }
-        .lw-modal {
-          width: min(430px, calc(100vw - 24px));
-          min-height: auto;
-          max-height: calc(100vh - 56px);
-          overflow: auto;
-          border-radius: 24px;
-          box-shadow: 10px 12px 0 rgba(0,0,0,.72), 0 28px 70px rgba(0,0,0,.42);
-        }
-        .lw-content {
-          display: flex;
-          flex-direction: column;
-          gap: 22px;
-          min-height: auto;
-          padding: 34px 24px 28px;
-          text-align: center;
-        }
-        .lw-close { top: 12px; right: 12px; width: 46px; height: 46px; background: rgba(255,255,255,.28); color: #fff; }
-        .lw-wheel { width: min(310px, 76vw); }
-        .lw-pointer { top: -14px; width: 46px; }
-        .lw-title { font-size: 35px; max-width: none; margin-bottom: 12px; }
-        .lw-text { font-size: 19px; margin-bottom: 22px; }
-        .lw-spin, .lw-prize-link { min-height: 68px; font-size: 24px; }
-        .lw-result {
-          display: none;
-          min-height: auto;
-          padding: 24px;
-          grid-template-columns: 1fr;
-          gap: 18px;
-        }
-        .lw-result-card { min-height: auto; border-left: 0; border-top: 2px solid rgba(23,17,13,.2); padding: 30px 22px; border-radius: 18px; }
-        .lw-star-1 { top: -20px; left: -18px; width: 44px; height: 44px; }
-        .lw-star-2 { right: 14px; bottom: 12px; }
-      }
-    `;
-    document.head.appendChild(style);
-  }
-
-  function starSvg(className) {
-    return `
-      <svg class="${className}" viewBox="0 0 100 100" fill="none" aria-hidden="true">
-        <path d="M50 3L62 38L97 50L62 62L50 97L38 62L3 50L38 38L50 3Z" fill="currentColor" stroke="#17110d" stroke-width="6" stroke-linejoin="round"/>
-      </svg>
-    `;
-  }
-
-  function pointerSvg() {
-    return `
-      <svg class="lw-pointer" viewBox="0 0 70 92" fill="none" aria-hidden="true">
-        <path d="M35 88L9 37C-.5 18 11 4 35 4s35.5 14 26 33L35 88Z" fill="#c8a77b" stroke="#17110d" stroke-width="6" stroke-linejoin="round"/>
-        <circle cx="35" cy="28" r="11" fill="#fff7e8" stroke="#17110d" stroke-width="6"/>
-      </svg>
-    `;
-  }
-
-  function wrapText(ctx, text, maxWidth) {
-    const words = text.split(' ');
-    const lines = [];
-    let line = '';
-
-    words.forEach((word) => {
-      const next = line ? `${line} ${word}` : word;
-      if (ctx.measureText(next).width > maxWidth && line) {
-        lines.push(line);
-        line = word;
-      } else {
-        line = next;
-      }
+    var externalScripts = Array.prototype.map.call(doc.querySelectorAll('script[src]'), function (script) {
+      return script.getAttribute('src');
     });
 
-    if (line) lines.push(line);
-    return lines.slice(0, 3);
-  }
-
-  function drawWheel(canvas) {
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
-
-    const size = canvas.width;
-    const center = size / 2;
-    const radius = center - 52;
-    const arc = (Math.PI * 2) / prizes.length;
-    const colors = ['#fbf1dd', '#c8a77b'];
-
-    ctx.clearRect(0, 0, size, size);
-
-    ctx.beginPath();
-    ctx.arc(center, center, radius + 30, 0, Math.PI * 2);
-    ctx.fillStyle = '#c8a77b';
-    ctx.fill();
-    ctx.lineWidth = 11;
-    ctx.strokeStyle = '#17110d';
-    ctx.stroke();
-
-    prizes.forEach((prize, index) => {
-      const start = index * arc - Math.PI / 2;
-      const end = start + arc;
-
-      ctx.beginPath();
-      ctx.moveTo(center, center);
-      ctx.arc(center, center, radius, start, end);
-      ctx.closePath();
-      ctx.fillStyle = colors[index % colors.length];
-      ctx.fill();
-      ctx.lineWidth = 7;
-      ctx.strokeStyle = '#17110d';
-      ctx.stroke();
-
-      ctx.save();
-      ctx.translate(center, center);
-      ctx.rotate(start + arc / 2);
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      ctx.fillStyle = '#221914';
-      ctx.font = '900 38px Montserrat, Arial, sans-serif';
-
-      const lines = wrapText(ctx, prize, 245);
-      const lineHeight = 42;
-      const startY = -((lines.length - 1) * lineHeight) / 2;
-      lines.forEach((line, lineIndex) => {
-        ctx.fillText(line, radius * 0.58, startY + lineIndex * lineHeight);
-      });
-      ctx.restore();
+    var inlineScripts = Array.prototype.map.call(doc.querySelectorAll('script:not([src])'), function (script) {
+      return script.textContent || '';
+    }).filter(function (code) {
+      return code.indexOf('window.CLIENT_WIDGET001_BEHAVIOR_CONFIG =') === -1;
     });
 
-    ctx.beginPath();
-    ctx.arc(center, center, 72, 0, Math.PI * 2);
-    ctx.fillStyle = '#c8a77b';
-    ctx.fill();
-    ctx.lineWidth = 8;
-    ctx.strokeStyle = '#17110d';
-    ctx.stroke();
-
-    ctx.beginPath();
-    ctx.arc(center, center, 33, 0, Math.PI * 2);
-    ctx.fillStyle = '#211813';
-    ctx.fill();
+    externalScripts.reduce(function (promise, src) {
+      return promise.then(function () { return loadExternalScript(src); });
+    }, Promise.resolve()).catch(function (error) {
+      console.warn('[Widgets0] External widget helper did not load, running widget anyway:', error);
+    }).then(function () {
+      inlineScripts.forEach(runInlineScript);
+    }).catch(function (error) {
+      console.error('[Widgets0] Failed to load Lera wheel widget:', error);
+    });
   }
 
-  function resultUrl(prize) {
-    const url = new URL(settings.quizUrl);
-    url.searchParams.set('priz', prize);
-    url.searchParams.set('source', settings.source);
-    return url.toString();
-  }
-
-  function closeWidget() {
-    if (!rootEl) return;
-    rootEl.remove();
-    rootEl = null;
-  }
-
-  function makeConfetti() {
-    return Array.from({ length: 70 }, (_, index) => {
-      const left = Math.random() * 100;
-      const delay = Math.random() * 2.2;
-      const duration = 2.7 + Math.random() * 2;
-      const x = `${-80 + Math.random() * 160}px`;
-      const colors = ['#d5b586', '#fbf1dd', '#ffffff', '#8a6d4c'];
-      return `<span style="left:${left}%;--x:${x};animation-delay:${delay}s;animation-duration:${duration}s;background:${colors[index % colors.length]}"></span>`;
-    }).join('');
-  }
-
-  function buildWidget() {
-    const root = document.createElement('div');
-    root.className = 'lw-root';
-    root.dataset.position = settings.position;
-    root.setAttribute('role', 'dialog');
-    root.setAttribute('aria-modal', 'true');
-
-    root.innerHTML = `
-      <div class="lw-backdrop" data-lw-close></div>
-      <section class="lw-modal" aria-label="Колесо фортуны">
-        ${starSvg('lw-star lw-star-1')}
-        ${starSvg('lw-star lw-star-2')}
-        <button class="lw-close" type="button" data-lw-close aria-label="Закрыть виджет">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
-        </button>
-
-        <div class="lw-content">
-          <div class="lw-wheel-wrap">
-            ${pointerSvg()}
-            <canvas class="lw-wheel" width="900" height="900" aria-label="Колесо призов"></canvas>
-          </div>
-          <div class="lw-copy">
-            <h2 class="lw-title">Твой подарок от школы ждёт!</h2>
-            <p class="lw-text">Крути колесо — каждая участница получает приз. Без исключений!</p>
-            <button class="lw-spin" type="button" data-track="wheel-spin">Крутить!</button>
-          </div>
-        </div>
-
-        <div class="lw-result">
-          <div class="lw-wheel-wrap">
-            ${pointerSvg()}
-            <canvas class="lw-wheel lw-wheel-result" width="900" height="900" aria-label="Колесо призов"></canvas>
-          </div>
-          <div class="lw-result-card">
-            <p class="lw-prize-label">Твой приз:</p>
-            <h3 class="lw-prize-title"></h3>
-            <p class="lw-prize-text">Поздравляем! Переходи к анкете — приз передадим вместе с рекомендацией.</p>
-            <a class="lw-prize-link" href="#" data-track="wheel-get-prize">Забрать приз</a>
-          </div>
-          <div class="lw-confetti">${makeConfetti()}</div>
-        </div>
-      </section>
-    `;
-
-    const wheel = root.querySelector('.lw-wheel');
-    const resultWheel = root.querySelector('.lw-wheel-result');
-    const modal = root.querySelector('.lw-modal');
-    const spinButton = root.querySelector('.lw-spin');
-    const prizeTitle = root.querySelector('.lw-prize-title');
-    const prizeLink = root.querySelector('.lw-prize-link');
-
-    drawWheel(wheel);
-    drawWheel(resultWheel);
-
-    if (document.fonts?.ready) {
-      document.fonts.ready.then(() => {
-        drawWheel(wheel);
-        drawWheel(resultWheel);
-      }).catch(() => {});
+  function onDocumentReady(callback) {
+    function runWhenReady() {
+      if (document.head && document.body) {
+        callback();
+        return;
+      }
+      setTimeout(runWhenReady, 30);
     }
 
-    root.addEventListener('click', (event) => {
-      if (event.target.closest('[data-lw-close]')) closeWidget();
-    });
-
-    spinButton.addEventListener('click', () => {
-      spinButton.disabled = true;
-      spinButton.textContent = 'Крутим...';
-
-      const prizeIndex = Math.floor(Math.random() * prizes.length);
-      selectedPrize = prizes[prizeIndex];
-      const sectorDeg = 360 / prizes.length;
-      const targetDeg = 360 * 6 + (360 - prizeIndex * sectorDeg) - sectorDeg / 2;
-
-      wheel.style.transform = `rotate(${targetDeg}deg)`;
-      resultWheel.style.transform = `rotate(${targetDeg}deg)`;
-
-      window.setTimeout(() => {
-        prizeTitle.textContent = selectedPrize;
-        prizeLink.href = resultUrl(selectedPrize);
-        modal.classList.add('is-result');
-      }, 4900);
-    });
-
-    document.addEventListener('keydown', function onKeydown(event) {
-      if (event.key === 'Escape') {
-        closeWidget();
-        document.removeEventListener('keydown', onKeydown);
-      }
-    });
-
-    return root;
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', runWhenReady, { once: true });
+    } else {
+      runWhenReady();
+    }
   }
 
-  function init() {
-    if (!canShow()) return;
-    markShown();
-    addFonts();
-    addStyles();
-
-    window.setTimeout(() => {
-      if (rootEl) return;
-      rootEl = buildWidget();
-      document.body.appendChild(rootEl);
-    }, Math.max(0, settings.delaySeconds) * 1000);
-  }
-
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', init, { once: true });
-  } else {
-    init();
-  }
+  onDocumentReady(injectWidget);
 })();
