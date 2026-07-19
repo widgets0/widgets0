@@ -1213,25 +1213,24 @@
     }
 
     .usage-section {
-      width: min(1760px, calc(100vw - 96px));
-      margin: 112px 0 0 50%;
-      transform: translateX(-50%);
+      width: min(1180px, calc(100% - 48px));
+      margin: 54px auto 0;
     }
 
     .usage-title {
-      margin: 0 0 68px;
+      margin: 0 0 34px;
       scroll-margin-top: 96px;
       color: var(--text);
-      font-size: clamp(58px, 6vw, 86px);
-      line-height: 0.98;
-      font-weight: 900;
+      font-size: clamp(44px, 6vw, 64px);
+      line-height: 1.03;
+      font-weight: 800;
       letter-spacing: -0.045em;
     }
 
     .usage-layout {
       display: grid;
-      grid-template-columns: minmax(360px, 520px) minmax(0, 1fr);
-      gap: clamp(54px, 6vw, 96px);
+      grid-template-columns: minmax(300px, 360px) minmax(0, 1fr);
+      gap: 44px;
       align-items: stretch;
     }
 
@@ -1253,19 +1252,19 @@
 
     .usage-trigger {
       width: 100%;
-      min-height: 96px;
+      min-height: 70px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 20px;
-      padding: 0 8px 0 6px;
+      gap: 16px;
+      padding: 0 4px;
       border: 0;
       background: transparent;
       color: var(--text);
       text-align: left;
-      font-size: 30px;
+      font-size: 24px;
       line-height: 1.1;
-      font-weight: 850;
+      font-weight: 800;
     }
 
     .usage-trigger::after {
@@ -1293,10 +1292,10 @@
     }
 
     .usage-copy {
-      max-width: 420px;
-      margin: -10px 0 34px 6px;
+      max-width: 320px;
+      margin: -6px 0 24px 4px;
       color: #76767d;
-      font-size: 25px;
+      font-size: 18px;
       line-height: 1.42;
       font-weight: 500;
       display: none;
@@ -1307,31 +1306,31 @@
     }
 
     .usage-showcase {
-      min-height: 760px;
+      min-height: 520px;
       display: grid;
       place-items: center;
-      padding: 70px 62px 46px;
-      border-radius: 32px;
+      padding: 38px 34px 28px;
+      border-radius: 22px;
       background: #f0f0f4;
       overflow: hidden;
     }
 
     .usage-phones {
       position: relative;
-      width: min(840px, 100%);
+      width: min(600px, 100%);
       display: grid;
       grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-      gap: 44px;
+      gap: 28px;
       align-items: center;
     }
 
     .usage-phone {
       position: relative;
-      min-height: 560px;
-      border: 5px solid #1d1d1f;
-      border-radius: 38px;
+      min-height: 390px;
+      border: 4px solid #1d1d1f;
+      border-radius: 28px;
       background: #fff;
-      box-shadow: 16px 18px 0 #303033;
+      box-shadow: 9px 11px 0 #303033;
       overflow: hidden;
     }
 
@@ -1340,21 +1339,21 @@
       position: absolute;
       left: 0;
       right: 0;
-      top: 76px;
+      top: 54px;
       height: 1px;
       background: rgba(29, 29, 31, 0.08);
     }
 
     .usage-phone__bar {
-      height: 76px;
+      height: 54px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 12px;
-      padding: 0 26px;
+      gap: 8px;
+      padding: 0 16px;
       color: #1d1d1f;
-      font-size: 18px;
-      font-weight: 850;
+      font-size: 14px;
+      font-weight: 800;
     }
 
     .usage-phone__muted {
@@ -1364,81 +1363,81 @@
     }
 
     .usage-site-url {
-      min-height: 44px;
+      min-height: 34px;
       display: inline-flex;
       align-items: center;
-      min-width: 240px;
-      padding: 0 18px;
-      border-radius: 13px;
+      min-width: 150px;
+      padding: 0 12px;
+      border-radius: 10px;
       background: #f5f5f7;
       color: #55565c;
-      font-size: 22px;
+      font-size: 16px;
       font-weight: 650;
     }
 
     .usage-context {
-      padding: 42px 30px;
+      padding: 34px 22px;
     }
 
     .usage-context h3 {
       margin: 0;
       color: #1d1d1f;
-      font-size: 32px;
+      font-size: 24px;
       line-height: 1.22;
-      font-weight: 900;
+      font-weight: 850;
       letter-spacing: -0.02em;
     }
 
     .usage-context p {
-      margin: 22px 0 0;
+      margin: 16px 0 0;
       color: #4f5058;
-      font-size: 23px;
+      font-size: 16px;
       line-height: 1.35;
       font-weight: 500;
     }
 
     .usage-context-button,
     .usage-link-pill {
-      min-height: 70px;
+      min-height: 48px;
       display: flex;
       align-items: center;
       justify-content: center;
-      margin-top: 34px;
-      border: 4px solid #1d1d1f;
-      border-radius: 15px;
+      margin-top: 24px;
+      border: 3px solid #1d1d1f;
+      border-radius: 12px;
       color: #1d1d1f;
-      font-size: 22px;
-      font-weight: 900;
+      font-size: 15px;
+      font-weight: 850;
       text-align: center;
     }
 
     .usage-site-cta {
-      margin-top: 34px;
+      margin-top: 24px;
       background: #1d1d1f;
       color: #fff;
       border-color: #1d1d1f;
     }
 
     .usage-avatar {
-      width: 74px;
-      height: 74px;
+      width: 56px;
+      height: 56px;
       display: grid;
       place-items: center;
-      margin-bottom: 22px;
+      margin-bottom: 18px;
       border-radius: 50%;
       background: #1d1d1f;
       color: #fff;
-      font-size: 33px;
+      font-size: 24px;
       font-weight: 900;
     }
 
     .usage-qr {
-      width: 230px;
-      height: 230px;
-      margin: 22px auto 20px;
-      padding: 20px;
-      border: 4px solid #1d1d1f;
-      border-radius: 22px;
+      width: 170px;
+      height: 170px;
+      margin: 18px auto 16px;
+      padding: 14px;
+      border: 3px solid #1d1d1f;
+      border-radius: 16px;
       background: #fff;
       fill: #1d1d1f;
     }
@@ -1450,11 +1449,11 @@
     .usage-product-phone {
       display: grid;
       grid-template-rows: 1fr auto;
-      box-shadow: 16px 18px 0 #303033, 0 0 0 14px rgba(255, 255, 255, 0.7);
+      box-shadow: 9px 11px 0 #303033, 0 0 0 10px rgba(255, 255, 255, 0.7);
     }
 
     .usage-product-image {
-      min-height: 360px;
+      min-height: 230px;
       background:
         linear-gradient(180deg, rgba(255,255,255,0.18), rgba(0,0,0,0.28)),
         url("widgets/assets/fvsport-tinder/top-impuls-goluboy.jpg") center / cover;
@@ -1465,41 +1464,41 @@
       content: "FVSPORT  •  5 500 ₽\AТоп Импульс Голубой";
       white-space: pre;
       position: absolute;
-      left: 26px;
-      right: 26px;
-      bottom: 24px;
+      left: 18px;
+      right: 18px;
+      bottom: 18px;
       color: #fff;
-      font-size: 13px;
+      font-size: 10px;
       line-height: 1.4;
       font-weight: 900;
       letter-spacing: 0.08em;
     }
 
     .usage-product-body {
-      padding: 24px 24px 28px;
+      padding: 18px 18px 20px;
       background: #fff;
     }
 
     .usage-product-body span {
       display: block;
       color: #8d8d94;
-      font-size: 13px;
+      font-size: 10px;
       font-weight: 900;
       letter-spacing: 0.12em;
     }
 
     .usage-product-body strong {
       display: block;
-      margin-top: 8px;
+      margin-top: 6px;
       color: #1d1d1f;
-      font-size: 25px;
+      font-size: 20px;
       font-weight: 900;
     }
 
     .usage-product-body p {
-      margin: 12px 0 0;
+      margin: 9px 0 0;
       color: #55565c;
-      font-size: 14px;
+      font-size: 12px;
       line-height: 1.35;
       font-weight: 600;
     }
@@ -1507,18 +1506,18 @@
     .usage-product-actions {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 12px;
-      margin-top: 90px;
+      gap: 9px;
+      margin-top: 38px;
     }
 
     .usage-product-actions span {
-      min-height: 48px;
+      min-height: 38px;
       display: grid;
       place-items: center;
-      border-radius: 13px;
+      border-radius: 10px;
       background: #f6f6f8;
       color: #55565c;
-      font-size: 14px;
+      font-size: 11px;
       letter-spacing: 0;
       box-shadow: inset 0 0 0 1px rgba(29, 29, 31, 0.08);
     }
@@ -1534,115 +1533,34 @@
       left: 50%;
       top: 47%;
       z-index: 3;
-      width: 82px;
-      height: 82px;
+      width: 58px;
+      height: 58px;
       display: grid;
       place-items: center;
       transform: translate(-50%, -50%);
-      border: 5px solid #fff;
-      border-radius: 18px;
+      border: 4px solid #fff;
+      border-radius: 14px;
       background: #1d1d1f;
       color: #fff;
-      font-size: 48px;
+      font-size: 34px;
       line-height: 1;
       font-weight: 900;
-      box-shadow: 0 18px 42px rgba(29, 29, 31, 0.16);
+      box-shadow: 0 12px 30px rgba(29, 29, 31, 0.16);
     }
 
     .usage-caption {
-      margin: 46px 0 0;
+      margin: 28px 0 0;
       color: #76767d;
-      font-size: 25px;
+      font-size: 17px;
       line-height: 1.25;
       font-weight: 500;
       text-align: center;
     }
 
-    @media (max-width: 1400px) and (min-width: 1181px) {
-      .usage-section {
-        width: min(1280px, calc(100vw - 72px));
-      }
-
-      .usage-layout {
-        grid-template-columns: minmax(300px, 390px) minmax(0, 1fr);
-        gap: 42px;
-      }
-
-      .usage-title {
-        margin-bottom: 48px;
-        font-size: clamp(50px, 5vw, 70px);
-      }
-
-      .usage-trigger {
-        min-height: 82px;
-        font-size: 26px;
-      }
-
-      .usage-copy {
-        font-size: 21px;
-      }
-
-      .usage-showcase {
-        min-height: 640px;
-        padding: 50px 38px 34px;
-      }
-
-      .usage-phones {
-        gap: 34px;
-      }
-
-      .usage-phone {
-        min-height: 500px;
-        border-radius: 32px;
-        box-shadow: 12px 14px 0 #303033;
-      }
-
-      .usage-phone__bar {
-        height: 64px;
-        padding: 0 18px;
-        font-size: 16px;
-      }
-
-      .usage-phone::before {
-        top: 64px;
-      }
-
-      .usage-site-url {
-        min-width: 170px;
-        font-size: 18px;
-      }
-
-      .usage-context {
-        padding: 36px 24px;
-      }
-
-      .usage-context h3 {
-        font-size: 27px;
-      }
-
-      .usage-context p {
-        font-size: 19px;
-      }
-
-      .usage-context-button,
-      .usage-link-pill {
-        min-height: 60px;
-        font-size: 18px;
-      }
-
-      .usage-product-image {
-        min-height: 300px;
-      }
-
-      .usage-product-actions {
-        margin-top: 52px;
-      }
-    }
-
     @media (max-width: 1180px) {
       .usage-section {
         width: min(100% - 48px, 1180px);
-        margin-top: 82px;
+        margin-top: 54px;
       }
 
       .usage-title {
@@ -1843,7 +1761,7 @@
 
       .usage-section {
         width: min(100% - 28px, 1180px);
-        margin-top: 58px;
+        margin-top: 44px;
       }
 
       .usage-title {
