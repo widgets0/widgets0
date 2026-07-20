@@ -1306,13 +1306,47 @@
     }
 
     .usage-showcase {
-      min-height: 520px;
+      min-height: 680px;
       display: grid;
       place-items: center;
-      padding: 38px 34px 28px;
+      padding: 48px 28px 40px;
       border-radius: 22px;
       background: #f0f0f4;
       overflow: hidden;
+    }
+
+    .usage-flow {
+      width: min(600px, 100%);
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 28px;
+      margin: 0 auto 14px;
+    }
+
+    .usage-flow__item {
+      display: grid;
+      gap: 4px;
+      min-width: 0;
+      text-align: center;
+    }
+
+    .usage-flow__item span {
+      color: #9a9aa1;
+      font-size: 10px;
+      line-height: 1;
+      font-weight: 850;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .usage-flow__item strong {
+      overflow: hidden;
+      color: #55565c;
+      font-size: 13px;
+      line-height: 1.15;
+      font-weight: 800;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
 
     .usage-phones {
@@ -1320,17 +1354,18 @@
       width: min(600px, 100%);
       display: grid;
       grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-      gap: 28px;
+      gap: 34px;
       align-items: center;
     }
 
     .usage-phone {
       position: relative;
-      min-height: 390px;
-      border: 4px solid #1d1d1f;
-      border-radius: 28px;
+      height: 520px;
+      min-height: 520px;
+      border: 3px solid #1d1d1f;
+      border-radius: 24px;
       background: #fff;
-      box-shadow: 9px 11px 0 #303033;
+      box-shadow: 10px 10px 0 rgba(29,29,31,.92);
       overflow: hidden;
     }
 
@@ -1356,6 +1391,67 @@
       font-weight: 800;
     }
 
+    .usage-phone__bar--social {
+      position: relative;
+      height: 104px;
+      justify-content: flex-start;
+      align-items: flex-start;
+      padding: 18px 16px 12px;
+      background: #f9f9fb;
+    }
+
+    .usage-phone__bar--social .usage-social-back {
+      margin: 14px 12px 0 0;
+      color: #1d1d1f;
+      font-size: 28px;
+      line-height: .7;
+      font-weight: 500;
+    }
+
+    .usage-social-avatar {
+      width: 46px;
+      height: 46px;
+      display: grid;
+      place-items: center;
+      flex: 0 0 auto;
+      margin-right: 12px;
+      border-radius: 50%;
+      background: #1d1d1f;
+      color: #fff;
+      font-size: 21px;
+      font-weight: 900;
+    }
+
+    .usage-social-meta {
+      min-width: 0;
+      display: grid;
+      gap: 3px;
+      padding-top: 2px;
+      text-align: left;
+    }
+
+    .usage-social-meta strong {
+      color: #1d1d1f;
+      font-size: 18px;
+      line-height: 1.05;
+      font-weight: 850;
+    }
+
+    .usage-social-meta span {
+      color: #8b8b96;
+      font-size: 13px;
+      line-height: 1.18;
+      font-weight: 650;
+    }
+
+    .usage-social-more {
+      margin: 10px 0 0 auto;
+      color: #1d1d1f;
+      font-size: 18px;
+      line-height: 1;
+      letter-spacing: 2px;
+    }
+
     .usage-phone__muted {
       color: #9a9aa1;
       font-size: 14px;
@@ -1377,6 +1473,60 @@
 
     .usage-context {
       padding: 34px 22px;
+    }
+
+    .usage-phone:has(.usage-phone__bar--social)::before {
+      top: 104px;
+    }
+
+    .usage-context--social {
+      min-height: calc(100% - 104px);
+      box-sizing: border-box;
+      padding: 28px 16px;
+      background: #f0f1f4;
+    }
+
+    .usage-social-feed {
+      display: grid;
+      align-content: start;
+      justify-items: start;
+    }
+
+    .usage-social-message {
+      width: min(100%, 250px);
+      box-sizing: border-box;
+      padding: 18px 16px 14px;
+      border-radius: 15px 15px 15px 5px;
+      background: #fff;
+      box-shadow: 0 5px 12px rgba(29,29,31,.08);
+      text-align: left;
+    }
+
+    .usage-social-message p {
+      margin: 0;
+      color: #1d1d1f;
+      font-size: 18px;
+      line-height: 1.4;
+      font-weight: 500;
+    }
+
+    .usage-social-message .usage-context-button {
+      min-height: 42px;
+      margin-top: 22px;
+      border: 2px solid #2d8cff;
+      border-radius: 13px;
+      color: #2d8cff;
+      font-size: 16px;
+      line-height: 1.15;
+      font-weight: 850;
+    }
+
+    .usage-social-message-meta {
+      margin: 9px 0 0 4px;
+      color: #9697a2;
+      font-size: 12px;
+      line-height: 1;
+      font-weight: 650;
     }
 
     .usage-context h3 {
@@ -1408,6 +1558,50 @@
       color: #1d1d1f;
       font-size: 15px;
       font-weight: 850;
+      text-align: center;
+    }
+
+    .usage-site-page {
+      padding: 2px 0 0;
+    }
+
+    .usage-site-page__eyebrow {
+      color: #8a8a91;
+      font-size: 11px;
+      line-height: 1;
+      font-weight: 850;
+      letter-spacing: 0.1em;
+    }
+
+    .usage-site-page h3 {
+      margin-top: 20px;
+    }
+
+    .usage-site-page__offer {
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      margin-top: 28px;
+      padding: 13px 14px;
+      border-radius: 14px;
+      background: #f3f3f5;
+      color: #55565c;
+      font-size: 11px;
+      line-height: 1.2;
+      font-weight: 800;
+    }
+
+    .usage-site-page__offer strong {
+      color: #1d1d1f;
+      font-size: 16px;
+    }
+
+    .usage-site-page__note {
+      margin-top: 14px;
+      color: #9a9aa1;
+      font-size: 11px;
+      line-height: 1.3;
+      font-weight: 650;
       text-align: center;
     }
 
@@ -1449,7 +1643,454 @@
     .usage-product-phone {
       display: grid;
       grid-template-rows: 1fr auto;
-      box-shadow: 9px 11px 0 #303033, 0 0 0 10px rgba(255, 255, 255, 0.7);
+      height: 520px;
+      min-height: 520px;
+      box-shadow: 10px 10px 0 rgba(29,29,31,.92), 0 0 0 10px rgba(255,255,255,.7);
+    }
+
+    .usage-site-widget {
+      display: none;
+      min-height: 0;
+      padding: 26px 20px;
+      background: #fff;
+      color: #1d1d1f;
+      text-align: center;
+    }
+
+    .usage-product-phone.is-site-widget {
+      display: block;
+      background: #fff;
+    }
+
+    .usage-product-phone.is-site-widget .usage-site-widget {
+      display: block;
+      height: 100%;
+    }
+
+    .usage-product-phone.is-site-widget .usage-widget-top {
+      display: none;
+    }
+
+    .usage-product-phone.is-site-widget .usage-product-default {
+      display: none;
+    }
+
+    .usage-widget-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: #a0a0a6;
+      font-size: 11px;
+      font-weight: 750;
+    }
+
+    .usage-widget-top strong {
+      color: #55565c;
+      font-size: 11px;
+      font-weight: 850;
+    }
+
+    .usage-site-widget__eyebrow {
+      margin-top: 18px;
+      color: #8a8a91;
+      font-size: 10px;
+      line-height: 1;
+      font-weight: 900;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .usage-site-widget h3 {
+      margin: 8px 0 0;
+      color: #1d1d1f;
+      font-size: 23px;
+      line-height: 1.02;
+      font-weight: 900;
+      letter-spacing: -0.035em;
+    }
+
+    .usage-wheel {
+      position: relative;
+      width: 188px;
+      height: 188px;
+      margin: 17px auto 22px;
+      border: 0;
+      border-radius: 50%;
+      background: conic-gradient(#7b4bf0 0deg 60deg,#c23b93 60deg 120deg,#3b63db 120deg 180deg,#f0a63b 180deg 240deg,#2fae6b 240deg 300deg,#e0506e 300deg 360deg);
+      box-shadow: 0 10px 30px rgba(0,0,0,.25), inset 0 0 0 6px #fff;
+      transition: transform 2.1s cubic-bezier(.15,.8,.2,1);
+    }
+
+    .usage-wheel::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      background: repeating-conic-gradient(rgba(29,29,31,.95) 0deg 1.5deg, transparent 1.5deg 60deg);
+    }
+
+    .usage-wheel::after {
+      content: "";
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 34px;
+      height: 34px;
+      border: 0;
+      border-radius: 50%;
+      background: #fff;
+      box-shadow: 0 2px 8px rgba(0,0,0,.2);
+      transform: translate(-50%, -50%);
+    }
+
+    .usage-wheel__label {
+      display: none;
+    }
+
+    .usage-wheel__label {
+      position: absolute;
+      z-index: 1;
+      width: 58px;
+      color: #1d1d1f;
+      font-size: 9px;
+      line-height: 1.05;
+      font-weight: 900;
+      text-align: center;
+    }
+
+    .usage-wheel__label.one { top: 25px; left: 61px; }
+    .usage-wheel__label.two { top: 72px; right: 8px; transform: rotate(60deg); }
+    .usage-wheel__label.three { bottom: 24px; right: 26px; transform: rotate(120deg); }
+    .usage-wheel__label.four { bottom: 24px; left: 26px; transform: rotate(180deg); }
+    .usage-wheel__label.five { top: 72px; left: 8px; transform: rotate(240deg); }
+    .usage-wheel__label.six { top: 25px; right: 61px; transform: rotate(300deg); }
+
+    .usage-wheel-pointer {
+      position: absolute;
+      z-index: 2;
+      left: 50%;
+      top: 1px;
+      width: 0;
+      height: 0;
+      border-right: 10px solid transparent;
+      border-left: 10px solid transparent;
+      border-top: 18px solid #1d1d1f;
+      transform: translateX(-50%);
+    }
+
+    .usage-site-widget__hint {
+      margin: 0;
+      color: #55565c;
+      font-size: 11px;
+      line-height: 1.25;
+      font-weight: 650;
+    }
+
+    .usage-site-widget__button {
+      min-height: 38px;
+      display: grid;
+      place-items: center;
+      margin-top: 13px;
+      border-radius: 10px;
+      background: #1d1d1f;
+      color: #fff;
+      font-size: 12px;
+      font-weight: 850;
+    }
+
+    .usage-site-widget__result {
+      margin-top: 9px;
+      color: #8a8a91;
+      font-size: 10px;
+      line-height: 1.2;
+      font-weight: 700;
+    }
+
+    .usage-demo-content {
+      min-height: 0;
+      flex: 1;
+      transition: filter .5s ease, opacity .5s ease, transform .5s ease;
+    }
+
+    .usage-product-phone.is-site-widget:not(.is-demo-opened) .usage-demo-content {
+      filter: blur(3px);
+      opacity: .4;
+      transform: scale(1.03);
+    }
+
+    .usage-demo-panel {
+      display: none;
+      min-height: 0;
+    }
+
+    .usage-demo-content[data-site-demo-stage="wheel"] [data-site-demo-panel="wheel"],
+    .usage-demo-content[data-site-demo-stage="spin"] [data-site-demo-panel="wheel"],
+    .usage-demo-content[data-site-demo-stage="prize"] [data-site-demo-panel="wheel"],
+    .usage-demo-content[data-site-demo-stage="form"] [data-site-demo-panel="form"],
+    .usage-demo-content[data-site-demo-stage="success"] [data-site-demo-panel="success"] {
+      display: grid;
+    }
+
+    .usage-demo-panel h3 {
+      text-align: left;
+    }
+
+    .usage-demo-panel[data-site-demo-panel="wheel"] {
+      position: relative;
+    }
+
+    .usage-demo-prize {
+      position: absolute;
+      top: 205px;
+      left: 50%;
+      z-index: 2;
+      display: none;
+      padding: 9px 16px;
+      border-radius: 980px;
+      background: #1d1d1f;
+      color: #fff;
+      font-size: 16px;
+      line-height: 1.1;
+      font-weight: 800;
+      white-space: pre-line;
+      text-align: center;
+      box-shadow: 0 8px 22px rgba(0,0,0,.3);
+      transform: translateX(-50%);
+      animation: usage-demo-panel-in .3s ease both;
+    }
+
+    .usage-demo-content[data-site-demo-stage="prize"] .usage-demo-prize {
+      display: block;
+    }
+
+    .usage-demo-form__discount {
+      justify-self: center;
+      min-height: 32px;
+      display: inline-flex;
+      align-items: center;
+      padding: 6px 16px;
+      border-radius: 980px;
+      background: #1d1d1f;
+      color: #f2c98a;
+      font-size: 20px;
+      line-height: 1;
+      font-weight: 800;
+    }
+
+    .usage-demo-form__copy {
+      margin: 16px 0 22px;
+      color: #76767d;
+      font-size: 12px;
+      line-height: 1.4;
+      font-weight: 550;
+      text-align: left;
+    }
+
+    .usage-demo-form__field {
+      display: grid;
+      gap: 6px;
+      margin-top: 12px;
+      padding: 0 12px 10px;
+      border-bottom: 1px solid rgba(29,29,31,.16);
+      text-align: left;
+    }
+
+    .usage-demo-form__field span {
+      color: #8a8a91;
+      font-size: 10px;
+      line-height: 1;
+      font-weight: 800;
+    }
+
+    .usage-demo-form__field strong {
+      color: #1d1d1f;
+      font-size: 13px;
+      line-height: 1.15;
+      font-weight: 750;
+    }
+
+    .usage-demo-form .usage-site-widget__button {
+      margin-top: 24px;
+    }
+
+    .usage-demo-success {
+      align-content: center;
+      justify-items: start;
+      height: 100%;
+      padding: 26px 10px;
+      text-align: left;
+    }
+
+    .usage-demo-success__mark {
+      width: 46px;
+      height: 46px;
+      display: grid;
+      place-items: center;
+      margin-bottom: 22px;
+      border-radius: 50%;
+      background: #d9f4df;
+      color: #258044;
+      font-size: 24px;
+      font-weight: 900;
+    }
+
+    .usage-demo-success h3 {
+      margin-top: 10px;
+    }
+
+    .usage-demo-success p {
+      margin: 16px 0 0;
+      color: #76767d;
+      font-size: 13px;
+      line-height: 1.4;
+      font-weight: 550;
+    }
+
+    .usage-demo-success__telegram {
+      width: 100%;
+      min-height: 40px;
+      display: grid;
+      place-items: center;
+      margin-top: 26px;
+      border-radius: 10px;
+      background: #1d1d1f;
+      color: #fff;
+      font-size: 12px;
+      font-weight: 850;
+      text-align: center;
+    }
+
+    .usage-site-demo-success {
+      position: absolute;
+      inset: 0;
+      z-index: 3;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      padding: 24px;
+      background: #fff;
+      text-align: center;
+      animation: usage-demo-panel-in .3s ease both;
+    }
+
+    .usage-product-phone.is-site-widget.is-demo-success .usage-site-demo-success {
+      display: flex;
+    }
+
+    .usage-site-demo-success__mark {
+      width: 64px;
+      height: 64px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      background: #1d1d1f;
+      color: #fff;
+      font-size: 30px;
+      font-weight: 800;
+    }
+
+    .usage-site-demo-success strong {
+      color: #1d1d1f;
+      font-size: 19px;
+      line-height: 1.2;
+      font-weight: 800;
+    }
+
+    .usage-site-demo-success p {
+      max-width: 180px;
+      margin: 0;
+      color: #6e6e73;
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
+    .usage-site-demo-toast {
+      position: absolute;
+      left: 12px;
+      right: 12px;
+      bottom: 14px;
+      z-index: 5;
+      display: none;
+      align-items: center;
+      gap: 10px;
+      padding: 11px 13px;
+      border-radius: 12px;
+      background: #1d1d1f;
+      box-shadow: 0 10px 26px rgba(0,0,0,.3);
+      animation: usage-demo-panel-in .35s ease both;
+      pointer-events: none;
+      text-align: left;
+    }
+
+    .usage-product-phone.is-site-widget.is-demo-success .usage-site-demo-toast {
+      display: flex;
+    }
+
+    .usage-site-demo-toast__dot {
+      width: 8px;
+      height: 8px;
+      flex: 0 0 auto;
+      border-radius: 50%;
+      background: #30d158;
+    }
+
+    .usage-site-demo-toast__title {
+      color: #fff;
+      font-size: 12.5px;
+      line-height: 1.25;
+      font-weight: 700;
+    }
+
+    .usage-site-demo-toast__phone {
+      margin-top: 2px;
+      color: rgba(255,255,255,.6);
+      font-size: 11px;
+      line-height: 1.2;
+    }
+
+    .usage-demo-cursor {
+      position: absolute;
+      z-index: 10;
+      left: 30%;
+      top: 76%;
+      width: 28px;
+      height: 38px;
+      opacity: 0;
+      filter: drop-shadow(0 3px 4px rgba(29,29,31,.28));
+      pointer-events: none;
+      transform: rotate(-25deg) scale(.82);
+      transform-origin: 20% 20%;
+    }
+
+    .usage-demo-cursor svg {
+      display: block;
+      width: 100%;
+      height: 100%;
+      overflow: visible;
+    }
+
+    .usage-phones.is-site-demo .usage-demo-cursor,
+    .usage-phones.is-usage-demo .usage-demo-cursor {
+      animation: none;
+      opacity: 1;
+      transform: translate(-50%,-50%) rotate(-25deg) scale(.92);
+      transition: left .55s cubic-bezier(.4,0,.2,1), top .55s cubic-bezier(.4,0,.2,1), opacity .25s ease, transform .15s ease;
+    }
+
+    .usage-phones.is-site-demo .usage-demo-cursor.is-hidden,
+    .usage-phones.is-usage-demo .usage-demo-cursor.is-hidden {
+      opacity: 0;
+    }
+
+    .usage-demo-content[data-site-demo-stage="spin"] .usage-wheel {
+      transform: rotate(1100deg);
+    }
+
+    .usage-demo-content[data-site-demo-stage="form"] [data-site-demo-panel="form"],
+    .usage-demo-content[data-site-demo-stage="success"] [data-site-demo-panel="success"] {
+      animation: usage-demo-panel-in .35s ease both;
     }
 
     .usage-product-image {
@@ -1461,7 +2102,7 @@
     }
 
     .usage-product-image::after {
-      content: "FVSPORT  •  5 500 ₽\AТоп Импульс Голубой";
+      content: "5 500 ₽\AТоп Импульс Голубой";
       white-space: pre;
       position: absolute;
       left: 18px;
@@ -1555,6 +2196,90 @@
       line-height: 1.25;
       font-weight: 500;
       text-align: center;
+    }
+
+    @keyframes usage-wheel-breathe {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.025); }
+    }
+
+    @keyframes usage-wheel-spin {
+      from { transform: rotate(0deg) scale(1); }
+      to { transform: rotate(1100deg) scale(1.025); }
+    }
+
+    @keyframes usage-demo-panel-in {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes usage-demo-cursor {
+      0%, 5% {
+        left: 26%;
+        top: 72%;
+        opacity: 0;
+        transform: rotate(-25deg) scale(.82);
+      }
+      10%, 18% {
+        left: 28%;
+        top: 73%;
+        opacity: 1;
+        transform: rotate(-25deg) scale(.92);
+      }
+      21% {
+        left: 28%;
+        top: 73%;
+        opacity: 1;
+        transform: rotate(-25deg) scale(.67);
+      }
+      25% {
+        left: 73%;
+        top: 47%;
+        opacity: 1;
+        transform: rotate(-25deg) scale(.92);
+      }
+      34% {
+        left: 73%;
+        top: 49%;
+        opacity: 1;
+        transform: rotate(-25deg) scale(.92);
+      }
+      37% {
+        left: 73%;
+        top: 49%;
+        opacity: 1;
+        transform: rotate(-25deg) scale(.67);
+      }
+      46% {
+        left: 74%;
+        top: 79%;
+        opacity: 1;
+        transform: rotate(-25deg) scale(.92);
+      }
+      56% {
+        left: 74%;
+        top: 80%;
+        opacity: 1;
+        transform: rotate(-25deg) scale(.92);
+      }
+      59% {
+        left: 74%;
+        top: 80%;
+        opacity: 1;
+        transform: rotate(-25deg) scale(.67);
+      }
+      72%, 87% {
+        left: 74%;
+        top: 80%;
+        opacity: 1;
+        transform: rotate(-25deg) scale(.92);
+      }
+      94%, 100% {
+        left: 74%;
+        top: 80%;
+        opacity: 0;
+        transform: rotate(-25deg) scale(.82);
+      }
     }
 
     @media (max-width: 1180px) {
@@ -1794,6 +2519,7 @@
       }
 
       .usage-phone {
+        height: 480px;
         min-height: 480px;
         border-width: 4px;
         border-radius: 30px;
@@ -2490,21 +3216,71 @@
       </div>
 
       <div class="usage-showcase" aria-live="polite">
+        <div class="usage-flow" aria-hidden="true">
+          <div class="usage-flow__item">
+            <span>Откуда</span>
+            <strong data-usage-source>Страница сайта</strong>
+          </div>
+          <div class="usage-flow__item">
+            <span>Куда ведёт</span>
+            <strong>Виджет → заявка в Telegram</strong>
+          </div>
+        </div>
         <div class="usage-phones">
           <article class="usage-phone usage-context-phone">
             <div class="usage-phone__bar" data-usage-bar></div>
             <div class="usage-context" data-usage-context></div>
           </article>
           <div class="usage-arrow" aria-hidden="true">↗</div>
+          <div class="usage-demo-cursor is-hidden" data-site-demo-cursor aria-hidden="true">
+            <svg viewBox="0 0 28 38" aria-hidden="true">
+              <path d="M2 1.5 25.5 16 16.4 18.3 22 32.8 16.9 35 10.8 20.4 2 27.2Z" fill="#1d1d1f" stroke="#fff" stroke-width="2.2" stroke-linejoin="round" />
+            </svg>
+          </div>
           <article class="usage-phone usage-product-phone" aria-label="Пример виджета">
-            <div class="usage-product-image"></div>
-            <div class="usage-product-body">
-              <span>FVSPORT</span>
-              <strong>5 500 ₽</strong>
-              <p>Спокойный голубой, мягкая поддержка. Для йоги и пилатеса.</p>
-              <div class="usage-product-actions">
-                <span>× Не моё</span>
-                <span>♥ Хочу</span>
+            <div class="usage-site-widget" data-usage-site-widget>
+              <div class="usage-widget-top"><span>‹ Назад</span><strong>×</strong></div>
+              <div class="usage-demo-content" data-site-demo-content data-site-demo-stage="wheel">
+                <div class="usage-demo-panel" data-site-demo-panel="wheel">
+                  <div class="usage-site-widget__eyebrow">Колесо фортуны</div>
+                  <h3>Крутите и<br>забирайте приз</h3>
+                  <div class="usage-wheel" aria-hidden="true">
+                    <span class="usage-wheel-pointer"></span>
+                  </div>
+                  <div class="usage-demo-prize" data-site-demo-prize></div>
+                  <div class="usage-site-widget__button">Крутить колесо</div>
+                </div>
+                <div class="usage-demo-panel usage-demo-form" data-site-demo-panel="form">
+                  <div class="usage-demo-form__discount" data-site-demo-prize-form></div>
+                  <h3>Куда отправить<br>приз?</h3>
+                  <p class="usage-demo-form__copy">Оставьте контакт — пришлём приз и промокод.</p>
+                  <div class="usage-demo-form__field"><span>Имя</span><strong data-site-demo-name></strong></div>
+                  <div class="usage-demo-form__field"><span>Телефон</span><strong data-site-demo-phone></strong></div>
+                  <div class="usage-site-widget__button" data-site-demo-submit>Забрать приз</div>
+                </div>
+              </div>
+              <div class="usage-site-demo-success" data-site-demo-success>
+                <div class="usage-site-demo-success__mark">✓</div>
+                <strong>Заявка отправлена</strong>
+                <p>Менеджер перезвонит в течение 15 минут</p>
+              </div>
+              <div class="usage-site-demo-toast" data-site-demo-toast>
+                <span class="usage-site-demo-toast__dot"></span>
+                <div>
+                  <div class="usage-site-demo-toast__title">Новая заявка · <span data-site-demo-lead-name>Мария</span></div>
+                  <div class="usage-site-demo-toast__phone">+7 999 123-45-67</div>
+                </div>
+              </div>
+            </div>
+            <div class="usage-product-default" data-usage-default-widget>
+              <div class="usage-product-image"></div>
+              <div class="usage-product-body">
+                <strong>5 500 ₽</strong>
+                <p>Спокойный голубой, мягкая поддержка. Для йоги и пилатеса.</p>
+                <div class="usage-product-actions">
+                  <span>× Не моё</span>
+                  <span>♥ Хочу</span>
+                </div>
               </div>
             </div>
           </article>
@@ -2547,7 +3323,21 @@
       var usageItems = Array.from(document.querySelectorAll('[data-usage-item]'));
       var usageBar = document.querySelector('[data-usage-bar]');
       var usageContext = document.querySelector('[data-usage-context]');
+      var usageSource = document.querySelector('[data-usage-source]');
       var usageCaption = document.querySelector('[data-usage-caption]');
+      var usageProductPhone = document.querySelector('.usage-product-phone');
+      var usagePhones = document.querySelector('.usage-phones');
+      var siteDemoContent = document.querySelector('[data-site-demo-content]');
+      var siteDemoCursor = document.querySelector('[data-site-demo-cursor]');
+      var siteDemoWheel = document.querySelector('.usage-wheel');
+      var siteDemoPrize = document.querySelector('[data-site-demo-prize]');
+      var siteDemoPrizeForm = document.querySelector('[data-site-demo-prize-form]');
+      var siteDemoName = document.querySelector('[data-site-demo-name]');
+      var siteDemoPhone = document.querySelector('[data-site-demo-phone]');
+      var siteDemoLeadName = document.querySelector('[data-site-demo-lead-name]');
+      var siteDemoTimer = null;
+      var siteDemoNames = ['Мария', 'Алексей', 'Ольга', 'Дмитрий', 'Ирина', 'Павел', 'Екатерина', 'Никита', 'Анна', 'Сергей'];
+      var siteDemoPrizes = ['−15%', '−20%', 'Подарок', '−10%', 'Бесплатная\nдоставка', '−25%'];
       var galleryVersion = new URLSearchParams(window.location.search).get('v') || '20260704-tinder-lead';
       var qrMarkup = '<svg class="usage-qr" viewBox="0 0 120 120" aria-hidden="true">' +
         '<rect x="6" y="6" width="28" height="28"/><rect x="14" y="14" width="12" height="12" fill="#fff"/><rect x="86" y="6" width="28" height="28"/><rect x="94" y="14" width="12" height="12" fill="#fff"/><rect x="6" y="86" width="28" height="28"/><rect x="14" y="94" width="12" height="12" fill="#fff"/>' +
@@ -2555,27 +3345,34 @@
       var usageScenarios = {
         site: {
           bar: '<span class="usage-phone__muted">▣</span><span class="usage-site-url">olly-shop.ru</span><span></span>',
-          body: '<h3>Летняя<br>распродажа</h3><p>Скидки до 40% на новую коллекцию</p><div class="usage-context-button usage-site-cta">Получить скидку</div>',
-          caption: 'Кнопка или поп-ап прямо на странице сайта'
+          body: '<div class="usage-site-page"><div class="usage-site-page__eyebrow">OLLY SHOP · НОВАЯ КОЛЛЕКЦИЯ</div><h3>Летняя<br>распродажа</h3><p>Скидки до 40% на новую коллекцию</p><div class="usage-site-page__offer"><span>ПЕРСОНАЛЬНЫЙ БОНУС</span><strong>−40%</strong></div><div class="usage-context-button usage-site-cta" data-usage-demo-left>Получить скидку</div><div class="usage-site-page__note">Виджет откроется прямо на странице</div></div>',
+          source: 'Страница сайта',
+          caption: 'Кнопка на странице сайта → виджет → заявка в Telegram'
         },
         telegram: {
-          bar: '<span>‹</span><span>Telegram</span><span>•••</span>',
-          body: '<div class="usage-avatar">O</div><h3>Olly Shop</h3><p>канал · 12 480 подписчиков</p><p>Собери образ и забери промокод — жми кнопку ниже</p><div class="usage-context-button">Открыть виджет</div>',
+          social: true,
+          bar: '<span class="usage-social-back">‹</span><span class="usage-social-avatar">O</span><span class="usage-social-meta"><strong>Olly Shop</strong><span>канал · 12 480<br>подписчиков</span></span><span class="usage-social-more">•••</span>',
+          body: '<div class="usage-social-feed"><div class="usage-social-message"><p>Собери образ и забери<br>промокод — жми кнопку ниже</p><div class="usage-context-button" data-usage-demo-left>Получить предложение</div></div><div class="usage-social-message-meta">12:40 · ✓✓</div></div>',
+          source: 'Пост в Telegram',
           caption: 'Кнопка под постом или в описании канала'
         },
         vk: {
-          bar: '<span>‹</span><span>VK</span><span>•••</span>',
-          body: '<div class="usage-avatar">O</div><h3>Olly Shop</h3><p>сообщество · 8 210 участников</p><p>Пройди квиз и получи персональную скидку</p><div class="usage-context-button">Перейти к виджету</div>',
+          social: true,
+          bar: '<span class="usage-social-back">‹</span><span class="usage-social-avatar">O</span><span class="usage-social-meta"><strong>Olly Shop</strong><span>сообщество · 8 210<br>участников</span></span><span class="usage-social-more">•••</span>',
+          body: '<div class="usage-social-feed"><div class="usage-social-message"><p>Пройди квиз и получи<br>персональную скидку</p><div class="usage-context-button" data-usage-demo-left>Получить<br>предложение</div></div><div class="usage-social-message-meta">12:40 · ✓✓</div></div>',
+          source: 'Пост или меню VK',
           caption: 'Ссылка в посте, меню или обсуждениях'
         },
         qr: {
           bar: '<span></span><span></span><span></span>',
-          body: '<h3>Наведите камеру</h3>' + qrMarkup + '<h3>olly.site/promo</h3><p>и получите подарок</p>',
+          body: '<h3>Наведите камеру</h3>' + qrMarkup.replace('class="usage-qr"', 'class="usage-qr" data-usage-demo-left') + '<h3>olly.site/promo</h3><p>и получите подарок</p>',
+          source: 'QR-код',
           caption: 'Табличка в зале, на чеке или упаковке'
         },
         link: {
           bar: '<span>‹</span><span>Сообщения</span><span>•••</span>',
-          body: '<div class="usage-avatar">O</div><h3>Olly Shop</h3><p>в сети</p><p>Лови подборку и бонус по ссылке:</p><div class="usage-link-pill">olly.site/promo</div>',
+          body: '<div class="usage-avatar">O</div><h3>Olly Shop</h3><p>в сети</p><p>Лови подборку и бонус по ссылке:</p><div class="usage-link-pill" data-usage-demo-left>olly.site/promo</div>',
+          source: 'Ссылка в сообщении',
           caption: 'В сторис, рассылке или личном сообщении'
         }
       };
@@ -2650,16 +3447,176 @@
         document.body.style.overflow = 'hidden';
       }
 
+      function setSiteDemoStage(stage) {
+        if (siteDemoContent) siteDemoContent.setAttribute('data-site-demo-stage', stage);
+      }
+
+      function siteDemoTarget(which) {
+        if (which === 'left') return document.querySelector('[data-usage-demo-left]');
+        if (which === 'spin') return document.querySelector('.usage-demo-content [data-site-demo-panel="wheel"] .usage-site-widget__button');
+        return document.querySelector('[data-site-demo-submit]');
+      }
+
+      function moveSiteDemoCursor(which) {
+        window.requestAnimationFrame(function () {
+          var target = siteDemoTarget(which);
+          if (!target || !usagePhones || !siteDemoCursor) return;
+
+          var targetRect = target.getBoundingClientRect();
+          var rowRect = usagePhones.getBoundingClientRect();
+          siteDemoCursor.style.left = (targetRect.left - rowRect.left + targetRect.width / 2) + 'px';
+          siteDemoCursor.style.top = (targetRect.top - rowRect.top + targetRect.height / 2) + 'px';
+          siteDemoCursor.classList.remove('is-hidden');
+        });
+      }
+
+      function pressSiteDemo(which, pressed) {
+        var target = siteDemoTarget(which);
+        if (target) target.style.transform = pressed ? 'scale(.95)' : '';
+      }
+
+      function resetSiteDemo() {
+        if (siteDemoTimer) {
+          window.clearTimeout(siteDemoTimer);
+          siteDemoTimer = null;
+        }
+
+        pressSiteDemo('left', false);
+        pressSiteDemo('spin', false);
+        pressSiteDemo('submit', false);
+        setSiteDemoStage('wheel');
+        if (siteDemoWheel) {
+          siteDemoWheel.style.transition = 'none';
+          siteDemoWheel.style.transform = 'rotate(0deg)';
+          window.requestAnimationFrame(function () {
+            if (siteDemoWheel) siteDemoWheel.style.transition = '';
+          });
+        }
+        if (siteDemoPrize) siteDemoPrize.textContent = '';
+        if (siteDemoPrizeForm) siteDemoPrizeForm.textContent = '';
+        if (siteDemoName) siteDemoName.textContent = '';
+        if (siteDemoPhone) siteDemoPhone.textContent = '';
+        if (siteDemoLeadName) siteDemoLeadName.textContent = 'Мария';
+        if (usageProductPhone) usageProductPhone.classList.remove('is-demo-opened', 'is-demo-success');
+        if (siteDemoCursor) siteDemoCursor.classList.add('is-hidden');
+      }
+
+      function runSiteDemoPhase(index) {
+        var sequence = [
+          { phase: 'point', dur: 1000 },
+          { phase: 'clickLeft', dur: 450 },
+          { phase: 'open', dur: 750 },
+          { phase: 'pointSpin', dur: 550 },
+          { phase: 'spin', dur: 2200 },
+          { phase: 'prize', dur: 1400 },
+          { phase: 'form', dur: 650 },
+          { phase: 'typeName', dur: 800 },
+          { phase: 'typePhone', dur: 950 },
+          { phase: 'pointSubmit', dur: 600 },
+          { phase: 'submit', dur: 500 },
+          { phase: 'done', dur: 2100 }
+        ];
+        var step = sequence[index];
+
+        switch (step.phase) {
+          case 'point':
+            resetSiteDemo();
+            if (siteDemoLeadName) siteDemoLeadName.textContent = siteDemoNames[Math.floor(Math.random() * siteDemoNames.length)];
+            moveSiteDemoCursor('left');
+            break;
+          case 'clickLeft':
+            pressSiteDemo('left', true);
+            break;
+          case 'open':
+            pressSiteDemo('left', false);
+            if (usageProductPhone) usageProductPhone.classList.add('is-demo-opened');
+            moveSiteDemoCursor('spin');
+            break;
+          case 'pointSpin':
+            moveSiteDemoCursor('spin');
+            break;
+          case 'spin': {
+            var prizeIndex = Math.floor(Math.random() * siteDemoPrizes.length);
+            var prize = siteDemoPrizes[prizeIndex];
+            var segmentAngle = 360 / siteDemoPrizes.length;
+            var targetRotation = 360 * 5 + (360 - (prizeIndex * segmentAngle + segmentAngle / 2));
+            pressSiteDemo('spin', true);
+            setSiteDemoStage('spin');
+            if (siteDemoWheel) {
+              siteDemoWheel.style.transition = 'transform 2.1s cubic-bezier(.15,.8,.2,1)';
+              siteDemoWheel.style.transform = 'rotate(' + targetRotation + 'deg)';
+            }
+            if (siteDemoPrize) siteDemoPrize.textContent = prize;
+            if (siteDemoPrizeForm) siteDemoPrizeForm.textContent = prize;
+            window.setTimeout(function () { pressSiteDemo('spin', false); }, 300);
+            break;
+          }
+          case 'prize':
+            pressSiteDemo('spin', false);
+            setSiteDemoStage('prize');
+            break;
+          case 'form':
+            setSiteDemoStage('form');
+            moveSiteDemoCursor('submit');
+            break;
+          case 'typeName':
+            if (siteDemoName) siteDemoName.textContent = siteDemoLeadName ? siteDemoLeadName.textContent : 'Никита';
+            break;
+          case 'typePhone':
+            if (siteDemoPhone) siteDemoPhone.textContent = '+7 999 123-45-67';
+            break;
+          case 'pointSubmit':
+            moveSiteDemoCursor('submit');
+            break;
+          case 'submit':
+            pressSiteDemo('submit', true);
+            break;
+          case 'done':
+            pressSiteDemo('submit', false);
+            if (usageProductPhone) usageProductPhone.classList.add('is-demo-success');
+            break;
+        }
+
+        siteDemoTimer = window.setTimeout(function () {
+          runSiteDemoPhase((index + 1) % sequence.length);
+        }, step.dur);
+      }
+
+      function stopSiteDemo() {
+        resetSiteDemo();
+        if (usageProductPhone) usageProductPhone.classList.remove('is-demo-opened', 'is-demo-success');
+        if (usagePhones) usagePhones.classList.remove('is-site-demo');
+      }
+
+      function startSiteDemo() {
+        resetSiteDemo();
+        runSiteDemoPhase(0);
+      }
+
       function setUsageScenario(key) {
         var scenario = usageScenarios[key] || usageScenarios.site;
+        var isSite = key === 'site';
 
         usageItems.forEach(function (item) {
           item.classList.toggle('is-active', item.getAttribute('data-usage-item') === key);
         });
 
-        if (usageBar) usageBar.innerHTML = scenario.bar;
-        if (usageContext) usageContext.innerHTML = scenario.body;
+        if (usageBar) {
+          usageBar.classList.toggle('usage-phone__bar--social', Boolean(scenario.social));
+          usageBar.innerHTML = scenario.bar;
+        }
+        if (usageContext) {
+          usageContext.className = 'usage-context' + (scenario.social ? ' usage-context--social' : '');
+          usageContext.innerHTML = scenario.body;
+        }
+        if (usageSource) usageSource.textContent = scenario.source;
         if (usageCaption) usageCaption.textContent = scenario.caption;
+        if (usageProductPhone) usageProductPhone.classList.add('is-site-widget');
+        if (usagePhones) {
+          usagePhones.classList.toggle('is-site-demo', isSite);
+          usagePhones.classList.add('is-usage-demo');
+        }
+        startSiteDemo();
       }
 
       document.querySelectorAll('.widget-preview-frame').forEach(function (frame) {
