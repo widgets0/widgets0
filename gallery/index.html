@@ -1,257 +1,1075 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html>
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Галерея виджетов</title>
 <link rel="icon" type="image/png" href="../favicon.png">
 <link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="./image-slot.js"></script>
+<script type="text/babel" src="./ios-frame.jsx"></script>
+<script type="text/babel" src="./browser-window.jsx"></script>
 <style>
   *{box-sizing:border-box}
   html,body{margin:0;padding:0}
-  :root{
-    --accent:#1d1d1f;      /* цвет кнопок и активного фильтра */
-    --on-accent:#ffffff;   /* текст на акценте */
-    --bg:#f5f5f7;
-    --ink:#1d1d1f;
-    --muted:#6e6e73;
-    --muted2:#86868b;
-  }
-  body{
-    font-family:Onest,-apple-system,"Segoe UI",sans-serif;
-    background:var(--bg);
-    color:var(--ink);
-    padding:80px 24px 110px;
-  }
-  .wrap{max-width:1180px;margin:0 auto}
+  input::placeholder{color:#86868b}
+  .lib-scroll::-webkit-scrollbar{width:8px}
+  .lib-scroll::-webkit-scrollbar-thumb{background:rgba(0,0,0,0.14);border-radius:8px}
+  @keyframes leadIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
 
-  /* ---- Hero ---- */
-  .hero{text-align:center;max-width:820px;margin:0 auto 52px}
-  .eyebrow{
-    display:inline-flex;align-items:center;gap:9px;padding:7px 15px;background:#fff;
-    border:1px solid rgba(0,0,0,.1);border-radius:980px;font-size:13px;font-weight:600;
-    letter-spacing:.01em;color:#4b4b4f;margin-bottom:28px;box-shadow:0 1px 2px rgba(0,0,0,.03);white-space:nowrap;
-  }
-  .eyebrow .dot{width:7px;height:7px;border-radius:50%;background:#30d158;box-shadow:0 0 0 3px rgba(48,209,88,.18)}
-  .hero h1{font-size:66px;font-weight:700;line-height:1.03;letter-spacing:-.035em;margin:0 0 22px;text-wrap:balance}
-  .hero h1 .dim{color:var(--muted2)}
-  .hero p{font-size:21px;line-height:1.5;color:var(--muted);margin:0 auto;max-width:660px;text-wrap:pretty}
-
-  /* ---- Stat + search ---- */
-  .bar{
-    display:flex;align-items:center;justify-content:space-between;gap:24px;background:#fff;
-    border:1px solid rgba(0,0,0,.08);border-radius:18px;padding:20px 26px;margin-bottom:36px;box-shadow:0 1px 3px rgba(0,0,0,.04);
-  }
-  .bar .count{display:flex;align-items:baseline;gap:9px}
-  .bar .count b{font-size:28px;font-weight:700;letter-spacing:-.01em}
-  .bar .count span{color:var(--muted2);font-size:16px}
-  .bar input{
-    width:min(430px,48%);background:#f0f0f3;border:1px solid rgba(0,0,0,.09);border-radius:12px;
-    padding:14px 18px;color:var(--ink);font-size:15px;font-family:inherit;outline:none;
-  }
-  .bar input::placeholder{color:var(--muted2)}
-
-  /* ---- Filters ---- */
-  .chips{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin-bottom:44px}
-  .chip{
-    padding:10px 20px;border-radius:980px;font-family:inherit;font-size:15px;font-weight:500;cursor:pointer;
-    white-space:nowrap;transition:all .15s ease;border:1px solid rgba(0,0,0,.1);background:#fff;color:var(--ink);
-  }
-  .chip.active{background:var(--accent);color:var(--on-accent);border-color:transparent}
-
-  /* ---- Grid + cards ---- */
-  .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
-  @media(max-width:980px){.grid{grid-template-columns:repeat(2,1fr)}}
-  @media(max-width:640px){.grid{grid-template-columns:1fr}.hero h1{font-size:46px}}
-  .card{
-    display:flex;flex-direction:column;background:#fff;border:1px solid rgba(0,0,0,.07);border-radius:22px;
-    overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,.05);transition:transform .2s ease, box-shadow .2s ease;
-  }
-  .card:hover{transform:translateY(-4px);box-shadow:0 18px 44px rgba(0,0,0,.13);border-color:rgba(0,0,0,.09)}
-  .preview{position:relative;padding:26px;cursor:pointer;border-bottom:1px solid rgba(0,0,0,.06)}
-  .badge{
-    position:absolute;top:18px;left:22px;z-index:3;font-size:12px;font-weight:600;color:var(--ink);
-    background:rgba(255,255,255,.82);backdrop-filter:blur(6px);border:1px solid rgba(0,0,0,.06);
-    padding:5px 12px;border-radius:8px;pointer-events:none;
-  }
-  .frame{position:relative;height:300px;border-radius:16px;overflow:hidden;box-shadow:0 10px 30px rgba(0,0,0,.12);background:#fff}
-  .frame iframe{width:200%;height:200%;border:0;transform:scale(.5);transform-origin:0 0;pointer-events:none}
-  .frame .hit{position:absolute;inset:0}
-  .body{padding:26px 26px 28px;display:flex;flex-direction:column;flex:1}
-  .body h3{font-size:24px;font-weight:700;margin:0 0 18px;letter-spacing:-.01em}
-  .label{font-size:11px;letter-spacing:.08em;font-weight:600;color:var(--muted2);margin-bottom:9px}
-  .desc{font-size:16px;line-height:1.5;color:#424245;margin:0 0 20px}
-  .label.who{border-top:1px solid rgba(0,0,0,.08);padding-top:18px;margin-bottom:12px}
-  .tags{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 26px}
-  .tag{font-size:13px;color:#4b4b4f;background:#f0f0f3;border:1px solid rgba(0,0,0,.05);padding:5px 11px;border-radius:8px}
-  .btn{
-    margin-top:auto;width:100%;padding:15px;border-radius:980px;border:0;background:var(--accent);color:var(--on-accent);
-    font-family:inherit;font-weight:600;font-size:16px;cursor:pointer;transition:all .15s ease;
-  }
-  .btn:hover{transform:translateY(-1px);box-shadow:0 10px 26px rgba(0,0,0,.18)}
-  .empty{text-align:center;color:var(--muted);font-size:17px;padding:80px 20px}
-
-  /* ---- Modal ---- */
-  .overlay{
-    position:fixed;inset:0;background:rgba(0,0,0,.45);backdrop-filter:blur(8px);display:none;
-    align-items:center;justify-content:center;padding:32px;z-index:60;
-  }
-  .overlay.open{display:flex}
-  .modal{
-    width:min(1000px,100%);height:min(680px,90vh);background:#fff;border:1px solid rgba(0,0,0,.08);
-    border-radius:20px;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 40px 120px rgba(0,0,0,.3);
-  }
-  .modal .head{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid rgba(0,0,0,.08)}
-  .modal .head b{font-size:17px}
-  .modal .head .act{display:flex;gap:12px;align-items:center}
-  .modal .head a{text-decoration:none;color:var(--ink);font-size:14px;font-weight:600;padding:9px 16px;border:1px solid rgba(0,0,0,.14);border-radius:10px}
-  .modal .head .close{width:38px;height:38px;border-radius:10px;border:1px solid rgba(0,0,0,.12);background:#f5f5f7;color:var(--ink);font-size:16px;cursor:pointer}
-  .modal iframe{flex:1;border:0;width:100%;background:#fff}
 </style>
-</head>
-<body>
-  <div class="wrap">
-    <div class="hero">
-      <div class="eyebrow"><span class="dot"></span>13 готовых виджетов · ставятся без переделки сайта</div>
-      <h1><span class="dim">Те же посетители — </span>больше заявок</h1>
-      <p>Квизы, игры, калькуляторы и формы, которые вовлекают посетителей и отправляют заявки прямо в Telegram — без переделки сайта.</p>
-    </div>
+</helmet>
+<div style="min-height:100vh;background:#f5f5f7;font-family:Onest,-apple-system,Segoe UI,sans-serif;color:#1d1d1f;padding:0 24px 110px">
 
-    <div class="bar">
-      <div class="count"><b id="count">13</b><span>виджетов</span></div>
-      <input id="search" placeholder="Поиск виджетов">
-    </div>
+  <header style="position:sticky;top:0;z-index:50;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:16px 24px;margin:0 -24px 40px;background:rgba(245,245,247,0.8);backdrop-filter:saturate(180%) blur(20px);border-bottom:1px solid rgba(0,0,0,0.08)">
+    <img src="./assets/olly-logo.png" alt="Olly" style="height:32px;width:auto;display:block">
+    <a href="#cta" style="text-decoration:none;background:#1d1d1f;color:#fff;font-size:14px;font-weight:700;padding:11px 22px;border-radius:980px;white-space:nowrap">Запустить бесплатно</a>
+  </header>
 
-    <div class="chips" id="chips"></div>
-    <div class="grid" id="grid"></div>
-    <div class="empty" id="empty" style="display:none">Ничего не найдено. Попробуй другой запрос или категорию.</div>
-  </div>
+  <div style="max-width:1180px;margin:0 auto">
 
-  <div class="overlay" id="overlay">
-    <div class="modal" onclick="event.stopPropagation()">
-      <div class="head">
-        <b id="mTitle"></b>
-        <div class="act">
-          <a id="mLink" target="_blank" rel="noopener">Открыть виджет ↗</a>
-          <button class="close" onclick="closeModal()">✕</button>
+    <div style="display:grid;grid-template-columns:1.05fr 0.95fr;gap:56px;align-items:center;margin:36px 0 72px">
+      <div>
+        <div style="display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:700;letter-spacing:0.04em;color:#0071e3;background:#eaf3ff;border:1px solid rgba(0,113,227,0.15);padding:6px 14px;border-radius:980px;margin-bottom:22px">Интерактивные механики для вашего сайта</div>
+        <h1 style="font-size:58px;font-weight:700;line-height:1.03;letter-spacing:-0.035em;margin:0 0 22px;text-wrap:balance">
+          <span style="color:#86868b">Те же посетители — </span><span style="color:#1d1d1f">больше заявок</span>
+        </h1>
+        <p style="font-size:20px;line-height:1.5;color:#6e6e73;margin:0 0 32px;max-width:520px;text-wrap:pretty">Игры, квизы и калькуляторы вовлекают посетителей и отправляют заявки прямо в Telegram. Собираете за день, ставите одной строкой кода.</p>
+        <div style="display:flex;flex-wrap:wrap;gap:12px;margin-bottom:24px">
+          <a href="#cta" style="text-decoration:none;background:#1d1d1f;color:#fff;font-size:16px;font-weight:700;padding:16px 30px;border-radius:980px">Запустить бесплатно</a>
+          <a href="#gallery" style="text-decoration:none;background:#fff;color:#1d1d1f;font-size:16px;font-weight:700;padding:16px 30px;border-radius:980px;border:1px solid rgba(0,0,0,0.12)">Смотреть виджеты</a>
         </div>
-      </div>
-      <iframe id="mFrame" title="preview"></iframe>
-    </div>
-  </div>
-
-<script>
-const BASE = './';
-const CATS = ['Все','Квиз','Игра','Розыгрыш','Калькулятор','Форма','Информер','Баннер'];
-
-const WIDGETS = [
-  {path:'widgets/wheel-fortune-widget.html?preview=1', title:'Колесо фортуны', category:'Розыгрыш',
-   how:'Посетитель крутит колесо, выигрывает бонус и оставляет имя и телефон, чтобы его забрать.',
-   who:'Салоны · кафе · магазины · локальные услуги'},
-  {path:'widgets/tinder-product-widget.html?preview=swiping', title:'Товарный Тиндер', category:'Квиз',
-   how:'Посетитель листает товары, отмечает что нравится — виджет собирает персональную подборку и контакт.',
-   who:'Магазины одежды · спорт · бьюти · подарки'},
-  {path:'widgets/cleaning-calculator-widget.html', title:'Калькулятор стоимости', category:'Калькулятор',
-   how:'Посетитель сам считает примерную цену и оставляет контакт, чтобы получить точный расчёт.',
-   who:'Клининг · ремонт · автоуслуги · услуги с вилкой цен'},
-  {path:'widgets/quees.html?preview=question1', title:'Квиз', category:'Квиз',
-   how:'Посетитель отвечает на вопросы, получает рекомендацию и оставляет контакт, чтобы забрать бонус.',
-   who:'Школы · курсы · эксперты · образовательные воронки'},
-  {path:'widgets/black-friday-timer-form-widget.html', title:'Форма с таймером', category:'Форма',
-   how:'Таймер показывает, что предложение скоро закончится, и подталкивает оставить заявку сейчас.',
-   who:'Акции · запуск курса · набор группы'},
-  {path:'widgets/sale-banner-timer-widget.html', title:'Акционная полоса', category:'Баннер',
-   how:'Заметная полоса сверху сайта показывает акцию, таймер и открывает форму заявки.',
-   who:'Сезонные акции · скидки · распродажи · спецпредложения'},
-  {path:'widgets/mobile-sale-card-widget.html?preview=1', title:'Мобильная акция', category:'Баннер',
-   how:'Мобильная промо-карточка появляется снизу, показывает акцию и собирает заявку.',
-   who:'Мобильный трафик · розыгрыши · скидки · быстрые заявки'},
-  {path:'widgets/manicure-game-widget.html?preview=playing&static=1', title:'Игра-ловушка', category:'Игра',
-   how:'Посетитель играет, выигрывает скидку и оставляет заявку, чтобы забрать приз.',
-   who:'Акции · распродажи · салоны · локальные услуги'},
-  {path:'widgets/purchase-counter-widget.html', title:'Счётчик посетителей', category:'Информер',
-   how:'Показывает, сколько человек смотрят товар или уже купили, и создаёт ощущение спроса.',
-   who:'Магазины · карточки товара · лендинги · страницы услуг'},
-  {path:'widgets/bike-bonus-runner-widget.html?preview=playing', title:'Велоигра за бонусы', category:'Игра',
-   how:'Посетитель управляет мини-игрой, собирает баллы и оставляет контакт, чтобы забрать выигрыш.',
-   who:'Акции · доставка · магазины · молодая аудитория'},
-  {path:'widgets/gif-contact-widget.html', title:'Форма с гифкой', category:'Форма',
-   how:'Заметный блок с GIF открывает короткую форму для вопроса или заявки.',
-   who:'Консультации · поддержка · услуги · экспертные сайты'},
-  {path:'widgets/organic-lead-form-widget.html', title:'Арт-форма с бонусом', category:'Форма',
-   how:'Форма с изображением и таймером предлагает бонус и собирает контакт.',
-   who:'Обучение · услуги · премиальные офферы · консультации'},
-  {path:'widgets/yandex-rating-widget.html', title:'Рейтинг на Яндекс Картах', category:'Информер',
-   how:'Показывает рейтинг, количество отзывов и ведёт на страницу заведения в Яндекс Картах.',
-   who:'Локальный бизнес · клиники · салоны · рестораны'},
-];
-
-let activeCat = 'Все';
-let query = '';
-
-const el = (id) => document.getElementById(id);
-const esc = (s) => s.replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-
-function renderChips(){
-  el('chips').innerHTML = CATS.map(c =>
-    `<button class="chip${c===activeCat?' active':''}" onclick="setCat('${c}')">${c}</button>`
-  ).join('');
-}
-
-function setCat(c){ activeCat = c; renderChips(); renderGrid(); }
-
-function renderGrid(){
-  const q = query.trim().toLowerCase();
-  const list = WIDGETS.filter(w =>
-    (activeCat==='Все' || w.category===activeCat) &&
-    (!q || (w.title+' '+w.how+' '+w.who).toLowerCase().includes(q))
-  );
-  el('grid').innerHTML = list.map(w => {
-    const tags = w.who.split('·').map(s=>s.trim()).filter(Boolean)
-      .map(t => `<span class="tag">${esc(t)}</span>`).join('');
-    const url = BASE + w.path;
-    return `
-      <div class="card">
-        <div class="preview" onclick="openModal('${esc(w.title)}','${url}')">
-          <div class="badge">${esc(w.category)}</div>
-          <div class="frame">
-            <iframe src="${url}" loading="lazy" scrolling="no" title="${esc(w.title)}"></iframe>
-            <div class="hit"></div>
+        <div style="display:flex;flex-wrap:wrap;gap:10px 22px;font-size:14px;font-weight:600;color:#6e6e73;margin-bottom:26px">
+          <span style="display:inline-flex;align-items:center;gap:7px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#30d158" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"></path></svg>Без кода</span>
+          <span style="display:inline-flex;align-items:center;gap:7px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#30d158" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"></path></svg>Заявки в Telegram</span>
+          <span style="display:inline-flex;align-items:center;gap:7px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#30d158" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"></path></svg>Запуск за день</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:14px;padding-top:22px;border-top:1px solid rgba(0,0,0,0.08)">
+          <div style="display:flex">
+            <span style="width:34px;height:34px;border-radius:50%;background:#c9a06a;border:2px solid #f5f5f7;display:flex;align-items:center;justify-content:center;color:#fff;font-size:13px;font-weight:700">М</span>
+            <span style="width:34px;height:34px;border-radius:50%;background:#7b4bf0;border:2px solid #f5f5f7;margin-left:-10px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:13px;font-weight:700">А</span>
+            <span style="width:34px;height:34px;border-radius:50%;background:#0071e3;border:2px solid #f5f5f7;margin-left:-10px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:13px;font-weight:700">К</span>
+            <span style="width:34px;height:34px;border-radius:50%;background:#1f8a5b;border:2px solid #f5f5f7;margin-left:-10px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:13px;font-weight:700">Е</span>
+          </div>
+          <div>
+            <div style="display:flex;align-items:center;gap:4px;color:#f5a623;font-size:14px;line-height:1">★★★★★</div>
+            <div style="font-size:13.5px;color:#6e6e73;margin-top:4px;font-weight:500"><b style="color:#1d1d1f">4.9</b> · выбирают 500+ маркетологов и агентств</div>
           </div>
         </div>
-        <div class="body">
-          <h3>${esc(w.title)}</h3>
-          <div class="label">КАК РАБОТАЕТ</div>
-          <p class="desc">${esc(w.how)}</p>
-          <div class="label who">КОМУ ПОДХОДИТ</div>
-          <div class="tags">${tags}</div>
-          <button class="btn" onclick="openModal('${esc(w.title)}','${url}')">Посмотреть виджет</button>
+      </div>
+      <div style="display:flex;justify-content:center">
+        <div style="width:288px;height:588px;background:#fff;border:3px solid #1d1d1f;border-radius:38px;box-shadow:16px 16px 0 rgba(29,29,31,0.92);overflow:hidden;position:relative">
+          <iframe id="hero-preview-frame" src="about:blank" scrolling="no" title="Демо виджета" style="position:absolute;top:0;left:0;width:150%;height:150%;border:0;transform:scale(0.6667);transform-origin:0 0;pointer-events:none"></iframe>
+          <div onClick="{{playHero}}" style="{{heroPosterStyle}}">
+            <div style="width:64px;height:64px;border-radius:50%;background:#1d1d1f;display:flex;align-items:center;justify-content:center;box-shadow:0 10px 30px rgba(0,0,0,0.25);margin-bottom:16px">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="#fff"><path d="M8 5v14l11-7z"></path></svg>
+            </div>
+            <div style="font-size:15px;font-weight:700;color:#1d1d1f">Запустить демо</div>
+            <div style="font-size:13px;color:#8a8a97;margin-top:4px">Колесо фортуны</div>
+          </div>
         </div>
-      </div>`;
-  }).join('');
-  el('empty').style.display = list.length ? 'none' : 'block';
-}
+      </div>
+    </div>
 
-function openModal(title, url){
-  el('mTitle').textContent = title;
-  el('mLink').href = url;
-  el('mFrame').src = url;
-  el('overlay').classList.add('open');
-}
-function closeModal(){
-  el('overlay').classList.remove('open');
-  el('mFrame').src = 'about:blank';
-}
+    <div style="margin-bottom:8px;padding:0"></div>
 
-el('overlay').addEventListener('click', closeModal);
-el('search').addEventListener('input', e => { query = e.target.value; renderGrid(); });
-document.addEventListener('keydown', e => { if(e.key==='Escape') closeModal(); });
+    <div id="gallery" style="scroll-margin-top:90px"></div>
 
-renderChips();
-renderGrid();
+    <div style="margin-bottom:72px">
+      <h2 style="font-size:44px;font-weight:800;letter-spacing:-0.025em;margin:0 0 10px;text-wrap:balance">Зачем это нужно</h2>
+      <p style="font-size:18px;color:#6e6e73;margin:0 0 40px;max-width:600px;line-height:1.5">Виджеты превращают пассивных посетителей в заявки — на том же трафике, без нового бюджета.</p>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:20px">
+        <div style="background:#fff;border:1px solid rgba(0,0,0,0.07);border-radius:20px;padding:28px 24px;box-shadow:0 2px 12px rgba(0,0,0,0.05)">
+          <div style="font-size:40px;font-weight:800;letter-spacing:-0.02em;color:#1d1d1f;margin-bottom:10px">+30%</div>
+          <div style="font-size:15px;line-height:1.5;color:#6e6e73">заявок с того же трафика — без увеличения рекламы</div>
+        </div>
+        <div style="background:#fff;border:1px solid rgba(0,0,0,0.07);border-radius:20px;padding:28px 24px;box-shadow:0 2px 12px rgba(0,0,0,0.05)">
+          <div style="font-size:40px;font-weight:800;letter-spacing:-0.02em;color:#1d1d1f;margin-bottom:10px">×2,5</div>
+          <div style="font-size:15px;line-height:1.5;color:#6e6e73">вовлечение вместо баннерной слепоты — игра затягивает</div>
+        </div>
+        <div style="background:#fff;border:1px solid rgba(0,0,0,0.07);border-radius:20px;padding:28px 24px;box-shadow:0 2px 12px rgba(0,0,0,0.05)">
+          <div style="font-size:40px;font-weight:800;letter-spacing:-0.02em;color:#1d1d1f;margin-bottom:10px">15 мин</div>
+          <div style="font-size:15px;line-height:1.5;color:#6e6e73">заявка сразу в Telegram — реагируете, пока клиент тёплый</div>
+        </div>
+        <div style="background:#fff;border:1px solid rgba(0,0,0,0.07);border-radius:20px;padding:28px 24px;box-shadow:0 2px 12px rgba(0,0,0,0.05)">
+          <div style="font-size:40px;font-weight:800;letter-spacing:-0.02em;color:#1d1d1f;margin-bottom:10px">1 день</div>
+          <div style="font-size:15px;line-height:1.5;color:#6e6e73">запуск без разработчиков — одна строка кода на сайт</div>
+        </div>
+      </div>
+    </div>
+
+    <div id="gallery-list" ref="{{galleryRef}}" style="margin-top:96px;padding-top:64px;border-top:1px solid rgba(0,0,0,0.08);scroll-margin-top:90px">
+      <h2 style="font-size:44px;font-weight:800;letter-spacing:-0.025em;margin:0 0 10px;text-wrap:balance">Библиотека виджетов</h2>
+      <p style="font-size:18px;color:#6e6e73;margin:0 0 40px;max-width:600px;line-height:1.5">Выберите виджет слева — превью появится в центре, а справа опишем, как он работает и что даёт.</p>
+
+      <div style="display:grid;grid-template-columns:250px 1fr 340px;height:720px;border:1px solid rgba(0,0,0,0.08);border-radius:24px;overflow:hidden;background:#fbfbfd;box-shadow:0 10px 40px rgba(20,20,40,0.07)">
+
+        <div class="lib-scroll" style="border-right:1px solid rgba(0,0,0,0.07);overflow-y:auto;padding:24px 16px">
+          <sc-for list="{{libGroups}}" as="g" hint-placeholder-count="4">
+            <div style="margin-bottom:20px">
+              <div style="font-size:11px;letter-spacing:0.1em;font-weight:700;color:#a1a1aa;margin-bottom:9px">{{g.label}}</div>
+              <div style="display:flex;flex-direction:column;gap:2px">
+                <sc-for list="{{g.items}}" as="w" hint-placeholder-count="3">
+                  <button onClick="{{w.onSelect}}" style="{{w.rowStyle}}">
+                    <span style="{{w.dotStyle}}"></span>
+                    <span style="flex:1;text-align:left">{{w.title}}</span>
+                  </button>
+                </sc-for>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+
+        <div style="display:flex;align-items:center;justify-content:center;padding:36px 28px;overflow:hidden;background:radial-gradient(80% 60% at 50% 0%,#ffffff,#eef0f3 85%)">
+          <div style="width:320px;max-width:100%;height:640px;background:#fff;border:3px solid #1d1d1f;border-radius:42px;box-shadow:0 30px 70px rgba(20,20,40,0.22);overflow:hidden;position:relative">
+            <div style="position:absolute;top:0;left:50%;transform:translateX(-50%);width:130px;height:26px;background:#1d1d1f;border-radius:0 0 16px 16px;z-index:3"></div>
+            <iframe id="lib-preview-frame" src="about:blank" title="Превью виджета" scrolling="no" style="position:absolute;top:0;left:0;width:150%;height:150%;border:0;transform:scale(0.6667);transform-origin:0 0"></iframe>
+            <div onClick="{{playLib}}" style="{{libPosterStyle}}">
+              <div style="width:60px;height:60px;border-radius:50%;background:#1d1d1f;display:flex;align-items:center;justify-content:center;box-shadow:0 10px 28px rgba(0,0,0,0.22);margin-bottom:14px">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="#fff"><path d="M8 5v14l11-7z"></path></svg>
+              </div>
+              <div style="font-size:14px;font-weight:700;color:#1d1d1f">Запустить превью</div>
+              <div style="font-size:13px;color:#8a8a97;margin-top:4px">Живой виджет на телефоне</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="lib-scroll" style="border-left:1px solid rgba(0,0,0,0.07);overflow-y:auto;padding:32px 28px;display:flex;flex-direction:column">
+          <div style="font-size:12px;letter-spacing:0.08em;font-weight:700;color:#a1a1aa;margin-bottom:9px">{{libGroup}}</div>
+          <h3 style="font-size:27px;font-weight:800;letter-spacing:-0.015em;line-height:1.12;margin:0 0 16px">{{libTitle}}</h3>
+
+          <div style="font-size:11px;letter-spacing:0.08em;font-weight:700;color:#8a8a97;margin-bottom:8px">КАК РАБОТАЕТ</div>
+          <p style="font-size:14.5px;line-height:1.55;color:#424245;margin:0 0 20px">{{libHow}}</p>
+
+          <div style="font-size:11px;letter-spacing:0.08em;font-weight:700;color:#8a8a97;margin-bottom:10px">КОМУ ПОДХОДИТ</div>
+          <div style="display:flex;flex-wrap:wrap;gap:7px;margin-bottom:24px">
+            <sc-for list="{{libTags}}" as="tag" hint-placeholder-count="4">
+              <span style="font-size:12.5px;color:#4b4b4f;background:#f0f0f3;border:1px solid rgba(0,0,0,0.05);padding:5px 10px;border-radius:8px">{{tag}}</span>
+            </sc-for>
+          </div>
+
+          <div style="background:#fff;border:1px solid rgba(0,0,0,0.08);border-radius:14px;padding:18px;margin-bottom:22px;box-shadow:0 2px 12px rgba(0,0,0,0.05)">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+              <span style="font-size:11px;letter-spacing:0.06em;font-weight:700;color:#8a8a97">РОСТ КОНВЕРСИИ</span>
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#1f8a5b" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l6-6 4 4 8-8M15 7h6v6"></path></svg>
+            </div>
+            <div style="font-size:30px;font-weight:800;letter-spacing:-0.02em;margin-bottom:12px">{{libUplift}}</div>
+            <div style="height:7px;border-radius:980px;background:#eef0f3;overflow:hidden">
+              <div style="{{libBarStyle}}"></div>
+            </div>
+          </div>
+
+          <a href="#cta" style="margin-top:auto;text-decoration:none;display:flex;align-items:center;justify-content:center;gap:8px;background:#1d1d1f;color:#fff;font-size:15px;font-weight:700;padding:15px;border-radius:13px">Попробовать этот виджет ›</a>
+        </div>
+
+      </div>
+    </div>
+
+    <div ref="{{whereRef}}" style="margin-top:96px;padding-top:64px;border-top:1px solid rgba(0,0,0,0.08)">
+      <h2 style="font-size:44px;font-weight:800;letter-spacing:-0.025em;margin:0 0 48px;text-wrap:balance">Где использовать</h2>
+
+      <div style="display:grid;grid-template-columns:340px 1fr;gap:56px;align-items:start">
+        <div>
+          <sc-for list="{{channels}}" as="ch" hint-placeholder-count="5">
+            <div style="border-bottom:1px solid rgba(0,0,0,0.08)">
+              <button onClick="{{ch.onSelect}}" style="width:100%;display:flex;align-items:center;justify-content:space-between;gap:12px;background:none;border:0;padding:20px 4px;cursor:pointer;font-family:inherit;text-align:left">
+                <span style="font-size:19px;font-weight:700;color:#1d1d1f;white-space:nowrap">{{ch.title}}</span>
+                <span style="{{ch.chevronStyle}}">
+                  <svg width="12" height="8" viewBox="0 0 12 8" fill="none"><path d="M1 1.5L6 6.5L11 1.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                </span>
+              </button>
+              <sc-if value="{{ch.active}}" hint-placeholder-val="{{false}}">
+                <p style="margin:0 4px 22px;font-size:15px;line-height:1.55;color:#6e6e73;max-width:300px">{{ch.desc}}</p>
+              </sc-if>
+            </div>
+          </sc-for>
+        </div>
+
+        <div style="position:relative;background:#f0f0f3;border-radius:24px;padding:48px 28px 40px;overflow:hidden">
+          <div style="position:absolute;top:20px;right:24px;z-index:8;display:inline-flex;align-items:center;gap:8px;background:#fff;border:1px solid rgba(0,0,0,0.08);border-radius:980px;padding:7px 14px;font-size:13px;font-weight:600;color:#1d1d1f;box-shadow:0 2px 8px rgba(0,0,0,0.06)">
+            <span style="width:7px;height:7px;border-radius:50%;background:#30d158;box-shadow:0 0 0 3px rgba(48,209,88,0.18)"></span>
+            {{leadCount}} заявок сегодня
+          </div>
+          <div ref="{{rowRef}}" style="position:relative;display:flex;gap:34px;justify-content:center;align-items:flex-start">
+
+            <div style="position:relative;z-index:1;width:244px;flex:none;height:520px;background:#fff;border:3px solid #1d1d1f;border-radius:24px;box-shadow:10px 10px 0 rgba(29,29,31,0.92);overflow:hidden;display:flex;flex-direction:column">
+              <sc-if value="{{left.isApp}}" hint-placeholder-val="{{true}}">
+                <div style="display:flex;align-items:center;gap:10px;padding:13px 14px;background:#f7f7f9;border-bottom:1px solid rgba(0,0,0,0.08)">
+                  <span style="font-size:19px;color:#1d1d1f;line-height:1">‹</span>
+                  <div style="width:34px;height:34px;border-radius:50%;background:#1d1d1f;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;flex:none">{{left.avatar}}</div>
+                  <div style="flex:1;min-width:0">
+                    <div style="font-size:14px;font-weight:700;color:#1d1d1f;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{left.handle}}</div>
+                    <div style="font-size:11px;color:#8a8a97">{{left.sub}}</div>
+                  </div>
+                  <span style="font-size:18px;color:#1d1d1f;line-height:1">⋯</span>
+                </div>
+                <div style="padding:18px 16px;flex:1;background:#eef0f3;display:flex;flex-direction:column">
+                  <div style="align-self:flex-start;max-width:88%;background:#fff;border-radius:4px 14px 14px 14px;padding:12px 14px;box-shadow:0 1px 2px rgba(0,0,0,0.05);margin-bottom:6px">
+                    <p style="font-size:13.5px;line-height:1.5;color:#1d1d1f;margin:0 0 12px">{{left.postText}}</p>
+                    <div ref="{{leftBtnRef}}" style="border:1.5px solid #2b8ce6;border-radius:10px;padding:11px;text-align:center;font-size:13.5px;font-weight:700;color:#2b8ce6;background:#fff;transition:transform .15s ease">{{left.linkText}}</div>
+                  </div>
+                  <div style="align-self:flex-start;font-size:10.5px;color:#9a9aa5;padding-left:4px">12:4{{left.avatar}} · ✓✓</div>
+                </div>
+              </sc-if>
+
+              <sc-if value="{{left.isBrowser}}" hint-placeholder-val="{{false}}">
+                <div style="padding:8px 12px 0;background:#e4e5e9">
+                  <div style="display:flex;gap:6px;margin-bottom:6px">
+                    <span style="width:9px;height:9px;border-radius:50%;background:#ff5f57"></span>
+                    <span style="width:9px;height:9px;border-radius:50%;background:#febc2e"></span>
+                    <span style="width:9px;height:9px;border-radius:50%;background:#28c840"></span>
+                  </div>
+                  <div style="display:flex;align-items:center;gap:6px;background:#fff;border-radius:8px 8px 0 0;padding:6px 12px">
+                    <svg width="10" height="10" viewBox="0 0 24 24" fill="#8a8a97"><path d="M12 1a5 5 0 00-5 5v3H6a2 2 0 00-2 2v9a2 2 0 002 2h12a2 2 0 002-2v-9a2 2 0 00-2-2h-1V6a5 5 0 00-5-5zm3 8H9V6a3 3 0 016 0v3z"></path></svg>
+                    <div style="font-size:11.5px;color:#3a3a46">{{left.app}}</div>
+                  </div>
+                </div>
+                <div style="padding:20px 18px;flex:1;min-height:0;background:#fff;display:flex;flex-direction:column">
+                  <div style="font-size:18px;font-weight:800;letter-spacing:-0.01em;margin-bottom:8px;color:#1d1d1f;line-height:1.2">{{left.postText}}</div>
+                  <div style="font-size:12.5px;color:#8a8a97;line-height:1.45;margin-bottom:16px">{{left.sub}}</div>
+                  <div ref="{{leftBtnRef}}" style="margin-top:auto;background:#1d1d1f;color:#fff;border-radius:12px;padding:13px;text-align:center;font-size:14px;font-weight:700;transition:transform .15s ease">{{left.linkText}}</div>
+                </div>
+              </sc-if>
+
+              <sc-if value="{{left.isQr}}" hint-placeholder-val="{{false}}">
+                <div style="padding:34px 22px;flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center">
+                  <div style="font-size:17px;font-weight:800;margin-bottom:22px;color:#1d1d1f">{{left.postText}}</div>
+                  <div ref="{{leftBtnRef}}" style="border:2px solid #1d1d1f;border-radius:16px;padding:14px;margin-bottom:18px;background:#fff;transition:transform .15s ease">
+                    <svg width="124" height="124" viewBox="0 0 120 120" fill="#1d1d1f">
+                      <path d="M0 0h32v32H0z"></path><path d="M8 8h16v16H8z" fill="#fff"></path><path d="M12 12h8v8h-8z" fill="#1d1d1f"></path>
+                      <path d="M88 0h32v32H88z"></path><path d="M96 8h16v16H96z" fill="#fff"></path><path d="M100 12h8v8h-8z" fill="#1d1d1f"></path>
+                      <path d="M0 88h32v32H0z"></path><path d="M8 96h16v16H8z" fill="#fff"></path><path d="M12 100h8v8h-8z" fill="#1d1d1f"></path>
+                      <path d="M40 8h8v8h-8zM56 0h8v8h-8zM72 16h8v8h-8zM40 24h8v8h-8zM64 24h8v8h-8zM48 40h8v8h-8zM72 40h8v8h-8zM88 40h8v8h-8zM104 40h8v8h-8zM0 48h8v8H0zM24 48h8v8h-8zM40 56h8v8h-8zM64 56h8v8h-8zM88 56h8v8h-8zM112 56h8v8h-8zM48 72h8v8h-8zM72 72h8v8h-8zM96 72h8v8h-8zM40 88h8v8h-8zM56 96h8v8h-8zM80 88h8v8h-8zM104 88h8v8h-8zM48 104h8v8h-8zM72 104h8v8h-8zM88 104h8v8h-8zM112 104h8v8h-8z"></path>
+                    </svg>
+                  </div>
+                  <div style="font-size:14px;font-weight:700;color:#1d1d1f">{{left.linkText}}</div>
+                  <div style="font-size:13px;color:#8a8a97;margin-top:4px">{{left.sub}}</div>
+                </div>
+              </sc-if>
+            </div>
+
+            <div style="position:absolute;left:50%;top:210px;transform:translate(-50%,-50%);z-index:6;width:62px;height:62px;background:#1d1d1f;border:4px solid #f0f0f3;border-radius:16px;display:flex;align-items:center;justify-content:center;box-shadow:0 10px 24px rgba(0,0,0,0.22)">
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 7h10v10M17 7L7 17"></path></svg>
+            </div>
+
+            <div style="position:relative;z-index:1;width:244px;flex:none;height:520px;background:#fff;border:3px solid #1d1d1f;border-radius:24px;box-shadow:10px 10px 0 rgba(29,29,31,0.92);overflow:hidden">
+              <div style="{{widgetStyle}}">
+                <sc-if value="{{showForm}}" hint-placeholder-val="{{false}}">
+                  <div style="padding:26px 20px;height:100%;display:flex;flex-direction:column">
+                    <div style="font-size:11px;font-weight:700;letter-spacing:0.1em;color:#8a8a97;margin-bottom:10px">ВЫ ВЫИГРАЛИ</div>
+                    <div style="font-size:26px;font-weight:800;line-height:1.1;color:#1d1d1f;margin-bottom:8px;white-space:pre-line">{{prize}}</div>
+                    <p style="font-size:13px;color:#6e6e73;line-height:1.5;margin:0 0 18px">Оставьте контакт — пришлём приз и промокод.</p>
+                    <div style="font-size:11px;font-weight:600;color:#8a8a97;margin-bottom:6px">Имя</div>
+                    <div style="border:1.5px solid rgba(0,0,0,0.12);border-radius:11px;padding:0 13px;height:44px;display:flex;align-items:center;font-size:14px;color:#1d1d1f;margin-bottom:11px">{{demoNameField}}</div>
+                    <div style="font-size:11px;font-weight:600;color:#8a8a97;margin-bottom:6px">Телефон</div>
+                    <div style="border:1.5px solid rgba(0,0,0,0.12);border-radius:11px;padding:0 13px;height:44px;display:flex;align-items:center;font-size:14px;color:#1d1d1f;margin-bottom:18px">{{demoPhoneField}}</div>
+                    <div ref="{{submitRef}}" style="margin-top:auto;background:#1d1d1f;color:#fff;border-radius:12px;padding:15px;text-align:center;font-size:15px;font-weight:700;transition:transform .15s ease">Забрать приз</div>
+                  </div>
+                </sc-if>
+                <sc-if value="{{showWheel}}" hint-placeholder-val="{{true}}">
+                  <div style="padding:26px 20px;height:100%;display:flex;flex-direction:column;align-items:center;text-align:center">
+                    <div style="font-size:11px;font-weight:700;letter-spacing:0.1em;color:#8a8a97;margin-bottom:6px">КОЛЕСО ФОРТУНЫ</div>
+                    <div style="font-size:20px;font-weight:800;line-height:1.15;color:#1d1d1f;margin-bottom:22px">Крутите и забирайте приз</div>
+                    <div style="position:relative;margin-bottom:22px">
+                      <div style="position:absolute;top:-9px;left:50%;transform:translateX(-50%);z-index:3;width:0;height:0;border-left:9px solid transparent;border-right:9px solid transparent;border-top:15px solid #1d1d1f"></div>
+                      <div style="{{wheelStyle}}">
+                        <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:34px;height:34px;border-radius:50%;background:#fff;box-shadow:0 2px 8px rgba(0,0,0,0.2)"></div>
+                      </div>
+                      <sc-if value="{{prizeReady}}" hint-placeholder-val="{{false}}">
+                        <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none">
+                          <div style="background:#1d1d1f;color:#fff;font-weight:800;font-size:16px;padding:9px 16px;border-radius:980px;box-shadow:0 8px 22px rgba(0,0,0,0.3);white-space:pre-line;text-align:center;animation:leadIn .3s ease">{{prize}}</div>
+                        </div>
+                      </sc-if>
+                    </div>
+                    <div ref="{{spinRef}}" style="margin-top:auto;width:100%;background:#1d1d1f;color:#fff;border-radius:12px;padding:15px;text-align:center;font-size:15px;font-weight:700;transition:transform .15s ease">Крутить колесо</div>
+                  </div>
+                </sc-if>
+              </div>
+              <sc-if value="{{success}}" hint-placeholder-val="{{false}}">
+                <div style="position:absolute;inset:0;background:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;text-align:center;padding:24px;animation:leadIn .3s ease;z-index:3">
+                  <div style="width:64px;height:64px;border-radius:50%;background:#1d1d1f;color:#fff;display:flex;align-items:center;justify-content:center">
+                    <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"></path></svg>
+                  </div>
+                  <div style="font-size:19px;font-weight:800;color:#1d1d1f">Заявка отправлена</div>
+                  <div style="font-size:13px;color:#6e6e73;max-width:180px">Менеджер перезвонит в течение 15 минут</div>
+                </div>
+              </sc-if>
+              <div style="position:absolute;left:12px;right:12px;bottom:14px;display:flex;flex-direction:column;gap:8px;z-index:5;pointer-events:none">
+                <sc-for list="{{toasts}}" as="t" hint-placeholder-count="0">
+                  <div style="display:flex;align-items:center;gap:10px;background:#1d1d1f;border-radius:12px;padding:11px 13px;box-shadow:0 10px 26px rgba(0,0,0,0.3);animation:leadIn .35s ease">
+                    <span style="width:8px;height:8px;border-radius:50%;background:#30d158;flex:none"></span>
+                    <div style="line-height:1.25">
+                      <div style="font-size:12.5px;font-weight:700;color:#fff">Новая заявка · {{t.name}}</div>
+                      <div style="font-size:11px;color:rgba(255,255,255,0.6)">+7 999 123-45-67</div>
+                    </div>
+                  </div>
+                </sc-for>
+              </div>
+            </div>
+
+            <div style="{{cursorStyle}}">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="#1d1d1f" stroke="#fff" stroke-width="1.3" stroke-linejoin="round"><path d="M5 2.5l14.5 7.2-6.3 1.9-2 6.4z"></path></svg>
+            </div>
+
+          </div>
+          <div style="text-align:center;margin-top:30px;color:#6e6e73;font-size:15px">{{activeNote}}</div>
+        </div>
+      </div>
+    </div>
+
+    <div ref="{{indRef}}" style="margin-top:96px;padding-top:64px;border-top:1px solid rgba(0,0,0,0.08)">
+      <h2 style="font-size:44px;font-weight:800;letter-spacing:-0.025em;margin:0 0 10px;text-wrap:balance">Для каких отраслей</h2>
+      <p style="font-size:18px;color:#6e6e73;margin:0 0 48px;max-width:600px;line-height:1.5">Механику, тексты и приз настраиваем под конкретный бизнес — вот примеры под разные ниши.</p>
+
+      <div style="display:grid;grid-template-columns:320px 1fr;gap:56px;align-items:start" onMouseEnter="{{indPauseOn}}" onMouseLeave="{{indPauseOff}}">
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <sc-for list="{{industries}}" as="ind" hint-placeholder-count="6">
+            <button onClick="{{ind.onSelect}}" style="{{ind.rowStyle}}">
+              <span style="{{ind.iconWrap}}">{{ind.iconEl}}</span>
+              <span style="display:flex;flex-direction:column;text-align:left;gap:2px">
+                <span style="font-size:17px;font-weight:700">{{ind.title}}</span>
+                <span style="font-size:13px;color:#8a8a97;font-weight:500">{{ind.audience}}</span>
+              </span>
+            </button>
+          </sc-for>
+        </div>
+
+        <div style="background:#f0f0f3;border-radius:24px;padding:44px 40px;display:grid;grid-template-columns:266px 1fr;gap:40px;align-items:center">
+          <div style="justify-self:center;width:266px;height:540px;background:#fff;border:3px solid #1d1d1f;border-radius:30px;box-shadow:12px 12px 0 rgba(29,29,31,0.92);overflow:hidden;position:relative">
+            <iframe id="ind-preview-frame" src="about:blank" scrolling="no" title="Демо для отрасли" style="position:absolute;top:0;left:0;width:150%;height:150%;border:0;transform:scale(0.6667);transform-origin:0 0;pointer-events:none"></iframe>
+            <div onClick="{{playInd}}" style="{{indPosterStyle}}">
+              <div style="width:60px;height:60px;border-radius:50%;background:#1d1d1f;display:flex;align-items:center;justify-content:center;box-shadow:0 10px 28px rgba(0,0,0,0.22);margin-bottom:14px">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="#fff"><path d="M8 5v14l11-7z"></path></svg>
+              </div>
+              <div style="font-size:14px;font-weight:700;color:#1d1d1f">Запустить демо</div>
+            </div>
+          </div>
+
+          <div>
+            <div style="font-size:12px;letter-spacing:0.08em;font-weight:700;color:#8a8a97;margin-bottom:8px">ЧТО ПОЛУЧАЕТ КЛИЕНТ</div>
+            <div style="font-size:22px;font-weight:800;color:#1d1d1f;margin-bottom:22px;letter-spacing:-0.01em">{{indPrize}}</div>
+
+            <div style="font-size:12px;letter-spacing:0.08em;font-weight:700;color:#8a8a97;margin-bottom:10px">ЧТО ПОЛУЧАЕТЕ ВЫ</div>
+            <div style="display:flex;align-items:center;gap:10px;background:#fff;border:1px solid rgba(0,0,0,0.08);border-radius:14px;padding:14px 16px;box-shadow:0 2px 10px rgba(0,0,0,0.05);margin-bottom:22px">
+              <span style="width:36px;height:36px;border-radius:10px;background:#1d1d1f;color:#fff;display:flex;align-items:center;justify-content:center;flex:none">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"></path></svg>
+              </span>
+              <div style="line-height:1.3">
+                <div style="font-size:14.5px;font-weight:700;color:#1d1d1f">Заявка с именем и телефоном</div>
+                <div style="font-size:12.5px;color:#8a8a97">приходит в Telegram, CRM или на почту</div>
+              </div>
+            </div>
+
+            <div style="border-left:3px solid #1d1d1f;padding:2px 0 2px 16px;font-size:15px;line-height:1.5;color:#3a3a46;font-style:italic;margin-bottom:18px">{{indScenario}}</div>
+
+            <div style="display:inline-flex;align-items:center;gap:8px;background:#f0eefb;border-radius:980px;padding:8px 16px;font-size:14px;font-weight:700;color:#4f46e5">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l6-6 4 4 8-8"></path><path d="M17 7h4v4"></path></svg>
+              {{indMetric}}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-top:40px;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:20px;background:#1d1d1f;border-radius:22px;padding:30px 36px">
+        <div>
+          <div style="font-size:22px;font-weight:800;color:#fff;letter-spacing:-0.01em;margin-bottom:4px">Не нашли свою нишу?</div>
+          <div style="font-size:15px;color:rgba(255,255,255,0.65)">Подберём и настроим виджет под ваш бизнес — бесплатно.</div>
+        </div>
+        <a href="#" style="flex:none;text-decoration:none;background:#fff;color:#1d1d1f;font-size:16px;font-weight:700;padding:15px 28px;border-radius:980px;white-space:nowrap">Подобрать виджет</a>
+      </div>
+    </div>
+
+    <div style="margin-top:96px;padding-top:64px;border-top:1px solid rgba(0,0,0,0.08)">
+      <h2 style="font-size:44px;font-weight:800;letter-spacing:-0.025em;margin:0 0 10px;text-wrap:balance">Как подключить</h2>
+      <p style="font-size:18px;color:#6e6e73;margin:0 0 48px;max-width:600px;line-height:1.5">Запуск за один день — без разработчиков и переделки сайта.</p>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:24px">
+        <div style="background:#fff;border:1px solid rgba(0,0,0,0.07);border-radius:22px;padding:32px 28px;box-shadow:0 2px 12px rgba(0,0,0,0.05)">
+          <div style="width:46px;height:46px;border-radius:13px;background:#1d1d1f;color:#fff;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:800;margin-bottom:22px">1</div>
+          <div style="font-size:21px;font-weight:800;margin:0 0 10px;letter-spacing:-0.01em">Выбираете виджет</div>
+          <p style="font-size:15px;line-height:1.55;color:#6e6e73;margin:0">Подбираем механику под вашу цель: заявки, продажи или вовлечение аудитории.</p>
+        </div>
+        <div style="background:#fff;border:1px solid rgba(0,0,0,0.07);border-radius:22px;padding:32px 28px;box-shadow:0 2px 12px rgba(0,0,0,0.05)">
+          <div style="width:46px;height:46px;border-radius:13px;background:#1d1d1f;color:#fff;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:800;margin-bottom:22px">2</div>
+          <div style="font-size:21px;font-weight:800;margin:0 0 10px;letter-spacing:-0.01em">Настраиваем под вас</div>
+          <p style="font-size:15px;line-height:1.55;color:#6e6e73;margin:0">Ваши цвета, тексты и призы, а заявки уходят туда, где вам удобно — Telegram, CRM или почта.</p>
+        </div>
+        <div style="background:#fff;border:1px solid rgba(0,0,0,0.07);border-radius:22px;padding:32px 28px;box-shadow:0 2px 12px rgba(0,0,0,0.05)">
+          <div style="width:46px;height:46px;border-radius:13px;background:#1d1d1f;color:#fff;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:800;margin-bottom:22px">3</div>
+          <div style="font-size:21px;font-weight:800;margin:0 0 10px;letter-spacing:-0.01em">Ставите за 5 минут</div>
+          <p style="font-size:15px;line-height:1.55;color:#6e6e73;margin:0">Одна строка кода на сайт или готовая ссылка для Telegram, VK и QR-кода. Без разработчиков.</p>
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-top:96px;padding-top:64px;border-top:1px solid rgba(0,0,0,0.08)">
+      <h2 style="font-size:44px;font-weight:800;letter-spacing:-0.025em;margin:0 0 10px;text-wrap:balance">Что говорят клиенты</h2>
+      <p style="font-size:18px;color:#6e6e73;margin:0 0 40px;max-width:600px;line-height:1.5">Маркетологи и владельцы бизнеса — о результатах после запуска виджетов.</p>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:20px">
+        <div style="background:#fff;border:1px solid rgba(0,0,0,0.07);border-radius:20px;padding:28px 26px;box-shadow:0 2px 12px rgba(0,0,0,0.05);display:flex;flex-direction:column">
+          <div style="color:#f5a623;font-size:15px;margin-bottom:14px;line-height:1">★★★★★</div>
+          <p style="font-size:15.5px;line-height:1.55;color:#1d1d1f;margin:0 0 22px;flex:1">Поставили колесо фортуны на лендинг — заявок стало заметно больше, а стоимость лида упала. Собрали виджет за вечер, без разработчика.</p>
+          <div style="display:flex;align-items:center;gap:12px">
+            <span style="width:42px;height:42px;border-radius:50%;background:#c9a06a;display:flex;align-items:center;justify-content:center;color:#fff;font-size:16px;font-weight:700;flex:none">М</span>
+            <div>
+              <div style="font-size:15px;font-weight:700;color:#1d1d1f">Мария Кузнецова</div>
+              <div style="font-size:13px;color:#8a8a97">Маркетолог, сеть салонов</div>
+            </div>
+          </div>
+        </div>
+        <div style="background:#fff;border:1px solid rgba(0,0,0,0.07);border-radius:20px;padding:28px 26px;box-shadow:0 2px 12px rgba(0,0,0,0.05);display:flex;flex-direction:column">
+          <div style="color:#f5a623;font-size:15px;margin-bottom:14px;line-height:1">★★★★★</div>
+          <p style="font-size:15.5px;line-height:1.55;color:#1d1d1f;margin:0 0 22px;flex:1">Калькулятор закрыл кучу вопросов «сколько стоит» и приводит уже тёплых клиентов. Заявки падают прямо в Telegram — реагируем моментально.</p>
+          <div style="display:flex;align-items:center;gap:12px">
+            <span style="width:42px;height:42px;border-radius:50%;background:#0071e3;display:flex;align-items:center;justify-content:center;color:#fff;font-size:16px;font-weight:700;flex:none">А</span>
+            <div>
+              <div style="font-size:15px;font-weight:700;color:#1d1d1f">Алексей Ромм</div>
+              <div style="font-size:13px;color:#8a8a97">Владелец клининга</div>
+            </div>
+          </div>
+        </div>
+        <div style="background:#fff;border:1px solid rgba(0,0,0,0.07);border-radius:20px;padding:28px 26px;box-shadow:0 2px 12px rgba(0,0,0,0.05);display:flex;flex-direction:column">
+          <div style="color:#f5a623;font-size:15px;margin-bottom:14px;line-height:1">★★★★★</div>
+          <p style="font-size:15.5px;line-height:1.55;color:#1d1d1f;margin:0 0 22px;flex:1">Ведём виджеты клиентам агентства. Быстрый запуск, настройка под бренд и внятная аналитика — то, чего не хватало в других сервисах.</p>
+          <div style="display:flex;align-items:center;gap:12px">
+            <span style="width:42px;height:42px;border-radius:50%;background:#7b4bf0;display:flex;align-items:center;justify-content:center;color:#fff;font-size:16px;font-weight:700;flex:none">И</span>
+            <div>
+              <div style="font-size:15px;font-weight:700;color:#1d1d1f">Ирина Соколова</div>
+              <div style="font-size:13px;color:#8a8a97">Digital-агентство</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-top:96px;padding-top:64px;border-top:1px solid rgba(0,0,0,0.08)">
+      <h2 style="font-size:44px;font-weight:800;letter-spacing:-0.025em;margin:0 0 32px;text-wrap:balance">Частые вопросы</h2>
+      <div style="max-width:820px">
+        <details style="border-bottom:1px solid rgba(0,0,0,0.08)">
+          <summary style="list-style:none;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:20px 4px;font-size:17px;font-weight:700;color:#1d1d1f">Нужен ли программист для установки?<span style="color:#a1a1aa;font-size:22px;font-weight:400;flex:none">+</span></summary>
+          <div style="font-size:15.5px;line-height:1.55;color:#6e6e73;padding:0 4px 20px">Нет. Вы получаете одну строку кода — её вставляют на сайт так же, как счётчик аналитики. Настройка виджета — в визуальном редакторе, без вёрстки.</div>
+        </details>
+        <details style="border-bottom:1px solid rgba(0,0,0,0.08)">
+          <summary style="list-style:none;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:20px 4px;font-size:17px;font-weight:700;color:#1d1d1f">Куда приходят заявки?<span style="color:#a1a1aa;font-size:22px;font-weight:400;flex:none">+</span></summary>
+          <div style="font-size:15.5px;line-height:1.55;color:#6e6e73;padding:0 4px 20px">Сразу в Telegram — вам или менеджеру. Также можно подключить почту, Google Таблицы или вашу CRM.</div>
+        </details>
+        <details style="border-bottom:1px solid rgba(0,0,0,0.08)">
+          <summary style="list-style:none;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:20px 4px;font-size:17px;font-weight:700;color:#1d1d1f">Подойдёт ли для моего сайта?<span style="color:#a1a1aa;font-size:22px;font-weight:400;flex:none">+</span></summary>
+          <div style="font-size:15.5px;line-height:1.55;color:#6e6e73;padding:0 4px 20px">Да — виджеты работают на любом сайте: Tilda, WordPress, конструкторы, самописные. Ничего переделывать не нужно.</div>
+        </details>
+        <details style="border-bottom:1px solid rgba(0,0,0,0.08)">
+          <summary style="list-style:none;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:20px 4px;font-size:17px;font-weight:700;color:#1d1d1f">Сколько времени на запуск?<span style="color:#a1a1aa;font-size:22px;font-weight:400;flex:none">+</span></summary>
+          <div style="font-size:15.5px;line-height:1.55;color:#6e6e73;padding:0 4px 20px">Обычно один день: выбираете механику, настраиваем под ваш бизнес, тестируете и публикуете.</div>
+        </details>
+        <details style="border-bottom:1px solid rgba(0,0,0,0.08)">
+          <summary style="list-style:none;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:20px 4px;font-size:17px;font-weight:700;color:#1d1d1f">Можно попробовать бесплатно?<span style="color:#a1a1aa;font-size:22px;font-weight:400;flex:none">+</span></summary>
+          <div style="font-size:15.5px;line-height:1.55;color:#6e6e73;padding:0 4px 20px">Да. Первый виджет запускаете бесплатно — оцениваете эффект на своём трафике перед оплатой.</div>
+        </details>
+      </div>
+    </div>
+
+    <div id="cta" style="scroll-margin-top:90px;margin-top:96px;background:#1d1d1f;border-radius:28px;padding:56px 56px;display:grid;grid-template-columns:1.1fr 0.9fr;gap:48px;align-items:center">
+      <div>
+        <h2 style="font-size:40px;font-weight:800;letter-spacing:-0.025em;margin:0 0 14px;color:#fff;text-wrap:balance">Запустите первый виджет бесплатно</h2>
+        <p style="font-size:17px;line-height:1.55;color:rgba(255,255,255,0.65);margin:0">Оставьте контакт — подберём механику под ваш бизнес, настроим и покажем демо на вашем сайте. Без предоплаты.</p>
+      </div>
+      <div style="background:#fff;border-radius:20px;padding:28px">
+        <div style="display:flex;flex-direction:column;gap:12px;margin-bottom:16px">
+          <input placeholder="Ваше имя" value="{{ctaName}}" onInput="{{onCtaName}}" style="background:#f5f5f7;border:1px solid rgba(0,0,0,0.09);border-radius:13px;padding:15px 16px;font-size:15px;font-family:inherit;outline:none;color:#1d1d1f;width:100%">
+          <input placeholder="Telegram или телефон" value="{{ctaContact}}" onInput="{{onCtaContact}}" style="background:#f5f5f7;border:1px solid rgba(0,0,0,0.09);border-radius:13px;padding:15px 16px;font-size:15px;font-family:inherit;outline:none;color:#1d1d1f;width:100%">
+        </div>
+        <sc-if value="{{ctaSent}}" hint-placeholder-val="{{false}}">
+          <div style="display:flex;align-items:center;gap:10px;background:#f0eefb;border-radius:13px;padding:15px 16px;color:#4f46e5;font-weight:700;font-size:15px">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"></path></svg>
+            Заявка принята — свяжемся в течение 15 минут
+          </div>
+        </sc-if>
+        <sc-if value="{{ctaOpen}}" hint-placeholder-val="{{true}}">
+          <button onClick="{{onCtaSubmit}}" style="{{ctaBtnStyle}}">Оставить заявку</button>
+          <div style="text-align:center;font-size:12.5px;color:#8a8a97;margin-top:12px">Нажимая кнопку, вы соглашаетесь на обработку данных</div>
+        </sc-if>
+      </div>
+    </div>
+
+  </div>
+
+  <footer style="max-width:1180px;margin:80px auto 0;padding:36px 0 0;border-top:1px solid rgba(0,0,0,0.08);display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:24px">
+    <div style="display:flex;align-items:center;gap:14px">
+      <img src="./assets/olly-logo.png" alt="Olly" style="height:26px;width:auto;display:block">
+      <span style="font-size:14px;color:#8a8a97">Интерактивные механики для вашего сайта</span>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;align-items:center;gap:24px;font-size:14px;font-weight:500">
+      <a href="#gallery" style="color:#6e6e73;text-decoration:none">Виджеты</a>
+      <a href="#cta" style="color:#6e6e73;text-decoration:none">Запустить бесплатно</a>
+      <a href="https://t.me/" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:7px;color:#6e6e73;text-decoration:none"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M21.9 4.3l-3.3 15.6c-.25 1.1-.9 1.37-1.83.85l-5.05-3.72-2.44 2.35c-.27.27-.5.5-1.02.5l.36-5.14L18 5.4c.4-.36-.09-.56-.63-.2L6.9 12.05l-4.98-1.56c-1.08-.34-1.1-1.08.23-1.6L20.5 2.7c.9-.33 1.68.2 1.4 1.6z"></path></svg>Написать в Telegram</a>
+      <a href="#" style="color:#6e6e73;text-decoration:none">Политика конфиденциальности</a>
+    </div>
+    <div style="width:100%;font-size:13px;color:#a3a3ab">© 2026 Olly. Все права защищены.</div>
+  </footer>
+
+  <sc-if value="{{modal}}" hint-placeholder-val="{{false}}">
+    <div onClick="{{closeModal}}" style="position:fixed;inset:0;background:rgba(0,0,0,0.45);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;padding:32px;z-index:60">
+      <div onClick="{{stop}}" style="width:min(1000px,100%);height:min(680px,90vh);background:#ffffff;border:1px solid rgba(0,0,0,0.08);border-radius:20px;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 40px 120px rgba(0,0,0,0.3)">
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid rgba(0,0,0,0.08);flex:none">
+          <div style="font-weight:700;font-size:17px;color:#1d1d1f">{{modalTitle}}</div>
+          <div style="display:flex;gap:12px;align-items:center">
+            <a href="{{modalUrl}}" target="_blank" rel="noopener" style="text-decoration:none;color:#1d1d1f;font-size:14px;font-weight:600;padding:9px 16px;border:1px solid rgba(0,0,0,0.14);border-radius:10px">Открыть виджет ↗</a>
+            <button onClick="{{closeModal}}" style="width:38px;height:38px;border-radius:10px;border:1px solid rgba(0,0,0,0.12);background:#f5f5f7;color:#1d1d1f;font-size:16px;cursor:pointer;line-height:1">✕</button>
+          </div>
+        </div>
+        <div ref="{{modalFrameRef}}" style="flex:1;width:100%;background:#fff"></div>
+      </div>
+    </div>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;accent&quot;:{&quot;editor&quot;:&quot;color&quot;,&quot;default&quot;:&quot;#1d1d1f&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Стиль&quot;,&quot;options&quot;:[&quot;#1d1d1f&quot;,&quot;#0071e3&quot;,&quot;#1f8a5b&quot;,&quot;#c2410c&quot;]},&quot;columns&quot;:{&quot;editor&quot;:&quot;int&quot;,&quot;default&quot;:3,&quot;min&quot;:1,&quot;max&quot;:4,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Сетка&quot;},&quot;showSearch&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Сетка&quot;}}">
+class Component extends DCLogic {
+  state = { cat: 'Все', q: '', modal: null, activeChannel: 'ch-site',
+            phase: 'point', cursor: { x: 120, y: 380 }, opened: false,
+            wheelDeg: 0, spinning: false, showForm: false, prize: '',
+            demoName: '', demoPhone: '', success: false, toasts: [], leadCount: 128, leadName: 'Мария',
+            activeIndustry: 'beauty', ctaName: '', ctaContact: '', ctaSent: false, showAll: false, galShown: false, indShown: false, libId: null, heroPlayed: false, indPlayed: false, libPlayed: false };
+  toastId = 0;
+  demoTimer = null;
+  demoNames = ['Мария','Алексей','Ольга','Дмитрий','Ирина','Павел','Екатерина','Никита','Анна','Сергей'];
+  seq = [
+    { phase: 'point', dur: 1000 },
+    { phase: 'clickLeft', dur: 450 },
+    { phase: 'open', dur: 750 },
+    { phase: 'pointSpin', dur: 550 },
+    { phase: 'spin', dur: 2200 },
+    { phase: 'prize', dur: 1400 },
+    { phase: 'form', dur: 650 },
+    { phase: 'typeName', dur: 800 },
+    { phase: 'typePhone', dur: 950 },
+    { phase: 'pointSubmit', dur: 600 },
+    { phase: 'submit', dur: 500 },
+    { phase: 'done', dur: 2100 },
+  ];
+
+  componentDidMount() {
+    this.demoVisible = false; this.indVisible = false;
+    const mkObs = (getEl, onChange) => {
+      try {
+        const obs = new IntersectionObserver((ents) => onChange(ents[0] && ents[0].isIntersecting), { threshold: 0.15 });
+        const tryObserve = () => { const el = getEl(); if (el) obs.observe(el); else setTimeout(tryObserve, 200); };
+        tryObserve();
+        return obs;
+      } catch (e) { onChange(true); return null; }
+    };
+    this.demoObs = mkObs(() => this.whereEl, (vis) => {
+      this.demoVisible = vis;
+      /* auto-demo disabled */
+    });
+    this.indObs = mkObs(() => this.indEl, (vis) => {
+      this.indVisible = vis;
+      if (vis && !this.state.indShown) this.setState({ indShown: true });
+    });
+    this.galObs = mkObs(() => this.galEl, (vis) => {
+      if (vis && !this.state.galShown) this.setState({ galShown: true });
+    });
+    this.startIndustryRotation();
+  }
+  componentWillUnmount() {
+    clearTimeout(this.demoTimer); clearInterval(this.indTimer);
+    if (this.demoObs) this.demoObs.disconnect();
+    if (this.indObs) this.indObs.disconnect();
+    if (this.galObs) this.galObs.disconnect();
+  }
+
+  selectLib(id, path) {
+    this.setState({ libId: id, libPlayed: true });
+    const el = document.getElementById('lib-preview-frame');
+    if (el) el.src = this.base() + path;
+  }
+
+  openModal(w) {
+    this.setState({ modal: w });
+    setTimeout(() => {
+      const host = this.modalFrameEl;
+      if (!host || !this.state.modal) return;
+      host.innerHTML = '';
+      const fr = document.createElement('iframe');
+      fr.src = this.base() + w.path;
+      fr.title = w.title;
+      fr.style.cssText = 'flex:1;border:0;width:100%;height:100%;background:#fff';
+      host.appendChild(fr);
+    }, 60);
+  }
+  closeModal() {
+    if (this.modalFrameEl) this.modalFrameEl.innerHTML = '';
+    this.setState({ modal: null });
+  }
+
+  startIndustryRotation() {
+    clearInterval(this.indTimer);
+    this.indTimer = setInterval(() => {
+      if (this.indPaused || !this.indVisible || document.hidden) return;
+      const list = this.industriesData();
+      const i = list.findIndex(x => x.id === this.state.activeIndustry);
+      const nextId = list[(i + 1) % list.length].id;
+      this.setState({ activeIndustry: nextId });
+      this.swapIndustryFrame(nextId);
+    }, 4200);
+  }
+  selectIndustry(id) {
+    this.setState({ activeIndustry: id });
+    this.swapIndustryFrame(id);
+    this.startIndustryRotation();
+  }
+  swapIndustryFrame(id) {
+    if (!this.state.indPlayed) return;
+    const x = this.industriesData().find(w => w.id === id);
+    const el = document.getElementById('ind-preview-frame');
+    if (x && el) el.src = this.base() + x.path;
+  }
+
+  industryIcon(id) {
+    const mk = (...d) => React.createElement('svg', { width: 22, height: 22, viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor', strokeWidth: 1.8, strokeLinecap: 'round', strokeLinejoin: 'round' },
+      d.map((path, k) => React.createElement('path', { key: k, d: path })));
+    switch (id) {
+      case 'beauty': return mk('M12 3l1.8 4.2L18 9l-4.2 1.8L12 15l-1.8-4.2L6 9l4.2-1.8L12 3z', 'M18 15l.9 2.1L21 18l-2.1.9L18 21l-.9-2.1L15 18l2.1-.9L18 15z');
+      case 'food': return mk('M4 8h13v3a6 6 0 01-6 6H10a6 6 0 01-6-6V8z', 'M17 9h2a2 2 0 010 4h-2', 'M6 3v2M9 3v2M12 3v2');
+      case 'edu': return mk('M3 9l9-4 9 4-9 4-9-4z', 'M7 11v4.5c0 1 2.5 2.5 5 2.5s5-1.5 5-2.5V11');
+      case 'fitness': return mk('M6.5 8v8M4 10v4M17.5 8v8M20 10v4', 'M6.5 12h11');
+      case 'retail': return mk('M6 8h12l-1 12H7L6 8z', 'M9 8V6a3 3 0 016 0v2');
+      case 'services': return mk('M14.5 6.5a4 4 0 00-5.4 5.1l-5.6 5.6 2.3 2.3 5.6-5.6a4 4 0 005.1-5.4l-2.4 2.4-2-2 2.3-2.4z');
+      default: return mk('M4 4h16v16H4z');
+    }
+  }
+
+  industriesData() {
+    return [
+      { id: 'beauty', title: 'Бьюти-салоны', widget: 'Колесо фортуны', icon: '💅', path: 'widgets/wheel-fortune-widget.html?preview=1', prize: 'Скидка −20% на первый визит', scenario: '«Крутила колесо, выиграла −20% на маникюр — записалась сразу, чтобы не потерять»', audience: 'Салоны, барбершопы, мастера на дому', metric: 'до +30% записей на свободные окна' },
+      { id: 'food', title: 'Кафе и доставка', widget: 'Игра-ловушка', icon: '🍰', path: 'widgets/manicure-game-widget.html?preview=playing&static=1', prize: 'Десерт или напиток в подарок', scenario: '«Сыграла в игру на сайте доставки — упал промокод на бесплатный десерт к заказу»', audience: 'Кафе, рестораны, службы доставки', metric: 'до +25% к среднему чеку' },
+      { id: 'edu', title: 'Онлайн-школы', widget: 'Квиз', icon: '🎓', path: 'widgets/quees.html?preview=question1', prize: 'Подбор курса и скидка на старт', scenario: '«Прошёл короткий квиз — подобрали курс под мой уровень и дали скидку на старт»', audience: 'Курсы, школы, эксперты, вебинары', metric: 'конверсия в заявку до 14%' },
+      { id: 'fitness', title: 'Фитнес и спорт', widget: 'Калькулятор', icon: '🏋️', path: 'widgets/cleaning-calculator-widget.html', prize: 'Расчёт абонемента за минуту', scenario: '«Посчитала стоимость абонемента с нужными опциями и оставила заявку на пробное»', audience: 'Клубы, студии, тренеры', metric: 'до +40 пробных в месяц' },
+      { id: 'retail', title: 'Магазины и ритейл', widget: 'Товарный Тиндер', icon: '🛍️', path: 'widgets/tinder-product-widget.html?preview=swiping', prize: 'Персональная подборка и промокод', scenario: '«Полистала товары как в Тиндере — собралась подборка под меня и промокод на первый заказ»', audience: 'Одежда, косметика, подарки, электроника', metric: 'до +18% заявок с трафика' },
+      { id: 'services', title: 'Услуги и сервис', widget: 'Калькулятор стоимости', icon: '🧰', path: 'widgets/cleaning-calculator-widget.html', prize: 'Готовая смета и запись на выезд', scenario: '«Сам посчитал примерную смету на уборку и оставил телефон — перезвонили за 15 минут»', audience: 'Клининг, ремонт, авто, бытовые услуги', metric: 'заявка за 1 минуту без звонка' },
+    ];
+  }
+
+  selectChannel(id) {
+    clearTimeout(this.demoTimer);
+    this.setState({ activeChannel: id, phase: 'point', opened: false, demoName: '', demoPhone: '', success: false, toasts: [] },
+      () => this.runPhase(0));
+  }
+
+  moveCursor(which) {
+    requestAnimationFrame(() => {
+      const el = which === 'left' ? this.leftBtn : (which === 'spin' ? this.spinBtn : this.submitBtn);
+      const row = this.row;
+      if (!el || !row) return;
+      const a = el.getBoundingClientRect(), b = row.getBoundingClientRect();
+      this.setState({ cursor: { x: a.left - b.left + a.width / 2, y: a.top - b.top + a.height / 2 } });
+    });
+  }
+  pressEl(el, on) { if (el) el.style.transform = on ? 'scale(0.95)' : ''; }
+
+  runPhase(i) {
+    if (!this.demoVisible || document.hidden) {
+      this.demoTimer = setTimeout(() => this.runPhase(i), 500);
+      return;
+    }
+    const step = this.seq[i];
+    switch (step.phase) {
+      case 'point':
+        this.pressEl(this.leftBtn, false); this.pressEl(this.submitBtn, false); this.pressEl(this.spinBtn, false);
+        this.setState({ phase: step.phase, opened: false, demoName: '', demoPhone: '', success: false, toasts: [],
+                        wheelDeg: 0, spinning: false, showForm: false, prize: '',
+                        leadName: this.demoNames[Math.floor(Math.random() * this.demoNames.length)] });
+        this.moveCursor('left');
+        break;
+      case 'clickLeft':
+        this.pressEl(this.leftBtn, true);
+        this.setState({ phase: step.phase });
+        break;
+      case 'open':
+        this.pressEl(this.leftBtn, false);
+        this.setState({ phase: step.phase, opened: true });
+        this.moveCursor('spin');
+        break;
+      case 'pointSpin':
+        this.moveCursor('spin');
+        this.setState({ phase: step.phase });
+        break;
+      case 'spin': {
+        this.pressEl(this.spinBtn, true);
+        const prizes = ['−15%', '−20%', 'Подарок', '−10%', 'Бесплатная\nдоставка', '−25%'];
+        const idx = Math.floor(Math.random() * prizes.length);
+        const segAngle = 360 / prizes.length;
+        // pointer at top (0deg); land the chosen segment center under it
+        const target = 360 * 5 + (360 - (idx * segAngle + segAngle / 2));
+        setTimeout(() => this.pressEl(this.spinBtn, false), 300);
+        this.setState({ phase: step.phase, spinning: true, wheelDeg: target, prize: prizes[idx] });
+        break;
+      }
+      case 'prize':
+        this.setState({ phase: step.phase, spinning: false });
+        break;
+      case 'form':
+        this.setState({ phase: step.phase, showForm: true });
+        this.moveCursor('submit');
+        break;
+      case 'typeName':
+        this.setState({ phase: step.phase, demoName: this.state.leadName });
+        break;
+      case 'typePhone':
+        this.setState({ phase: step.phase, demoPhone: '+7 999 123-45-67' });
+        break;
+      case 'pointSubmit':
+        this.moveCursor('submit');
+        this.setState({ phase: step.phase });
+        break;
+      case 'submit':
+        this.pressEl(this.submitBtn, true);
+        this.setState({ phase: step.phase });
+        break;
+      case 'done':
+        this.pressEl(this.submitBtn, false);
+        this.setState(s => ({ phase: step.phase, success: true, leadCount: s.leadCount + 1,
+                              toasts: [{ id: ++this.toastId, name: s.leadName }] }));
+        break;
+    }
+    this.demoTimer = setTimeout(() => this.runPhase((i + 1) % this.seq.length), step.dur);
+  }
+
+  channelsData() {
+    return [
+      { id: 'ch-site', title: 'Сайт', desc: 'Всплывающим окном или встроенным блоком прямо в страницу сайта.',
+        note: 'Кнопка или поп-ап прямо на странице сайта',
+        left: { type: 'browser', app: 'olly-shop.ru', postText: 'Летняя распродажа', sub: 'Скидки до 40% на новую коллекцию', linkText: 'Получить скидку' } },
+      { id: 'ch-telegram', title: 'Telegram', desc: 'Mini App внутри вашего канала или бота — без перехода на сайт.',
+        note: 'Кнопка под постом или в описании канала',
+        left: { type: 'app', app: 'Telegram', handle: 'Olly Shop', sub: 'канал · 12 480 подписчиков', avatar: 'O', postText: 'Собери образ и забери промокод — жми кнопку ниже', linkText: 'Открыть виджет' } },
+      { id: 'ch-vk', title: 'VK', desc: 'Розыгрыш или квиз прямо в сообществе, без стороннего сайта.',
+        note: 'Ссылка в посте, меню или обсуждениях',
+        left: { type: 'app', app: 'VK', handle: 'Olly Shop', sub: 'сообщество · 8 210 участников', avatar: 'O', postText: 'Пройди квиз и получи персональную скидку', linkText: 'Перейти к виджету' } },
+      { id: 'ch-qr', title: 'QR-код', desc: 'Печатная табличка в зале — посетитель сканирует и играет с телефона.',
+        note: 'Табличка в зале, на чеке или упаковке',
+        left: { type: 'qr', postText: 'Наведите камеру', linkText: 'olly.site/promo', sub: 'и получите подарок' } },
+      { id: 'ch-link', title: 'Прямая ссылка', desc: 'В Stories, рассылке или сообщении мессенджера.',
+        note: 'В сторис, рассылке или личном сообщении',
+        left: { type: 'app', app: 'Сообщения', handle: 'Olly Shop', sub: 'в сети', avatar: 'O', postText: 'Лови подборку и бонус по ссылке:', linkText: 'olly.site/promo' } },
+    ];
+  }
+
+  base() { return './'; }
+
+  data() {
+    return [
+      { path:'widgets/wheel-fortune-widget.html?preview=1', title:'Колесо фортуны', category:'Розыгрыш', glow:'#7b4bf0',
+        how:'Посетитель крутит колесо, выигрывает бонус и оставляет имя и телефон, чтобы его забрать.',
+        who:'Салоны · кафе · магазины · локальные услуги' },
+      { path:'widgets/tinder-product-widget.html?preview=swiping', title:'Товарный Тиндер', category:'Квиз', glow:'#c23b93',
+        how:'Посетитель листает товары, отмечает что нравится — виджет собирает персональную подборку и контакт.',
+        who:'Магазины одежды · спорт · бьюти · подарки' },
+      { path:'widgets/cleaning-calculator-widget.html', title:'Калькулятор стоимости', category:'Калькулятор', glow:'#3b63db',
+        how:'Посетитель сам считает примерную цену и оставляет контакт, чтобы получить точный расчёт.',
+        who:'Клининг · ремонт · автоуслуги · услуги с вилкой цен' },
+      { path:'widgets/quees.html?preview=question1', title:'Квиз', category:'Квиз', glow:'#4c3fd6',
+        how:'Посетитель отвечает на вопросы, получает рекомендацию и оставляет контакт, чтобы забрать бонус.',
+        who:'Школы · курсы · эксперты · образовательные воронки' },
+      { path:'widgets/black-friday-timer-form-widget.html', title:'Форма с таймером', category:'Форма', glow:'#8a2fe0',
+        how:'Таймер показывает, что предложение скоро закончится, и подталкивает оставить заявку сейчас.',
+        who:'Акции · запуск курса · набор группы' },
+      { path:'widgets/sale-banner-timer-widget.html', title:'Акционная полоса', category:'Баннер', glow:'#b5179e',
+        how:'Заметная полоса сверху сайта показывает акцию, таймер и открывает форму заявки.',
+        who:'Сезонные акции · скидки · распродажи · спецпредложения' },
+      { path:'widgets/mobile-sale-card-widget.html?preview=1', title:'Мобильная акция', category:'Баннер', glow:'#6d4bf0',
+        how:'Мобильная промо-карточка появляется снизу, показывает акцию и собирает заявку.',
+        who:'Мобильный трафик · розыгрыши · скидки · быстрые заявки' },
+      { path:'widgets/manicure-game-widget.html?preview=playing&static=1', title:'Игра-ловушка', category:'Игра', glow:'#d23b7a',
+        how:'Посетитель играет, выигрывает скидку и оставляет заявку, чтобы забрать приз.',
+        who:'Акции · распродажи · салоны · локальные услуги' },
+      { path:'widgets/purchase-counter-widget.html', title:'Счётчик посетителей', category:'Информер', glow:'#3b7adb',
+        how:'Показывает, сколько человек смотрят товар или уже купили, и создаёт ощущение спроса.',
+        who:'Магазины · карточки товара · лендинги · страницы услуг' },
+      { path:'widgets/bike-bonus-runner-widget.html?preview=playing', title:'Велоигра за бонусы', category:'Игра', glow:'#4c3fd6',
+        how:'Посетитель управляет мини-игрой, собирает баллы и оставляет контакт, чтобы забрать выигрыш.',
+        who:'Акции · доставка · магазины · молодая аудитория' },
+      { path:'widgets/gif-contact-widget.html', title:'Форма с гифкой', category:'Форма', glow:'#7b4bf0',
+        how:'Заметный блок с GIF открывает короткую форму для вопроса или заявки.',
+        who:'Консультации · поддержка · услуги · экспертные сайты' },
+      { path:'widgets/organic-lead-form-widget.html', title:'Арт-форма с бонусом', category:'Форма', glow:'#8a2fe0',
+        how:'Форма с изображением и таймером предлагает бонус и собирает контакт.',
+        who:'Обучение · услуги · премиальные офферы · консультации' },
+      { path:'widgets/yandex-rating-widget.html', title:'Рейтинг на Яндекс Картах', category:'Информер', glow:'#3b63db',
+        how:'Показывает рейтинг, количество отзывов и ведёт на страницу заведения в Яндекс Картах.',
+        who:'Локальный бизнес · клиники · салоны · рестораны' },
+    ];
+  }
+
+  lum(h) {
+    h = (h || '').replace('#', '');
+    if (h.length === 3) h = h.split('').map(c => c + c).join('');
+    const r = parseInt(h.slice(0,2),16), g = parseInt(h.slice(2,4),16), b = parseInt(h.slice(4,6),16);
+    return (0.299*r + 0.587*g + 0.114*b) / 255;
+  }
+
+  renderVals() {
+    const accent = this.props.accent ?? '#1d1d1f';
+    const onAccent = this.lum(accent) > 0.6 ? '#1d1d1f' : '#ffffff';
+    const cols = Math.max(1, Math.min(4, this.props.columns ?? 3));
+    const showSearch = this.props.showSearch ?? true;
+
+    const all = this.data();
+
+    const libMeta = {
+      'Розыгрыш': { group:'ГЕЙМИФИКАЦИЯ', uplift:'+25–40%', bar:80 },
+      'Игра':     { group:'ГЕЙМИФИКАЦИЯ', uplift:'+20–30%', bar:70 },
+      'Квиз':     { group:'КВИЗЫ', uplift:'до +14%', bar:52 },
+      'Форма':    { group:'ПРОМО И ФОРМЫ', uplift:'+30–45%', bar:90 },
+      'Баннер':   { group:'ПРОМО И ФОРМЫ', uplift:'+10–20%', bar:46 },
+      'Калькулятор': { group:'КАЛЬКУЛЯТОРЫ', uplift:'+20–35%', bar:74 },
+      'Информер': { group:'ИНФОРМЕРЫ', uplift:'+8–15%', bar:38 },
+    };
+    const libList = all.map((w, i) => ({ ...w, id: 'lw' + i, meta: libMeta[w.category] || { group:'ВИДЖЕТЫ', uplift:'', bar:40 } }));
+    const libActive = libList.find(w => w.id === this.state.libId) || libList[0];
+    const libOrder = ['ГЕЙМИФИКАЦИЯ','КВИЗЫ','ПРОМО И ФОРМЫ','КАЛЬКУЛЯТОРЫ','ИНФОРМЕРЫ'];
+    const libGroups = libOrder.map(label => ({
+      label,
+      items: libList.filter(w => w.meta.group === label).map(w => ({
+        title: w.title,
+        onSelect: () => this.selectLib(w.id, w.path),
+        rowStyle: {
+          display:'flex', alignItems:'center', gap:'11px', width:'100%', padding:'10px 12px',
+          borderRadius:'11px', cursor:'pointer', fontFamily:'inherit', fontSize:'14.5px',
+          fontWeight: w.id === libActive.id ? 700 : 500, border:0, transition:'all .14s ease',
+          background: w.id === libActive.id ? '#eceafb' : 'transparent',
+          color: w.id === libActive.id ? '#1d1d1f' : '#5c5c66',
+        },
+        dotStyle: { width:'9px', height:'9px', borderRadius:'50%', flex:'none',
+          background: w.id === libActive.id ? w.glow : 'rgba(0,0,0,0.18)' },
+      })),
+    })).filter(g => g.items.length);
+
+    const cat = this.state.cat;
+    const q = (this.state.q || '').trim().toLowerCase();
+
+    const cats = ['Все','Квиз','Игра','Розыгрыш','Калькулятор','Форма','Информер','Баннер'].map(c => ({
+      label: c,
+      onClick: () => this.setState({ cat: c }),
+      style: {
+        padding: '10px 20px', borderRadius: '980px', fontFamily: 'inherit', fontSize: '15px',
+        fontWeight: 500, cursor: 'pointer', whiteSpace: 'nowrap', transition: 'all .15s ease',
+        border: c === cat ? '1px solid transparent' : '1px solid rgba(0,0,0,0.1)',
+        background: c === cat ? accent : '#ffffff',
+        color: c === cat ? onAccent : '#1d1d1f',
+        boxShadow: 'none',
+      },
+    }));
+
+    const filtered = all.filter(w =>
+      (cat === 'Все' || w.category === cat) &&
+      (!q || (w.title + ' ' + w.how + ' ' + w.who).toLowerCase().includes(q))
+    );
+
+    const noFilter = cat === 'Все' && !q;
+    const collapsed = !this.state.showAll && noFilter;
+    const visible = collapsed ? filtered.slice(0, 6) : filtered;
+    const hasMore = noFilter && filtered.length > 6;
+    const cards = visible.map(w => ({
+      ...w,
+      url: this.base() + w.path,
+      whoTags: w.who.split('·').map(s => s.trim()).filter(Boolean),
+      onOpen: () => this.openModal(w),
+      glowStyle: {
+        position: 'relative', padding: '26px', cursor: 'pointer',
+        background: `radial-gradient(130% 92% at 50% 0%, ${w.glow}12, #ffffff 68%)`,
+        borderBottom: '1px solid rgba(0,0,0,0.06)',
+      },
+      frameStyle: {
+        position: 'relative', height: '300px', borderRadius: '16px', overflow: 'hidden',
+        boxShadow: '0 10px 30px rgba(0,0,0,0.12)', background: '#fff',
+      },
+      posterStyle: {
+        position: 'absolute', inset: '0', display: 'flex', alignItems: 'center', justifyContent: 'center',
+        background: `radial-gradient(120% 100% at 50% 0%, ${w.glow}33, #f0f0f3 70%)`,
+      },
+      iframeStyle: {
+        width: '200%', height: '200%', border: '0',
+        transform: 'scale(0.5)', transformOrigin: '0 0', pointerEvents: 'none',
+      },
+    }));
+
+    const btnBase = {
+      marginTop: 'auto', width: '100%', padding: '15px', borderRadius: '980px', border: '0',
+      fontFamily: 'inherit', fontWeight: 600, fontSize: '16px', cursor: 'pointer', transition: 'all .15s ease',
+    };
+    const btnStyle = { ...btnBase, background: accent, color: onAccent };
+    const btnHover = { ...btnBase, background: accent, color: onAccent, transform: 'translateY(-1px)', boxShadow: '0 10px 26px rgba(0,0,0,0.18)' };
+
+    const gridStyle = {
+      display: 'grid', gridTemplateColumns: `repeat(${cols}, 1fr)`, gap: '24px',
+    };
+
+    const activeId = this.state.activeChannel;
+    const rawChannels = this.channelsData();
+    const activeChannel = rawChannels.find(c => c.id === activeId) || rawChannels[0];
+    const channels = rawChannels.map(c => ({
+      ...c,
+      active: c.id === activeId,
+      onSelect: () => this.selectChannel(c.id),
+      chevronStyle: {
+        display: 'inline-flex', color: '#86868b',
+        transform: c.id === activeId ? 'rotate(180deg)' : 'none', transition: 'transform .2s ease',
+      },
+    }));
+
+    const rawLeft = activeChannel.left || {};
+    const activeLeft = {
+      ...rawLeft,
+      isApp: rawLeft.type === 'app',
+      isBrowser: rawLeft.type === 'browser',
+      isQr: rawLeft.type === 'qr',
+    };
+
+    const rawIndustries = this.industriesData();
+    const activeIndustry = rawIndustries.find(x => x.id === this.state.activeIndustry) || rawIndustries[0];
+    const industriesList = rawIndustries.map(x => ({
+      ...x,
+      iconEl: this.industryIcon(x.id),
+      onSelect: () => this.selectIndustry(x.id),
+      rowStyle: {
+        display: 'flex', alignItems: 'center', gap: '14px', width: '100%',
+        padding: '14px 16px', borderRadius: '16px', cursor: 'pointer', fontFamily: 'inherit',
+        transition: 'all .15s ease',
+        border: x.id === activeIndustry.id ? '1px solid rgba(0,0,0,0.1)' : '1px solid transparent',
+        background: x.id === activeIndustry.id ? '#fff' : 'transparent',
+        boxShadow: x.id === activeIndustry.id ? '0 4px 14px rgba(0,0,0,0.07)' : 'none',
+        color: '#1d1d1f',
+      },
+      iconWrap: {
+        width: '44px', height: '44px', borderRadius: '13px', flex: 'none',
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        color: x.id === activeIndustry.id ? '#1d1d1f' : '#8a8a97',
+        background: x.id === activeIndustry.id ? '#f0eefb' : '#f0f0f3',
+      },
+    }));
+
+    return {
+      total: all.length, cats, cards, gridStyle, btnStyle, btnHover, showSearch,
+      libGroups,
+      playLib: () => { const all = this.data(); const idx = this.state.libId ? parseInt(String(this.state.libId).replace('lw',''),10) : 0; const w = all[idx] || all[0]; const el = document.getElementById('lib-preview-frame'); if (el) el.src = this.base() + w.path; this.setState({ libPlayed: true }); },
+      libPosterStyle: {
+        position: 'absolute', inset: 0, display: this.state.libPlayed ? 'none' : 'flex',
+        flexDirection: 'column', alignItems: 'center', justifyContent: 'center', cursor: 'pointer',
+        background: 'radial-gradient(100% 80% at 50% 0%,#f0eefb,#fafafa 75%)',
+      },
+      playInd: () => { this.setState({ indPlayed: true }, () => { const x = this.industriesData().find(w => w.id === this.state.activeIndustry) || this.industriesData()[0]; const el = document.getElementById('ind-preview-frame'); if (el) el.src = this.base() + x.path; }); },
+      indPosterStyle: {
+        position: 'absolute', inset: 0, display: this.state.indPlayed ? 'none' : 'flex',
+        flexDirection: 'column', alignItems: 'center', justifyContent: 'center', cursor: 'pointer',
+        background: 'radial-gradient(120% 80% at 50% 0%,#ece6fb,#f5f5f7 70%)',
+      },
+      playHero: () => { const el = document.getElementById('hero-preview-frame'); if (el) el.src = this.base() + 'widgets/wheel-fortune-widget.html?preview=1'; this.setState({ heroPlayed: true }); },
+      heroPosterStyle: {
+        position: 'absolute', inset: 0, display: this.state.heroPlayed ? 'none' : 'flex',
+        flexDirection: 'column', alignItems: 'center', justifyContent: 'center', cursor: 'pointer',
+        background: 'radial-gradient(120% 80% at 50% 0%,#ece6fb,#f5f5f7 70%)',
+      },
+      libPreviewUrl: this.base() + libActive.path,
+      libTitle: libActive.title,
+      libGroup: libActive.meta.group,
+      libHow: libActive.how,
+      libTags: libActive.who.split('·').map(s => s.trim()).filter(Boolean),
+      libUplift: libActive.meta.uplift,
+      libBarStyle: { height:'100%', borderRadius:'980px', width: libActive.meta.bar + '%', background:'linear-gradient(90deg,#34c759,#1f8a5b)', transition:'width .3s ease' },
+      hasMore,
+      moreLabel: this.state.showAll ? 'Свернуть' : ('Смотреть все виджеты · ' + filtered.length),
+      onToggleAll: () => this.setState(s => ({ showAll: !s.showAll })),
+      moreBtnStyle: {
+        padding: '15px 34px', borderRadius: '980px', border: '1px solid rgba(0,0,0,0.14)',
+        background: '#fff', color: '#1d1d1f', fontFamily: 'inherit', fontWeight: 700,
+        fontSize: '16px', cursor: 'pointer',
+      },
+      channels,
+      left: activeLeft,
+      activeNote: activeChannel.note,
+      industries: industriesList,
+      indDemoUrl: this.base() + activeIndustry.path,
+      heroDemoUrl: this.base() + 'widgets/wheel-fortune-widget.html?preview=1',
+      indTitle: activeIndustry.title,
+      indIcon: activeIndustry.icon,
+      indPrize: activeIndustry.prize,
+      indScenario: activeIndustry.scenario,
+      indAudience: activeIndustry.audience,
+      indMetric: activeIndustry.metric,
+      indIconEl: this.industryIcon(activeIndustry.id),
+      indPauseOn: () => { this.indPaused = true; },
+      indPauseOff: () => { this.indPaused = false; },
+      whereRef: (el) => { this.whereEl = el; },
+      indRef: (el) => { this.indEl = el; },
+      galleryRef: (el) => { this.galEl = el; },
+      galShown: this.state.galShown,
+      galHidden: !this.state.galShown,
+      indShown: this.state.indShown,
+      indHidden: !this.state.indShown,
+      ctaName: this.state.ctaName,
+      ctaContact: this.state.ctaContact,
+      ctaSent: this.state.ctaSent,
+      ctaOpen: !this.state.ctaSent,
+      onCtaName: (e) => this.setState({ ctaName: e.target.value }),
+      onCtaContact: (e) => this.setState({ ctaContact: e.target.value }),
+      onCtaSubmit: () => { if (this.state.ctaName.trim() && this.state.ctaContact.trim()) this.setState({ ctaSent: true }); },
+      ctaBtnStyle: {
+        width: '100%', padding: '16px', borderRadius: '13px', border: '0',
+        background: (this.state.ctaName.trim() && this.state.ctaContact.trim()) ? '#1d1d1f' : '#d0d0d5',
+        color: '#fff', fontFamily: 'inherit', fontWeight: 700, fontSize: '16px',
+        cursor: (this.state.ctaName.trim() && this.state.ctaContact.trim()) ? 'pointer' : 'not-allowed',
+        transition: 'all .15s ease',
+      },
+      opened: this.state.opened,
+      success: this.state.success,
+      showForm: this.state.showForm,
+      spinning: this.state.spinning,
+      prize: this.state.prize,
+      showWheel: this.state.opened && !this.state.showForm && !this.state.success,
+      prizeReady: !!this.state.prize && !this.state.spinning && !this.state.showForm && !this.state.success,
+      wheelStyle: {
+        width: '188px', height: '188px', borderRadius: '50%', position: 'relative',
+        background: 'conic-gradient(#7b4bf0 0deg 60deg,#c23b93 60deg 120deg,#3b63db 120deg 180deg,#f0a63b 180deg 240deg,#2fae6b 240deg 300deg,#e0506e 300deg 360deg)',
+        boxShadow: '0 10px 30px rgba(0,0,0,0.25), inset 0 0 0 6px #fff',
+        transform: `rotate(${this.state.wheelDeg}deg)`,
+        transition: this.state.spinning ? 'transform 2.1s cubic-bezier(.15,.8,.2,1)' : 'none',
+      },
+      demoNameField: this.state.demoName,
+      demoPhoneField: this.state.demoPhone,
+      leadCount: this.state.leadCount,
+      toasts: this.state.toasts.map(t => ({ id: t.id, name: t.name })),
+      rowRef: (el) => { this.row = el; },
+      leftBtnRef: (el) => { this.leftBtn = el; },
+      spinRef: (el) => { this.spinBtn = el; },
+      submitRef: (el) => { this.submitBtn = el; },
+      cursorStyle: {
+        position: 'absolute', left: this.state.cursor.x + 'px', top: this.state.cursor.y + 'px',
+        transform: 'translate(-50%,-50%)', transition: 'left .55s cubic-bezier(.4,0,.2,1), top .55s cubic-bezier(.4,0,.2,1)',
+        zIndex: 9, pointerEvents: 'none', filter: 'drop-shadow(0 2px 5px rgba(0,0,0,0.35))',
+      },
+      widgetStyle: this.state.opened
+        ? { position: 'absolute', inset: '0', transition: 'all .5s ease', filter: 'none', opacity: 1, transform: 'scale(1)' }
+        : { position: 'absolute', inset: '0', transition: 'all .5s ease', filter: 'blur(3px)', opacity: 0.4, transform: 'scale(1.03)' },
+      empty: filtered.length === 0,
+      q: this.state.q,
+      onSearch: (e) => this.setState({ q: e.target.value }),
+      modal: !!this.state.modal,
+      modalTitle: this.state.modal ? this.state.modal.title : '',
+      modalUrl: this.state.modal ? this.base() + this.state.modal.path : 'about:blank',
+      modalFrameRef: (el) => { this.modalFrameEl = el; },
+      closeModal: () => this.closeModal(),
+      stop: (e) => e.stopPropagation(),
+    };
+  }
+}
 </script>
 </body>
 </html>
