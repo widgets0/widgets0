@@ -1004,7 +1004,7 @@ body {
             if (!measuredWidth || measuredWidth <= maxTextWidth) return preferredSize;
             return Math.max(minimumSize, Math.floor(preferredSize * maxTextWidth / measuredWidth));
         };
-        const preferredFontSize = 25;
+        const preferredFontSize = 34;
         ctx.font = `400 ${preferredFontSize}px 'Montserrat', sans-serif`;
         const phraseLines = [];
         let currentLine = '';
@@ -1020,8 +1020,8 @@ body {
         if (currentLine) phraseLines.push(currentLine);
 
         const longestPhraseLine = phraseLines.reduce((longest, line) => line.length > longest.length ? line : longest, '');
-        const phraseFontSize = fitFontSize(longestPhraseLine, preferredFontSize, 17);
-        const lineHeight = phraseFontSize + 8;
+        const phraseFontSize = fitFontSize(longestPhraseLine, preferredFontSize, 22);
+        const lineHeight = phraseFontSize + 10;
         const blockHeight = phraseLines.length * lineHeight;
         const blockTop = -(blockHeight / 2);
         const xPos = isUpsideDown ? -textRadius : textRadius;
