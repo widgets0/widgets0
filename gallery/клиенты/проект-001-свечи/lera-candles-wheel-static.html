@@ -38,7 +38,7 @@ window.CLIENT_WIDGET001_BEHAVIOR_CONFIG = {
 </script>
 
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Tenor+Sans&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Tenor+Sans&display=swap');
 
 html,
 body {
@@ -63,6 +63,7 @@ body {
     --comic-border: #2C2722;
     --text-main: #211D18;
     --text-dark: #211D18;
+    font-family: 'Montserrat', sans-serif;
     width: 100%;
     min-height: 100vh;
     display: none;
@@ -204,7 +205,7 @@ body {
 }
 
 .clientWidget001-root .wof-subtitle {
-    font-family: 'Tenor Sans', sans-serif;
+    font-family: 'Montserrat', sans-serif;
     font-size: 16px;
     color: var(--text-dark);
     opacity: 0.78;
@@ -325,7 +326,7 @@ body {
     color: var(--text-dark);
     padding: 18px 20px;
     border-radius: 12px;
-    font-family: 'Tenor Sans', sans-serif;
+    font-family: 'Montserrat', sans-serif;
     font-size: 16px;
     font-weight: 700;
     outline: none;
@@ -351,7 +352,7 @@ body {
     align-items: flex-start;
     gap: 10px;
     color: #4F443A;
-    font-family: 'Tenor Sans', sans-serif;
+    font-family: 'Montserrat', sans-serif;
     font-size: 12px;
     font-weight: 700;
     line-height: 1.35;
@@ -381,29 +382,25 @@ body {
 }
 
 .clientWidget001-root .wof-prize-label {
-    font-family: 'Tenor Sans', sans-serif;
-    font-weight: 900;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600;
     font-size: 14px;
-    text-transform: uppercase;
-    letter-spacing: 2px;
+    letter-spacing: 0;
     color: var(--text-dark);
     margin-bottom: 8px;
 }
 
 .clientWidget001-root .wof-prize-value {
-    font-family: 'Tenor Sans', sans-serif;
+    font-family: 'Montserrat', sans-serif;
     font-size: 21px;
-    font-weight: 900;
+    font-weight: 700;
     color: var(--accent-yellow);
     line-height: 1.15;
     margin-bottom: 16px;
-    -webkit-text-stroke: 1px var(--comic-border);
-    text-shadow: 1.5px 1.5px 0px var(--comic-border);
-    text-transform: uppercase;
 }
 
 .clientWidget001-root .wof-subtitle-dark {
-    font-family: 'Tenor Sans', sans-serif;
+    font-family: 'Montserrat', sans-serif;
     font-size: 15px;
     color: var(--text-dark);
     opacity: 0.9;
@@ -426,7 +423,7 @@ body {
     align-items: center;
     justify-content: center;
     font-variant-numeric: tabular-nums;
-    font-family: 'Tenor Sans', sans-serif;
+    font-family: 'Montserrat', sans-serif;
 }
 
 .clientWidget001-root .wof-toast {
@@ -467,7 +464,7 @@ body {
 
 .clientWidget001-root .wof-toast-text {
     margin: 0;
-    font-family: 'Tenor Sans', sans-serif;
+    font-family: 'Montserrat', sans-serif;
     font-size: 15px;
     line-height: 1.45;
     font-weight: 800;
@@ -734,7 +731,7 @@ body {
 
           <!-- Экран 2: Приз -->
           <div id="clientWidget001-step-form" class="wof-prize-card stagger-1" style="display: none;">
-            <div class="wof-prize-label">Твой Приз:</div>
+            <div class="wof-prize-label">Твой приз:</div>
             <div id="clientWidget001-prize-value" class="wof-prize-value"></div>
             <p class="wof-subtitle-dark stagger-2" style="margin-bottom: 15px;">
               Поздравляем! Твой приз готов. Нажми кнопку ниже - передадим выигрыш в анкету автоматически.
@@ -782,21 +779,21 @@ body {
   }
   
   const prizes = [
-    "ПРОДУКТ ПРОДАЁТ САМ СЕБЯ\nЛекция",
-    "ЦЕННОСТИ ПРОДУКТА\nЗапись выступления",
-    "УВЕРЕННЫЕ ПРОДАЖИ\nПрактикум",
-    "СТРАХ ОЦЕНКИ\nЭфир с психологом",
-    "ЦЕННОСТИ ПРОДУКТА\nЗапись выступления",
-    "СТРАХ ОЦЕНКИ\nЭфир с психологом"
+    "Эфир про страх оценки и синдром самозванца",
+    "Лекция про продукт, который продаёт сам себя",
+    "Запись выступления про донесение ценностей",
+    "Практикум по уверенным продажам",
+    "Запись выступления про донесение ценностей",
+    "Эфир про страх оценки и синдром самозванца"
   ];
 
   const prizeResultTexts = [
-    "Продукт продаёт сам себя — лекция",
-    "Ценности продукта — запись выступления",
-    "Уверенные продажи — практикум",
-    "Страх оценки — эфир с психологом",
-    "Ценности продукта — запись выступления",
-    "Страх оценки — эфир с психологом"
+    "Эфир про страх оценки и синдром самозванца",
+    "Лекция про продукт, который продаёт сам себя",
+    "Запись выступления про донесение ценностей",
+    "Практикум по уверенным продажам",
+    "Запись выступления про донесение ценностей",
+    "Эфир про страх оценки и синдром самозванца"
   ];
 
   const colors = [
@@ -997,40 +994,35 @@ body {
         ctx.textAlign = isUpsideDown ? "left" : "right";
         ctx.textBaseline = "middle";
 
-        const lines = prizes[i].split('\n');
-        const title = lines[0];
-        const detailLines = lines.slice(1);
+        const phrase = prizes[i];
         const textRadius = r - 28;
         const innerTextRadius = 106;
         const maxTextWidth = textRadius - innerTextRadius;
         const fitFontSize = (text, preferredSize, minimumSize) => {
-            ctx.font = `900 ${preferredSize}px 'Tenor Sans', sans-serif`;
+            ctx.font = `400 ${preferredSize}px 'Montserrat', sans-serif`;
             const measuredWidth = ctx.measureText(text).width;
             if (!measuredWidth || measuredWidth <= maxTextWidth) return preferredSize;
             return Math.max(minimumSize, Math.floor(preferredSize * maxTextWidth / measuredWidth));
         };
-        const preferredTitleFontSize = title.length > 14 ? 32 : 36;
-        ctx.font = `900 ${preferredTitleFontSize}px 'Tenor Sans', sans-serif`;
-        const titleLines = [];
-        let currentTitleLine = '';
-        title.split(' ').forEach((word) => {
-            const candidate = currentTitleLine ? `${currentTitleLine} ${word}` : word;
-            if (currentTitleLine && ctx.measureText(candidate).width > maxTextWidth) {
-                titleLines.push(currentTitleLine);
-                currentTitleLine = word;
+        const preferredFontSize = 25;
+        ctx.font = `400 ${preferredFontSize}px 'Montserrat', sans-serif`;
+        const phraseLines = [];
+        let currentLine = '';
+        phrase.split(' ').forEach((word) => {
+            const candidate = currentLine ? `${currentLine} ${word}` : word;
+            if (currentLine && ctx.measureText(candidate).width > maxTextWidth) {
+                phraseLines.push(currentLine);
+                currentLine = word;
             } else {
-                currentTitleLine = candidate;
+                currentLine = candidate;
             }
         });
-        if (currentTitleLine) titleLines.push(currentTitleLine);
+        if (currentLine) phraseLines.push(currentLine);
 
-        const longestTitleLine = titleLines.reduce((longest, line) => line.length > longest.length ? line : longest, '');
-        const titleFontSize = fitFontSize(longestTitleLine, preferredTitleFontSize, 23);
-        const longestDetail = detailLines.reduce((longest, line) => line.length > longest.length ? line : longest, '');
-        const detailFontSize = fitFontSize(longestDetail, 28, 20);
-        const titleLineHeight = titleFontSize + 10;
-        const detailLineHeight = detailFontSize + 8;
-        const blockHeight = (titleLines.length * titleLineHeight) + (detailLines.length * detailLineHeight);
+        const longestPhraseLine = phraseLines.reduce((longest, line) => line.length > longest.length ? line : longest, '');
+        const phraseFontSize = fitFontSize(longestPhraseLine, preferredFontSize, 17);
+        const lineHeight = phraseFontSize + 8;
+        const blockHeight = phraseLines.length * lineHeight;
         const blockTop = -(blockHeight / 2);
         const xPos = isUpsideDown ? -textRadius : textRadius;
         // Keep the logical order of title and description after rotating the sector.
@@ -1038,17 +1030,10 @@ body {
 
         if (isUpsideDown) ctx.rotate(Math.PI);
 
-        ctx.font = `900 ${titleFontSize}px 'Tenor Sans', sans-serif`;
+        ctx.font = `400 ${phraseFontSize}px 'Montserrat', sans-serif`;
         ctx.fillStyle = prizeTextColors[i];
-        titleLines.forEach((line, index) => {
-            const lineY = blockTop + (index * titleLineHeight) + titleLineHeight / 2;
-            ctx.fillText(line, xPos, visualY(lineY));
-        });
-
-        ctx.font = `400 ${detailFontSize}px 'Tenor Sans', sans-serif`;
-        ctx.fillStyle = "#6B5C4C";
-        detailLines.forEach((line, index) => {
-            const lineY = blockTop + (titleLines.length * titleLineHeight) + (index * detailLineHeight) + detailLineHeight / 2;
+        phraseLines.forEach((line, index) => {
+            const lineY = blockTop + (index * lineHeight) + lineHeight / 2;
             ctx.fillText(line, xPos, visualY(lineY));
         });
         ctx.restore();
