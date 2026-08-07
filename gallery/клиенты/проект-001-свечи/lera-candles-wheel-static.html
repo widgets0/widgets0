@@ -587,6 +587,46 @@ body {
 
     .clientWidget001-root .wof-input { padding: 14px; font-size: 15px; }
     .clientWidget001-root .wof-btn { padding: 16px 20px; font-size: 19px; }
+
+    .clientWidget001-root.wof-form-step .wof-inner {
+        gap: 8px;
+    }
+
+    .clientWidget001-root.wof-form-step .wof-wheel-wrapper {
+        max-width: min(260px, calc(100vw - 96px));
+    }
+
+    .clientWidget001-root.wof-form-step .wof-prize-card {
+        padding: 14px 12px 12px;
+    }
+
+    .clientWidget001-root.wof-form-step .wof-prize-label {
+        font-size: 12px;
+        margin-bottom: 5px;
+    }
+
+    .clientWidget001-root.wof-form-step .wof-prize-value {
+        font-size: 18px;
+        line-height: 1.1;
+        margin-bottom: 8px;
+    }
+
+    .clientWidget001-root.wof-form-step .wof-subtitle-dark {
+        font-size: 12px;
+        line-height: 1.28;
+        margin-bottom: 8px !important;
+    }
+
+    .clientWidget001-root.wof-form-step .wof-timer-container {
+        padding: 8px;
+        font-size: 12px;
+        margin-bottom: 8px;
+    }
+
+    .clientWidget001-root.wof-form-step .wof-btn {
+        padding: 13px 16px;
+        font-size: 16px;
+    }
 }
 
 @media (max-width: 767px) and (max-height: 700px) {
@@ -648,6 +688,30 @@ body {
     .clientWidget001-root .wof-btn {
         padding: 14px 18px;
         font-size: 17px;
+    }
+
+    .clientWidget001-root.wof-form-step .wof-wheel-wrapper {
+        max-width: min(220px, calc(100vw - 112px));
+    }
+
+    .clientWidget001-root.wof-form-step .wof-prize-card {
+        padding: 12px 10px 10px;
+    }
+
+    .clientWidget001-root.wof-form-step .wof-prize-value {
+        font-size: 16px;
+        margin-bottom: 6px;
+    }
+
+    .clientWidget001-root.wof-form-step .wof-timer-container {
+        padding: 7px;
+        font-size: 11px;
+        margin-bottom: 7px;
+    }
+
+    .clientWidget001-root.wof-form-step .wof-btn {
+        padding: 12px 14px;
+        font-size: 15px;
     }
 }
 
@@ -1023,6 +1087,7 @@ body {
   }
 
   function showStep(step) {
+    if (root) root.classList.toggle('wof-form-step', step === 'form');
     if (stepSpin) stepSpin.style.display = step === 'spin' ? 'block' : 'none';
     if (stepForm) stepForm.style.display = step === 'form' ? 'flex' : 'none';
 
