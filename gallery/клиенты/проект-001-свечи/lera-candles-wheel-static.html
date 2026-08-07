@@ -369,8 +369,8 @@ body {
 
 .clientWidget001-root .wof-prize-card {
     width: 100%;
-    background: var(--accent-light); 
-    border: 4px solid var(--comic-border); 
+    background: var(--accent-light);
+    border: 4px solid var(--comic-border);
     border-radius: 20px;
     padding: 30px 24px;
     box-shadow: 6px 8px 0px rgba(0,0,0,1);
@@ -415,7 +415,7 @@ body {
     padding: 12px;
     border-radius: 12px;
     border: 2px solid var(--comic-border);
-    color: #b91c1c; 
+    color: #b91c1c;
     font-weight: 900;
     font-size: 17px;
     margin-bottom: 20px;
@@ -491,8 +491,8 @@ body {
     }
 
     .clientWidget001-root .candle-wof-wrapper {
-        margin: 0 auto; 
-        padding: 40px 20px 30px; 
+        margin: 0 auto;
+        padding: 40px 20px 30px;
         flex-direction: column;
         max-width: 100%;
         min-height: auto;
@@ -542,16 +542,16 @@ body {
         justify-content: flex-start;
         height: auto;
     }
-    
+
     .clientWidget001-root .wof-title { font-size: 24px; margin-bottom: 12px; }
     .clientWidget001-root .wof-subtitle { font-size: 15px; margin-bottom: 20px; }
-    
+
     .clientWidget001-root .wof-pointer {
         top: -18px;
         width: 40px;
         height: 56px;
     }
-    
+
     .clientWidget001-root .wof-prize-card {
         padding: 20px 16px;
     }
@@ -639,7 +639,7 @@ body {
     }
 
     .clientWidget001-root .candle-wof-wrapper {
-        max-width: 880px; 
+        max-width: 880px;
         padding: 50px 50px;
     }
 
@@ -650,7 +650,7 @@ body {
     }
 
     .clientWidget001-root .wof-content-wrapper {
-        width: 50%; 
+        width: 46%;
         position: relative;
         z-index: 10;
         box-sizing: border-box;
@@ -661,7 +661,7 @@ body {
     }
 
     .clientWidget001-root .wof-wheel-wrapper {
-        width: 50%;
+        width: 54%;
         z-index: 5;
     }
 
@@ -696,7 +696,7 @@ body {
           <path d="M6 6l12 12"></path>
         </svg>
       </button>
-      
+
       <!-- Декоративные звезды -->
       <svg class="comic-star star-1" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M50 0L61 39L100 50L61 61L50 100L39 61L0 50L39 39L50 0Z" fill="#D3AA73" stroke="#2C2722" stroke-width="6" stroke-linejoin="round"/>
@@ -704,9 +704,9 @@ body {
       <svg class="comic-star star-2" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M50 0L61 39L100 50L61 61L50 100L39 61L0 50L39 39L50 0Z" fill="#D3AA73" stroke="#2C2722" stroke-width="6" stroke-linejoin="round"/>
       </svg>
-      
+
       <div class="wof-inner">
-        
+
         <div id="clientWidget001-wheel-wrapper" class="wof-wheel-wrapper">
           <div class="wof-wheel-container">
             <svg class="wof-pointer" viewBox="0 0 60 80" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -718,12 +718,12 @@ body {
         </div>
 
         <div class="wof-content-wrapper">
-          
+
           <!-- Экран 1: Колесо -->
           <div id="clientWidget001-step-spin" style="display: block;">
             <h1 class="wof-title stagger-1">ПОДАРОК УЖЕ ЖДЕТ ТЕБЯ</h1>
             <p class="wof-subtitle stagger-2">Крути колесо и забирай свой приз</p>
-            
+
             <div class="stagger-3 wof-form-container">
                 <button id="clientWidget001-spin-btn" class="wof-btn" type="button" data-track="wheel-spin">КРУТИТЬ!</button>
             </div>
@@ -741,7 +741,7 @@ body {
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 8px; display: inline-block; vertical-align: middle;"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
               <span id="clientWidget001-timer">Предложение сгорит через: 23:59:59</span>
             </div>
-            
+
             <div class="wof-form-container stagger-3">
               <a id="clientWidget001-prize-link" class="wof-btn" href="https://lk.dnevniksvechnika.ru/anketa" style="margin-top: 8px;" data-track="wheel-get-prize">ЗАБРАТЬ ПРИЗ!</a>
             </div>
@@ -777,7 +777,7 @@ body {
   if (params.get('position')) {
     BEHAVIOR_CONFIG.desktopPosition = params.get('position');
   }
-  
+
   const prizes = [
     "Эфир про страх оценки и синдром самозванца",
     "Лекция про продукт, который продаёт сам себя",
@@ -820,10 +820,10 @@ body {
   const canvas = document.getElementById('clientWidget001-canvas');
   const ctx = canvas ? canvas.getContext('2d') : null;
   const wheelWrapper = document.getElementById('clientWidget001-wheel-wrapper');
-  
+
   const stepSpin = document.getElementById('clientWidget001-step-spin');
   const stepForm = document.getElementById('clientWidget001-step-form');
-  
+
   const prizeValueEl = document.getElementById('clientWidget001-prize-value');
   const prizeLink = document.getElementById('clientWidget001-prize-link');
   const timerEl = document.getElementById('clientWidget001-timer');
@@ -957,8 +957,8 @@ body {
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    ctx.beginPath(); 
-    ctx.arc(cx, cy, r + 24, 0, 2 * Math.PI); 
+    ctx.beginPath();
+    ctx.arc(cx, cy, r + 24, 0, 2 * Math.PI);
     ctx.fillStyle = "#D3AA73";
     ctx.fill();
     ctx.lineWidth = 10;
@@ -972,25 +972,25 @@ body {
 
     for(let i = 0; i < num; i++) {
         const ang = i * arc;
-        
+
         ctx.beginPath();
         ctx.moveTo(cx, cy);
         ctx.arc(cx, cy, r, ang, ang + arc);
         ctx.fillStyle = colors[i % colors.length];
         ctx.fill();
-        
+
         ctx.lineWidth = 6;
         ctx.strokeStyle = "#2C2722";
         ctx.stroke();
 
         ctx.save();
         ctx.translate(cx, cy);
-        
+
         const textAngle = ang + arc / 2;
         ctx.rotate(textAngle);
-        
+
         const isUpsideDown = textAngle > Math.PI / 2 && textAngle < (3 * Math.PI) / 2;
-        
+
         ctx.textAlign = isUpsideDown ? "left" : "right";
         ctx.textBaseline = "middle";
 
@@ -1038,11 +1038,11 @@ body {
         });
         ctx.restore();
     }
-    
+
     ctx.beginPath(); ctx.arc(cx, cy, 65, 0, 2 * Math.PI);
     ctx.fillStyle = "#D3AA73"; ctx.fill();
     ctx.lineWidth = 10; ctx.stroke();
-    
+
     ctx.beginPath(); ctx.arc(cx, cy, 30, 0, 2 * Math.PI);
     ctx.fillStyle = "#2C2722"; ctx.fill();
     ctx.lineWidth = 4; ctx.stroke();
@@ -1056,25 +1056,25 @@ body {
 
     const spin = Math.floor(2800 + Math.random() * 2000);
     rotation += spin;
-    
+
     canvas.style.transform = `rotate(${rotation}deg)`;
 
     setTimeout(() => {
         isSpinning = false;
         spinBtn.innerText = "КРУТИТЬ!";
         spinBtn.disabled = false;
-        
+
         const degPerSector = 360 / prizes.length;
         const actualDeg = (360 - (rotation % 360) + 270) % 360;
         const index = Math.floor(actualDeg / degPerSector);
-        
+
         const winText = formatPrizeText(prizeResultTexts[index] || prizes[index]);
         selectedPrize = winText;
         if (prizeValueEl) prizeValueEl.innerText = winText;
         updatePrizeLink(winText);
-        
+
         showStep('form');
-        
+
         if (typeof confetti !== 'undefined') {
             launchConfettiWidget();
         }
@@ -1105,22 +1105,22 @@ body {
 
   function startTimer() {
     if (timerInterval) clearInterval(timerInterval);
-    
+
     const expiryTime = Date.now() + 24 * 60 * 60 * 1000;
-    
+
     const updateTimer = () => {
       const now = Date.now();
       const remaining = Math.max(0, Math.floor((expiryTime - now) / 1000));
-      
+
       const h = Math.floor(remaining / 3600).toString().padStart(2, '0');
       const m = Math.floor((remaining % 3600) / 60).toString().padStart(2, '0');
       const s = (remaining % 60).toString().padStart(2, '0');
-      
+
       timerEl.innerText = `Предложение сгорит через: ${h}:${m}:${s}`;
-      
+
       if (remaining <= 0) clearInterval(timerInterval);
     };
-    
+
     updateTimer();
     timerInterval = setInterval(updateTimer, 1000);
   }
