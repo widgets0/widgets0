@@ -126,6 +126,16 @@ body {
     overflow: visible;
 }
 
+.clientWidget001-confetti-canvas {
+    position: fixed !important;
+    inset: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    z-index: 2147483647 !important;
+    pointer-events: none !important;
+    display: block !important;
+}
+
 @keyframes fadeInWof {
     from { opacity: 0; transform: scale(1.03); }
     to { opacity: 1; transform: scale(1); }
@@ -986,6 +996,8 @@ body {
   let rotation = 0;
   let timerInterval;
   let selectedPrize = '';
+  let confettiLauncher = null;
+  let confettiCanvas = null;
 
   function init() {
     if (!overlay) return;
@@ -1071,6 +1083,7 @@ body {
 
   function closeWidget() {
     if (timerInterval) clearInterval(timerInterval);
+    cleanupConfettiCanvas();
     if (root) root.classList.remove('is-visible');
     if (overlay) overlay.style.display = 'none';
     notifyParentClose();
@@ -1237,16 +1250,55 @@ body {
     }, 5000);
   }
 
+  function getConfettiLauncher() {
+    if (typeof confetti === 'undefined') return null;
+    if (confettiLauncher) return confettiLauncher;
+
+    confettiCanvas = document.getElementById('clientWidget001-confetti-canvas');
+    if (!confettiCanvas) {
+      confettiCanvas = document.createElement('canvas');
+      confettiCanvas.id = 'clientWidget001-confetti-canvas';
+      confettiCanvas.className = 'clientWidget001-confetti-canvas';
+      (document.body || document.documentElement).appendChild(confettiCanvas);
+    }
+
+    confettiCanvas.style.position = 'fixed';
+    confettiCanvas.style.inset = '0';
+    confettiCanvas.style.width = '100vw';
+    confettiCanvas.style.height = '100vh';
+    confettiCanvas.style.zIndex = '2147483647';
+    confettiCanvas.style.pointerEvents = 'none';
+    confettiCanvas.style.display = 'block';
+
+    confettiLauncher = confetti.create(confettiCanvas, {
+      resize: true,
+      useWorker: true
+    });
+    return confettiLauncher;
+  }
+
+  function cleanupConfettiCanvas() {
+    if (confettiCanvas && confettiCanvas.parentNode) {
+      confettiCanvas.parentNode.removeChild(confettiCanvas);
+    }
+    confettiCanvas = null;
+    confettiLauncher = null;
+  }
+
   function launchConfettiWidget() {
     const duration = 2500;
     const end = Date.now() + duration;
     const confettiColors = ['#D3AA73', '#E3C9A1', '#FFF9F0', '#5B2480', '#278267'];
+    const fireConfetti = getConfettiLauncher();
+    if (!fireConfetti) return;
 
     (function frame() {
-        confetti({ particleCount: 5, angle: 60, spread: 60, origin: { x: 0 }, colors: confettiColors, zIndex: 9999999 });
-        confetti({ particleCount: 5, angle: 120, spread: 60, origin: { x: 1 }, colors: confettiColors, zIndex: 9999999 });
+        fireConfetti({ particleCount: 5, angle: 60, spread: 60, origin: { x: 0 }, colors: confettiColors });
+        fireConfetti({ particleCount: 5, angle: 120, spread: 60, origin: { x: 1 }, colors: confettiColors });
         if (Date.now() < end) requestAnimationFrame(frame);
     }());
+
+    setTimeout(cleanupConfettiCanvas, duration + 1800);
   }
 
   function formatPrizeText(prize) {
