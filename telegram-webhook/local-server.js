@@ -9,6 +9,14 @@ const envPath = path.join(__dirname, ".env");
 const env = Object.assign({}, process.env, loadEnv(envPath));
 const PORT = Number(env.PORT || 8787);
 const HOST = env.HOST || "0.0.0.0";
+const ANALYTICS_EVENTS_PATH = env.ANALYTICS_EVENTS_PATH || path.join(__dirname, "analytics-events.jsonl");
+const ALLOWED_ANALYTICS_EVENTS = new Set([
+  "widget_shown",
+  "widget_closed",
+  "wheel_spin_click",
+  "prize_shown",
+  "prize_link_click"
+]);
 
 function loadEnv(filePath) {
   if (!fs.existsSync(filePath)) return {};
@@ -42,6 +50,125 @@ function sendJson(res, status, payload) {
     "Content-Type": "application/json; charset=utf-8"
   });
   res.end(JSON.stringify(payload, null, 2));
+}
+
+function normalizeText(value, fallback = "") {
+  return String(value || fallback).trim().slice(0, 500);
+}
+
+function normalizeUrl(value) {
+  const text = normalizeText(value);
+  if (!text) return "";
+  try {
+    const url = new URL(text);
+    url.hash = "";
+    return url.toString().slice(0, 700);
+  } catch (error) {
+    return text.slice(0, 700);
+  }
+}
+
+function eventDomain(event) {
+  const source = event.page || "";
+  try {
+    return new URL(source).hostname;
+  } catch (error) {
+    return "";
+  }
+}
+
+function normalizeAnalyticsEvent(payload, req) {
+  const event = normalizeText(payload.event || payload.eventName);
+  if (!ALLOWED_ANALYTICS_EVENTS.has(event)) {
+    throw new Error("Unknown analytics event");
+  }
+
+  return {
+    event,
+    widgetId: normalizeText(payload.widgetId || payload.widget || payload.source, "unknown-widget"),
+    clientId: normalizeText(payload.clientId || payload.client || "unknown-client"),
+    source: normalizeText(payload.source || payload.widgetId || payload.widget || "unknown-source"),
+    page: normalizeUrl(payload.page || req.headers.origin || ""),
+    referrer: normalizeUrl(payload.referrer || ""),
+    prize: normalizeText(payload.prize || ""),
+    createdAt: new Date().toISOString()
+  };
+}
+
+async function appendAnalyticsEvent(event) {
+  await fs.promises.mkdir(path.dirname(ANALYTICS_EVENTS_PATH), { recursive: true });
+  await fs.promises.appendFile(ANALYTICS_EVENTS_PATH, JSON.stringify(event) + "\n", "utf8");
+}
+
+async function readAnalyticsEvents() {
+  try {
+    const raw = await fs.promises.readFile(ANALYTICS_EVENTS_PATH, "utf8");
+    return raw
+      .split(/\r?\n/)
+      .filter(Boolean)
+      .map(line => {
+        try {
+          return JSON.parse(line);
+        } catch (error) {
+          return null;
+        }
+      })
+      .filter(Boolean);
+  } catch (error) {
+    if (error.code === "ENOENT") return [];
+    throw error;
+  }
+}
+
+function emptyEventCounters() {
+  return {
+    widget_shown: 0,
+    widget_closed: 0,
+    wheel_spin_click: 0,
+    prize_shown: 0,
+    prize_link_click: 0
+  };
+}
+
+function summarizeAnalyticsEvents(events) {
+  const widgets = new Map();
+  const totals = emptyEventCounters();
+
+  events.forEach(event => {
+    if (!ALLOWED_ANALYTICS_EVENTS.has(event.event)) return;
+
+    const key = event.widgetId || event.source || "unknown-widget";
+    if (!widgets.has(key)) {
+      widgets.set(key, {
+        widgetId: key,
+        clientId: event.clientId || "",
+        source: event.source || key,
+        domain: eventDomain(event),
+        events: emptyEventCounters(),
+        firstSeenAt: event.createdAt || "",
+        lastSeenAt: event.createdAt || ""
+      });
+    }
+
+    const item = widgets.get(key);
+    item.clientId = item.clientId || event.clientId || "";
+    item.source = item.source || event.source || key;
+    item.domain = item.domain || eventDomain(event);
+    item.events[event.event] += 1;
+    item.lastSeenAt = event.createdAt || item.lastSeenAt;
+    if (event.createdAt && (!item.firstSeenAt || event.createdAt < item.firstSeenAt)) {
+      item.firstSeenAt = event.createdAt;
+    }
+
+    totals[event.event] += 1;
+  });
+
+  return {
+    ok: true,
+    generatedAt: new Date().toISOString(),
+    totals,
+    widgets: Array.from(widgets.values()).sort((a, b) => String(b.lastSeenAt).localeCompare(String(a.lastSeenAt)))
+  };
 }
 
 function readBody(req) {
@@ -287,6 +414,30 @@ const server = http.createServer(async (req, res) => {
 
   if (req.method === "GET" && req.url === "/health") {
     sendJson(res, 200, { ok: true, service: "widget-telegram-webhook" });
+    return;
+  }
+
+  if (req.method === "GET" && req.url.split("?")[0] === "/analytics/summary") {
+    try {
+      const events = await readAnalyticsEvents();
+      sendJson(res, 200, summarizeAnalyticsEvents(events));
+    } catch (error) {
+      console.error(error);
+      sendJson(res, 500, { ok: false, error: error.message });
+    }
+    return;
+  }
+
+  if (req.method === "POST" && req.url.split("?")[0] === "/analytics/events") {
+    try {
+      const body = await readBody(req);
+      const event = normalizeAnalyticsEvent(JSON.parse(body || "{}"), req);
+      await appendAnalyticsEvent(event);
+      sendJson(res, 200, { ok: true });
+    } catch (error) {
+      console.error(error);
+      sendJson(res, 400, { ok: false, error: error.message });
+    }
     return;
   }
 

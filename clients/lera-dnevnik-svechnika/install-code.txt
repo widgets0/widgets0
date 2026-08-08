@@ -1,8 +1,11 @@
 <!-- Колесо фортуны Леры: popup без iframe, кнопки видны Яндекс.Метрике -->
 <script
-  src="https://widgets0.github.io/widgets0/clients/lera-dnevnik-svechnika/loader.js?v=20260719-4"
-  data-delay="0"
-  data-frequency="always"
+  src="https://widgets0.github.io/widgets0/clients/lera-dnevnik-svechnika/loader.js?v=analytics-mvp"
+  data-delay="300"
+  data-frequency="once_per_day"
   data-position="center"
   data-backdrop="rgba(0, 0, 0, 0.72)"
+  data-analytics-endpoint="https://widgets0-production.up.railway.app/analytics/events"
+  data-client-id="tnt"
+  data-widget-id="lera-candles-wheel"
   async></script>

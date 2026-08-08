@@ -927,6 +927,12 @@ body {
     desktopPosition: 'center',
     displayStorageKey: 'clientWidget001_last_shown_at'
   }, window.CLIENT_WIDGET001_BEHAVIOR_CONFIG || {});
+  const ANALYTICS_CONFIG = Object.assign({
+    endpoint: '',
+    clientId: '',
+    widgetId: 'lera-candles-wheel',
+    source: 'lera-dnevnik-svechnika'
+  }, window.CLIENT_WIDGET001_ANALYTICS_CONFIG || {});
   const params = new URLSearchParams(window.location.search);
   const isPreview = params.get('preview') === '1';
   const isEmbed = params.get('embed') === '1';
@@ -1008,6 +1014,11 @@ body {
 
     if (spinBtn) spinBtn.addEventListener('click', handleSpin);
     if (closeBtn) closeBtn.addEventListener('click', closeWidget);
+    if (prizeLink) {
+      prizeLink.addEventListener('click', () => {
+        trackWidgetEvent('prize_link_click', { prize: selectedPrize });
+      });
+    }
 
     // Рисуем колесо
     document.fonts.ready.then(() => {
@@ -1078,12 +1089,14 @@ body {
     setTimeout(drawWheel, 50);
     if (root) root.classList.add('is-visible');
     overlay.style.display = 'flex';
+    trackWidgetEvent('widget_shown');
     notifyParentOpen();
   }
 
   function closeWidget() {
     if (timerInterval) clearInterval(timerInterval);
     cleanupConfettiCanvas();
+    trackWidgetEvent('widget_closed', { prize: selectedPrize });
     if (root) root.classList.remove('is-visible');
     if (overlay) overlay.style.display = 'none';
     notifyParentClose();
@@ -1220,6 +1233,7 @@ body {
   function handleSpin() {
     if (isSpinning) return;
     isSpinning = true;
+    trackWidgetEvent('wheel_spin_click');
     spinBtn.innerText = "ВРАЩАЕМ...";
     spinBtn.disabled = true;
 
@@ -1243,6 +1257,7 @@ body {
         updatePrizeLink(winText);
 
         showStep('form');
+        trackWidgetEvent('prize_shown', { prize: winText });
 
         if (typeof confetti !== 'undefined') {
             launchConfettiWidget();
@@ -1309,6 +1324,44 @@ body {
     if (!prizeLink) return;
     const value = formatPrizeText(prize || 'Приз');
     prizeLink.href = `${ANKETA_URL}?priz=${encodeURIComponent(value)}`;
+  }
+
+  function trackWidgetEvent(eventName, details = {}) {
+    const endpoint = String(ANALYTICS_CONFIG.endpoint || '').trim();
+    if (!endpoint) return;
+
+    const payload = {
+      event: eventName,
+      widgetId: ANALYTICS_CONFIG.widgetId || 'lera-candles-wheel',
+      clientId: ANALYTICS_CONFIG.clientId || '',
+      source: ANALYTICS_CONFIG.source || 'lera-dnevnik-svechnika',
+      page: window.location.href,
+      referrer: document.referrer || '',
+      prize: details.prize || '',
+      createdAt: new Date().toISOString()
+    };
+    const body = JSON.stringify(payload);
+
+    try {
+      if (navigator.sendBeacon) {
+        const blob = new Blob([body], { type: 'application/json' });
+        if (navigator.sendBeacon(endpoint, blob)) return;
+      }
+    } catch (error) {
+      // Ignore analytics errors so the widget never breaks for visitors.
+    }
+
+    try {
+      fetch(endpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body,
+        mode: 'cors',
+        keepalive: true
+      }).catch(() => {});
+    } catch (error) {
+      // Ignore analytics errors so the widget never breaks for visitors.
+    }
   }
 
   function startTimer() {

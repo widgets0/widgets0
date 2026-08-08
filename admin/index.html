@@ -919,6 +919,31 @@
       border-radius: inherit;
     }
 
+    .event-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 7px;
+      min-width: 270px;
+    }
+
+    .event-chip {
+      min-height: 34px;
+      padding: 8px 10px;
+      border-radius: 12px;
+      background: #f5f7f8;
+      color: #606872;
+      font-size: 12px;
+      line-height: 1.05;
+      font-weight: 850;
+      white-space: nowrap;
+    }
+
+    .event-chip strong {
+      color: #111827;
+      font-size: 16px;
+      margin-right: 4px;
+    }
+
     .row-actions {
       display: flex;
       align-items: center;
@@ -1810,7 +1835,7 @@
           </div>
           <div class="hero__actions">
             <a class="top-button" href="https://widgets0.github.io/widgets0/gallery/" target="_blank" rel="noreferrer">▦ Галерея виджетов</a>
-            <button class="top-button" data-action="toast" data-message="Демо-данные обновлены">↻ Синхронизировать</button>
+            <button class="top-button" data-action="sync-analytics">↻ Синхронизировать</button>
           </div>
         </div>
       </section>
@@ -2016,16 +2041,25 @@
       }
     };
 
+    const DEFAULT_ANALYTICS_ENDPOINT = "https://widgets0-production.up.railway.app/analytics/events";
+    const DEFAULT_ANALYTICS_SUMMARY_ENDPOINT = "https://widgets0-production.up.railway.app/analytics/summary";
+    let analyticsSummary = null;
+    let analyticsStatus = "idle";
+
     let widgets = [
       {
-        id: "new-widget-1783972211171",
-        title: "Новый виджет",
-        client: "Новый клиент",
-        domain: "Домен не указан",
+        id: "lera-candles-wheel",
+        title: "Колесо фортуны Леры",
+        client: "Лера / TNT",
+        domain: "Сайт клиента",
         template: "wheel",
-        source: "new-widget-1783972211171",
-        frequency: "раз в час",
-        delay: 2,
+        source: "lera-dnevnik-svechnika",
+        analyticsWidgetId: "lera-candles-wheel",
+        analyticsClientId: "tnt",
+        analyticsEndpoint: DEFAULT_ANALYTICS_ENDPOINT,
+        analyticsSummaryEndpoint: DEFAULT_ANALYTICS_SUMMARY_ENDPOINT,
+        frequency: "раз в день",
+        delay: 300,
         views: 0,
         leads: 0,
         active: true
@@ -2067,6 +2101,10 @@
       tab: "main",
       position: "center",
       webhook: "https://widgets0-production.up.railway.app",
+      analyticsEndpoint: DEFAULT_ANALYTICS_ENDPOINT,
+      analyticsSummaryEndpoint: DEFAULT_ANALYTICS_SUMMARY_ENDPOINT,
+      analyticsWidgetId: widgets[0].analyticsWidgetId || widgets[0].source,
+      analyticsClientId: widgets[0].analyticsClientId || "",
       showMode: "popup",
       secret: ""
     };
@@ -2107,10 +2145,56 @@
       showToast.timer = setTimeout(() => toastEl.classList.remove("is-visible"), 2200);
     }
 
+    function emptyAnalyticsEvents() {
+      return {
+        widget_shown: 0,
+        widget_closed: 0,
+        wheel_spin_click: 0,
+        prize_shown: 0,
+        prize_link_click: 0
+      };
+    }
+
+    function analyticsKey(item) {
+      return item.analyticsWidgetId || item.source || item.id;
+    }
+
+    function getWidgetAnalytics(item) {
+      const key = analyticsKey(item);
+      const list = analyticsSummary?.widgets || [];
+      return list.find(entry => [entry.widgetId, entry.source].includes(key)) || null;
+    }
+
+    function getWidgetEvents(item) {
+      return getWidgetAnalytics(item)?.events || emptyAnalyticsEvents();
+    }
+
+    function hasWidgetAnalytics(item) {
+      const events = getWidgetEvents(item);
+      return Object.values(events).some(value => Number(value || 0) > 0);
+    }
+
+    async function loadAnalyticsSummary(showResult = false) {
+      const endpoint = current.analyticsSummaryEndpoint || DEFAULT_ANALYTICS_SUMMARY_ENDPOINT;
+      analyticsStatus = "loading";
+      try {
+        const response = await fetch(endpoint, { cache: "no-store" });
+        if (!response.ok) throw new Error("Не удалось получить статистику");
+        analyticsSummary = await response.json();
+        analyticsStatus = "ready";
+        renderWidgets();
+        if (showResult) showToast("Статистика обновлена");
+      } catch (error) {
+        analyticsStatus = "error";
+        if (showResult) showToast("Статистика пока недоступна");
+      }
+    }
+
     function renderStats() {
       const active = widgets.filter(item => item.active).length;
       const sites = new Set(widgets.filter(item => item.domain && item.domain !== "Домен не указан").map(item => item.domain)).size;
-      const leads = widgets.reduce((sum, item) => sum + Number(item.leads || 0), 0);
+      const analyticsLeads = Number(analyticsSummary?.totals?.prize_link_click || 0);
+      const leads = analyticsLeads || widgets.reduce((sum, item) => sum + Number(item.leads || 0), 0);
 
       document.querySelector('[data-stat="total"]').textContent = widgets.length;
       document.querySelector('[data-stat="active"]').textContent = active;
@@ -2128,15 +2212,32 @@
 
       widgetsBody.innerHTML = filtered.map(item => {
         const template = templates[item.template] || templates.wheel;
-        const conversion = item.views ? Math.round(item.leads / item.views * 100) : 0;
-        const conversionHtml = item.views
+        const analyticsEvents = getWidgetEvents(item);
+        const realViews = Number(analyticsEvents.widget_shown || 0);
+        const realLeads = Number(analyticsEvents.prize_link_click || 0);
+        const views = realViews || Number(item.views || 0);
+        const leads = realLeads || Number(item.leads || 0);
+        const conversion = views ? Math.round(leads / views * 100) : 0;
+        const conversionHtml = hasWidgetAnalytics(item)
+          ? `<div class="event-grid">
+               <span class="event-chip"><strong>${analyticsEvents.widget_shown}</strong> показов</span>
+               <span class="event-chip"><strong>${analyticsEvents.widget_closed}</strong> закрыли</span>
+               <span class="event-chip"><strong>${analyticsEvents.wheel_spin_click}</strong> крутили</span>
+               <span class="event-chip"><strong>${analyticsEvents.prize_shown}</strong> приз</span>
+             </div>
+             <div class="mini-progress">
+               <strong>${analyticsEvents.prize_link_click} забрали</strong>
+               <div class="bar" style="--value:${conversion}%"><span></span></div>
+               <span class="pill pill--ok">${conversion}%</span>
+             </div>`
+          : views
           ? `<div class="mini-progress">
-               <strong>${item.views} показов</strong>
+               <strong>${views} показов</strong>
                <div class="bar" style="--value:${conversion}%"><span></span></div>
                <span class="pill pill--ok">${conversion}%</span>
              </div>
-             <div><strong>${item.leads}</strong> заявок</div>`
-          : `<span class="pill pill--red">Ожидание первых данных</span>`;
+             <div><strong>${leads}</strong> заявок</div>`
+          : `<span class="pill pill--red">${analyticsStatus === "loading" ? "Загружаем статистику" : "Ожидание первых данных"}</span>`;
 
         return `
           <tr>
@@ -2384,6 +2485,24 @@
           </div>
           <div class="field-group">
             <div class="field">
+              <label>Analytics endpoint</label>
+              <input class="input" data-setting="analyticsEndpoint" value="${escapeHtml(current.analyticsEndpoint || DEFAULT_ANALYTICS_ENDPOINT)}">
+            </div>
+            <div class="field">
+              <label>Analytics summary</label>
+              <input class="input" data-setting="analyticsSummaryEndpoint" value="${escapeHtml(current.analyticsSummaryEndpoint || DEFAULT_ANALYTICS_SUMMARY_ENDPOINT)}">
+            </div>
+            <div class="field">
+              <label>Client ID</label>
+              <input class="input" data-setting="analyticsClientId" value="${escapeHtml(current.analyticsClientId || "")}" placeholder="например tnt">
+            </div>
+            <div class="field">
+              <label>Widget ID</label>
+              <input class="input" data-setting="analyticsWidgetId" value="${escapeHtml(current.analyticsWidgetId || current.source || "")}" placeholder="например lera-candles-wheel">
+            </div>
+          </div>
+          <div class="field-group">
+            <div class="field">
               <label>Код для установки</label>
               <div class="code-box" id="installCode">${escapeHtml(getInstallCode())}</div>
             </div>
@@ -2425,7 +2544,7 @@
     }
 
     function getInstallCode() {
-      return `<script src="https://widgets0.github.io/widgets0/widget-loader.js" data-widget="${current.widget}" data-source="${current.source}" async><\\/script>`;
+      return `<script src="https://widgets0.github.io/widgets0/widget-loader.js" data-widget="${current.widget}" data-source="${current.source}" data-analytics-endpoint="${current.analyticsEndpoint || DEFAULT_ANALYTICS_ENDPOINT}" data-client-id="${current.analyticsClientId || current.client || ""}" data-widget-id="${current.analyticsWidgetId || current.source}" async><\\/script>`;
     }
 
     function updateSetting(name, value) {
@@ -2456,6 +2575,10 @@
         domain: current.domainInput || "Домен не указан",
         template: current.template,
         source: current.source,
+        analyticsEndpoint: current.analyticsEndpoint || DEFAULT_ANALYTICS_ENDPOINT,
+        analyticsSummaryEndpoint: current.analyticsSummaryEndpoint || DEFAULT_ANALYTICS_SUMMARY_ENDPOINT,
+        analyticsClientId: current.analyticsClientId || "",
+        analyticsWidgetId: current.analyticsWidgetId || current.source,
         frequency: current.frequency,
         delay: current.delay,
         views: current.views || 0,
@@ -2509,6 +2632,7 @@
         showToast("Код скопирован");
       }
       if (action === "publish") saveCurrentToList();
+      if (action === "sync-analytics") loadAnalyticsSummary(true);
       if (action === "toast") showToast(target.dataset.message || "Готово");
     });
 
@@ -2542,6 +2666,7 @@
     widgetSearch.addEventListener("input", renderWidgets);
 
     renderWidgets();
+    loadAnalyticsSummary();
     renderTemplates();
     renderSettings();
     renderPreview();
