@@ -1237,7 +1237,12 @@ body {
     spinBtn.innerText = "ВРАЩАЕМ...";
     spinBtn.disabled = true;
 
-    const spin = Math.floor(2800 + Math.random() * 2000);
+    const degPerSector = 360 / prizes.length;
+    const winningIndex = Math.floor(Math.random() * prizes.length);
+    const targetSectorCenter = winningIndex * degPerSector + degPerSector / 2;
+    const currentRotation = ((rotation % 360) + 360) % 360;
+    const targetRotation = (270 - targetSectorCenter + 360) % 360;
+    const spin = 2160 + ((targetRotation - currentRotation + 360) % 360);
     rotation += spin;
 
     canvas.style.transform = `rotate(${rotation}deg)`;
@@ -1247,10 +1252,7 @@ body {
         spinBtn.innerText = "КРУТИТЬ!";
         spinBtn.disabled = false;
 
-        const degPerSector = 360 / prizes.length;
-        const actualDeg = (360 - (rotation % 360) + 270) % 360;
-        const index = Math.floor(actualDeg / degPerSector);
-
+        const index = winningIndex;
         const winText = formatPrizeText(prizeResultTexts[index] || prizes[index]);
         selectedPrize = winText;
         if (prizeValueEl) prizeValueEl.innerText = winText;
@@ -1323,7 +1325,10 @@ body {
   function updatePrizeLink(prize) {
     if (!prizeLink) return;
     const value = formatPrizeText(prize || 'Приз');
-    prizeLink.href = `${ANKETA_URL}?priz=${encodeURIComponent(value)}`;
+    const url = new URL(ANKETA_URL, window.location.href);
+    url.searchParams.set('utm_content', value);
+    url.searchParams.set('priz', value);
+    prizeLink.href = url.toString();
   }
 
   function trackWidgetEvent(eventName, details = {}) {
