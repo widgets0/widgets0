@@ -1,6 +1,6 @@
 <!-- Колесо фортуны Леры: popup без iframe, кнопки видны Яндекс.Метрике -->
 <script
-  src="https://widgets0.github.io/widgets0/clients/lera-dnevnik-svechnika/loader.js?v=analytics-mvp"
+  src="https://widgets0.github.io/widgets0/clients/lera-dnevnik-svechnika/loader.js?v=utm-random-20260811"
   data-delay="300"
   data-frequency="once_per_day"
   data-position="center"
