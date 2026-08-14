@@ -888,13 +888,13 @@
     <main>
       <section class="summary" aria-label="Сводка">
         <article class="summary-card">
-          <span class="summary-card__label">Всего виджетов</span>
-          <span class="summary-card__value" data-stat="total">0</span>
-          <span class="summary-card__note">в личном кабинете</span>
+          <span class="summary-card__label">Всего проектов</span>
+          <span class="summary-card__value summary-card__value--blue" data-stat="projects">0</span>
+          <span class="summary-card__note" data-stat-note="projects">подключено</span>
         </article>
         <article class="summary-card">
-          <span class="summary-card__label">Активны на сайтах</span>
-          <span class="summary-card__value summary-card__value--blue" data-stat="active">0</span>
+          <span class="summary-card__label">Всего виджетов</span>
+          <span class="summary-card__value" data-stat="total">0</span>
           <span class="summary-card__note" data-stat-note="active">сейчас включены</span>
         </article>
         <article class="summary-card">
@@ -1128,14 +1128,16 @@
       }, { shows: 0, leads: 0 });
 
       const sites = new Set(widgets.map(widget => widget.domain).filter(Boolean)).size;
+      const projects = new Set(widgets.map(widget => widget.project).filter(Boolean)).size;
       const active = Object.values(state.activeById).filter(Boolean).length;
 
+      document.querySelector('[data-stat="projects"]').textContent = formatNumber(projects);
       document.querySelector('[data-stat="total"]').textContent = formatNumber(widgets.length);
-      document.querySelector('[data-stat="active"]').textContent = formatNumber(active);
       document.querySelector('[data-stat="shows"]').textContent = formatNumber(totals.shows);
       document.querySelector('[data-stat="leads"]').textContent = formatNumber(totals.leads);
       document.querySelector('[data-stat="conversion"]').textContent = `${percent(totals.leads, totals.shows)}%`;
-      document.querySelector('[data-stat-note="active"]').textContent = active === widgets.length ? "все включены" : `${widgets.length - active} выключен вручную`;
+      document.querySelector('[data-stat-note="projects"]').textContent = `по ${formatNumber(sites)} сайтам`;
+      document.querySelector('[data-stat-note="active"]').textContent = active === widgets.length ? "все активны" : `${formatNumber(active)} активны`;
       document.querySelector('[data-stat-note="sites"]').textContent = `по ${formatNumber(sites)} сайтам`;
     }
 
