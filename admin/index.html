@@ -944,6 +944,66 @@
       margin-right: 4px;
     }
 
+    .analytics-panel {
+      width: min(1780px, calc(100% - 96px));
+      margin: -8px auto 28px;
+      background: rgba(255, 255, 255, 0.94);
+      border: 1px solid rgba(229, 225, 218, 0.86);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-soft);
+      padding: 24px 28px;
+      display: grid;
+      grid-template-columns: minmax(240px, 0.9fr) minmax(0, 2fr);
+      gap: 22px;
+      align-items: center;
+    }
+
+    .analytics-panel__title {
+      margin: 0 0 8px;
+      color: #111827;
+      font-size: 24px;
+      line-height: 1.08;
+      font-weight: 950;
+    }
+
+    .analytics-panel__meta {
+      color: #7d8490;
+      font-size: 14px;
+      line-height: 1.35;
+      font-weight: 780;
+    }
+
+    .analytics-panel__grid {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .analytics-metric {
+      min-height: 86px;
+      border-radius: 18px;
+      background: #f5f8fb;
+      border: 1px solid rgba(229, 225, 218, 0.7);
+      padding: 14px 16px;
+      display: grid;
+      align-content: center;
+      gap: 5px;
+    }
+
+    .analytics-metric strong {
+      color: #111827;
+      font-size: 30px;
+      line-height: 1;
+      font-weight: 950;
+    }
+
+    .analytics-metric span {
+      color: #6f7680;
+      font-size: 13px;
+      line-height: 1.15;
+      font-weight: 850;
+    }
+
     .row-actions {
       display: flex;
       align-items: center;
@@ -1643,6 +1703,7 @@
     @media (max-width: 1100px) {
       .hero__inner,
       .stats,
+      .analytics-panel,
       .panel {
         width: min(920px, calc(100vw - 34px));
       }
@@ -1657,6 +1718,14 @@
 
       .stats {
         grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .analytics-panel {
+        grid-template-columns: 1fr;
+      }
+
+      .analytics-panel__grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
       }
 
       .templates {
@@ -1695,6 +1764,7 @@
       .shell,
       .hero__inner,
       .stats,
+      .analytics-panel,
       .panel {
         width: calc(100vw - 24px);
       }
@@ -1721,6 +1791,14 @@
 
       .stats {
         grid-template-columns: 1fr;
+      }
+
+      .analytics-panel {
+        padding: 18px;
+      }
+
+      .analytics-panel__grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
       }
 
       .panel__head {
@@ -1865,6 +1943,20 @@
           <div class="stat-card__value" data-stat="leads">53</div>
           <div class="stat-card__note">↗ +12% рост</div>
         </article>
+      </section>
+
+      <section class="analytics-panel" aria-label="Статистика виджета Леры">
+        <div>
+          <h2 class="analytics-panel__title">Статистика Леры</h2>
+          <div class="analytics-panel__meta" data-lera-analytics-meta>Ожидание первых данных</div>
+        </div>
+        <div class="analytics-panel__grid" data-lera-analytics-grid>
+          <div class="analytics-metric"><strong>0</strong><span>показали виджет</span></div>
+          <div class="analytics-metric"><strong>0</strong><span>закрыли крестиком</span></div>
+          <div class="analytics-metric"><strong>0</strong><span>нажали крутить</span></div>
+          <div class="analytics-metric"><strong>0</strong><span>увидели приз</span></div>
+          <div class="analytics-metric"><strong>0</strong><span>нажали забрать</span></div>
+        </div>
       </section>
 
       <section class="panel">
@@ -2175,6 +2267,55 @@
       return Object.values(events).some(value => Number(value || 0) > 0);
     }
 
+    function formatAnalyticsDate(value) {
+      if (!value) return "";
+      const date = new Date(value);
+      if (Number.isNaN(date.getTime())) return "";
+      return date.toLocaleString("ru-RU", {
+        day: "2-digit",
+        month: "2-digit",
+        hour: "2-digit",
+        minute: "2-digit"
+      });
+    }
+
+    function renderLeraAnalyticsPanel() {
+      const leraWidget = widgets.find(item => item.id === "lera-candles-wheel") || widgets[0];
+      const analytics = getWidgetAnalytics(leraWidget);
+      const events = getWidgetEvents(leraWidget);
+      const grid = document.querySelector("[data-lera-analytics-grid]");
+      const meta = document.querySelector("[data-lera-analytics-meta]");
+      if (!grid || !meta) return;
+
+      const metrics = [
+        ["widget_shown", "показали виджет"],
+        ["widget_closed", "закрыли крестиком"],
+        ["wheel_spin_click", "нажали крутить"],
+        ["prize_shown", "увидели приз"],
+        ["prize_link_click", "нажали забрать"]
+      ];
+
+      grid.innerHTML = metrics.map(([key, label]) => `
+        <div class="analytics-metric">
+          <strong>${Number(events[key] || 0)}</strong>
+          <span>${label}</span>
+        </div>
+      `).join("");
+
+      if (analyticsStatus === "loading") {
+        meta.textContent = "Обновляем статистику...";
+      } else if (analyticsStatus === "error") {
+        meta.textContent = "Статистика пока недоступна";
+      } else if (analytics) {
+        const lastSeen = formatAnalyticsDate(analytics.lastSeenAt);
+        meta.textContent = lastSeen
+          ? `Последнее событие: ${lastSeen} · ${analytics.widgetId || analytics.source || leraWidget.id}`
+          : `Данные получены · ${analytics.widgetId || analytics.source || leraWidget.id}`;
+      } else {
+        meta.textContent = "Ожидание первых данных";
+      }
+    }
+
     async function loadAnalyticsSummary(showResult = false) {
       const endpoint = current.analyticsSummaryEndpoint || DEFAULT_ANALYTICS_SUMMARY_ENDPOINT;
       analyticsStatus = "loading";
@@ -2202,6 +2343,7 @@
       document.querySelector('[data-stat="sites"]').textContent = sites;
       document.querySelector('[data-stat="leads"]').textContent = leads;
       document.querySelector("[data-count-pill]").textContent = `${widgets.length} штуки`;
+      renderLeraAnalyticsPanel();
     }
 
     function renderWidgets() {
