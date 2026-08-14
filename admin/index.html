@@ -1,61 +1,61 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Olly Widgets — кабинет</title>
-  <link rel="icon" href="../favicon.png">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Olly · Личный кабинет</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
     :root {
-      --page: #f6f5f1;
-      --surface: #ffffff;
-      --surface-soft: #f8f8f6;
-      --ink: #171819;
-      --muted: #747a83;
-      --soft: #9aa4b2;
-      --line: #e8e5df;
-      --green: #147cb8;
-      --green-dark: #082f4a;
-      --green-soft: #e8f6ff;
-      --blue: #35a9f5;
-      --gold: #d3b07e;
-      --red: #ef405d;
-      --shadow: 0 18px 55px rgba(16, 24, 40, 0.08);
-      --radius-lg: 28px;
-      --radius-md: 18px;
-      --radius-sm: 12px;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Arial, sans-serif;
+      --bg: #f4f3f0;
+      --panel: #ffffff;
+      --ink: #12181d;
+      --muted: #6b7580;
+      --soft: #7c8792;
+      --line: rgba(17, 24, 28, 0.1);
+      --line-strong: rgba(17, 24, 28, 0.16);
+      --nav: #0e1a24;
+      --blue: #256fd4;
+      --blue-soft: #eef5ff;
+      --green: #20a46b;
+      --green-soft: #e9f8f0;
+      --red: #ce4b52;
+      --red-soft: #fff0f0;
+      --gold: #c99236;
+      --gold-soft: #fff5dc;
+      --shadow: 0 18px 46px rgba(17, 24, 28, 0.08);
+      --mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+      --font: "Manrope", Inter, system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
     }
 
-    * { box-sizing: border-box; }
+    * {
+      box-sizing: border-box;
+    }
 
     html,
     body {
       margin: 0;
       min-height: 100%;
-      background: var(--page);
+      background: var(--bg);
       color: var(--ink);
-      letter-spacing: 0;
-    }
-
-    body {
-      overflow-x: hidden;
+      font-family: var(--font);
       -webkit-font-smoothing: antialiased;
       text-rendering: geometricPrecision;
     }
 
+    body {
+      min-width: 1120px;
+    }
+
     button,
-    input,
-    select,
-    textarea {
+    input {
       font: inherit;
-      letter-spacing: 0;
     }
 
     button {
-      cursor: pointer;
       border: 0;
-      color: inherit;
     }
 
     a {
@@ -63,1587 +63,715 @@
       text-decoration: none;
     }
 
-    .app {
-      width: 100%;
-      max-width: 100vw;
-      overflow-x: hidden;
+    .page {
       min-height: 100vh;
-      background:
-        radial-gradient(circle at 12% 0%, rgba(53, 169, 245, 0.08), transparent 34%),
-        radial-gradient(circle at 90% 12%, rgba(211, 176, 126, 0.12), transparent 28%),
-        var(--page);
+      padding-bottom: 72px;
     }
 
-    .screen {
-      display: none;
-      max-width: 100vw;
-    }
-
-    .screen.is-active {
-      display: block;
-    }
-
-    #builderScreen.is-active {
-      min-height: 100vh;
-      background: #fff;
-    }
-
-    .shell {
-      width: min(1480px, calc(100vw - 56px));
-      margin: 0 auto;
-    }
-
-    .hero {
-      min-height: 248px;
-      padding: 34px 0 96px;
-      background:
-        radial-gradient(circle at 72% 0%, rgba(53, 169, 245, 0.22), transparent 36%),
-        linear-gradient(135deg, var(--green-dark), var(--green));
-      border-bottom-left-radius: 34px;
-      border-bottom-right-radius: 34px;
+    .topbar {
+      background: var(--nav);
       color: #fff;
+      padding: 22px 40px 20px;
     }
 
-    .hero__inner {
-      width: min(1220px, calc(100vw - 72px));
+    .topbar__inner {
+      width: min(1320px, calc(100vw - 80px));
       margin: 0 auto;
-      display: grid;
-      grid-template-columns: auto 1fr auto;
-      gap: 34px;
-      align-items: start;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 32px;
+    }
+
+    .brand-line {
+      display: flex;
+      align-items: center;
+      gap: 22px;
+      min-width: 0;
     }
 
     .brand {
+      width: 136px;
+      height: 46px;
       display: flex;
       align-items: center;
-      gap: 14px;
-      min-width: 176px;
-      padding-top: 8px;
+      justify-content: center;
+      border-radius: 12px;
+      background: #fff;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+      flex: 0 0 auto;
     }
 
     .brand img {
-      width: 150px;
+      width: 106px;
       height: auto;
       display: block;
-      filter: brightness(0) invert(1);
     }
 
-    .hero__divider {
+    .divider {
       width: 1px;
-      height: 64px;
-      margin-top: 4px;
-      background: rgba(255, 255, 255, 0.18);
+      height: 34px;
+      background: rgba(255, 255, 255, 0.16);
+      flex: 0 0 auto;
     }
 
-    .hero__eyebrow {
-      margin: 0 0 10px;
-      color: rgba(255, 255, 255, 0.68);
-      font-size: 13px;
-      font-weight: 900;
-      letter-spacing: 0.18em;
+    .top-title {
+      display: grid;
+      gap: 4px;
+      min-width: 0;
+    }
+
+    .eyebrow {
+      margin: 0;
+      color: rgba(255, 255, 255, 0.48);
+      font: 500 10px/1 var(--mono);
+      letter-spacing: 0.16em;
       text-transform: uppercase;
     }
 
-    .hero h1 {
+    h1 {
       margin: 0;
-      font-size: clamp(32px, 3.4vw, 52px);
-      line-height: 0.98;
-      font-weight: 900;
-    }
-
-    .hero p {
-      max-width: 790px;
-      margin: 14px 0 0;
-      color: rgba(255, 255, 255, 0.72);
+      color: #fff;
       font-size: 18px;
-      line-height: 1.42;
-      font-weight: 650;
+      line-height: 1.1;
+      font-weight: 800;
+      letter-spacing: -0.01em;
     }
 
-    .hero__actions {
+    .top-actions {
       display: flex;
-      gap: 12px;
-      padding-top: 12px;
       align-items: center;
+      gap: 10px;
+      flex: 0 0 auto;
+    }
+
+    .top-button,
+    .button {
+      min-height: 38px;
+      padding: 0 14px;
+      border-radius: 9px;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 700;
+      transition: transform 0.18s ease, background 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
+      white-space: nowrap;
     }
 
     .top-button {
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      gap: 9px;
-      min-height: 48px;
-      padding: 0 20px;
-      border-radius: 14px;
-      background: rgba(255, 255, 255, 0.12);
-      color: rgba(255, 255, 255, 0.92);
-      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.12);
-      font-weight: 850;
-      transition: transform 0.18s ease, background 0.18s ease;
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      background: transparent;
+      color: #fff;
+    }
+
+    .top-button:hover,
+    .button:hover {
+      transform: translateY(-1px);
     }
 
     .top-button:hover {
-      transform: translateY(-1px);
-      background: rgba(255, 255, 255, 0.18);
+      background: rgba(255, 255, 255, 0.1);
     }
 
-    .stats {
-      width: min(1220px, calc(100vw - 72px));
-      margin: -68px auto 36px;
+    .top-button--solid {
+      border-color: #fff;
+      background: #fff;
+      color: var(--nav);
+    }
+
+    .top-button--solid:hover {
+      background: #e9eef3;
+    }
+
+    main {
+      width: min(1320px, calc(100vw - 80px));
+      margin: 0 auto;
+      padding: 0 0 72px;
+    }
+
+    .summary {
       display: grid;
       grid-template-columns: repeat(4, minmax(0, 1fr));
-      gap: 20px;
-      position: relative;
-      z-index: 2;
-    }
-
-    .stat-card {
-      min-height: 140px;
-      border-radius: 22px;
-      padding: 24px;
-      background: rgba(255, 255, 255, 0.96);
-      box-shadow: var(--shadow);
-      border: 1px solid rgba(21, 31, 24, 0.05);
-      position: relative;
+      gap: 1px;
+      margin-top: 28px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: var(--line);
       overflow: hidden;
+      box-shadow: 0 10px 30px rgba(17, 24, 28, 0.04);
     }
 
-    .stat-card::after {
-      content: "";
-      position: absolute;
-      left: 0;
-      right: 0;
-      bottom: -38px;
-      height: 82px;
-      background: radial-gradient(ellipse at 44% 0%, rgba(20, 124, 184, 0.08), transparent 66%);
-    }
-
-    .stat-card__label {
-      color: #6d7177;
-      font-size: 16px;
-      line-height: 1.2;
-      font-weight: 800;
-    }
-
-    .stat-card__value {
-      margin: 30px 0 0;
-      color: #111;
-      font-size: 44px;
-      line-height: 0.9;
-      font-weight: 950;
-      letter-spacing: -0.03em;
-    }
-
-    .stat-card__note {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      margin-top: 16px;
-      padding: 8px 12px;
-      border-radius: 999px;
-      background: var(--surface-soft);
-      color: #6e716f;
-      font-size: 13px;
-      font-weight: 850;
-    }
-
-    .stat-card__icon {
-      position: absolute;
-      top: 22px;
-      right: 22px;
-      width: 44px;
-      height: 44px;
-      border-radius: 13px;
+    .summary-card {
+      min-height: 116px;
+      padding: 20px 22px 18px;
+      background: var(--panel);
       display: grid;
-      place-items: center;
-      background: #eef5ff;
-      color: #2878e2;
-      box-shadow: 0 4px 14px rgba(15, 23, 42, 0.08);
-      font-size: 20px;
-      font-weight: 900;
+      align-content: start;
+      gap: 10px;
     }
 
-    .stat-card:nth-child(2) .stat-card__icon { background: var(--green-soft); color: #147cb8; }
-    .stat-card:nth-child(3) .stat-card__icon { background: #fff7de; color: #c07905; }
-    .stat-card:nth-child(4) .stat-card__icon { background: #fff0ef; color: #df3d42; }
-
-    #dashboardScreen .hero {
-      min-height: 142px;
-      padding: 18px 0 42px;
-      border-bottom-left-radius: 20px;
-      border-bottom-right-radius: 20px;
-    }
-
-    #dashboardScreen .hero__inner {
-      width: min(1280px, calc(100vw - 48px));
-      grid-template-columns: 136px 1px minmax(0, 1fr) auto;
-      gap: 18px;
-      align-items: center;
-    }
-
-    #dashboardScreen .brand {
-      min-width: 0;
-      padding-top: 0;
-    }
-
-    #dashboardScreen .brand img {
-      width: 112px;
-      max-height: 40px;
-      object-fit: contain;
-    }
-
-    #dashboardScreen .hero__divider {
-      height: 42px;
-      margin-top: 0;
-    }
-
-    #dashboardScreen .hero__eyebrow {
-      margin-bottom: 7px;
-      font-size: 10px;
-      letter-spacing: 0.18em;
-    }
-
-    #dashboardScreen .hero h1 {
-      font-size: clamp(25px, 2vw, 34px);
-      line-height: 1.04;
-      letter-spacing: 0;
-    }
-
-    #dashboardScreen .hero p {
-      max-width: 650px;
-      margin-top: 6px;
-      font-size: 14px;
-      line-height: 1.32;
-    }
-
-    #dashboardScreen .hero__actions {
-      justify-content: flex-end;
-      flex-wrap: nowrap;
-      padding-top: 0;
-    }
-
-    #dashboardScreen .top-button {
-      min-height: 38px;
-      padding: 0 14px;
-      border-radius: 11px;
-      font-size: 13px;
-      white-space: nowrap;
-    }
-
-    #dashboardScreen .stats {
-      width: min(1280px, calc(100vw - 48px));
-      margin: -28px auto 20px;
-      gap: 12px;
-    }
-
-    #dashboardScreen .stat-card {
-      min-height: 92px;
-      padding: 14px 16px;
-      border-radius: 16px;
-      box-shadow: 0 12px 34px rgba(16, 24, 40, 0.07);
-    }
-
-    #dashboardScreen .stat-card__label {
-      max-width: 74%;
-      font-size: 13px;
-      line-height: 1.25;
-    }
-
-    #dashboardScreen .stat-card__value {
-      margin-top: 17px;
-      font-size: 31px;
-      line-height: 0.9;
-    }
-
-    #dashboardScreen .stat-card__note {
-      margin-top: 8px;
-      padding: 4px 9px;
+    .summary-card__label,
+    .section-label,
+    .widget-chip-label,
+    .metric__label {
+      color: var(--soft);
       font-size: 11px;
-    }
-
-    #dashboardScreen .stat-card__icon {
-      top: 14px;
-      right: 14px;
-      width: 34px;
-      height: 34px;
-      border-radius: 11px;
-      font-size: 15px;
-    }
-
-    #dashboardScreen .panel {
-      width: min(1280px, calc(100vw - 48px));
-      margin: 0 auto 44px;
-      border-radius: 20px;
-    }
-
-    #dashboardScreen .panel__head {
-      min-height: 62px;
-      padding: 13px 18px;
-      gap: 12px;
-    }
-
-    #dashboardScreen .panel__title {
-      font-size: 21px;
-    }
-
-    #dashboardScreen .search {
-      height: 42px;
-      border-radius: 13px;
-    }
-
-    #dashboardScreen .button {
-      min-height: 42px;
-      border-radius: 13px;
-      padding: 0 16px;
-      font-size: 14px;
-    }
-
-    #dashboardScreen .widget-table th {
-      padding: 10px 18px;
-      font-size: 11px;
-      letter-spacing: 0.06em;
-    }
-
-    #dashboardScreen .widget-table td {
-      padding: 15px 18px;
-    }
-
-    #dashboardScreen .widget-name {
-      font-size: 17px;
-      line-height: 1.15;
-    }
-
-    #dashboardScreen .widget-id,
-    #dashboardScreen .widget-meta {
-      font-size: 13px;
-      line-height: 1.35;
-    }
-
-    #dashboardScreen .mini-progress {
-      min-width: 180px;
-    }
-
-    #dashboardScreen .widget-table {
-      table-layout: fixed;
-    }
-
-    #dashboardScreen .widget-table th:nth-child(1),
-    #dashboardScreen .widget-table td:nth-child(1) {
-      width: 27%;
-    }
-
-    #dashboardScreen .widget-table th:nth-child(2),
-    #dashboardScreen .widget-table td:nth-child(2) {
-      width: 19%;
-    }
-
-    #dashboardScreen .widget-table th:nth-child(3),
-    #dashboardScreen .widget-table td:nth-child(3) {
-      width: 32%;
-    }
-
-    #dashboardScreen .widget-table th:nth-child(4),
-    #dashboardScreen .widget-table td:nth-child(4) {
-      width: 22%;
-    }
-
-    @media (max-width: 1100px) {
-      #dashboardScreen .hero__inner {
-        width: min(860px, calc(100vw - 48px));
-        grid-template-columns: 120px minmax(0, 1fr);
-        gap: 16px 20px;
-        align-items: start;
-      }
-
-      #dashboardScreen .hero__divider {
-        display: none;
-      }
-
-      #dashboardScreen .hero__actions {
-        grid-column: 2;
-        justify-content: flex-start;
-        flex-wrap: wrap;
-      }
-
-      #dashboardScreen .hero h1 {
-        max-width: 560px;
-      }
-
-      #dashboardScreen .stats {
-        width: min(860px, calc(100vw - 48px));
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-      }
-
-      #dashboardScreen .panel {
-        width: min(860px, calc(100vw - 48px));
-      }
-
-      #dashboardScreen .widget-table th:nth-child(1),
-      #dashboardScreen .widget-table td:nth-child(1) {
-        width: 28%;
-      }
-
-      #dashboardScreen .widget-table th:nth-child(2),
-      #dashboardScreen .widget-table td:nth-child(2) {
-        width: 22%;
-      }
-
-      #dashboardScreen .widget-table th:nth-child(3),
-      #dashboardScreen .widget-table td:nth-child(3) {
-        width: 24%;
-      }
-
-      #dashboardScreen .widget-table th:nth-child(4),
-      #dashboardScreen .widget-table td:nth-child(4) {
-        width: 26%;
-      }
-
-      #dashboardScreen .mini-progress {
-        min-width: 0;
-        grid-template-columns: auto 58px auto;
-        gap: 8px;
-      }
-
-      #dashboardScreen .row-actions {
-        gap: 7px;
-      }
-
-      #dashboardScreen .row-actions .button {
-        padding: 0 12px;
-      }
-
-      #dashboardScreen .row-actions .icon-button {
-        width: 40px;
-        height: 40px;
-      }
-    }
-
-    @media (max-width: 960px) {
-      #dashboardScreen .widget-table,
-      #dashboardScreen .widget-table tbody {
-        display: block;
-        width: 100%;
-      }
-
-      #dashboardScreen .widget-table tr {
-        display: grid;
-        grid-template-columns: minmax(190px, 0.9fr) minmax(230px, 1fr) auto;
-        column-gap: 20px;
-        row-gap: 8px;
-        align-items: start;
-      }
-
-      #dashboardScreen .widget-table td {
-        display: block;
-        width: auto;
-      }
-
-      #dashboardScreen .widget-table thead {
-        display: none;
-      }
-
-      #dashboardScreen .widget-table tr {
-        padding: 18px 18px 16px;
-        border-bottom: 1px solid var(--line);
-      }
-
-      #dashboardScreen .widget-table td {
-        padding: 7px 0;
-        border: 0;
-      }
-
-      #dashboardScreen .widget-table td:first-child {
-        grid-column: 1;
-        grid-row: 1 / span 2;
-      }
-
-      #dashboardScreen .widget-table td:nth-child(2) {
-        grid-column: 2;
-        grid-row: 1;
-      }
-
-      #dashboardScreen .widget-table td:nth-child(3) {
-        grid-column: 2;
-        grid-row: 2;
-      }
-
-      #dashboardScreen .widget-table td:nth-child(4) {
-        grid-column: 3;
-        grid-row: 1 / span 2;
-        align-self: center;
-      }
-
-      #dashboardScreen .widget-main {
-        max-width: 420px;
-      }
-
-      #dashboardScreen .rule-lines,
-      #dashboardScreen .conversion {
-        gap: 7px;
-      }
-
-      #dashboardScreen .mini-progress {
-        max-width: 360px;
-        grid-template-columns: auto minmax(72px, 1fr) auto;
-      }
-
-      #dashboardScreen .row-actions {
-        justify-content: flex-end;
-        flex-wrap: nowrap;
-        padding-top: 0;
-        white-space: nowrap;
-      }
-    }
-
-    @media (max-width: 760px) {
-      #dashboardScreen .hero {
-        min-height: 0;
-        padding: 18px 0 38px;
-        border-bottom-left-radius: 22px;
-        border-bottom-right-radius: 22px;
-      }
-
-      #dashboardScreen .hero__inner,
-      #dashboardScreen .stats,
-      #dashboardScreen .panel {
-        width: calc(100vw - 24px);
-      }
-
-      #dashboardScreen .hero__inner {
-        grid-template-columns: 1fr;
-        gap: 14px;
-      }
-
-      #dashboardScreen .hero__divider {
-        display: none;
-      }
-
-      #dashboardScreen .brand img {
-        width: 106px;
-      }
-
-      #dashboardScreen .hero__actions {
-        grid-column: auto;
-        flex-wrap: wrap;
-      }
-
-      #dashboardScreen .hero__eyebrow {
-        margin-bottom: 7px;
-        font-size: 10px;
-      }
-
-      #dashboardScreen .hero h1 {
-        max-width: 360px;
-        font-size: 29px;
-        line-height: 1.04;
-      }
-
-      #dashboardScreen .hero p {
-        max-width: 380px;
-        font-size: 14px;
-      }
-
-      #dashboardScreen .top-button {
-        min-height: 38px;
-        padding: 0 13px;
-        font-size: 13px;
-      }
-
-      #dashboardScreen .stats {
-        margin: -24px auto 16px;
-        gap: 10px;
-      }
-
-      #dashboardScreen .stat-card {
-        min-height: 88px;
-        padding: 13px;
-        border-radius: 16px;
-      }
-
-      #dashboardScreen .stat-card__label {
-        max-width: 118px;
-        font-size: 12px;
-        line-height: 1.2;
-      }
-
-      #dashboardScreen .stat-card__value {
-        margin-top: 17px;
-        font-size: 27px;
-      }
-
-      #dashboardScreen .stat-card__note {
-        margin-top: 7px;
-        padding: 5px 8px;
-        font-size: 10px;
-      }
-
-      #dashboardScreen .stat-card__icon {
-        top: 11px;
-        right: 11px;
-        width: 31px;
-        height: 31px;
-        border-radius: 10px;
-        font-size: 14px;
-      }
-
-      #dashboardScreen .panel {
-        border-radius: 20px;
-      }
-
-      #dashboardScreen .panel__head {
-        min-height: 0;
-        padding: 14px;
-        gap: 12px;
-      }
-
-      #dashboardScreen .panel__title {
-        font-size: 20px;
-      }
-
-      #dashboardScreen .search,
-      #dashboardScreen .button {
-        min-height: 40px;
-        height: 40px;
-      }
-
-      #dashboardScreen .widget-table tr {
-        display: block;
-        padding: 16px 14px;
-      }
-
-      #dashboardScreen .widget-table td {
-        padding: 6px 0;
-      }
-    }
-
-    .panel {
-      width: min(1220px, calc(100vw - 72px));
-      margin: 0 auto 60px;
-      background: var(--surface);
-      border: 1px solid rgba(21, 31, 24, 0.06);
-      border-radius: var(--radius-lg);
-      box-shadow: var(--shadow);
-      overflow: hidden;
-    }
-
-    .panel__head {
-      min-height: 86px;
-      padding: 22px 28px;
-      display: grid;
-      grid-template-columns: 1fr auto auto;
-      gap: 18px;
-      align-items: center;
-      border-bottom: 1px solid var(--line);
-      background: rgba(255, 255, 255, 0.88);
-    }
-
-    .panel__title {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      margin: 0;
-      font-size: 24px;
       line-height: 1;
-      font-weight: 950;
+      font-weight: 700;
+      letter-spacing: 0.09em;
+      text-transform: uppercase;
+    }
+
+    .summary-card__value {
+      color: var(--ink);
+      font: 700 34px/1 var(--mono);
       letter-spacing: -0.03em;
     }
 
-    .pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      min-height: 28px;
-      padding: 5px 11px;
-      border-radius: 999px;
-      background: var(--surface-soft);
-      color: #666;
-      font-size: 13px;
-      font-weight: 850;
-      white-space: nowrap;
+    .summary-card__value--blue {
+      color: var(--blue);
     }
 
-    .pill--ok {
-      color: #126fa7;
-      background: #e1f2ff;
+    .summary-card__value-row {
+      display: flex;
+      align-items: baseline;
+      gap: 10px;
     }
 
-    .pill--blue {
-      color: #2568d8;
-      background: #e8f1ff;
+    .summary-card__change {
+      color: var(--green);
+      font: 700 12px/1 var(--mono);
     }
 
-    .pill--red {
-      color: #df304a;
-      background: #ffecef;
+    .summary-card__note {
+      color: var(--soft);
+      font-size: 12px;
+      line-height: 1.25;
+      font-weight: 600;
     }
 
-    .search {
-      width: min(360px, 34vw);
-      height: 46px;
+    .filters {
       display: flex;
       align-items: center;
       gap: 10px;
-      padding: 0 16px;
-      border: 1px solid var(--line);
-      border-radius: 14px;
+      flex-wrap: wrap;
+      margin: 36px 0 18px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid rgba(17, 24, 28, 0.09);
+    }
+
+    .section-label {
+      margin-right: 2px;
+      font-size: 10.5px;
+    }
+
+    .filter-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      min-height: 32px;
+      padding: 0 13px;
+      border: 1px solid var(--line-strong);
+      border-radius: 999px;
       background: #fff;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
-      color: #9ba0a5;
+      color: #3b444d;
+      cursor: pointer;
+      font-size: 12.5px;
+      line-height: 1;
       font-weight: 700;
     }
 
-    .search input {
-      width: 100%;
-      border: 0;
-      outline: 0;
+    .filter-pill span {
+      color: #9aa3ab;
+      font: 700 11px/1 var(--mono);
+    }
+
+    .filter-pill.is-active {
+      background: var(--nav);
+      border-color: var(--nav);
+      color: #fff;
+    }
+
+    .filter-pill.is-active span {
+      color: rgba(255, 255, 255, 0.5);
+    }
+
+    .reset-filter {
+      padding: 0 6px;
+      color: var(--blue);
       background: transparent;
-      color: #222;
-      font-weight: 650;
+      cursor: pointer;
+      font-size: 12.5px;
+      font-weight: 700;
+    }
+
+    .section-head {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 24px;
+      margin: 0 0 16px;
+    }
+
+    .section-title {
+      display: flex;
+      align-items: baseline;
+      gap: 12px;
+    }
+
+    .section-title h2 {
+      margin: 0;
+      font-size: 22px;
+      line-height: 1.1;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+    }
+
+    .count-label {
+      color: var(--soft);
+      font: 500 13px/1 var(--mono);
+    }
+
+    .tools {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .search {
+      width: 310px;
+      height: 40px;
+      padding: 0 14px;
+      border: 1px solid var(--line-strong);
+      border-radius: 9px;
+      background: #fff;
+      color: var(--ink);
+      outline: none;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .search:focus {
+      border-color: var(--blue);
+      box-shadow: 0 0 0 3px rgba(37, 111, 212, 0.12);
     }
 
     .button {
-      min-height: 46px;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 9px;
-      padding: 0 18px;
-      border-radius: 14px;
+      border: 1px solid var(--line-strong);
       background: #fff;
-      box-shadow: inset 0 0 0 1px var(--line), 0 6px 16px rgba(15, 23, 42, 0.05);
       color: var(--ink);
-      font-weight: 900;
-      white-space: nowrap;
-      transition: transform 0.18s ease, box-shadow 0.18s ease;
-    }
-
-    .button:hover {
-      transform: translateY(-1px);
-      box-shadow: inset 0 0 0 1px #d8d4cd, 0 10px 22px rgba(15, 23, 42, 0.08);
     }
 
     .button--primary {
-      background: var(--green);
+      border-color: var(--blue);
+      background: var(--blue);
       color: #fff;
-      box-shadow: 0 12px 24px rgba(20, 124, 184, 0.22);
+      box-shadow: 0 10px 20px rgba(37, 111, 212, 0.16);
     }
 
-    .button--primary:hover {
-      box-shadow: 0 16px 28px rgba(20, 124, 184, 0.28);
+    .widgets {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
     }
 
-    .button--danger {
-      background: #fff9f9;
-      color: var(--red);
-      box-shadow: inset 0 0 0 1px #ffd5dc;
+    .widget-card {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      padding: 22px 24px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: #fff;
+      box-shadow: 0 10px 28px rgba(17, 24, 28, 0.035);
     }
 
-    .widget-table {
-      width: 100%;
-      border-collapse: collapse;
+    .widget-card__top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 28px;
     }
 
-    .widget-table th {
-      padding: 14px 28px;
-      background: #fbfbfa;
-      color: #919191;
-      text-align: left;
-      font-size: 13px;
-      line-height: 1.2;
-      text-transform: uppercase;
-      font-weight: 950;
-      letter-spacing: 0.04em;
-      border-bottom: 1px solid var(--line);
+    .widget-info {
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+      min-width: 0;
     }
 
-    .widget-table td {
-      padding: 24px 28px;
-      border-bottom: 1px solid var(--line);
-      vertical-align: middle;
+    .widget-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 11px;
+      background: var(--blue-soft);
+      display: grid;
+      place-items: center;
+      flex: 0 0 auto;
     }
 
-    .widget-table tr:last-child td {
-      border-bottom: 0;
+    .widget-icon__wheel {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      border: 3px solid var(--blue);
+      border-right-color: #c9ddff;
+      border-bottom-color: #c9ddff;
     }
 
-    .widget-main {
+    .widget-icon__cards {
+      position: relative;
+      width: 22px;
+      height: 20px;
+    }
+
+    .widget-icon__cards::before,
+    .widget-icon__cards::after {
+      content: "";
+      position: absolute;
+      inset: 2px 5px 2px 5px;
+      border-radius: 5px;
+      border: 2px solid var(--blue);
+      background: #fff;
+    }
+
+    .widget-icon__cards::before {
+      transform: rotate(-10deg) translateX(-4px);
+      opacity: 0.5;
+    }
+
+    .widget-icon__cards::after {
+      transform: rotate(8deg) translateX(4px);
+    }
+
+    .widget-copy {
       display: grid;
       gap: 7px;
+      min-width: 0;
     }
 
-    .widget-name {
+    .widget-title-row {
       display: flex;
       align-items: center;
-      gap: 9px;
-      color: #111827;
-      font-size: 18px;
-      line-height: 1.12;
-      font-weight: 950;
+      gap: 10px;
+      flex-wrap: wrap;
     }
 
-    .widget-id,
-    .widget-meta {
-      color: #818895;
-      font-size: 14px;
-      font-weight: 750;
+    .widget-title {
+      color: var(--ink);
+      font-size: 16px;
+      line-height: 1.15;
+      font-weight: 800;
+      letter-spacing: -0.01em;
     }
 
-    .rule-lines,
-    .conversion {
-      display: grid;
-      gap: 8px;
-      color: #52565d;
-      font-weight: 780;
-    }
-
-    .mini-progress {
-      display: grid;
-      grid-template-columns: auto 1fr auto;
+    .status {
+      display: inline-flex;
       align-items: center;
-      gap: 12px;
-      min-width: 270px;
+      min-height: 22px;
+      padding: 0 9px;
+      border-radius: 999px;
+      background: var(--green-soft);
+      color: #15794f;
+      font-size: 11px;
+      line-height: 1;
+      font-weight: 800;
+    }
+
+    .status--waiting {
+      background: var(--gold-soft);
+      color: #865b0d;
+    }
+
+    .status--off {
+      background: #edf0f3;
+      color: #7c8792;
+    }
+
+    .widget-meta {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      color: var(--muted);
+      font-size: 12.5px;
+      line-height: 1.2;
+      font-weight: 600;
+    }
+
+    .widget-meta strong,
+    .mono {
+      color: var(--ink);
+      font-family: var(--mono);
+      font-weight: 600;
+    }
+
+    .sep {
+      color: rgba(17, 24, 28, 0.2);
+    }
+
+    .widget-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex: 0 0 auto;
+    }
+
+    .switch-wrap {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      padding-left: 6px;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .switch-label {
+      color: var(--green);
+      font-size: 12px;
+      line-height: 1;
+      font-weight: 800;
+    }
+
+    .switch-label.is-off {
+      color: var(--soft);
+    }
+
+    .switch {
+      width: 40px;
+      height: 23px;
+      padding: 3px;
+      border-radius: 999px;
+      background: var(--green);
+      display: flex;
+      justify-content: flex-end;
+      transition: background 0.18s ease;
+    }
+
+    .switch::after {
+      content: "";
+      width: 17px;
+      height: 17px;
+      border-radius: 50%;
+      background: #fff;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.18);
+    }
+
+    .switch.is-off {
+      justify-content: flex-start;
+      background: rgba(17, 24, 28, 0.18);
+    }
+
+    .behavior {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .behavior-pill {
+      display: inline-flex;
+      align-items: center;
+      min-height: 28px;
+      padding: 0 11px;
+      border-radius: 7px;
+      background: var(--bg);
+      color: #3b444d;
+      font-size: 12px;
+      line-height: 1;
+      font-weight: 600;
+    }
+
+    .funnel {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr) auto minmax(0, 1fr) auto minmax(0, 1fr) minmax(190px, 0.52fr);
+      align-items: stretch;
+      border: 1px solid rgba(17, 24, 28, 0.09);
+      border-radius: 11px;
+      background: #fdfdfc;
+      overflow: hidden;
+    }
+
+    .metric {
+      min-width: 0;
+      padding: 15px 18px;
+      display: grid;
+      align-content: start;
+      gap: 10px;
+    }
+
+    .metric__value {
+      color: var(--ink);
+      font: 700 24px/1 var(--mono);
+      letter-spacing: -0.02em;
+    }
+
+    .metric__value--blue {
+      color: var(--blue);
+    }
+
+    .metric__row {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+    }
+
+    .metric__sub {
+      color: var(--muted);
+      font: 700 11px/1 var(--mono);
     }
 
     .bar {
-      height: 8px;
+      height: 5px;
       border-radius: 999px;
-      background: #ece9e4;
+      background: rgba(17, 24, 28, 0.09);
       overflow: hidden;
     }
 
     .bar span {
       display: block;
-      height: 100%;
       width: var(--value, 0%);
-      background: var(--green);
+      height: 100%;
       border-radius: inherit;
+      background: #2d3a45;
     }
 
-    .event-grid {
-      display: grid;
-      grid-template-columns: repeat(5, minmax(0, 1fr));
-      gap: 6px;
-      min-width: 360px;
+    .bar--blue span {
+      background: var(--blue);
     }
 
-    .event-chip {
-      min-height: 48px;
-      padding: 8px 9px;
-      border-radius: 11px;
-      background: #f5f7f8;
-      color: #606872;
-      font-size: 11px;
-      line-height: 1.12;
-      font-weight: 850;
-      display: grid;
-      align-content: center;
-      gap: 3px;
+    .bar--green span {
+      background: var(--green);
     }
 
-    .event-chip strong {
-      display: block;
-      color: #111827;
-      font-size: 18px;
-      line-height: 1;
-      font-weight: 950;
-    }
-
-    .event-meta {
-      color: #8a9098;
-      font-size: 12px;
-      line-height: 1.25;
-      font-weight: 760;
-    }
-
-    .row-actions {
+    .rate {
       display: flex;
       align-items: center;
-      justify-content: flex-end;
-      gap: 10px;
+      justify-content: center;
+      padding: 0 4px;
     }
 
-    .icon-button {
-      width: 44px;
-      height: 44px;
-      display: inline-grid;
-      place-items: center;
-      border-radius: 999px;
-      background: #fff;
-      box-shadow: inset 0 0 0 1px var(--line), 0 4px 12px rgba(15, 23, 42, 0.05);
-      color: #777;
-      font-size: 18px;
-      font-weight: 900;
+    .rate span {
+      padding: 5px 7px;
+      border-radius: 6px;
+      background: var(--bg);
+      color: var(--muted);
+      font: 700 11px/1 var(--mono);
     }
 
-    .switch {
-      width: 48px;
-      height: 28px;
-      padding: 3px;
-      border-radius: 999px;
-      background: #d7d7d7;
-      position: relative;
-      transition: background 0.2s ease;
-    }
-
-    .switch::after {
-      content: "";
-      position: absolute;
-      width: 22px;
-      height: 22px;
-      left: 3px;
-      top: 3px;
-      border-radius: 50%;
-      background: #fff;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.16);
-      transition: transform 0.2s ease;
-    }
-
-    .switch.is-on {
-      background: #147cb8;
-    }
-
-    .switch.is-on::after {
-      transform: translateX(20px);
-    }
-
-    .templates {
-      padding: 28px;
-      display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-      gap: 18px;
-    }
-
-    .template-card {
-      min-height: 330px;
-      padding: 18px;
-      border-radius: 24px;
-      border: 1px solid var(--line);
-      background: #fff;
-      box-shadow: 0 8px 26px rgba(15, 23, 42, 0.06);
+    .side-metric {
+      border-left: 1px solid rgba(17, 24, 28, 0.09);
+      padding: 15px 18px;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
-    }
-
-    .template-card:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 18px 38px rgba(15, 23, 42, 0.1);
-    }
-
-    .template-preview {
-      height: 156px;
-      border-radius: 18px;
-      background: linear-gradient(135deg, #2f261f, #191512);
-      overflow: hidden;
-      position: relative;
-      display: grid;
-      place-items: center;
-    }
-
-    .template-preview--tinder {
-      background: linear-gradient(135deg, #fff, #eee);
-    }
-
-    .template-preview--quiz {
-      background: linear-gradient(135deg, #f8f8f7, #fff);
-    }
-
-    .template-preview--popup {
-      background: linear-gradient(135deg, #f8efe3, #fff);
-    }
-
-    .template-card h3 {
-      margin: 18px 0 8px;
-      font-size: 22px;
-      line-height: 1.05;
-      font-weight: 950;
-    }
-
-    .template-card p {
-      margin: 0;
-      color: var(--muted);
-      font-size: 15px;
-      line-height: 1.35;
-      font-weight: 650;
-    }
-
-    .template-card .button {
-      margin-top: 18px;
-      width: 100%;
-    }
-
-    .topbar {
-      min-height: 68px;
-      padding: 0 24px;
-      display: grid;
-      grid-template-columns: 1fr auto;
-      align-items: center;
-      gap: 18px;
-      border-bottom: 1px solid var(--line);
-      background: rgba(255, 255, 255, 0.96);
-      position: sticky;
-      top: 0;
-      z-index: 20;
-    }
-
-    .topbar__left,
-    .topbar__right {
-      display: flex;
-      align-items: center;
       gap: 14px;
-      min-width: 0;
+      background: #fbfaf8;
     }
 
-    .topbar__right {
-      justify-content: flex-end;
-      flex-wrap: wrap;
-    }
-
-    .back {
-      width: 42px;
-      height: 42px;
-      display: grid;
-      place-items: center;
-      border-radius: 999px;
-      background: #fff;
-      box-shadow: inset 0 0 0 1px var(--line);
-      font-size: 24px;
-    }
-
-    .builder-title {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      min-width: 0;
-      font-size: 19px;
-      font-weight: 950;
-    }
-
-    .builder-title > span:first-child {
-      min-width: 0;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
-
-    .builder-layout {
-      height: calc(100vh - 68px);
-      min-height: 720px;
-      width: 100%;
-      max-width: 100vw;
-      display: grid;
-      grid-template-columns: minmax(340px, 376px) minmax(0, 1fr);
-      background: #fff;
-      overflow: hidden;
-    }
-
-    .builder-settings {
-      width: auto;
-      min-width: 0;
-      max-width: none;
-      border-right: 1px solid var(--line);
-      background: #fff;
-      display: grid;
-      grid-template-rows: auto 1fr;
-      overflow: hidden;
-      box-sizing: border-box;
-      position: relative;
-      z-index: 2;
-    }
-
-    .builder-settings *,
-    .builder-stage * {
-      box-sizing: border-box;
-    }
-
-    .settings-tabs {
-      height: 88px;
-      min-width: 0;
-      display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-      gap: 4px;
-      padding: 0 12px;
-      border-bottom: 1px solid var(--line);
-      background: #fafafa;
-    }
-
-    .settings-tab {
-      min-width: 0;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
-      padding: 12px 4px 10px;
-      background: transparent;
-      color: #999;
-      font-size: 11px;
-      line-height: 1;
-      font-weight: 950;
-      text-transform: uppercase;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .settings-tab span:first-child {
-      width: 24px;
-      height: 24px;
-      display: grid;
-      place-items: center;
-      font-size: 18px;
-      line-height: 1;
-    }
-
-    .settings-tab span:last-child {
-      display: block;
-      max-width: 100%;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
-
-    .settings-tab.is-active {
-      color: var(--green);
-    }
-
-    .settings-tab.is-active::after {
-      content: "";
-      position: absolute;
-      left: 12px;
-      right: 12px;
-      bottom: 0;
-      height: 3px;
-      border-radius: 999px 999px 0 0;
-      background: var(--green);
-    }
-
-    .settings-body {
-      min-height: 0;
-      min-width: 0;
-      overflow: auto;
-      overflow-x: hidden;
-      padding: 24px 24px 38px;
-      display: grid;
-      align-content: start;
-      gap: 20px;
-      background: #fff;
-    }
-
-    .field-group {
-      display: grid;
-      gap: 14px;
-      padding-bottom: 22px;
-      border-bottom: 1px solid var(--line);
-    }
-
-    .field-group:last-child {
-      border-bottom: 0;
-      padding-bottom: 0;
-    }
-
-    .field {
+    .side-metric__top {
       display: grid;
       gap: 8px;
-      min-width: 0;
     }
 
-    .field label {
-      color: #6f6f6f;
-      font-size: 13px;
-      line-height: 1.25;
-      font-weight: 900;
+    .side-metric__value {
+      color: var(--red);
+      font: 700 18px/1 var(--mono);
     }
 
-    .input,
-    .select,
-    .textarea {
-      width: 100%;
-      max-width: 100%;
-      min-height: 46px;
-      border: 1px solid var(--line);
-      border-radius: 12px;
-      background: #fff;
-      padding: 0 14px;
-      color: #222;
-      outline: 0;
-      box-shadow: 0 3px 10px rgba(15, 23, 42, 0.04);
-      font-weight: 750;
-    }
-
-    .textarea {
-      min-height: 110px;
-      padding: 14px;
-      resize: vertical;
-      line-height: 1.35;
-    }
-
-    .input:focus,
-    .select:focus,
-    .textarea:focus {
-      border-color: rgba(20, 124, 184, 0.46);
-      box-shadow: 0 0 0 4px rgba(53, 169, 245, 0.11);
-    }
-
-    .two {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 12px;
-    }
-
-    .color-grid {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 12px;
-    }
-
-    .color-field {
-      display: grid;
-      gap: 7px;
-    }
-
-    .color-field input[type="color"] {
-      width: 100%;
-      height: 52px;
-      padding: 4px;
-      border: 1px solid var(--line);
-      border-radius: 14px;
-      background: #fff;
-      cursor: pointer;
-    }
-
-    .helper {
-      color: #8a8f98;
-      font-size: 13px;
-      line-height: 1.35;
-      font-weight: 650;
-    }
-
-    .code-box {
-      padding: 14px;
-      border-radius: 14px;
-      background: #111;
-      color: #f8f8f8;
-      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-      font-size: 12px;
-      line-height: 1.4;
-      overflow: auto;
-      white-space: pre-wrap;
-      word-break: break-word;
-    }
-
-    .builder-stage {
-      min-width: 0;
-      overflow: hidden;
-      display: grid;
-      grid-template-rows: auto 1fr;
-      position: relative;
-      z-index: 1;
-      background:
-        linear-gradient(45deg, #f3f3f1 25%, transparent 25%),
-        linear-gradient(-45deg, #f3f3f1 25%, transparent 25%),
-        linear-gradient(45deg, transparent 75%, #f3f3f1 75%),
-        linear-gradient(-45deg, transparent 75%, #f3f3f1 75%);
-      background-size: 24px 24px;
-      background-position: 0 0, 0 12px, 12px -12px, -12px 0;
-    }
-
-    .stage-head {
-      min-height: 78px;
-      padding: 16px 34px;
-      display: grid;
-      grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
-      align-items: center;
-      gap: 20px;
-      background: rgba(255, 255, 255, 0.93);
-      border-bottom: 1px solid var(--line);
-    }
-
-    .stage-head > div:first-child {
-      min-width: 0;
-    }
-
-    .stage-head h2 {
-      margin: 0 0 4px;
-      font-size: 18px;
-      line-height: 1.1;
-      font-weight: 950;
-    }
-
-    .stage-head p {
-      margin: 0;
-      color: #818895;
-      font-size: 14px;
-      font-weight: 750;
-    }
-
-    .device-toggle {
-      grid-column: 2;
-      display: inline-flex;
-      padding: 5px;
-      gap: 4px;
-      border-radius: 17px;
-      background: #fff;
-      box-shadow: inset 0 0 0 1px var(--line), 0 8px 20px rgba(15, 23, 42, 0.08);
-    }
-
-    .device-button {
-      min-width: 116px;
-      min-height: 40px;
-      padding: 0 15px;
-      border-radius: 13px;
-      background: transparent;
-      color: #999;
-      font-weight: 950;
-    }
-
-    .device-button.is-active {
-      background: #fff;
-      color: #111;
-      box-shadow: 0 4px 12px rgba(15, 23, 42, 0.09);
-    }
-
-    .preview-canvas {
-      min-height: 0;
-      width: 100%;
-      max-width: 100%;
-      display: grid;
-      place-items: center;
+    .empty {
       padding: 34px;
-      overflow: auto;
-    }
-
-    .preview-frame {
-      width: min(1040px, 90%);
-      max-width: 100%;
-      min-height: 520px;
-      padding: 56px;
-      display: grid;
-      place-items: center;
-      border-radius: 34px;
-      background: #fff;
-      box-shadow: 0 22px 55px rgba(16, 24, 40, 0.12);
-      transition: width 0.2s ease, min-height 0.2s ease, padding 0.2s ease;
-    }
-
-    .preview-frame.is-mobile {
-      width: 390px;
-      min-height: 690px;
-      padding: 22px;
-      border-radius: 42px;
-    }
-
-    .wheel-widget {
-      --accent: #f3b0b2;
-      --button: #f3b0b2;
-      --background: #2d241f;
-      --text: #f3d6b2;
-      width: min(860px, 100%);
-      min-height: 392px;
-      border-radius: 20px;
-      background:
-        radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.06), transparent 5%),
-        repeating-conic-gradient(from 0deg at 50% 50%, rgba(255, 255, 255, 0.045) 0deg 14deg, transparent 14deg 28deg),
-        var(--background);
-      color: var(--text);
-      display: grid;
-      grid-template-columns: 1fr 0.94fr;
-      gap: 32px;
-      align-items: center;
-      padding: 44px;
-      position: relative;
-      overflow: hidden;
-      box-shadow: 12px 14px 0 rgba(0, 0, 0, 0.9), inset 0 0 0 4px #1f1815;
-    }
-
-    .wheel-widget__close,
-    .mock-close {
-      position: absolute;
-      top: 20px;
-      right: 20px;
-      width: 44px;
-      height: 44px;
-      border-radius: 50%;
-      display: grid;
-      place-items: center;
-      background: #fff;
-      color: #222;
-      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.18);
-      font-size: 24px;
-      font-weight: 600;
-      z-index: 5;
-    }
-
-    .mock-star {
-      position: absolute;
-      width: 30px;
-      height: 30px;
-      left: 26px;
-      top: 28px;
-      transform: rotate(45deg);
-      background: var(--text);
-      clip-path: polygon(50% 0, 62% 38%, 100% 50%, 62% 62%, 50% 100%, 38% 62%, 0 50%, 38% 38%);
-    }
-
-    .wheel-visual {
-      width: min(330px, 100%);
-      aspect-ratio: 1;
-      margin: 0 auto;
-      border-radius: 50%;
-      background:
-        radial-gradient(circle at center, #2a211d 0 9%, #e4c59b 9% 14%, transparent 14%),
-        conic-gradient(#e2c095 0 60deg, var(--accent) 60deg 120deg, #f7edd9 120deg 180deg, #dfbd8e 180deg 240deg, #f7edd9 240deg 300deg, var(--accent) 300deg 360deg);
-      box-shadow: inset 0 0 0 7px #2a211d, inset 0 0 0 13px #d8b98c, 10px 12px 0 rgba(0, 0, 0, 0.42);
-      position: relative;
-    }
-
-    .wheel-visual::before {
-      content: "";
-      position: absolute;
-      left: 50%;
-      top: -15px;
-      width: 42px;
-      height: 70px;
-      border-radius: 24px 24px 52px 52px;
-      background: #e2c095;
-      border: 4px solid #2a211d;
-      transform: translateX(-50%);
-      z-index: 2;
-    }
-
-    .wheel-copy h3 {
-      margin: 0;
-      font-family: Georgia, serif;
-      font-size: clamp(38px, 3.8vw, 58px);
-      line-height: 0.95;
-      color: var(--accent);
-      text-transform: uppercase;
-    }
-
-    .wheel-copy p {
-      margin: 22px 0 34px;
-      max-width: 430px;
-      color: #f5ead7;
-      font-size: 19px;
-      line-height: 1.35;
-      font-weight: 650;
-    }
-
-    .wheel-copy .big-cta {
-      width: min(360px, 100%);
-      min-height: 66px;
-      border-radius: 13px;
-      background: var(--button);
-      color: #261d18;
-      box-shadow: 0 8px 0 rgba(0, 0, 0, 0.42);
-      font-size: 25px;
-      font-weight: 950;
-      text-transform: uppercase;
-    }
-
-    .preview-frame.is-mobile .wheel-widget {
-      width: 100%;
-      min-height: 600px;
-      grid-template-columns: 1fr;
-      gap: 22px;
-      padding: 30px 22px;
+      border: 1px dashed var(--line-strong);
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.58);
+      color: var(--muted);
       text-align: center;
-      border-radius: 28px;
-    }
-
-    .preview-frame.is-mobile .wheel-visual {
-      width: 264px;
-    }
-
-    .preview-frame.is-mobile .wheel-copy h3 {
-      font-size: 34px;
-    }
-
-    .preview-frame.is-mobile .wheel-copy p {
-      margin: 16px auto 24px;
-      font-size: 17px;
-    }
-
-    .tinder-widget {
-      width: 330px;
-      min-height: 560px;
-      padding: 22px;
-      border-radius: 36px;
-      background: #fff;
-      box-shadow: 0 18px 42px rgba(0, 0, 0, 0.13);
-      position: relative;
-      display: grid;
-      align-content: center;
-      text-align: center;
-      color: #171819;
-    }
-
-    .tinder-cards {
-      width: 230px;
-      height: 180px;
-      margin: 0 auto 28px;
-      position: relative;
-    }
-
-    .tinder-card-mini {
-      position: absolute;
-      inset: 0;
-      border: 8px solid #fff;
-      border-radius: 26px;
-      background: linear-gradient(135deg, #d9d9d9, #fff);
-      box-shadow: 0 18px 30px rgba(0, 0, 0, 0.14);
-      overflow: hidden;
-    }
-
-    .tinder-card-mini:nth-child(1) { transform: rotate(-8deg) translateX(-42px); }
-    .tinder-card-mini:nth-child(2) { transform: rotate(0deg); z-index: 2; }
-    .tinder-card-mini:nth-child(3) { transform: rotate(8deg) translateX(42px); }
-
-    .tinder-card-mini::before {
-      content: "";
-      display: block;
-      height: 100%;
-      background: linear-gradient(150deg, #f8e7d7, #86b5d8 54%, #1f2937);
-    }
-
-    .tinder-widget h3 {
-      margin: 0 0 12px;
-      font-size: 32px;
-      line-height: 1.05;
-      font-weight: 950;
-    }
-
-    .tinder-widget p {
-      margin: 0 0 20px;
-      color: #777;
-      font-size: 16px;
-      line-height: 1.42;
       font-weight: 700;
     }
 
-    .tinder-widget .big-cta {
-      min-height: 58px;
-      border-radius: 999px;
-      background: var(--green);
-      color: #fff;
-      font-weight: 950;
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 20;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      background: rgba(14, 26, 36, 0.62);
+    }
+
+    .modal-backdrop.is-visible {
+      display: flex;
+    }
+
+    .modal {
+      width: min(760px, 100%);
+      border-radius: 16px;
+      background: #fff;
+      box-shadow: 0 24px 80px rgba(0, 0, 0, 0.24);
+      overflow: hidden;
+    }
+
+    .modal__head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 18px 20px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .modal__title {
+      margin: 0;
+      color: var(--ink);
       font-size: 18px;
+      line-height: 1.2;
+      font-weight: 800;
+    }
+
+    .modal__body {
+      padding: 20px;
+    }
+
+    .code {
+      display: block;
+      width: 100%;
+      min-height: 150px;
+      margin: 0;
+      padding: 16px;
+      border-radius: 12px;
+      border: 1px solid var(--line);
+      background: #0e1a24;
+      color: #e7edf4;
+      white-space: pre-wrap;
+      word-break: break-word;
+      font: 500 12px/1.55 var(--mono);
+    }
+
+    .modal__actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      padding: 0 20px 20px;
     }
 
     .toast {
       position: fixed;
       left: 50%;
-      bottom: 26px;
-      transform: translateX(-50%) translateY(16px);
-      padding: 13px 18px;
-      border-radius: 999px;
-      background: #111;
-      color: #fff;
+      bottom: 24px;
+      z-index: 30;
+      transform: translateX(-50%) translateY(14px);
       opacity: 0;
       pointer-events: none;
-      font-weight: 850;
-      z-index: 80;
-      transition: opacity 0.2s ease, transform 0.2s ease;
+      padding: 12px 16px;
+      border-radius: 999px;
+      background: var(--nav);
+      color: #fff;
+      font-size: 13px;
+      font-weight: 800;
+      transition: opacity 0.18s ease, transform 0.18s ease;
     }
 
     .toast.is-visible {
@@ -1651,499 +779,267 @@
       transform: translateX(-50%) translateY(0);
     }
 
-    @media (max-width: 1100px) {
-      .hero__inner,
-      .stats,
-      .panel {
-        width: min(920px, calc(100vw - 34px));
-      }
-
-      .hero__inner {
-        grid-template-columns: 1fr;
-      }
-
-      .hero__divider {
-        display: none;
-      }
-
-      .stats {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-      }
-
-      .templates {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-      }
-
-      .builder-layout {
-        grid-template-columns: 320px minmax(0, 1fr);
-      }
-
-      .builder-settings {
-        width: auto;
-        min-width: 0;
-        max-width: none;
-      }
-
-      .builder-stage {
-        width: auto;
+    @media (max-width: 1180px) {
+      body {
         min-width: 0;
       }
 
-      .settings-tabs {
-        padding: 0 6px;
+      .topbar__inner,
+      main {
+        width: min(940px, calc(100vw - 32px));
       }
 
-      .settings-tab {
-        font-size: 10px;
+      .topbar__inner,
+      .widget-card__top,
+      .section-head {
+        align-items: stretch;
+        flex-direction: column;
       }
 
-      .preview-canvas {
-        padding: 32px;
-      }
-    }
-
-    @media (max-width: 760px) {
-      .shell,
-      .hero__inner,
-      .stats,
-      .panel {
-        width: calc(100vw - 24px);
-      }
-
-      .hero {
-        padding: 24px 0 86px;
-      }
-
-      .brand img {
-        width: 118px;
-      }
-
-      .hero h1 {
-        font-size: 34px;
-      }
-
-      .hero p {
-        font-size: 16px;
-      }
-
-      .hero__actions {
+      .top-actions,
+      .tools,
+      .widget-actions {
         flex-wrap: wrap;
       }
 
-      .stats {
-        grid-template-columns: 1fr;
-      }
-
-      .panel__head {
-        grid-template-columns: 1fr;
+      .summary {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
       }
 
       .search {
-        width: 100%;
+        width: min(100%, 420px);
       }
 
-      .widget-table,
-      .widget-table tbody,
-      .widget-table tr,
-      .widget-table td {
-        display: block;
-        width: 100%;
+      .funnel {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
       }
 
-      .widget-table thead {
+      .rate {
         display: none;
       }
 
-      .widget-table tr {
-        padding: 20px;
-        border-bottom: 1px solid var(--line);
+      .side-metric {
+        grid-column: 1 / -1;
+        border-left: 0;
+        border-top: 1px solid rgba(17, 24, 28, 0.09);
       }
+    }
 
-      .widget-table td {
-        padding: 8px 0;
-        border: 0;
-      }
-
-      .event-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        min-width: 0;
-      }
-
-      .row-actions {
-        justify-content: flex-start;
-        flex-wrap: wrap;
-      }
-
-      .templates {
-        grid-template-columns: 1fr;
-        padding: 18px;
-      }
-
+    @media (max-width: 720px) {
       .topbar {
+        padding: 18px 16px;
+      }
+
+      main {
+        width: calc(100vw - 24px);
+      }
+
+      .brand-line {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 14px;
+      }
+
+      .divider {
+        display: none;
+      }
+
+      .summary,
+      .funnel {
         grid-template-columns: 1fr;
-        height: auto;
-        padding: 14px;
       }
 
-      .topbar__right {
-        flex-wrap: wrap;
+      .filters {
+        margin-top: 24px;
       }
 
-      .builder-layout {
-        display: block;
-        height: auto;
-        min-height: 0;
-        overflow: visible;
+      .metric {
+        border-bottom: 1px solid rgba(17, 24, 28, 0.09);
       }
 
-      .builder-settings {
-        width: 100%;
-        min-width: 0;
-        max-width: none;
-        border-right: 0;
-        border-bottom: 1px solid var(--line);
-      }
-
-      .builder-stage {
-        width: 100%;
-        min-width: 0;
-      }
-
-      .settings-tabs {
-        height: 84px;
-      }
-
-      .settings-body {
-        max-height: none;
-      }
-
-      .stage-head {
-        grid-template-columns: 1fr;
-        padding: 18px;
-      }
-
-      .preview-canvas {
-        padding: 18px;
-      }
-
-      .preview-frame,
-      .preview-frame.is-mobile {
-        width: 100%;
-        min-height: 640px;
-        padding: 16px;
+      .widget-info {
+        flex-direction: column;
       }
     }
   </style>
 </head>
 <body>
-  <div class="app">
-    <main id="dashboardScreen" class="screen is-active">
-      <section class="hero">
-        <div class="hero__inner">
-          <div class="brand" aria-label="Olly Widgets">
+  <div class="page">
+    <header class="topbar">
+      <div class="topbar__inner">
+        <div class="brand-line">
+          <a class="brand" href="../gallery/" aria-label="Olly">
             <img src="../brand-logo.png" alt="Olly">
+          </a>
+          <div class="divider" aria-hidden="true"></div>
+          <div class="top-title">
+            <p class="eyebrow">Личный кабинет</p>
+            <h1>Статистика виджетов</h1>
           </div>
-          <div class="hero__divider" aria-hidden="true"></div>
-          <div>
-            <p class="hero__eyebrow">Личная админка</p>
-            <h1>Центр управления виджетами</h1>
-            <p>Клиенты, сайты, активные виджеты и состояние показа на сайтах.</p>
-          </div>
-          <div class="hero__actions">
-            <a class="top-button" href="https://widgets0.github.io/widgets0/gallery/" target="_blank" rel="noreferrer">▦ Галерея виджетов</a>
-            <button class="top-button" data-action="sync-analytics">↻ Синхронизировать</button>
-          </div>
+        </div>
+        <div class="top-actions">
+          <a class="top-button" href="https://widgets0.github.io/widgets0/gallery/" target="_blank" rel="noreferrer">Перейти на сайт</a>
+          <a class="top-button top-button--solid" href="https://widgets0.github.io/widgets0/gallery/" target="_blank" rel="noreferrer">Галерея виджетов</a>
+          <button class="top-button" data-action="sync">Синхронизировать</button>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <section class="summary" aria-label="Сводка">
+        <article class="summary-card">
+          <span class="summary-card__label">Всего виджетов</span>
+          <span class="summary-card__value" data-stat="total">0</span>
+          <span class="summary-card__note">в личном кабинете</span>
+        </article>
+        <article class="summary-card">
+          <span class="summary-card__label">Активны на сайтах</span>
+          <span class="summary-card__value summary-card__value--blue" data-stat="active">0</span>
+          <span class="summary-card__note" data-stat-note="active">сейчас включены</span>
+        </article>
+        <article class="summary-card">
+          <span class="summary-card__label">Показов за 30 дней</span>
+          <span class="summary-card__value" data-stat="shows">0</span>
+          <span class="summary-card__note" data-stat-note="sites">по подключённым сайтам</span>
+        </article>
+        <article class="summary-card">
+          <span class="summary-card__label">Заявок за 30 дней</span>
+          <span class="summary-card__value-row">
+            <span class="summary-card__value" data-stat="leads">0</span>
+            <span class="summary-card__change" data-stat="conversion">0%</span>
+          </span>
+          <span class="summary-card__note">переходы к анкете / заявке</span>
+        </article>
+      </section>
+
+      <nav class="filters" aria-label="Фильтр проектов">
+        <span class="section-label">Проект</span>
+        <div id="projectFilters"></div>
+      </nav>
+
+      <section class="section-head">
+        <div class="section-title">
+          <h2>Виджеты</h2>
+          <span class="count-label" data-count-label>0 шт.</span>
+        </div>
+        <div class="tools">
+          <input class="search" id="widgetSearch" type="search" placeholder="Поиск по названию, сайту или ID">
+          <button class="button button--primary" data-action="create">Создать виджет</button>
         </div>
       </section>
 
-      <section class="stats" aria-label="Сводка">
-        <article class="stat-card">
-          <div class="stat-card__label">Всего виджетов</div>
-          <div class="stat-card__icon">▦</div>
-          <div class="stat-card__value" data-stat="total">3</div>
-          <div class="stat-card__note">→ +1 за неделю</div>
-        </article>
-        <article class="stat-card">
-          <div class="stat-card__label">Активных на сайтах</div>
-          <div class="stat-card__icon">◌</div>
-          <div class="stat-card__value" data-stat="active">3</div>
-          <div class="stat-card__note">↗ 100% покрытие</div>
-        </article>
-        <article class="stat-card">
-          <div class="stat-card__label">Сайтов подключено</div>
-          <div class="stat-card__icon">↔</div>
-          <div class="stat-card__value" data-stat="sites">1</div>
-          <div class="stat-card__note">→ без изменений</div>
-        </article>
-        <article class="stat-card">
-          <div class="stat-card__label">Заявок за 30 дней</div>
-          <div class="stat-card__icon">↗</div>
-          <div class="stat-card__value" data-stat="leads">53</div>
-          <div class="stat-card__note">↗ +12% рост</div>
-        </article>
-      </section>
-
-      <section class="panel">
-        <div class="panel__head">
-          <h2 class="panel__title">Ваши виджеты <span class="pill" data-count-pill>3 штуки</span></h2>
-          <label class="search">
-            ⌕
-            <input id="widgetSearch" type="search" placeholder="Поиск по названию или ID">
-          </label>
-          <button class="button button--primary" data-action="open-templates">+ Создать виджет</button>
-        </div>
-        <table class="widget-table">
-          <thead>
-            <tr>
-              <th>Виджет и клиент</th>
-              <th>Правила показа</th>
-              <th>Статистика</th>
-              <th style="text-align:right;">Действия</th>
-            </tr>
-          </thead>
-          <tbody id="widgetsBody"></tbody>
-        </table>
-      </section>
+      <section class="widgets" id="widgetsList" aria-label="Список виджетов"></section>
     </main>
+  </div>
 
-    <main id="templatesScreen" class="screen">
-      <section class="hero">
-        <div class="hero__inner">
-          <div class="brand">
-            <img src="../brand-logo.png" alt="Olly">
-          </div>
-          <div class="hero__divider" aria-hidden="true"></div>
-          <div>
-            <p class="hero__eyebrow">Новый виджет</p>
-            <h1>Выбери механику</h1>
-            <p>Сначала берём готовый шаблон, потом настраиваем показ, внешний вид и код для установки.</p>
-          </div>
-          <div class="hero__actions">
-            <button class="top-button" data-action="show-dashboard">← Назад</button>
-          </div>
-        </div>
-      </section>
-
-      <section class="stats" aria-hidden="true">
-        <article class="stat-card">
-          <div class="stat-card__label">Шаблонов в MVP</div>
-          <div class="stat-card__icon">▦</div>
-          <div class="stat-card__value">4</div>
-          <div class="stat-card__note">можно расширять</div>
-        </article>
-        <article class="stat-card">
-          <div class="stat-card__label">Короткий код</div>
-          <div class="stat-card__icon">⌁</div>
-          <div class="stat-card__value">1</div>
-          <div class="stat-card__note">строка для сайта</div>
-        </article>
-        <article class="stat-card">
-          <div class="stat-card__label">Настройки</div>
-          <div class="stat-card__icon">◌</div>
-          <div class="stat-card__value">4</div>
-          <div class="stat-card__note">раздела</div>
-        </article>
-        <article class="stat-card">
-          <div class="stat-card__label">Превью</div>
-          <div class="stat-card__icon">▣</div>
-          <div class="stat-card__value">2</div>
-          <div class="stat-card__note">десктоп и мобайл</div>
-        </article>
-      </section>
-
-      <section class="panel">
-        <div class="panel__head">
-          <h2 class="panel__title">Шаблоны <span class="pill">выбери один</span></h2>
-        </div>
-        <div class="templates" id="templatesGrid"></div>
-      </section>
-    </main>
-
-    <main id="builderScreen" class="screen">
-      <header class="topbar">
-        <div class="topbar__left">
-          <button class="back" data-action="show-dashboard" aria-label="Назад">←</button>
-          <div class="builder-title">
-            <span data-field="title">Колесо фортуны — новый</span>
-            <span class="pill pill--ok">Активен</span>
-          </div>
-        </div>
-        <div class="topbar__right">
-          <span class="pill">✓ Сохранено</span>
-          <button class="button" data-action="toast" data-message="Тестовая ссылка будет доступна после подключения бэка">▷ Тест на сайте</button>
-          <button class="button button--primary" data-action="publish">Опубликовать</button>
-        </div>
-      </header>
-
-      <section class="builder-layout">
-        <aside class="builder-settings">
-          <nav class="settings-tabs" aria-label="Разделы настройки">
-            <button class="settings-tab is-active" data-tab="main"><span>⚙</span><span>Основные</span></button>
-            <button class="settings-tab" data-tab="rules"><span>◉</span><span>Правила</span></button>
-            <button class="settings-tab" data-tab="design"><span>◌</span><span>Дизайн</span></button>
-            <button class="settings-tab" data-tab="data"><span>▦</span><span>Данные</span></button>
-          </nav>
-          <div class="settings-body" id="settingsBody"></div>
-        </aside>
-
-        <section class="builder-stage">
-          <div class="stage-head">
-            <div>
-              <h2>Живое превью</h2>
-              <p>Меняешь настройки слева — сразу проверяешь виджет здесь.</p>
-            </div>
-            <div class="device-toggle" aria-label="Устройство">
-              <button class="device-button is-active" data-device="desktop">▣ Десктоп</button>
-              <button class="device-button" data-device="mobile">▯ Мобайл</button>
-            </div>
-          </div>
-          <div class="preview-canvas">
-            <div class="preview-frame" id="previewFrame">
-              <div id="previewMount"></div>
-            </div>
-          </div>
-        </section>
-      </section>
-    </main>
+  <div class="modal-backdrop" id="codeModal" aria-hidden="true">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <div class="modal__head">
+        <h2 class="modal__title" id="modalTitle">Код установки</h2>
+        <button class="button" data-action="close-modal">Закрыть</button>
+      </div>
+      <div class="modal__body">
+        <pre class="code" id="installCode"></pre>
+      </div>
+      <div class="modal__actions">
+        <button class="button" data-action="copy-code">Скопировать код</button>
+      </div>
+    </div>
   </div>
 
   <div class="toast" id="toast"></div>
 
   <script>
-    const templates = {
-      wheel: {
-        id: "wheel",
-        widget: "wheel-fortune",
-        name: "Колесо фортуны",
-        title: "Колесо фортуны — новый",
-        description: "Посетитель крутит колесо, выигрывает бонус и оставляет контакт.",
-        accent: "#f3b0b2",
-        button: "#f3b0b2",
-        background: "#2d241f",
-        text: "#f3d6b2"
-      },
-      tinder: {
-        id: "tinder",
-        widget: "tinder-product",
-        name: "Товарный тиндер",
-        title: "Товарный Тиндер — новый",
-        description: "Посетитель листает товары и получает персональную подборку.",
-        accent: "#111111",
-        button: "#111111",
-        background: "#ffffff",
-        text: "#171819"
-      },
-      quiz: {
-        id: "quiz",
-        widget: "candle-quiz",
-        name: "Квиз",
-        title: "Квиз — новый",
-        description: "Посетитель отвечает на вопросы и получает рекомендацию.",
-        accent: "#1677e8",
-        button: "#111111",
-        background: "#ffffff",
-        text: "#171819"
-      },
-      popup: {
-        id: "popup",
-        widget: "picture-timer-form",
-        name: "Поп-ап со скидкой",
-        title: "Поп-ап со скидкой — новый",
-        description: "Форма с оффером, таймером и отправкой заявки.",
-        accent: "#d3b07e",
-        button: "#111111",
-        background: "#fff8ec",
-        text: "#171819"
-      }
-    };
-
     const DEFAULT_WEBHOOK_ENDPOINT = "https://155-212-191-195.sslip.io/widgets0-webhook";
-    const DEFAULT_ANALYTICS_ENDPOINT = `${DEFAULT_WEBHOOK_ENDPOINT}/analytics/events`;
     const DEFAULT_ANALYTICS_SUMMARY_ENDPOINT = `${DEFAULT_WEBHOOK_ENDPOINT}/analytics/summary`;
-    let analyticsSummary = null;
-    let analyticsStatus = "idle";
+    const DEFAULT_ANALYTICS_ENDPOINT = `${DEFAULT_WEBHOOK_ENDPOINT}/analytics/events`;
 
-    let widgets = [
+    const widgets = [
       {
         id: "lera-candles-wheel",
         title: "Колесо фортуны",
-        client: "Дневник свечника / TNT",
+        project: "Дневник свечника / TNT",
+        filter: "lera",
         domain: "dnevniksvechnika.ru",
-        template: "wheel",
+        type: "Колесо фортуны",
         source: "lera-dnevnik-svechnika",
         analyticsWidgetId: "lera-candles-wheel",
         analyticsClientId: "tnt",
-        analyticsEndpoint: DEFAULT_ANALYTICS_ENDPOINT,
-        analyticsSummaryEndpoint: DEFAULT_ANALYTICS_SUMMARY_ENDPOINT,
-        frequency: "раз в сутки",
-        delay: 300,
-        views: 0,
-        leads: 0,
-        active: true
+        active: true,
+        behavior: ["Раз в сутки", "Показ через 5 мин.", "Popup поверх сайта", "Десктоп и мобильные"],
+        fallback: {
+          widget_shown: 0,
+          widget_closed: 0,
+          wheel_spin_click: 0,
+          prize_shown: 0,
+          prize_link_click: 0
+        },
+        code: `<script
+  src="https://widgets0.github.io/widgets0/clients/lera-dnevnik-svechnika/loader.js?v=utm-random-20260811"
+  data-delay="300"
+  data-frequency="once_per_day"
+  data-position="center"
+  data-backdrop="rgba(0, 0, 0, 0.72)"
+  data-analytics-endpoint="${DEFAULT_ANALYTICS_ENDPOINT}"
+  data-client-id="tnt"
+  data-widget-id="lera-candles-wheel"
+  async><\\/script>`
       },
       {
         id: "demo-wheel",
         title: "Колесо фортуны — демо",
-        client: "Демо-клиент",
+        project: "Демо-клиент",
+        filter: "demo",
         domain: "example.com",
-        template: "wheel",
+        type: "Колесо фортуны",
         source: "demo-wheel",
-        frequency: "всегда",
-        delay: 2,
-        views: 108,
-        leads: 41,
-        active: true
+        analyticsWidgetId: "demo-wheel",
+        active: true,
+        behavior: ["Показ всегда", "Задержка 2 сек.", "Все страницы", "Десктоп и мобильные"],
+        fallback: {
+          widget_shown: 108,
+          widget_closed: 23,
+          wheel_spin_click: 67,
+          prize_shown: 55,
+          prize_link_click: 41
+        }
       },
       {
         id: "demo-tinder",
         title: "Товарный Тиндер — демо",
-        client: "Демо-клиент",
+        project: "Демо-клиент",
+        filter: "demo",
         domain: "example.com",
-        template: "tinder",
+        type: "Товарный Тиндер",
         source: "demo-tinder",
-        frequency: "раз в час",
-        delay: 1,
-        views: 137,
-        leads: 12,
-        active: true
+        analyticsWidgetId: "demo-tinder",
+        active: true,
+        behavior: ["Раз в час", "Показ через 1 сек.", "Карточки товаров", "Десктоп и мобильные"],
+        fallback: {
+          widget_shown: 137,
+          widget_closed: 18,
+          wheel_spin_click: 64,
+          prize_shown: 42,
+          prize_link_click: 12
+        }
       }
     ];
 
-    let current = {
-      ...widgets[0],
-      ...templates.wheel,
-      widgetTitle: widgets[0].title,
-      domainInput: "site.ru",
-      device: "desktop",
-      tab: "main",
-      position: "center",
-      webhook: DEFAULT_WEBHOOK_ENDPOINT,
-      analyticsEndpoint: DEFAULT_ANALYTICS_ENDPOINT,
-      analyticsSummaryEndpoint: DEFAULT_ANALYTICS_SUMMARY_ENDPOINT,
-      analyticsWidgetId: widgets[0].analyticsWidgetId || widgets[0].source,
-      analyticsClientId: widgets[0].analyticsClientId || "",
-      showMode: "popup",
-      secret: ""
+    let analyticsSummary = null;
+    let analyticsStatus = "idle";
+    let activeFilter = "all";
+    let searchQuery = "";
+
+    const state = {
+      activeById: Object.fromEntries(widgets.map(widget => [widget.id, widget.active]))
     };
 
-    const screens = {
-      dashboard: document.getElementById("dashboardScreen"),
-      templates: document.getElementById("templatesScreen"),
-      builder: document.getElementById("builderScreen")
-    };
-
-    const widgetsBody = document.getElementById("widgetsBody");
-    const templatesGrid = document.getElementById("templatesGrid");
-    const settingsBody = document.getElementById("settingsBody");
-    const previewMount = document.getElementById("previewMount");
-    const previewFrame = document.getElementById("previewFrame");
+    const filtersEl = document.getElementById("projectFilters");
+    const widgetsListEl = document.getElementById("widgetsList");
+    const searchEl = document.getElementById("widgetSearch");
     const toastEl = document.getElementById("toast");
-    const widgetSearch = document.getElementById("widgetSearch");
-
-    function showScreen(name) {
-      Object.entries(screens).forEach(([key, el]) => el.classList.toggle("is-active", key === name));
-      window.scrollTo({ top: 0, behavior: "instant" });
-    }
+    const codeModal = document.getElementById("codeModal");
+    const installCodeEl = document.getElementById("installCode");
 
     function escapeHtml(value) {
       return String(value ?? "").replace(/[&<>"']/g, char => ({
@@ -2155,14 +1051,21 @@
       })[char]);
     }
 
-    function showToast(message) {
-      toastEl.textContent = message;
-      toastEl.classList.add("is-visible");
-      clearTimeout(showToast.timer);
-      showToast.timer = setTimeout(() => toastEl.classList.remove("is-visible"), 2200);
+    function formatNumber(value) {
+      return new Intl.NumberFormat("ru-RU").format(Number(value || 0));
     }
 
-    function emptyAnalyticsEvents() {
+    function percent(part, total) {
+      const totalNumber = Number(total || 0);
+      if (!totalNumber) return 0;
+      return Math.round(Number(part || 0) / totalNumber * 100);
+    }
+
+    function clampPercent(value) {
+      return Math.max(0, Math.min(100, Number(value || 0)));
+    }
+
+    function emptyEvents() {
       return {
         widget_shown: 0,
         widget_closed: 0,
@@ -2172,527 +1075,274 @@
       };
     }
 
-    function analyticsKey(item) {
-      return item.analyticsWidgetId || item.source || item.id;
-    }
-
-    function getWidgetAnalytics(item) {
-      const key = analyticsKey(item);
+    function getWidgetAnalytics(widget) {
       const list = analyticsSummary?.widgets || [];
-      return list.find(entry => [entry.widgetId, entry.source].includes(key)) || null;
+      return list.find(entry => [entry.widgetId, entry.source].includes(widget.analyticsWidgetId || widget.source || widget.id)) || null;
     }
 
-    function getWidgetEvents(item) {
-      return getWidgetAnalytics(item)?.events || emptyAnalyticsEvents();
+    function hasRealAnalytics(widget) {
+      const entry = getWidgetAnalytics(widget);
+      return Boolean(entry && Object.values(entry.events || {}).some(value => Number(value || 0) > 0));
     }
 
-    function hasWidgetAnalytics(item) {
-      const events = getWidgetEvents(item);
-      return Object.values(events).some(value => Number(value || 0) > 0);
+    function getWidgetEvents(widget) {
+      const real = getWidgetAnalytics(widget)?.events;
+      if (real) return { ...emptyEvents(), ...real };
+      return { ...emptyEvents(), ...(widget.fallback || {}) };
     }
 
-    function formatDelay(seconds) {
-      const value = Number(seconds || 0);
-      if (!value) return "без задержки";
-      if (value >= 60 && value % 60 === 0) return `${value / 60} мин.`;
-      return `${value} сек.`;
+    function visibleWidgets() {
+      const normalized = searchQuery.trim().toLowerCase();
+      return widgets.filter(widget => {
+        const matchesFilter = activeFilter === "all" || widget.filter === activeFilter;
+        const haystack = `${widget.title} ${widget.project} ${widget.domain} ${widget.type} ${widget.source}`.toLowerCase();
+        return matchesFilter && (!normalized || haystack.includes(normalized));
+      });
     }
 
-    async function loadAnalyticsSummary(showResult = false) {
-      const endpoint = current.analyticsSummaryEndpoint || DEFAULT_ANALYTICS_SUMMARY_ENDPOINT;
-      analyticsStatus = "loading";
-      try {
-        const response = await fetch(endpoint, { cache: "no-store" });
-        if (!response.ok) throw new Error("Не удалось получить статистику");
-        analyticsSummary = await response.json();
-        analyticsStatus = "ready";
-        renderWidgets();
-        if (showResult) showToast("Статистика обновлена");
-      } catch (error) {
-        analyticsStatus = "error";
-        if (showResult) showToast("Статистика пока недоступна");
-      }
+    function projectFilters() {
+      const groups = [
+        { id: "all", label: "Все проекты", count: widgets.length },
+        { id: "lera", label: "Дневник свечника", count: widgets.filter(widget => widget.filter === "lera").length },
+        { id: "demo", label: "Демо-клиент", count: widgets.filter(widget => widget.filter === "demo").length }
+      ];
+
+      return groups.filter(group => group.id === "all" || group.count > 0);
+    }
+
+    function renderFilters() {
+      filtersEl.innerHTML = projectFilters().map(group => `
+        <button class="filter-pill ${activeFilter === group.id ? "is-active" : ""}" data-filter="${group.id}">
+          ${escapeHtml(group.label)}
+          <span>${formatNumber(group.count)}</span>
+        </button>
+      `).join("") + (activeFilter !== "all" ? '<button class="reset-filter" data-filter="all">Сбросить фильтр</button>' : "");
     }
 
     function renderStats() {
-      const active = widgets.filter(item => item.active).length;
-      const sites = new Set(widgets.filter(item => item.domain && item.domain !== "Домен не указан").map(item => item.domain)).size;
-      const analyticsLeads = Number(analyticsSummary?.totals?.prize_link_click || 0);
-      const leads = analyticsLeads || widgets.reduce((sum, item) => sum + Number(item.leads || 0), 0);
+      const totals = widgets.reduce((acc, widget) => {
+        const events = getWidgetEvents(widget);
+        acc.shows += Number(events.widget_shown || 0);
+        acc.leads += Number(events.prize_link_click || 0);
+        return acc;
+      }, { shows: 0, leads: 0 });
 
-      document.querySelector('[data-stat="total"]').textContent = widgets.length;
-      document.querySelector('[data-stat="active"]').textContent = active;
-      document.querySelector('[data-stat="sites"]').textContent = sites;
-      document.querySelector('[data-stat="leads"]').textContent = leads;
-      document.querySelector("[data-count-pill]").textContent = `${widgets.length} штуки`;
+      const sites = new Set(widgets.map(widget => widget.domain).filter(Boolean)).size;
+      const active = Object.values(state.activeById).filter(Boolean).length;
+
+      document.querySelector('[data-stat="total"]').textContent = formatNumber(widgets.length);
+      document.querySelector('[data-stat="active"]').textContent = formatNumber(active);
+      document.querySelector('[data-stat="shows"]').textContent = formatNumber(totals.shows);
+      document.querySelector('[data-stat="leads"]').textContent = formatNumber(totals.leads);
+      document.querySelector('[data-stat="conversion"]').textContent = `${percent(totals.leads, totals.shows)}%`;
+      document.querySelector('[data-stat-note="active"]').textContent = active === widgets.length ? "все включены" : `${widgets.length - active} выключен вручную`;
+      document.querySelector('[data-stat-note="sites"]').textContent = `по ${formatNumber(sites)} сайтам`;
+    }
+
+    function widgetIcon(widget) {
+      return widget.type.includes("Тиндер")
+        ? '<div class="widget-icon__cards"></div>'
+        : '<div class="widget-icon__wheel"></div>';
+    }
+
+    function renderMetric(label, value, total, barClass = "") {
+      const rate = total ? clampPercent(percent(value, total)) : value ? 100 : 0;
+      return `
+        <div class="metric">
+          <span class="metric__label">${escapeHtml(label)}</span>
+          <span class="metric__value">${formatNumber(value)}</span>
+          <span class="bar ${barClass}" style="--value:${rate}%"><span></span></span>
+        </div>
+      `;
+    }
+
+    function renderRate(value, total) {
+      return `<div class="rate"><span>${percent(value, total)}%</span></div>`;
+    }
+
+    function renderWidget(widget) {
+      const events = getWidgetEvents(widget);
+      const shown = Number(events.widget_shown || 0);
+      const spins = Number(events.wheel_spin_click || 0);
+      const prizes = Number(events.prize_shown || 0);
+      const leads = Number(events.prize_link_click || 0);
+      const closed = Number(events.widget_closed || 0);
+      const isActive = Boolean(state.activeById[widget.id]);
+      const realData = hasRealAnalytics(widget);
+      const code = widget.code || `<script src="https://widgets0.github.io/widgets0/widget-loader.js" data-widget="${widget.id}" data-source="${widget.source}" async><\\/script>`;
+
+      return `
+        <article class="widget-card" data-widget-card="${escapeHtml(widget.id)}">
+          <div class="widget-card__top">
+            <div class="widget-info">
+              <div class="widget-icon">${widgetIcon(widget)}</div>
+              <div class="widget-copy">
+                <div class="widget-title-row">
+                  <span class="widget-title">${escapeHtml(widget.title)}</span>
+                  <span class="status ${isActive ? "" : "status--off"}">${isActive ? "Активен" : "Выключен"}</span>
+                  ${realData ? "" : '<span class="status status--waiting">Ждём первых данных</span>'}
+                </div>
+                <div class="widget-meta">
+                  <span class="mono">${escapeHtml(widget.domain)}</span>
+                  <span class="sep">/</span>
+                  <span>${escapeHtml(widget.type)}</span>
+                  <span class="sep">/</span>
+                  <span>${escapeHtml(widget.project)}</span>
+                  <span class="sep">/</span>
+                  <span class="mono">${escapeHtml(widget.source)}</span>
+                </div>
+              </div>
+            </div>
+            <div class="widget-actions">
+              <button class="button" data-action="code" data-id="${escapeHtml(widget.id)}" data-code="${escapeHtml(code)}">Код</button>
+              <button class="button" data-action="configure" data-id="${escapeHtml(widget.id)}">Настроить</button>
+              <button class="switch-wrap" data-action="toggle" data-id="${escapeHtml(widget.id)}" aria-label="Переключить виджет">
+                <span class="switch-label ${isActive ? "" : "is-off"}">${isActive ? "Вкл" : "Выкл"}</span>
+                <span class="switch ${isActive ? "" : "is-off"}"></span>
+              </button>
+            </div>
+          </div>
+
+          <div class="behavior">
+            <span class="widget-chip-label">Поведение</span>
+            ${widget.behavior.map(item => `<span class="behavior-pill">${escapeHtml(item)}</span>`).join("")}
+          </div>
+
+          <div class="funnel">
+            ${renderMetric("Показали виджет", shown, shown)}
+            ${renderRate(spins, shown)}
+            ${renderMetric("Нажали крутить", spins, shown, "bar--blue")}
+            ${renderRate(prizes, spins)}
+            ${renderMetric("Увидели приз", prizes, shown, "bar--blue")}
+            ${renderRate(leads, shown)}
+            ${renderMetric("Нажали забрать", leads, shown, "bar--green")}
+            <div class="side-metric">
+              <div class="side-metric__top">
+                <span class="metric__label">Закрыли крестиком</span>
+                <div class="metric__row">
+                  <span class="side-metric__value">${formatNumber(closed)}</span>
+                  <span class="metric__sub">${percent(closed, shown)}%</span>
+                </div>
+              </div>
+              <button class="button button--primary" data-action="leads" data-id="${escapeHtml(widget.id)}">Заявки (${formatNumber(leads)})</button>
+            </div>
+          </div>
+        </article>
+      `;
     }
 
     function renderWidgets() {
-      const query = widgetSearch.value.trim().toLowerCase();
-      const filtered = widgets.filter(item => {
-        const haystack = `${item.title} ${item.client} ${item.domain} ${item.source}`.toLowerCase();
-        return haystack.includes(query);
-      });
+      const list = visibleWidgets();
+      document.querySelector("[data-count-label]").textContent = `${formatNumber(list.length)} шт.`;
+      widgetsListEl.innerHTML = list.length
+        ? list.map(renderWidget).join("")
+        : '<div class="empty">Ничего не найдено. Попробуй изменить фильтр или поиск.</div>';
+    }
 
-      widgetsBody.innerHTML = filtered.map(item => {
-        const template = templates[item.template] || templates.wheel;
-        const analyticsEvents = getWidgetEvents(item);
-        const realViews = Number(analyticsEvents.widget_shown || 0);
-        const realLeads = Number(analyticsEvents.prize_link_click || 0);
-        const views = realViews || Number(item.views || 0);
-        const leads = realLeads || Number(item.leads || 0);
-        const conversion = views ? Math.round(leads / views * 100) : 0;
-        const analyticsLoaded = analyticsStatus === "ready" || hasWidgetAnalytics(item);
-        const events = analyticsLoaded
-          ? analyticsEvents
-          : {
-              ...emptyAnalyticsEvents(),
-              widget_shown: views,
-              prize_link_click: leads
-            };
-        const statisticHtml = analyticsStatus === "loading" && !hasWidgetAnalytics(item)
-          ? `<span class="pill pill--red">Загружаем статистику</span>`
-          : `<div class="event-grid">
-               <span class="event-chip"><strong>${events.widget_shown}</strong> показали</span>
-               <span class="event-chip"><strong>${events.widget_closed}</strong> закрыли</span>
-               <span class="event-chip"><strong>${events.wheel_spin_click}</strong> крутили</span>
-               <span class="event-chip"><strong>${events.prize_shown}</strong> приз</span>
-               <span class="event-chip"><strong>${events.prize_link_click}</strong> забрали</span>
-             </div>
-             <div class="event-meta">${hasWidgetAnalytics(item) ? `Конверсия в переход: ${conversion}%` : "Ожидание первых данных с сайта"}</div>`;
-
-        return `
-          <tr>
-            <td>
-              <div class="widget-main">
-                <div class="widget-name">
-                  ${escapeHtml(item.title)}
-                  <span class="pill ${item.active ? "pill--ok" : ""}">${item.active ? "Активен" : "Выключен"}</span>
-                </div>
-                <div class="widget-id">${escapeHtml(item.source)}</div>
-                <div class="widget-meta">Проект: <strong>${escapeHtml(item.client)}</strong></div>
-                <div class="widget-meta">Сайт: <strong>${escapeHtml(item.domain)}</strong> · тип: ${escapeHtml(template.name)}</div>
-              </div>
-            </td>
-            <td>
-              <div class="rule-lines">
-                <span>↔ ${escapeHtml(item.domain)}</span>
-                <span>◌ ${escapeHtml(item.frequency)} · показ через ${escapeHtml(formatDelay(item.delay))}</span>
-              </div>
-            </td>
-            <td>
-              <div class="conversion">${statisticHtml}</div>
-            </td>
-            <td>
-              <div class="row-actions">
-                <button class="button button--primary" data-action="configure" data-id="${escapeHtml(item.id)}">Настроить</button>
-                <button class="button" data-action="code" data-id="${escapeHtml(item.id)}">Код</button>
-                <button class="switch ${item.active ? "is-on" : ""}" aria-label="Включить или выключить" data-action="toggle" data-id="${escapeHtml(item.id)}"></button>
-              </div>
-            </td>
-          </tr>
-        `;
-      }).join("");
-
+    function renderAll() {
+      renderFilters();
       renderStats();
+      renderWidgets();
     }
 
-    function renderTemplates() {
-      templatesGrid.innerHTML = Object.values(templates).map(template => `
-        <article class="template-card">
-          <div>
-            <div class="template-preview template-preview--${template.id}">
-              ${template.id === "wheel" ? renderWheelMock(true) : ""}
-              ${template.id === "tinder" ? renderTinderMock(true) : ""}
-              ${template.id === "quiz" ? '<div class="pill pill--blue">4 вопроса</div>' : ""}
-              ${template.id === "popup" ? '<div class="pill">таймер + форма</div>' : ""}
-            </div>
-            <h3>${escapeHtml(template.name)}</h3>
-            <p>${escapeHtml(template.description)}</p>
-          </div>
-          <button class="button button--primary" data-action="use-template" data-template="${template.id}">Использовать шаблон</button>
-        </article>
-      `).join("");
-    }
-
-    function renderWheelMock(compact = false) {
-      return `
-        <div class="wheel-visual" style="${compact ? "width:112px" : ""}"></div>
-      `;
-    }
-
-    function renderTinderMock(compact = false) {
-      return `
-        <div class="tinder-cards" style="${compact ? "transform:scale(.62); margin:0;" : ""}">
-          <div class="tinder-card-mini"></div>
-          <div class="tinder-card-mini"></div>
-          <div class="tinder-card-mini"></div>
-        </div>
-      `;
-    }
-
-    function openConstructorFromWidget(widget) {
-      const template = templates[widget.template] || templates.wheel;
-      current = {
-        ...current,
-        ...template,
-        ...widget,
-        widgetTitle: widget.title,
-        domainInput: widget.domain === "Домен не указан" ? "site.ru" : widget.domain,
-        tab: "main"
-      };
-      syncBuilderTitle();
-      renderSettings();
-      renderPreview();
-      const installCode = document.getElementById("installCode");
-      if (installCode) installCode.textContent = getInstallCode();
-      showScreen("builder");
-    }
-
-    function openConstructorFromTemplate(templateId) {
-      const template = templates[templateId] || templates.wheel;
-      const stamp = Date.now();
-      current = {
-        ...current,
-        ...template,
-        id: `new-widget-${stamp}`,
-        widgetTitle: `${template.name} — новый`,
-        title: `${template.name} — новый`,
-        client: "Новый клиент",
-        domainInput: "site.ru",
-        source: `new-widget-${stamp}`,
-        template: template.id,
-        active: true,
-        views: 0,
-        leads: 0,
-        frequency: "раз в час",
-        delay: 2,
-        tab: "main"
-      };
-      syncBuilderTitle();
-      renderSettings();
-      renderPreview();
-      const installCode = document.getElementById("installCode");
-      if (installCode) installCode.textContent = getInstallCode();
-      showScreen("builder");
-    }
-
-    function syncBuilderTitle() {
-      document.querySelector('[data-field="title"]').textContent = current.widgetTitle;
-    }
-
-    function renderSettings() {
-      document.querySelectorAll(".settings-tab").forEach(tab => {
-        tab.classList.toggle("is-active", tab.dataset.tab === current.tab);
-      });
-
-      if (current.tab === "main") {
-        settingsBody.innerHTML = `
-          <div class="field-group">
-            <div class="field">
-              <label>Название виджета</label>
-              <input class="input" data-setting="widgetTitle" value="${escapeHtml(current.widgetTitle)}">
-            </div>
-            <div class="field">
-              <label>Клиент</label>
-              <input class="input" data-setting="client" value="${escapeHtml(current.client)}">
-            </div>
-            <div class="field">
-              <label>Домен клиента</label>
-              <input class="input" data-setting="domainInput" value="${escapeHtml(current.domainInput)}">
-            </div>
-            <div class="field">
-              <label>Механика</label>
-              <select class="select" data-setting="template">
-                ${Object.values(templates).map(template => `<option value="${template.id}" ${template.id === current.template ? "selected" : ""}>${escapeHtml(template.name)}</option>`).join("")}
-              </select>
-            </div>
-          </div>
-          <div class="field-group">
-            <div class="field">
-              <label>ID виджета</label>
-              <input class="input" data-setting="source" value="${escapeHtml(current.source)}">
-            </div>
-            <label class="field" style="grid-template-columns: 1fr auto; align-items:center;">
-              <span>Виджет включён</span>
-              <button class="switch ${current.active ? "is-on" : ""}" data-action="toggle-current" type="button"></button>
-            </label>
-          </div>
-        `;
-      }
-
-      if (current.tab === "rules") {
-        settingsBody.innerHTML = `
-          <div class="field-group">
-            <div class="field">
-              <label>Сценарий показа</label>
-              <select class="select" data-setting="showMode">
-                <option value="popup" ${current.showMode === "popup" ? "selected" : ""}>Popup поверх сайта</option>
-                <option value="inline" ${current.showMode === "inline" ? "selected" : ""}>Статичный блок на странице</option>
-                <option value="button" ${current.showMode === "button" ? "selected" : ""}>Открывать с кнопки</option>
-              </select>
-            </div>
-            <div class="two">
-              <div class="field">
-                <label>Задержка, сек.</label>
-                <input class="input" type="number" min="0" data-setting="delay" value="${escapeHtml(current.delay)}">
-              </div>
-              <div class="field">
-                <label>Частота</label>
-                <select class="select" data-setting="frequency">
-                  <option ${current.frequency === "всегда" ? "selected" : ""}>всегда</option>
-                  <option ${current.frequency === "раз в час" ? "selected" : ""}>раз в час</option>
-                  <option ${current.frequency === "раз в день" ? "selected" : ""}>раз в день</option>
-                </select>
-              </div>
-            </div>
-            <div class="field">
-              <label>Позиция на десктопе</label>
-              <select class="select" data-setting="position">
-                <option value="center" ${current.position === "center" ? "selected" : ""}>по центру</option>
-                <option value="bottom-left" ${current.position === "bottom-left" ? "selected" : ""}>слева снизу</option>
-                <option value="bottom-right" ${current.position === "bottom-right" ? "selected" : ""}>справа снизу</option>
-              </select>
-            </div>
-          </div>
-          <p class="helper">Эти параметры потом попадут в конфиг клиента. Пока это MVP: настройки меняют превью и код установки.</p>
-        `;
-      }
-
-      if (current.tab === "design") {
-        settingsBody.innerHTML = `
-          <div class="field-group">
-            <div class="color-grid">
-              <div class="color-field">
-                <label>Акцент</label>
-                <input type="color" data-setting="accent" value="${escapeHtml(current.accent)}">
-              </div>
-              <div class="color-field">
-                <label>Кнопка</label>
-                <input type="color" data-setting="button" value="${escapeHtml(current.button)}">
-              </div>
-              <div class="color-field">
-                <label>Фон</label>
-                <input type="color" data-setting="background" value="${escapeHtml(current.background)}">
-              </div>
-              <div class="color-field">
-                <label>Текст</label>
-                <input type="color" data-setting="text" value="${escapeHtml(current.text)}">
-              </div>
-            </div>
-          </div>
-          <div class="field-group">
-            <div class="field">
-              <label>Заголовок в виджете</label>
-              <textarea class="textarea" data-setting="previewTitle">${escapeHtml(current.previewTitle || "Твой подарок от школы ждёт!")}</textarea>
-            </div>
-            <div class="field">
-              <label>Текст кнопки</label>
-              <input class="input" data-setting="buttonText" value="${escapeHtml(current.buttonText || "Крутить!")}">
-            </div>
-          </div>
-        `;
-      }
-
-      if (current.tab === "data") {
-        settingsBody.innerHTML = `
-          <div class="field-group">
-            <div class="field">
-              <label>Webhook URL</label>
-              <input class="input" data-setting="webhook" value="${escapeHtml(current.webhook)}">
-            </div>
-            <div class="field">
-              <label>WEBHOOK_SECRET</label>
-              <input class="input" data-setting="secret" value="${escapeHtml(current.secret)}" placeholder="будет храниться на стороне проекта">
-            </div>
-          </div>
-          <div class="field-group">
-            <div class="field">
-              <label>Analytics endpoint</label>
-              <input class="input" data-setting="analyticsEndpoint" value="${escapeHtml(current.analyticsEndpoint || DEFAULT_ANALYTICS_ENDPOINT)}">
-            </div>
-            <div class="field">
-              <label>Analytics summary</label>
-              <input class="input" data-setting="analyticsSummaryEndpoint" value="${escapeHtml(current.analyticsSummaryEndpoint || DEFAULT_ANALYTICS_SUMMARY_ENDPOINT)}">
-            </div>
-            <div class="field">
-              <label>Client ID</label>
-              <input class="input" data-setting="analyticsClientId" value="${escapeHtml(current.analyticsClientId || "")}" placeholder="например tnt">
-            </div>
-            <div class="field">
-              <label>Widget ID</label>
-              <input class="input" data-setting="analyticsWidgetId" value="${escapeHtml(current.analyticsWidgetId || current.source || "")}" placeholder="например lera-candles-wheel">
-            </div>
-          </div>
-          <div class="field-group">
-            <div class="field">
-              <label>Код для установки</label>
-              <div class="code-box" id="installCode">${escapeHtml(getInstallCode())}</div>
-            </div>
-            <button class="button button--primary" data-action="copy-code">Скопировать код</button>
-          </div>
-        `;
+    async function loadAnalyticsSummary(showToastAfter = false) {
+      analyticsStatus = "loading";
+      renderWidgets();
+      try {
+        const response = await fetch(DEFAULT_ANALYTICS_SUMMARY_ENDPOINT, { cache: "no-store" });
+        if (!response.ok) throw new Error("analytics unavailable");
+        analyticsSummary = await response.json();
+        analyticsStatus = "ready";
+        renderAll();
+        if (showToastAfter) showToast("Статистика обновлена");
+      } catch (error) {
+        analyticsStatus = "error";
+        renderAll();
+        if (showToastAfter) showToast("Статистика пока недоступна");
       }
     }
 
-    function renderPreview() {
-      previewFrame.classList.toggle("is-mobile", current.device === "mobile");
+    function showToast(message) {
+      toastEl.textContent = message;
+      toastEl.classList.add("is-visible");
+      clearTimeout(showToast.timer);
+      showToast.timer = setTimeout(() => toastEl.classList.remove("is-visible"), 2200);
+    }
 
-      const style = `--accent:${current.accent}; --button:${current.button}; --background:${current.background}; --text:${current.text};`;
-      if (current.template === "tinder") {
-        previewMount.innerHTML = `
-          <div class="tinder-widget" style="${style}">
-            <button class="mock-close">×</button>
-            ${renderTinderMock(false)}
-            <h3>Подбери свой топ на лето</h3>
-            <p>Свайпай вправо, если нравится. В конце соберём подборку и пришлём бонус.</p>
-            <button class="big-cta">Поехали</button>
-          </div>
-        `;
+    function openCodeModal(code) {
+      installCodeEl.textContent = code;
+      codeModal.classList.add("is-visible");
+      codeModal.setAttribute("aria-hidden", "false");
+    }
+
+    function closeCodeModal() {
+      codeModal.classList.remove("is-visible");
+      codeModal.setAttribute("aria-hidden", "true");
+    }
+
+    document.addEventListener("click", async event => {
+      const filterButton = event.target.closest("[data-filter]");
+      if (filterButton) {
+        activeFilter = filterButton.dataset.filter || "all";
+        renderAll();
         return;
       }
 
-      previewMount.innerHTML = `
-        <div class="wheel-widget" style="${style}">
-          <button class="wheel-widget__close">×</button>
-          <div class="mock-star"></div>
-          <div class="wheel-visual"></div>
-          <div class="wheel-copy">
-            <h3>${escapeHtml(current.previewTitle || "Твой подарок от школы ждёт!")}</h3>
-            <p>Крути колесо — каждая участница получает приз. Без исключений!</p>
-            <button class="big-cta">${escapeHtml(current.buttonText || "Крутить!")}</button>
-          </div>
-        </div>
-      `;
-    }
+      const actionEl = event.target.closest("[data-action]");
+      if (!actionEl) return;
+      const action = actionEl.dataset.action;
+      const widgetId = actionEl.dataset.id;
 
-    function getInstallCode() {
-      return `<script src="https://widgets0.github.io/widgets0/widget-loader.js" data-widget="${current.widget}" data-source="${current.source}" data-analytics-endpoint="${current.analyticsEndpoint || DEFAULT_ANALYTICS_ENDPOINT}" data-client-id="${current.analyticsClientId || current.client || ""}" data-widget-id="${current.analyticsWidgetId || current.source}" async><\\/script>`;
-    }
-
-    function updateSetting(name, value) {
-      if (name === "template") {
-        const template = templates[value] || templates.wheel;
-        current = { ...current, ...template, template: template.id };
-      } else {
-        current[name] = value;
+      if (action === "sync") {
+        loadAnalyticsSummary(true);
       }
 
-      if (name === "widgetTitle") {
-        current.title = value;
-        syncBuilderTitle();
+      if (action === "create") {
+        showToast("Создание виджета подключим следующим шагом");
       }
 
-      if (name === "template") renderSettings();
-      renderPreview();
-      const installCode = document.getElementById("installCode");
-      if (installCode) installCode.textContent = getInstallCode();
-    }
-
-    function saveCurrentToList() {
-      const existingIndex = widgets.findIndex(item => item.id === current.id);
-      const next = {
-        id: current.id,
-        title: current.widgetTitle || current.title,
-        client: current.client,
-        domain: current.domainInput || "Домен не указан",
-        template: current.template,
-        source: current.source,
-        analyticsEndpoint: current.analyticsEndpoint || DEFAULT_ANALYTICS_ENDPOINT,
-        analyticsSummaryEndpoint: current.analyticsSummaryEndpoint || DEFAULT_ANALYTICS_SUMMARY_ENDPOINT,
-        analyticsClientId: current.analyticsClientId || "",
-        analyticsWidgetId: current.analyticsWidgetId || current.source,
-        frequency: current.frequency,
-        delay: current.delay,
-        views: current.views || 0,
-        leads: current.leads || 0,
-        active: current.active
-      };
-
-      if (existingIndex >= 0) widgets[existingIndex] = next;
-      else widgets.unshift(next);
-
-      renderWidgets();
-      showToast("Настройки сохранены в демо-кабинете");
-    }
-
-    document.addEventListener("click", event => {
-      const target = event.target.closest("button, a");
-      if (!target) return;
-
-      const action = target.dataset.action;
-      if (action === "show-dashboard") showScreen("dashboard");
-      if (action === "open-templates") {
-        renderTemplates();
-        showScreen("templates");
-      }
-      if (action === "use-template") openConstructorFromTemplate(target.dataset.template);
       if (action === "configure") {
-        const widget = widgets.find(item => item.id === target.dataset.id);
-        if (widget) openConstructorFromWidget(widget);
+        showToast("Настройки откроем в следующей версии кабинета");
       }
-      if (action === "toggle") {
-        const widget = widgets.find(item => item.id === target.dataset.id);
-        if (widget) {
-          widget.active = !widget.active;
-          renderWidgets();
-        }
+
+      if (action === "leads") {
+        showToast("Заявки считаются по нажатию кнопки «Забрать»");
       }
-      if (action === "toggle-current") {
-        current.active = !current.active;
-        renderSettings();
+
+      if (action === "toggle" && widgetId) {
+        state.activeById[widgetId] = !state.activeById[widgetId];
+        renderAll();
       }
+
       if (action === "code") {
-        const widget = widgets.find(item => item.id === target.dataset.id);
-        if (widget) {
-          openConstructorFromWidget(widget);
-          current.tab = "data";
-          renderSettings();
+        openCodeModal(actionEl.dataset.code || "");
+      }
+
+      if (action === "close-modal") {
+        closeCodeModal();
+      }
+
+      if (action === "copy-code") {
+        try {
+          await navigator.clipboard.writeText(installCodeEl.textContent);
+          showToast("Код скопирован");
+        } catch (error) {
+          showToast("Код можно выделить и скопировать вручную");
         }
       }
-      if (action === "copy-code") {
-        navigator.clipboard?.writeText(getInstallCode());
-        showToast("Код скопирован");
-      }
-      if (action === "publish") saveCurrentToList();
-      if (action === "sync-analytics") loadAnalyticsSummary(true);
-      if (action === "toast") showToast(target.dataset.message || "Готово");
     });
 
-    document.addEventListener("click", event => {
-      const tab = event.target.closest("[data-tab]");
-      if (tab) {
-        current.tab = tab.dataset.tab;
-        renderSettings();
-      }
-
-      const device = event.target.closest("[data-device]");
-      if (device) {
-        current.device = device.dataset.device;
-        document.querySelectorAll("[data-device]").forEach(btn => btn.classList.toggle("is-active", btn === device));
-        renderPreview();
-      }
+    codeModal.addEventListener("click", event => {
+      if (event.target === codeModal) closeCodeModal();
     });
 
-    document.addEventListener("input", event => {
-      const input = event.target.closest("[data-setting]");
-      if (!input) return;
-      updateSetting(input.dataset.setting, input.value);
+    searchEl.addEventListener("input", event => {
+      searchQuery = event.target.value || "";
+      renderWidgets();
     });
 
-    document.addEventListener("change", event => {
-      const input = event.target.closest("[data-setting]");
-      if (!input) return;
-      updateSetting(input.dataset.setting, input.value);
-    });
-
-    widgetSearch.addEventListener("input", renderWidgets);
-
-    renderWidgets();
+    renderAll();
     loadAnalyticsSummary();
-    renderTemplates();
-    renderSettings();
-    renderPreview();
   </script>
 </body>
 </html>
