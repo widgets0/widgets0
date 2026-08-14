@@ -149,7 +149,7 @@
 
   var baseUrl = getBaseUrl();
   var source = attr("data-source", "");
-  var webhookUrl = attr("data-webhook-url", "https://widgets0-production.up.railway.app");
+  var webhookUrl = attr("data-webhook-url", "https://155-212-191-195.sslip.io/widgets0-webhook");
   var webhookSecret = attr("data-webhook-secret", "");
   var frequency = attr("data-frequency", "always");
   var position = attr("data-position", "center");

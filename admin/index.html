@@ -2041,8 +2041,9 @@
       }
     };
 
-    const DEFAULT_ANALYTICS_ENDPOINT = "https://widgets0-production.up.railway.app/analytics/events";
-    const DEFAULT_ANALYTICS_SUMMARY_ENDPOINT = "https://widgets0-production.up.railway.app/analytics/summary";
+    const DEFAULT_WEBHOOK_ENDPOINT = "https://155-212-191-195.sslip.io/widgets0-webhook";
+    const DEFAULT_ANALYTICS_ENDPOINT = `${DEFAULT_WEBHOOK_ENDPOINT}/analytics/events`;
+    const DEFAULT_ANALYTICS_SUMMARY_ENDPOINT = `${DEFAULT_WEBHOOK_ENDPOINT}/analytics/summary`;
     let analyticsSummary = null;
     let analyticsStatus = "idle";
 
@@ -2100,7 +2101,7 @@
       device: "desktop",
       tab: "main",
       position: "center",
-      webhook: "https://widgets0-production.up.railway.app",
+      webhook: DEFAULT_WEBHOOK_ENDPOINT,
       analyticsEndpoint: DEFAULT_ANALYTICS_ENDPOINT,
       analyticsSummaryEndpoint: DEFAULT_ANALYTICS_SUMMARY_ENDPOINT,
       analyticsWidgetId: widgets[0].analyticsWidgetId || widgets[0].source,
