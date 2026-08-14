@@ -963,6 +963,7 @@
         domain: "dnevniksvechnika.ru",
         type: "Колесо фортуны",
         source: "lera-dnevnik-svechnika",
+        previewUrl: "https://widgets0.github.io/widgets0/gallery/%D0%BA%D0%BB%D0%B8%D0%B5%D0%BD%D1%82%D1%8B/%D0%BF%D1%80%D0%BE%D0%B5%D0%BA%D1%82-001-%D1%81%D0%B2%D0%B5%D1%87%D0%B8/lera-candles-wheel-static.html?preview=1",
         analyticsWidgetId: "lera-candles-wheel",
         analyticsClientId: "tnt",
         active: true,
@@ -993,6 +994,7 @@
         domain: "example.com",
         type: "Колесо фортуны",
         source: "demo-wheel",
+        previewUrl: "https://widgets0.github.io/widgets0/gallery/widgets/wheel-fortune-widget.html?preview=1",
         analyticsWidgetId: "demo-wheel",
         active: true,
         behavior: ["Показ всегда", "Задержка 2 сек.", "Все страницы", "Десктоп и мобильные"],
@@ -1012,6 +1014,7 @@
         domain: "example.com",
         type: "Товарный Тиндер",
         source: "demo-tinder",
+        previewUrl: "https://widgets0.github.io/widgets0/gallery/widgets/tinder-product-widget.html?preview=swiping",
         analyticsWidgetId: "demo-tinder",
         active: true,
         behavior: ["Раз в час", "Показ через 1 сек.", "Карточки товаров", "Десктоп и мобильные"],
@@ -1196,6 +1199,7 @@
               </div>
             </div>
             <div class="widget-actions">
+              <a class="button" href="${escapeHtml(widget.previewUrl || "#")}" target="_blank" rel="noreferrer">Посмотреть виджет</a>
               <button class="button" data-action="code" data-id="${escapeHtml(widget.id)}" data-code="${escapeHtml(code)}">Код</button>
               <button class="button" data-action="configure" data-id="${escapeHtml(widget.id)}">Настроить</button>
               <button class="switch-wrap" data-action="toggle" data-id="${escapeHtml(widget.id)}" aria-label="Переключить виджет">
