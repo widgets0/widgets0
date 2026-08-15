@@ -135,7 +135,7 @@
     .cat-modal {
       position: fixed;
       inset: 0;
-      z-index: 80;
+      z-index: 2147482000;
       display: none;
       align-items: center;
       justify-content: center;
@@ -372,12 +372,12 @@
 
   <script>
     (function () {
-      const LEAD_CONFIG = {
-        webhookUrl: "https://widgets0-production.up.railway.app",
+      const LEAD_CONFIG = Object.assign({
+        webhookUrl: "https://155-212-191-195.sslip.io/widgets0-webhook",
         webhookSecret: '',
         widget: "Форма с видео — Дневник свечника",
         source: "lera-candle-contact-widget"
-      };
+      }, window.LERA_CANDLE_CONTACT_CONFIG || {});
       const leadParams = new URLSearchParams(window.location.search);
       if (leadParams.get('webhookUrl')) LEAD_CONFIG.webhookUrl = leadParams.get('webhookUrl');
       if (leadParams.get('webhookSecret')) LEAD_CONFIG.webhookSecret = leadParams.get('webhookSecret');
