@@ -190,5 +190,57 @@
     </div>
   </div>
 
+  <script>
+    (function () {
+      const analytics = Object.assign({
+        endpoint: '',
+        clientId: 'tnt',
+        widgetId: 'lera-candle-contact',
+        source: 'lera-candle-contact-widget'
+      }, window.LERA_CANDLE_CONTACT_ANALYTICS_CONFIG || {});
+      const contactLink = document.querySelector('.cat-btn');
+
+      function track(eventName) {
+        const endpoint = String(analytics.endpoint || '').trim();
+        if (!endpoint) return;
+
+        const body = JSON.stringify({
+          event: eventName,
+          widgetId: analytics.widgetId,
+          clientId: analytics.clientId,
+          source: analytics.source,
+          page: window.location.href,
+          referrer: document.referrer || '',
+          createdAt: new Date().toISOString()
+        });
+
+        try {
+          fetch(endpoint, {
+            method: 'POST',
+            headers: { 'Content-Type': 'text/plain;charset=UTF-8' },
+            body,
+            mode: 'cors',
+            keepalive: true
+          }).catch(function () {
+            try {
+              if (navigator.sendBeacon) navigator.sendBeacon(endpoint, body);
+            } catch (error) {}
+          });
+        } catch (error) {
+          try {
+            if (navigator.sendBeacon) navigator.sendBeacon(endpoint, body);
+          } catch (beaconError) {}
+        }
+      }
+
+      track('widget_shown');
+      if (contactLink) {
+        contactLink.addEventListener('click', function () {
+          track('prize_link_click');
+        });
+      }
+    })();
+  </script>
+
 </body>
 </html>

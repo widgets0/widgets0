@@ -594,6 +594,10 @@
       overflow: hidden;
     }
 
+    .funnel--contact {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
     .metric {
       min-width: 0;
       padding: 15px 18px;
@@ -987,6 +991,31 @@
   async><\\/script>`
       },
       {
+        id: "lera-candle-contact",
+        title: "Блок связи",
+        project: "Дневник свечника / TNT",
+        filter: "lera",
+        domain: "dnevniksvechnika.ru",
+        type: "Контактный блок",
+        source: "lera-candle-contact-widget",
+        previewUrl: "https://widgets0.github.io/widgets0/clients/lera-dnevnik-svechnika/candle-contact-widget/",
+        analyticsWidgetId: "lera-candle-contact",
+        analyticsClientId: "tnt",
+        metricMode: "contact",
+        active: true,
+        behavior: ["Встроен в страницу", "Переход в Telegram", "Десктоп и мобильные"],
+        fallback: {
+          widget_shown: 0,
+          widget_closed: 0,
+          wheel_spin_click: 0,
+          prize_shown: 0,
+          prize_link_click: 0
+        },
+        code: `<script
+  src="https://widgets0.github.io/widgets0/clients/lera-dnevnik-svechnika/candle-contact-widget/embed.js?v=contact-analytics-20260815"
+  async><\/script>`
+      },
+      {
         id: "demo-wheel",
         title: "Колесо фортуны — демо",
         project: "Демо-клиент",
@@ -1174,6 +1203,7 @@
       const closed = Number(events.widget_closed || 0);
       const isActive = Boolean(state.activeById[widget.id]);
       const realData = hasRealAnalytics(widget);
+      const isContact = widget.metricMode === "contact";
       const code = widget.code || `<script src="https://widgets0.github.io/widgets0/widget-loader.js" data-widget="${widget.id}" data-source="${widget.source}" async><\\/script>`;
 
       return `
@@ -1214,25 +1244,32 @@
             ${widget.behavior.map(item => `<span class="behavior-pill">${escapeHtml(item)}</span>`).join("")}
           </div>
 
-          <div class="funnel">
-            ${renderMetric("Показали виджет", shown, shown)}
-            ${renderRate(spins, shown)}
-            ${renderMetric("Нажали крутить", spins, shown, "bar--blue")}
-            ${renderRate(prizes, spins)}
-            ${renderMetric("Увидели приз", prizes, shown, "bar--blue")}
-            ${renderRate(leads, shown)}
-            ${renderMetric("Нажали забрать", leads, shown, "bar--green")}
-            <div class="side-metric">
-              <div class="side-metric__top">
-                <span class="metric__label">Закрыли крестиком</span>
-                <div class="metric__row">
-                  <span class="side-metric__value">${formatNumber(closed)}</span>
-                  <span class="metric__sub">${percent(closed, shown)}%</span>
-                </div>
-              </div>
-              <button class="button button--primary" data-action="leads" data-id="${escapeHtml(widget.id)}">Заявки (${formatNumber(leads)})</button>
+          ${isContact ? `
+            <div class="funnel funnel--contact">
+              ${renderMetric("Показали блок", shown, shown)}
+              ${renderMetric("Перешли в Telegram", leads, shown, "bar--green")}
             </div>
-          </div>
+          ` : `
+            <div class="funnel">
+              ${renderMetric("Показали виджет", shown, shown)}
+              ${renderRate(spins, shown)}
+              ${renderMetric("Нажали крутить", spins, shown, "bar--blue")}
+              ${renderRate(prizes, spins)}
+              ${renderMetric("Увидели приз", prizes, shown, "bar--blue")}
+              ${renderRate(leads, shown)}
+              ${renderMetric("Нажали забрать", leads, shown, "bar--green")}
+              <div class="side-metric">
+                <div class="side-metric__top">
+                  <span class="metric__label">Закрыли крестиком</span>
+                  <div class="metric__row">
+                    <span class="side-metric__value">${formatNumber(closed)}</span>
+                    <span class="metric__sub">${percent(closed, shown)}%</span>
+                  </div>
+                </div>
+                <button class="button button--primary" data-action="leads" data-id="${escapeHtml(widget.id)}">Заявки (${formatNumber(leads)})</button>
+              </div>
+            </div>
+          `}
         </article>
       `;
     }
