@@ -2,6 +2,7 @@
 // Run: node local-server.js
 
 const http = require("http");
+const crypto = require("crypto");
 const fs = require("fs");
 const path = require("path");
 
@@ -10,6 +11,15 @@ const env = Object.assign({}, process.env, loadEnv(envPath));
 const PORT = Number(env.PORT || 8787);
 const HOST = env.HOST || "0.0.0.0";
 const ANALYTICS_EVENTS_PATH = env.ANALYTICS_EVENTS_PATH || path.join(__dirname, "analytics-events.jsonl");
+const ADMIN_USERNAME = env.ADMIN_USERNAME || "";
+const ADMIN_PASSWORD_SALT = env.ADMIN_PASSWORD_SALT || "";
+const ADMIN_PASSWORD_HASH = env.ADMIN_PASSWORD_HASH || "";
+const ADMIN_SESSION_SECRET = env.ADMIN_SESSION_SECRET || "";
+const ADMIN_SESSION_COOKIE = "widgets0_admin_session";
+const ADMIN_SESSION_TTL_MS = 8 * 60 * 60 * 1000;
+const LOGIN_ATTEMPT_WINDOW_MS = 15 * 60 * 1000;
+const LOGIN_ATTEMPT_LIMIT = 7;
+const loginAttempts = new Map();
 const ALLOWED_ANALYTICS_EVENTS = new Set([
   "widget_loaded",
   "widget_shown",
@@ -51,6 +61,151 @@ function sendJson(res, status, payload) {
     "Content-Type": "application/json; charset=utf-8"
   });
   res.end(JSON.stringify(payload, null, 2));
+}
+
+function sendHtml(res, status, html, headers = {}) {
+  res.writeHead(status, {
+    "Content-Type": "text/html; charset=utf-8",
+    "Cache-Control": "no-store",
+    "Content-Security-Policy": "default-src 'self'; img-src 'self'; style-src 'unsafe-inline'; form-action 'self'; frame-ancestors 'none'; base-uri 'none'",
+    "Referrer-Policy": "no-referrer",
+    "X-Content-Type-Options": "nosniff",
+    "X-Frame-Options": "DENY",
+    ...headers
+  });
+  res.end(html);
+}
+
+function parseCookies(req) {
+  return String(req.headers.cookie || "")
+    .split(";")
+    .map(item => item.trim())
+    .filter(Boolean)
+    .reduce((result, item) => {
+      const separator = item.indexOf("=");
+      if (separator === -1) return result;
+      result[item.slice(0, separator)] = item.slice(separator + 1);
+      return result;
+    }, {});
+}
+
+function safeBufferEqual(left, right) {
+  if (!Buffer.isBuffer(left) || !Buffer.isBuffer(right) || left.length !== right.length) return false;
+  return crypto.timingSafeEqual(left, right);
+}
+
+function createAdminSession() {
+  const expiresAt = Date.now() + ADMIN_SESSION_TTL_MS;
+  const payload = Buffer.from(JSON.stringify({ username: ADMIN_USERNAME, expiresAt })).toString("base64url");
+  const signature = crypto.createHmac("sha256", ADMIN_SESSION_SECRET).update(payload).digest("base64url");
+  return `${payload}.${signature}`;
+}
+
+function hasValidAdminSession(req) {
+  if (!ADMIN_SESSION_SECRET) return false;
+  const token = parseCookies(req)[ADMIN_SESSION_COOKIE] || "";
+  const [payload, signature] = token.split(".");
+  if (!payload || !signature) return false;
+
+  const expected = crypto.createHmac("sha256", ADMIN_SESSION_SECRET).update(payload).digest();
+  let supplied;
+  try {
+    supplied = Buffer.from(signature, "base64url");
+  } catch (error) {
+    return false;
+  }
+  if (!safeBufferEqual(expected, supplied)) return false;
+
+  try {
+    const session = JSON.parse(Buffer.from(payload, "base64url").toString("utf8"));
+    return session.username === ADMIN_USERNAME && Number(session.expiresAt) > Date.now();
+  } catch (error) {
+    return false;
+  }
+}
+
+function matchesAdminCredentials(username, password) {
+  if (!ADMIN_USERNAME || !ADMIN_PASSWORD_SALT || !ADMIN_PASSWORD_HASH || !ADMIN_SESSION_SECRET) return false;
+  const suppliedUsername = Buffer.from(String(username || ""));
+  const expectedUsername = Buffer.from(ADMIN_USERNAME);
+  const usernameMatches = safeBufferEqual(suppliedUsername, expectedUsername);
+  const suppliedHash = crypto.scryptSync(String(password || ""), ADMIN_PASSWORD_SALT, 32);
+  const expectedHash = Buffer.from(ADMIN_PASSWORD_HASH, "hex");
+  return usernameMatches && safeBufferEqual(suppliedHash, expectedHash);
+}
+
+function requestIp(req) {
+  return String(req.headers["x-forwarded-for"] || req.socket.remoteAddress || "unknown").split(",")[0].trim();
+}
+
+function loginAttemptState(req) {
+  const key = requestIp(req);
+  const now = Date.now();
+  const current = loginAttempts.get(key);
+  if (!current || current.resetAt <= now) {
+    const fresh = { count: 0, resetAt: now + LOGIN_ATTEMPT_WINDOW_MS };
+    loginAttempts.set(key, fresh);
+    return { key, value: fresh };
+  }
+  return { key, value: current };
+}
+
+function adminLoginPage(errorMessage = "") {
+  const error = errorMessage ? `<div class="error" role="alert">${escapeHtml(errorMessage)}</div>` : "";
+  return `<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Olly · Вход в админку</title>
+  <link rel="icon" type="image/png" href="/favicon.png">
+  <style>
+    :root { color-scheme: light; --bg:#f4f3f0; --nav:#3f6175; --ink:#12181d; --muted:#6b7580; --line:rgba(17,24,28,.14); --blue:#256fd4; }
+    * { box-sizing:border-box; }
+    html, body { margin:0; min-height:100%; }
+    body { min-height:100vh; display:grid; place-items:center; padding:28px; background:var(--bg); color:var(--ink); font-family:Manrope,Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; -webkit-font-smoothing:antialiased; }
+    .login { width:min(100%, 430px); overflow:hidden; border:1px solid var(--line); border-radius:16px; background:#fff; box-shadow:0 24px 70px rgba(17,24,28,.12); }
+    .brand { display:flex; align-items:center; gap:18px; min-height:112px; padding:26px 30px; background:var(--nav); color:#fff; }
+    .brand img { width:104px; height:auto; filter:brightness(0) invert(1); }
+    .brand-line { width:1px; height:38px; background:rgba(255,255,255,.2); }
+    .brand-copy { display:grid; gap:5px; }
+    .brand-copy span { color:rgba(255,255,255,.62); font-size:10px; font-weight:700; letter-spacing:.14em; text-transform:uppercase; }
+    .brand-copy strong { font-size:17px; line-height:1.2; }
+    .form { display:grid; gap:20px; padding:32px 30px 30px; }
+    .heading { display:grid; gap:8px; }
+    h1 { margin:0; font-size:27px; line-height:1.15; letter-spacing:0; }
+    p { margin:0; color:var(--muted); font-size:14px; line-height:1.5; }
+    .fields { display:grid; gap:15px; }
+    label { display:grid; gap:7px; color:#3e4851; font-size:12px; font-weight:750; }
+    input { width:100%; height:48px; padding:0 14px; border:1px solid var(--line); border-radius:9px; outline:none; background:#fff; color:var(--ink); font:600 15px/1 inherit; transition:border-color .18s ease, box-shadow .18s ease; }
+    input:focus { border-color:var(--blue); box-shadow:0 0 0 3px rgba(37,111,212,.12); }
+    button { height:48px; border:0; border-radius:9px; background:var(--blue); color:#fff; cursor:pointer; font:800 14px/1 inherit; box-shadow:0 12px 24px rgba(37,111,212,.2); }
+    button:hover { background:#1f63bf; }
+    .error { padding:11px 13px; border:1px solid #f0c9cc; border-radius:8px; background:#fff2f2; color:#a52f38; font-size:12px; font-weight:700; line-height:1.4; }
+    .secure { color:#8a949d; font-size:11px; line-height:1.4; text-align:center; }
+    @media (max-width:520px) { body { padding:16px; } .brand { padding:23px; } .form { padding:27px 23px 24px; } .brand img { width:94px; } h1 { font-size:24px; } }
+  </style>
+</head>
+<body>
+  <main class="login">
+    <header class="brand">
+      <img src="/brand-logo.png" alt="Olly">
+      <span class="brand-line" aria-hidden="true"></span>
+      <div class="brand-copy"><span>Личный кабинет</span><strong>Статистика виджетов</strong></div>
+    </header>
+    <form class="form" method="post" action="/admin-login">
+      <div class="heading"><h1>Вход в адинку</h1><p>Введи данные для доступа к проектам и статистике.</p></div>
+      ${error}
+      <div class="fields">
+        <label>Логин<input name="username" type="text" autocomplete="username" required autofocus></label>
+        <label>Пароль<input name="password" type="password" autocomplete="current-password" required></label>
+      </div>
+      <button type="submit">Войти</button>
+      <div class="secure">Защищённое соединение · сессия на 8 часов</div>
+    </form>
+  </main>
+</body>
+</html>`;
 }
 
 function normalizeText(value, fallback = "") {
@@ -431,6 +586,69 @@ async function sendToTelegram(lead, req) {
 }
 
 const server = http.createServer(async (req, res) => {
+  const requestPath = req.url.split("?")[0];
+
+  if (req.method === "GET" && requestPath === "/admin-login") {
+    if (hasValidAdminSession(req)) {
+      res.writeHead(303, { Location: "/admin/", "Cache-Control": "no-store" });
+      res.end();
+      return;
+    }
+    sendHtml(res, 200, adminLoginPage());
+    return;
+  }
+
+  if (req.method === "POST" && requestPath === "/admin-login") {
+    const attempt = loginAttemptState(req);
+    if (attempt.value.count >= LOGIN_ATTEMPT_LIMIT) {
+      sendHtml(res, 429, adminLoginPage("Слишком много попыток. Попробуй снова через 15 минут."), { "Retry-After": "900" });
+      return;
+    }
+
+    try {
+      const form = new URLSearchParams(await readBody(req));
+      if (!matchesAdminCredentials(form.get("username"), form.get("password"))) {
+        attempt.value.count += 1;
+        sendHtml(res, 401, adminLoginPage("Неверный логин или пароль."));
+        return;
+      }
+
+      loginAttempts.delete(attempt.key);
+      const maxAge = Math.floor(ADMIN_SESSION_TTL_MS / 1000);
+      res.writeHead(303, {
+        Location: "/admin/",
+        "Cache-Control": "no-store",
+        "Set-Cookie": `${ADMIN_SESSION_COOKIE}=${createAdminSession()}; Path=/; HttpOnly; Secure; SameSite=Strict; Max-Age=${maxAge}`
+      });
+      res.end();
+    } catch (error) {
+      console.error(error);
+      sendHtml(res, 400, adminLoginPage("Не получилось выполнить вход. Попробуй ещё раз."));
+    }
+    return;
+  }
+
+  if (req.method === "GET" && requestPath === "/admin-auth/check") {
+    if (hasValidAdminSession(req)) {
+      res.writeHead(204, { "Cache-Control": "no-store" });
+      res.end();
+      return;
+    }
+    res.writeHead(302, { Location: "/admin-login", "Cache-Control": "no-store" });
+    res.end();
+    return;
+  }
+
+  if (req.method === "GET" && requestPath === "/admin-logout") {
+    res.writeHead(303, {
+      Location: "/admin-login",
+      "Cache-Control": "no-store",
+      "Set-Cookie": `${ADMIN_SESSION_COOKIE}=; Path=/; HttpOnly; Secure; SameSite=Strict; Max-Age=0`
+    });
+    res.end();
+    return;
+  }
+
   if (req.method === "OPTIONS") {
     res.writeHead(204, corsHeaders());
     res.end();
