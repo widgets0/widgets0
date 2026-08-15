@@ -97,8 +97,8 @@
     }
 
     .brand {
-      width: 116px;
-      height: 40px;
+      width: 112px;
+      height: 44px;
       display: flex;
       align-items: center;
       justify-content: flex-start;
@@ -106,8 +106,10 @@
     }
 
     .brand img {
-      width: 112px;
+      width: 106px;
+      max-height: 42px;
       height: auto;
+      object-fit: contain;
       display: block;
       filter: brightness(0) invert(1);
     }
@@ -1092,46 +1094,6 @@
         code: `<script
   src="https://widgets0.github.io/widgets0/clients/lera-dnevnik-svechnika/candle-contact-widget/embed.js?v=domain-status-20260815"
   async><\/script>`
-      },
-      {
-        id: "demo-wheel",
-        title: "Колесо фортуны — демо",
-        project: "Демо-клиент",
-        filter: "demo",
-        domain: "example.com",
-        type: "Колесо фортуны",
-        source: "demo-wheel",
-        previewUrl: "https://widgets0.github.io/widgets0/gallery/widgets/wheel-fortune-widget.html?preview=1",
-        analyticsWidgetId: "demo-wheel",
-        active: true,
-        behavior: ["Показ всегда", "Задержка 2 сек.", "Все страницы", "Десктоп и мобильные"],
-        fallback: {
-          widget_shown: 108,
-          widget_closed: 23,
-          wheel_spin_click: 67,
-          prize_shown: 55,
-          prize_link_click: 41
-        }
-      },
-      {
-        id: "demo-tinder",
-        title: "Товарный Тиндер — демо",
-        project: "Демо-клиент",
-        filter: "demo",
-        domain: "example.com",
-        type: "Товарный Тиндер",
-        source: "demo-tinder",
-        previewUrl: "https://widgets0.github.io/widgets0/gallery/widgets/tinder-product-widget.html?preview=swiping",
-        analyticsWidgetId: "demo-tinder",
-        active: true,
-        behavior: ["Раз в час", "Показ через 1 сек.", "Карточки товаров", "Десктоп и мобильные"],
-        fallback: {
-          widget_shown: 137,
-          widget_closed: 18,
-          wheel_spin_click: 64,
-          prize_shown: 42,
-          prize_link_click: 12
-        }
       }
     ];
 
