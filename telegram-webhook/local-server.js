@@ -17,6 +17,7 @@ const ADMIN_PASSWORD_HASH = env.ADMIN_PASSWORD_HASH || "";
 const ADMIN_SESSION_SECRET = env.ADMIN_SESSION_SECRET || "";
 const ADMIN_SESSION_COOKIE = "widgets0_admin_session";
 const ADMIN_SESSION_TTL_MS = 8 * 60 * 60 * 1000;
+const ADMIN_REMEMBERED_SESSION_TTL_MS = 30 * 24 * 60 * 60 * 1000;
 const LOGIN_ATTEMPT_WINDOW_MS = 15 * 60 * 1000;
 const LOGIN_ATTEMPT_LIMIT = 7;
 const loginAttempts = new Map();
@@ -67,7 +68,7 @@ function sendHtml(res, status, html, headers = {}) {
   res.writeHead(status, {
     "Content-Type": "text/html; charset=utf-8",
     "Cache-Control": "no-store",
-    "Content-Security-Policy": "default-src 'self'; img-src 'self'; style-src 'unsafe-inline'; form-action 'self'; frame-ancestors 'none'; base-uri 'none'",
+    "Content-Security-Policy": "default-src 'self'; img-src 'self'; style-src 'unsafe-inline'; script-src 'unsafe-inline'; form-action 'self'; frame-ancestors 'none'; base-uri 'none'",
     "Referrer-Policy": "no-referrer",
     "X-Content-Type-Options": "nosniff",
     "X-Frame-Options": "DENY",
@@ -94,8 +95,8 @@ function safeBufferEqual(left, right) {
   return crypto.timingSafeEqual(left, right);
 }
 
-function createAdminSession() {
-  const expiresAt = Date.now() + ADMIN_SESSION_TTL_MS;
+function createAdminSession(ttlMs = ADMIN_SESSION_TTL_MS) {
+  const expiresAt = Date.now() + ttlMs;
   const payload = Buffer.from(JSON.stringify({ username: ADMIN_USERNAME, expiresAt })).toString("base64url");
   const signature = crypto.createHmac("sha256", ADMIN_SESSION_SECRET).update(payload).digest("base64url");
   return `${payload}.${signature}`;
@@ -160,50 +161,69 @@ function adminLoginPage(errorMessage = "") {
   <title>Olly · Вход в админку</title>
   <link rel="icon" type="image/png" href="/favicon.png">
   <style>
-    :root { color-scheme: light; --bg:#f4f3f0; --nav:#3f6175; --ink:#12181d; --muted:#6b7580; --line:rgba(17,24,28,.14); --blue:#256fd4; }
+    :root { color-scheme:light; --bg:#f4f3f0; --panel:#fff; --ink:#12181d; --muted:#6b7580; --soft:#8a949d; --line:rgba(17,24,28,.14); --blue:#256fd4; --nav:#0e1a24; }
     * { box-sizing:border-box; }
     html, body { margin:0; min-height:100%; }
-    body { min-height:100vh; display:grid; place-items:center; padding:28px; background:var(--bg); color:var(--ink); font-family:Manrope,Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; -webkit-font-smoothing:antialiased; }
-    .login { width:min(100%, 430px); overflow:hidden; border:1px solid var(--line); border-radius:16px; background:#fff; box-shadow:0 24px 70px rgba(17,24,28,.12); }
-    .brand { display:flex; align-items:center; gap:18px; min-height:112px; padding:26px 30px; background:var(--nav); color:#fff; }
-    .brand img { width:104px; height:auto; filter:brightness(0) invert(1); }
-    .brand-line { width:1px; height:38px; background:rgba(255,255,255,.2); }
-    .brand-copy { display:grid; gap:5px; }
-    .brand-copy span { color:rgba(255,255,255,.62); font-size:10px; font-weight:700; letter-spacing:.14em; text-transform:uppercase; }
-    .brand-copy strong { font-size:17px; line-height:1.2; }
-    .form { display:grid; gap:20px; padding:32px 30px 30px; }
-    .heading { display:grid; gap:8px; }
-    h1 { margin:0; font-size:27px; line-height:1.15; letter-spacing:0; }
-    p { margin:0; color:var(--muted); font-size:14px; line-height:1.5; }
-    .fields { display:grid; gap:15px; }
-    label { display:grid; gap:7px; color:#3e4851; font-size:12px; font-weight:750; }
-    input { width:100%; height:48px; padding:0 14px; border:1px solid var(--line); border-radius:9px; outline:none; background:#fff; color:var(--ink); font:600 15px/1 inherit; transition:border-color .18s ease, box-shadow .18s ease; }
+    body { min-height:100vh; background:var(--bg); color:var(--ink); font-family:Manrope,Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; -webkit-font-smoothing:antialiased; }
+    .site-head { height:96px; display:flex; align-items:center; border-bottom:1px solid rgba(17,24,28,.1); background:rgba(255,255,255,.72); }
+    .site-head__inner { width:min(1180px, calc(100% - 64px)); margin:0 auto; }
+    .brand { display:inline-flex; align-items:center; width:122px; height:50px; }
+    .brand img { display:block; width:116px; max-height:46px; object-fit:contain; }
+    .page { min-height:calc(100vh - 96px); padding:70px 24px 56px; }
+    .intro { display:grid; gap:14px; margin:0 auto 38px; text-align:center; }
+    h1 { margin:0; font-size:40px; line-height:1.12; letter-spacing:0; }
+    .intro p { margin:0; color:var(--muted); font-size:18px; line-height:1.5; }
+    .login { width:min(100%, 540px); margin:0 auto; padding:36px 38px 34px; border:1px solid var(--line); border-radius:14px; background:var(--panel); box-shadow:0 18px 48px rgba(17,24,28,.07); }
+    .form { display:grid; gap:24px; }
+    .fields { display:grid; gap:23px; }
+    .field { display:grid; gap:8px; }
+    label, .field-label { color:#74808b; font-size:12px; line-height:1.2; font-weight:800; letter-spacing:.06em; text-transform:uppercase; }
+    .input-wrap { position:relative; }
+    input[type="text"], input[type="password"] { width:100%; height:58px; padding:0 16px; border:1px solid var(--line); border-radius:10px; outline:none; background:#fff; color:var(--ink); font:600 16px/1 inherit; transition:border-color .18s ease, box-shadow .18s ease; }
+    input[type="password"], input[type="text"].password-input { padding-right:100px; }
+    input::placeholder { color:#aab3bb; font-weight:500; }
     input:focus { border-color:var(--blue); box-shadow:0 0 0 3px rgba(37,111,212,.12); }
-    button { height:48px; border:0; border-radius:9px; background:var(--blue); color:#fff; cursor:pointer; font:800 14px/1 inherit; box-shadow:0 12px 24px rgba(37,111,212,.2); }
-    button:hover { background:#1f63bf; }
-    .error { padding:11px 13px; border:1px solid #f0c9cc; border-radius:8px; background:#fff2f2; color:#a52f38; font-size:12px; font-weight:700; line-height:1.4; }
-    .secure { color:#8a949d; font-size:11px; line-height:1.4; text-align:center; }
-    @media (max-width:520px) { body { padding:16px; } .brand { padding:23px; } .form { padding:27px 23px 24px; } .brand img { width:94px; } h1 { font-size:24px; } }
+    .show-password { position:absolute; top:50%; right:8px; width:86px; height:42px; transform:translateY(-50%); border:0; border-radius:7px; background:transparent; color:var(--muted); cursor:pointer; font:750 12px/1 inherit; }
+    .show-password:hover { background:#f2f4f6; color:var(--ink); }
+    .remember { display:flex; align-items:center; gap:11px; color:#36414b; font-size:14px; font-weight:650; cursor:pointer; text-transform:none; letter-spacing:0; }
+    .remember input { appearance:none; width:20px; height:20px; margin:0; border:1px solid #9faab3; border-radius:5px; background:#fff; cursor:pointer; }
+    .remember input:checked { border-color:var(--blue); background:var(--blue); }
+    .remember input:checked::after { content:""; display:block; width:8px; height:4px; margin:5px 0 0 5px; border-left:2px solid #fff; border-bottom:2px solid #fff; transform:rotate(-45deg); }
+    .submit { height:58px; border:0; border-radius:10px; background:var(--nav); color:#fff; cursor:pointer; font:800 15px/1 inherit; box-shadow:0 12px 24px rgba(14,26,36,.14); }
+    .submit:hover { background:#172a39; }
+    .error { padding:12px 14px; border:1px solid #f0c9cc; border-radius:9px; background:#fff2f2; color:#a52f38; font-size:12px; font-weight:700; line-height:1.4; }
+    .secure { color:var(--soft); font-size:11px; line-height:1.4; text-align:center; }
+    @media (max-width:620px) { .site-head { height:78px; } .site-head__inner { width:calc(100% - 36px); } .brand { width:108px; } .brand img { width:102px; } .page { min-height:calc(100vh - 78px); padding:44px 16px 34px; } .intro { margin-bottom:28px; } h1 { font-size:32px; } .intro p { font-size:15px; } .login { padding:27px 22px 25px; border-radius:12px; } .form { gap:21px; } input[type="text"], input[type="password"], .submit { height:54px; } }
   </style>
 </head>
 <body>
-  <main class="login">
-    <header class="brand">
-      <img src="/brand-logo.png" alt="Olly">
-      <span class="brand-line" aria-hidden="true"></span>
-      <div class="brand-copy"><span>Личный кабинет</span><strong>Статистика виджетов</strong></div>
-    </header>
-    <form class="form" method="post" action="/admin-login">
-      <div class="heading"><h1>Вход в адинку</h1><p>Введи данные для доступа к проектам и статистике.</p></div>
+  <header class="site-head"><div class="site-head__inner"><a class="brand" href="/admin-login" aria-label="Olly"><img src="/brand-logo.png" alt="Olly"></a></div></header>
+  <main class="page">
+    <section class="intro"><h1>Вход в кабинет</h1><p>Статистика виджетов и заявки по вашим проектам</p></section>
+    <form class="login form" method="post" action="/admin-login">
       ${error}
       <div class="fields">
-        <label>Логин<input name="username" type="text" autocomplete="username" required autofocus></label>
-        <label>Пароль<input name="password" type="password" autocomplete="current-password" required></label>
+        <label class="field">Логин<input name="username" type="text" autocomplete="username" placeholder="anton" required autofocus></label>
+        <div class="field">
+          <span class="field-label">Пароль</span>
+          <div class="input-wrap"><input class="password-input" id="admin-password" name="password" type="password" autocomplete="current-password" placeholder="Введите пароль" required><button class="show-password" type="button" aria-controls="admin-password">Показать</button></div>
+        </div>
       </div>
-      <button type="submit">Войти</button>
-      <div class="secure">Защищённое соединение · сессия на 8 часов</div>
+      <label class="remember"><input name="remember" type="checkbox" checked><span>Запомнить меня</span></label>
+      <button class="submit" type="submit">Войти</button>
+      <div class="secure">Защищённое соединение</div>
     </form>
   </main>
+  <script>
+    const toggle = document.querySelector(".show-password");
+    const password = document.getElementById("admin-password");
+    toggle.addEventListener("click", () => {
+      const isVisible = password.type === "text";
+      password.type = isVisible ? "password" : "text";
+      toggle.textContent = isVisible ? "Показать" : "Скрыть";
+      password.focus();
+    });
+  </script>
 </body>
 </html>`;
 }
@@ -614,11 +634,12 @@ const server = http.createServer(async (req, res) => {
       }
 
       loginAttempts.delete(attempt.key);
-      const maxAge = Math.floor(ADMIN_SESSION_TTL_MS / 1000);
+      const sessionTtl = form.get("remember") === "on" ? ADMIN_REMEMBERED_SESSION_TTL_MS : ADMIN_SESSION_TTL_MS;
+      const maxAge = Math.floor(sessionTtl / 1000);
       res.writeHead(303, {
         Location: "/admin/",
         "Cache-Control": "no-store",
-        "Set-Cookie": `${ADMIN_SESSION_COOKIE}=${createAdminSession()}; Path=/; HttpOnly; Secure; SameSite=Strict; Max-Age=${maxAge}`
+        "Set-Cookie": `${ADMIN_SESSION_COOKIE}=${createAdminSession(sessionTtl)}; Path=/; HttpOnly; Secure; SameSite=Strict; Max-Age=${maxAge}`
       });
       res.end();
     } catch (error) {
