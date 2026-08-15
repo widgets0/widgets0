@@ -252,7 +252,7 @@ function adminLoginPage(errorMessage = "") {
       </div>
     </section>
     <aside class="visual" aria-label="Пример оформления интерактивного виджета">
-      <img src="/admin-login-pattern.png" alt="Абстрактный паттерн Olly">
+      <img src="/admin-login?asset=pattern" alt="Абстрактный паттерн Olly">
       <div class="visual__caption"><strong>Виджеты, которые превращают внимание в заявки</strong><span>Все проекты и результаты в одном кабинете</span></div>
     </aside>
   </main>
@@ -649,8 +649,14 @@ async function sendToTelegram(lead, req) {
 
 const server = http.createServer(async (req, res) => {
   const requestPath = req.url.split("?")[0];
+  const requestUrl = new URL(req.url, "http://localhost");
 
   if (req.method === "GET" && requestPath === "/admin-login-pattern.png") {
+    sendStaticFile(res, path.join(__dirname, "admin-login-pattern.png"), "image/png");
+    return;
+  }
+
+  if (req.method === "GET" && requestPath === "/admin-login" && requestUrl.searchParams.get("asset") === "pattern") {
     sendStaticFile(res, path.join(__dirname, "admin-login-pattern.png"), "image/png");
     return;
   }
