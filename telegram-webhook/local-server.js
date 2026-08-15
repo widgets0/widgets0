@@ -68,7 +68,7 @@ function sendHtml(res, status, html, headers = {}) {
   res.writeHead(status, {
     "Content-Type": "text/html; charset=utf-8",
     "Cache-Control": "no-store",
-    "Content-Security-Policy": "default-src 'self'; img-src 'self'; style-src 'unsafe-inline'; script-src 'unsafe-inline'; form-action 'self'; frame-ancestors 'none'; base-uri 'none'",
+    "Content-Security-Policy": "default-src 'self'; img-src 'self' https://widgets0.github.io; style-src 'unsafe-inline'; script-src 'unsafe-inline'; form-action 'self'; frame-ancestors 'none'; base-uri 'none'",
     "Referrer-Policy": "no-referrer",
     "X-Content-Type-Options": "nosniff",
     "X-Frame-Options": "DENY",
@@ -161,58 +161,75 @@ function adminLoginPage(errorMessage = "") {
   <title>Olly · Вход в админку</title>
   <link rel="icon" type="image/png" href="/favicon.png">
   <style>
-    :root { color-scheme:light; --bg:#f4f3f0; --panel:#fff; --ink:#12181d; --muted:#6b7580; --soft:#8a949d; --line:rgba(17,24,28,.14); --blue:#256fd4; --nav:#0e1a24; }
+    :root { color-scheme:light; --bg:#f6f7f8; --panel:#fff; --ink:#101820; --muted:#697783; --soft:#84919c; --line:#d9e0e5; --blue:#1678c9; --nav:#0d1c27; }
     * { box-sizing:border-box; }
     html, body { margin:0; min-height:100%; }
     body { min-height:100vh; background:var(--bg); color:var(--ink); font-family:Manrope,Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; -webkit-font-smoothing:antialiased; }
-    .site-head { height:96px; display:flex; align-items:center; border-bottom:1px solid rgba(17,24,28,.1); background:rgba(255,255,255,.72); }
-    .site-head__inner { width:min(1180px, calc(100% - 64px)); margin:0 auto; }
-    .brand { display:inline-flex; align-items:center; width:122px; height:50px; }
-    .brand img { display:block; width:116px; max-height:46px; object-fit:contain; }
-    .page { min-height:calc(100vh - 96px); padding:70px 24px 56px; }
-    .intro { display:grid; gap:14px; margin:0 auto 38px; text-align:center; }
-    h1 { margin:0; font-size:40px; line-height:1.12; letter-spacing:0; }
-    .intro p { margin:0; color:var(--muted); font-size:18px; line-height:1.5; }
-    .login { width:min(100%, 540px); margin:0 auto; padding:36px 38px 34px; border:1px solid var(--line); border-radius:14px; background:var(--panel); box-shadow:0 18px 48px rgba(17,24,28,.07); }
-    .form { display:grid; gap:24px; }
-    .fields { display:grid; gap:23px; }
-    .field { display:grid; gap:8px; }
-    label, .field-label { color:#74808b; font-size:12px; line-height:1.2; font-weight:800; letter-spacing:.06em; text-transform:uppercase; }
+    button, input { font-family:inherit; }
+    .page { display:grid; grid-template-columns:minmax(500px, 1fr) minmax(500px, 1fr); min-height:100vh; }
+    .auth { position:relative; display:flex; min-height:100vh; padding:42px clamp(42px, 6vw, 104px); background:var(--panel); }
+    .brand { position:absolute; top:42px; left:clamp(42px, 6vw, 104px); display:inline-flex; align-items:center; width:126px; height:52px; }
+    .brand img { display:block; width:120px; max-height:48px; object-fit:contain; }
+    .auth__inner { width:min(100%, 500px); margin:auto; padding:76px 0 30px; }
+    .intro { display:grid; gap:13px; margin:0 0 38px; }
+    h1 { margin:0; font-size:44px; line-height:1.08; font-weight:800; letter-spacing:0; }
+    .intro p { max-width:470px; margin:0; color:var(--muted); font-size:18px; line-height:1.55; }
+    .login { width:100%; }
+    .form { display:grid; gap:26px; }
+    .fields { display:grid; gap:22px; }
+    .field { display:grid; gap:10px; }
+    label, .field-label { color:#667581; font-size:14px; line-height:1.25; font-weight:800; letter-spacing:.04em; text-transform:uppercase; }
     .input-wrap { position:relative; }
-    input[type="text"], input[type="password"] { width:100%; height:58px; padding:0 16px; border:1px solid var(--line); border-radius:10px; outline:none; background:#fff; color:var(--ink); font:600 16px/1 inherit; transition:border-color .18s ease, box-shadow .18s ease; }
-    input[type="password"], input[type="text"].password-input { padding-right:100px; }
+    input[type="text"], input[type="password"] { width:100%; height:62px; padding:0 18px; border:1px solid var(--line); border-radius:10px; outline:none; background:#fff; color:var(--ink); font-size:17px; font-weight:600; line-height:1; transition:border-color .18s ease, box-shadow .18s ease; }
+    input[type="password"], input[type="text"].password-input { padding-right:110px; }
     input::placeholder { color:#aab3bb; font-weight:500; }
     input:focus { border-color:var(--blue); box-shadow:0 0 0 3px rgba(37,111,212,.12); }
-    .show-password { position:absolute; top:50%; right:8px; width:86px; height:42px; transform:translateY(-50%); border:0; border-radius:7px; background:transparent; color:var(--muted); cursor:pointer; font:750 12px/1 inherit; }
+    .show-password { position:absolute; top:50%; right:8px; width:96px; height:44px; transform:translateY(-50%); border:0; border-radius:7px; background:transparent; color:var(--muted); cursor:pointer; font-size:14px; line-height:1; font-weight:750; }
     .show-password:hover { background:#f2f4f6; color:var(--ink); }
-    .remember { display:flex; align-items:center; gap:11px; color:#36414b; font-size:14px; font-weight:650; cursor:pointer; text-transform:none; letter-spacing:0; }
-    .remember input { appearance:none; width:20px; height:20px; margin:0; border:1px solid #9faab3; border-radius:5px; background:#fff; cursor:pointer; }
+    .remember { display:flex; align-items:center; gap:12px; color:#33414c; font-size:16px; font-weight:650; cursor:pointer; text-transform:none; letter-spacing:0; }
+    .remember input { flex:0 0 auto; appearance:none; width:22px; height:22px; margin:0; border:1px solid #9faab3; border-radius:5px; background:#fff; cursor:pointer; }
     .remember input:checked { border-color:var(--blue); background:var(--blue); }
-    .remember input:checked::after { content:""; display:block; width:8px; height:4px; margin:5px 0 0 5px; border-left:2px solid #fff; border-bottom:2px solid #fff; transform:rotate(-45deg); }
-    .submit { height:58px; border:0; border-radius:10px; background:var(--nav); color:#fff; cursor:pointer; font:800 15px/1 inherit; box-shadow:0 12px 24px rgba(14,26,36,.14); }
+    .remember input:checked::after { content:""; display:block; width:9px; height:5px; margin:5px 0 0 5px; border-left:2px solid #fff; border-bottom:2px solid #fff; transform:rotate(-45deg); }
+    .submit { height:62px; border:0; border-radius:10px; background:var(--nav); color:#fff; cursor:pointer; font-size:16px; line-height:1; font-weight:800; box-shadow:0 12px 24px rgba(14,26,36,.14); }
     .submit:hover { background:#172a39; }
-    .error { padding:12px 14px; border:1px solid #f0c9cc; border-radius:9px; background:#fff2f2; color:#a52f38; font-size:12px; font-weight:700; line-height:1.4; }
-    .secure { color:var(--soft); font-size:11px; line-height:1.4; text-align:center; }
-    @media (max-width:620px) { .site-head { height:78px; } .site-head__inner { width:calc(100% - 36px); } .brand { width:108px; } .brand img { width:102px; } .page { min-height:calc(100vh - 78px); padding:44px 16px 34px; } .intro { margin-bottom:28px; } h1 { font-size:32px; } .intro p { font-size:15px; } .login { padding:27px 22px 25px; border-radius:12px; } .form { gap:21px; } input[type="text"], input[type="password"], .submit { height:54px; } }
+    .error { padding:13px 15px; border:1px solid #f0c9cc; border-radius:9px; background:#fff2f2; color:#a52f38; font-size:14px; font-weight:700; line-height:1.45; }
+    .secure { color:var(--soft); font-size:13px; line-height:1.45; text-align:center; }
+    .visual { position:relative; min-height:100vh; overflow:hidden; background:#15232c; isolation:isolate; }
+    .visual img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:center; transform:scale(1.015); }
+    .visual::after { content:""; position:absolute; inset:0; z-index:1; background:linear-gradient(180deg, rgba(7,17,24,.04) 25%, rgba(7,17,24,.78) 100%); }
+    .visual__caption { position:absolute; z-index:2; right:clamp(38px, 5vw, 76px); bottom:clamp(38px, 5vw, 72px); left:clamp(38px, 5vw, 76px); color:#fff; }
+    .visual__caption strong { display:block; max-width:560px; font-size:34px; line-height:1.18; letter-spacing:0; }
+    .visual__caption span { display:block; margin-top:14px; color:rgba(255,255,255,.78); font-size:16px; line-height:1.5; }
+    @media (max-width:1040px) { .page { grid-template-columns:minmax(440px, .95fr) 1.05fr; } .auth { padding-right:48px; padding-left:48px; } .brand { left:48px; } .visual__caption strong { font-size:29px; } }
+    @media (max-width:780px) { body { background:#fff; } .page { display:block; } .auth { min-height:100vh; padding:28px 22px; } .brand { top:28px; left:22px; width:112px; height:46px; } .brand img { width:108px; max-height:44px; } .auth__inner { width:min(100%, 520px); padding:88px 0 20px; } .intro { margin-bottom:30px; } h1 { font-size:36px; } .intro p { font-size:17px; } .visual { display:none; } }
+    @media (max-width:420px) { .auth { padding-right:18px; padding-left:18px; } .brand { left:18px; } h1 { font-size:33px; } .intro p { font-size:16px; } label, .field-label { font-size:13px; } input[type="text"], input[type="password"], .submit { height:58px; } }
   </style>
 </head>
 <body>
-  <header class="site-head"><div class="site-head__inner"><a class="brand" href="/admin-login" aria-label="Olly"><img src="/brand-logo.png" alt="Olly"></a></div></header>
   <main class="page">
-    <section class="intro"><h1>Вход в кабинет</h1><p>Статистика виджетов и заявки по вашим проектам</p></section>
-    <form class="login form" method="post" action="/admin-login">
-      ${error}
-      <div class="fields">
-        <label class="field">Логин<input name="username" type="text" autocomplete="username" placeholder="anton" required autofocus></label>
-        <div class="field">
-          <span class="field-label">Пароль</span>
-          <div class="input-wrap"><input class="password-input" id="admin-password" name="password" type="password" autocomplete="current-password" placeholder="Введите пароль" required><button class="show-password" type="button" aria-controls="admin-password">Показать</button></div>
-        </div>
+    <section class="auth">
+      <a class="brand" href="/admin-login" aria-label="Olly"><img src="/brand-logo.png" alt="Olly"></a>
+      <div class="auth__inner">
+        <section class="intro"><h1>Вход в кабинет</h1><p>Статистика виджетов и заявки по вашим проектам</p></section>
+        <form class="login form" method="post" action="/admin-login">
+          ${error}
+          <div class="fields">
+            <label class="field">Логин<input name="username" type="text" autocomplete="username" placeholder="anton" required autofocus></label>
+            <div class="field">
+              <span class="field-label">Пароль</span>
+              <div class="input-wrap"><input class="password-input" id="admin-password" name="password" type="password" autocomplete="current-password" placeholder="Введите пароль" required><button class="show-password" type="button" aria-controls="admin-password">Показать</button></div>
+            </div>
+          </div>
+          <label class="remember"><input name="remember" type="checkbox" checked><span>Запомнить меня</span></label>
+          <button class="submit" type="submit">Войти</button>
+          <div class="secure">Защищённое соединение</div>
+        </form>
       </div>
-      <label class="remember"><input name="remember" type="checkbox" checked><span>Запомнить меня</span></label>
-      <button class="submit" type="submit">Войти</button>
-      <div class="secure">Защищённое соединение</div>
-    </form>
+    </section>
+    <aside class="visual" aria-label="Пример оформления интерактивного виджета">
+      <img src="https://widgets0.github.io/widgets0/gallery/widgets/assets/candle-tinder-1.jpg" alt="Горящие свечи">
+      <div class="visual__caption"><strong>Виджеты, которые превращают внимание в заявки</strong><span>Все проекты и результаты в одном кабинете</span></div>
+    </aside>
   </main>
   <script>
     const toggle = document.querySelector(".show-password");
