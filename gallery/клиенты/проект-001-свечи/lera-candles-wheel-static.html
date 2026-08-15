@@ -1347,25 +1347,24 @@ body {
     };
     const body = JSON.stringify(payload);
 
-    try {
-      if (navigator.sendBeacon) {
-        const blob = new Blob([body], { type: 'application/json' });
-        if (navigator.sendBeacon(endpoint, blob)) return;
+    const sendFallbackBeacon = () => {
+      try {
+        if (navigator.sendBeacon) navigator.sendBeacon(endpoint, body);
+      } catch (error) {
+        // Analytics must never interrupt the widget flow.
       }
-    } catch (error) {
-      // Ignore analytics errors so the widget never breaks for visitors.
-    }
+    };
 
     try {
       fetch(endpoint, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'text/plain;charset=UTF-8' },
         body,
         mode: 'cors',
         keepalive: true
-      }).catch(() => {});
+      }).catch(sendFallbackBeacon);
     } catch (error) {
-      // Ignore analytics errors so the widget never breaks for visitors.
+      sendFallbackBeacon();
     }
   }
 
