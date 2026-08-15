@@ -68,13 +68,29 @@ function sendHtml(res, status, html, headers = {}) {
   res.writeHead(status, {
     "Content-Type": "text/html; charset=utf-8",
     "Cache-Control": "no-store",
-    "Content-Security-Policy": "default-src 'self'; img-src 'self' https://widgets0.github.io; style-src 'unsafe-inline'; script-src 'unsafe-inline'; form-action 'self'; frame-ancestors 'none'; base-uri 'none'",
+    "Content-Security-Policy": "default-src 'self'; img-src 'self'; style-src 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; script-src 'unsafe-inline'; form-action 'self'; frame-ancestors 'none'; base-uri 'none'",
     "Referrer-Policy": "no-referrer",
     "X-Content-Type-Options": "nosniff",
     "X-Frame-Options": "DENY",
     ...headers
   });
   res.end(html);
+}
+
+function sendStaticFile(res, filePath, contentType) {
+  fs.readFile(filePath, (error, data) => {
+    if (error) {
+      sendJson(res, 404, { ok: false, error: "Not found" });
+      return;
+    }
+
+    res.writeHead(200, {
+      "Content-Type": contentType,
+      "Cache-Control": "public, max-age=86400",
+      "X-Content-Type-Options": "nosniff"
+    });
+    res.end(data);
+  });
 }
 
 function parseCookies(req) {
@@ -160,17 +176,26 @@ function adminLoginPage(errorMessage = "") {
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Olly · Вход в админку</title>
   <link rel="icon" type="image/png" href="/favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
     :root { color-scheme:light; --bg:#f6f7f8; --panel:#fff; --ink:#101820; --muted:#697783; --soft:#84919c; --line:#d9e0e5; --blue:#1678c9; --nav:#0d1c27; }
     * { box-sizing:border-box; }
     html, body { margin:0; min-height:100%; }
-    body { min-height:100vh; background:var(--bg); color:var(--ink); font-family:Manrope,Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; -webkit-font-smoothing:antialiased; }
+    body { min-height:100vh; background:var(--bg); color:var(--ink); font-family:Montserrat,Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; -webkit-font-smoothing:antialiased; }
     button, input { font-family:inherit; }
     .page { display:grid; grid-template-columns:minmax(500px, 1fr) minmax(500px, 1fr); min-height:100vh; }
     .auth { position:relative; display:flex; min-height:100vh; padding:42px clamp(42px, 6vw, 104px); background:var(--panel); }
-    .brand { position:absolute; top:42px; left:clamp(42px, 6vw, 104px); display:inline-flex; align-items:center; width:126px; height:52px; }
-    .brand img { display:block; width:120px; max-height:48px; object-fit:contain; }
-    .auth__inner { width:min(100%, 500px); margin:auto; padding:76px 0 30px; }
+    .brand { display:inline-flex; align-items:center; gap:10px; width:132px; height:52px; margin:0 0 74px; color:#0b1b37; overflow:hidden; text-decoration:none; }
+    .logo-dots { display:grid; grid-template-columns:repeat(3, 9px); grid-auto-rows:9px; gap:5px; width:37px; flex:0 0 auto; }
+    .logo-dots i { display:block; border-radius:50%; background:#005280; }
+    .logo-dots i:nth-child(4) { background:#0074a5; }
+    .logo-dots i:nth-child(5) { background:#51baff; }
+    .logo-dots i:nth-child(6), .logo-dots i:nth-child(7), .logo-dots i:nth-child(8), .logo-dots i:nth-child(9), .logo-dots i:nth-child(10) { background:#9bd4ff; }
+    .logo-dots i:nth-child(10) { grid-column:2; }
+    .brand-word { display:block; font-size:28px; line-height:1; font-weight:800; letter-spacing:-0.03em; }
+    .auth__inner { width:min(100%, 500px); margin:0; padding:0 0 30px; }
     .intro { display:grid; gap:13px; margin:0 0 38px; }
     h1 { margin:0; font-size:44px; line-height:1.08; font-weight:800; letter-spacing:0; }
     .intro p { max-width:470px; margin:0; color:var(--muted); font-size:18px; line-height:1.55; }
@@ -194,22 +219,22 @@ function adminLoginPage(errorMessage = "") {
     .submit:hover { background:#172a39; }
     .error { padding:13px 15px; border:1px solid #f0c9cc; border-radius:9px; background:#fff2f2; color:#a52f38; font-size:14px; font-weight:700; line-height:1.45; }
     .secure { color:var(--soft); font-size:13px; line-height:1.45; text-align:center; }
-    .visual { position:relative; min-height:100vh; overflow:hidden; background:#15232c; isolation:isolate; }
-    .visual img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:center; transform:scale(1.015); }
-    .visual::after { content:""; position:absolute; inset:0; z-index:1; background:linear-gradient(180deg, rgba(7,17,24,.04) 25%, rgba(7,17,24,.78) 100%); }
-    .visual__caption { position:absolute; z-index:2; right:clamp(38px, 5vw, 76px); bottom:clamp(38px, 5vw, 72px); left:clamp(38px, 5vw, 76px); color:#fff; }
-    .visual__caption strong { display:block; max-width:560px; font-size:34px; line-height:1.18; letter-spacing:0; }
-    .visual__caption span { display:block; margin-top:14px; color:rgba(255,255,255,.78); font-size:16px; line-height:1.5; }
-    @media (max-width:1040px) { .page { grid-template-columns:minmax(440px, .95fr) 1.05fr; } .auth { padding-right:48px; padding-left:48px; } .brand { left:48px; } .visual__caption strong { font-size:29px; } }
-    @media (max-width:780px) { body { background:#fff; } .page { display:block; } .auth { min-height:100vh; padding:28px 22px; } .brand { top:28px; left:22px; width:112px; height:46px; } .brand img { width:108px; max-height:44px; } .auth__inner { width:min(100%, 520px); padding:88px 0 20px; } .intro { margin-bottom:30px; } h1 { font-size:36px; } .intro p { font-size:17px; } .visual { display:none; } }
+    .visual { position:relative; min-height:100vh; overflow:hidden; background:#eaf7fb; isolation:isolate; }
+    .visual img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:center; transform:scale(1.01); }
+    .visual::after { content:""; position:absolute; inset:0; z-index:1; background:linear-gradient(180deg, rgba(255,255,255,.06) 0%, rgba(5,31,45,.14) 100%); }
+    .visual__caption { position:absolute; z-index:2; right:clamp(38px, 5vw, 76px); bottom:clamp(38px, 5vw, 72px); left:clamp(38px, 5vw, 76px); width:min(540px, calc(100% - clamp(76px, 10vw, 152px))); padding:26px 28px; border:1px solid rgba(255,255,255,.64); border-radius:22px; background:rgba(255,255,255,.82); color:#0d1c27; box-shadow:0 22px 60px rgba(7,31,45,.22); -webkit-backdrop-filter:blur(18px) saturate(150%); backdrop-filter:blur(18px) saturate(150%); }
+    .visual__caption strong { display:block; max-width:500px; font-size:30px; line-height:1.18; font-weight:800; letter-spacing:0; }
+    .visual__caption span { display:block; margin-top:12px; color:#51616c; font-size:15px; line-height:1.55; font-weight:600; }
+    @media (max-width:1120px) { body { background:#fff; } .page { display:block; } .auth { min-height:100vh; padding:28px 32px; } .brand { width:124px; height:46px; margin-bottom:72px; } .logo-dots { grid-template-columns:repeat(3, 8px); grid-auto-rows:8px; gap:4px; width:32px; } .brand-word { font-size:25px; } .auth__inner { width:min(100%, 520px); padding:0 0 20px; } .intro { margin-bottom:30px; } h1 { font-size:36px; } .intro p { font-size:17px; } .visual { display:none; } }
+    @media (max-width:780px) { .auth { padding-right:22px; padding-left:22px; } .brand { left:22px; } }
     @media (max-width:420px) { .auth { padding-right:18px; padding-left:18px; } .brand { left:18px; } h1 { font-size:33px; } .intro p { font-size:16px; } label, .field-label { font-size:13px; } input[type="text"], input[type="password"], .submit { height:58px; } }
   </style>
 </head>
 <body>
   <main class="page">
     <section class="auth">
-      <a class="brand" href="/admin-login" aria-label="Olly"><img src="/brand-logo.png" alt="Olly"></a>
       <div class="auth__inner">
+        <a class="brand" href="/admin-login" aria-label="Olly"><span class="logo-dots" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span><span class="brand-word">Olly</span></a>
         <section class="intro"><h1>Вход в кабинет</h1><p>Статистика виджетов и заявки по вашим проектам</p></section>
         <form class="login form" method="post" action="/admin-login">
           ${error}
@@ -227,7 +252,7 @@ function adminLoginPage(errorMessage = "") {
       </div>
     </section>
     <aside class="visual" aria-label="Пример оформления интерактивного виджета">
-      <img src="https://widgets0.github.io/widgets0/gallery/widgets/assets/candle-tinder-1.jpg" alt="Горящие свечи">
+      <img src="/admin-login-pattern.png" alt="Абстрактный паттерн Olly">
       <div class="visual__caption"><strong>Виджеты, которые превращают внимание в заявки</strong><span>Все проекты и результаты в одном кабинете</span></div>
     </aside>
   </main>
@@ -624,6 +649,21 @@ async function sendToTelegram(lead, req) {
 
 const server = http.createServer(async (req, res) => {
   const requestPath = req.url.split("?")[0];
+
+  if (req.method === "GET" && requestPath === "/admin-login-pattern.png") {
+    sendStaticFile(res, path.join(__dirname, "admin-login-pattern.png"), "image/png");
+    return;
+  }
+
+  if (req.method === "GET" && requestPath === "/brand-logo.png") {
+    sendStaticFile(res, path.join(__dirname, "..", "brand-logo.png"), "image/png");
+    return;
+  }
+
+  if (req.method === "GET" && requestPath === "/favicon.png") {
+    sendStaticFile(res, path.join(__dirname, "..", "favicon.png"), "image/png");
+    return;
+  }
 
   if (req.method === "GET" && requestPath === "/admin-login") {
     if (hasValidAdminSession(req)) {
