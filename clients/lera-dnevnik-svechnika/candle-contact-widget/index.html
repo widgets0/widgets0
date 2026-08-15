@@ -24,7 +24,7 @@
       align-items: center;
       justify-content: center;
       padding: 18px;
-      background: var(--lera-paper);
+      background: var(--lera-white);
       font-family: 'Montserrat', Arial, sans-serif;
       color: var(--lera-white);
     }
@@ -94,6 +94,7 @@
       font: 500 12px/1 'Tenor Sans', Arial, sans-serif;
       letter-spacing: 0.12em;
       text-transform: uppercase;
+      text-decoration: none;
       transition: transform 0.22s ease, background 0.22s ease, box-shadow 0.22s ease;
     }
 
@@ -132,159 +133,6 @@
       filter: saturate(0.86) contrast(1.04) brightness(0.94);
     }
 
-    .cat-modal {
-      position: fixed;
-      inset: 0;
-      z-index: 2147482000;
-      display: none;
-      align-items: center;
-      justify-content: center;
-      padding: 18px;
-      background: rgba(17, 17, 17, 0.68);
-      backdrop-filter: blur(9px);
-    }
-
-    .cat-modal.is-open { display: flex; }
-
-    .cat-form-card {
-      position: relative;
-      width: min(100%, 420px);
-      padding: 30px;
-      border: 1px solid rgba(193, 182, 164, 0.56);
-      border-radius: 22px;
-      background: var(--lera-white);
-      box-shadow: 0 30px 90px rgba(17, 17, 17, 0.36);
-      color: var(--lera-ink);
-      animation: catModalIn 0.25s ease-out;
-    }
-
-    .cat-form-card.is-success .cat-form-content { display: none; }
-
-    .cat-close {
-      position: absolute;
-      top: 14px;
-      right: 14px;
-      width: 34px;
-      height: 34px;
-      border: 1px solid #e6e0d8;
-      border-radius: 50%;
-      background: var(--lera-paper);
-      color: #6c6257;
-      font-size: 22px;
-      cursor: pointer;
-      line-height: 1;
-    }
-
-    .cat-form-title {
-      margin: 0 42px 9px 0;
-      color: var(--lera-ink);
-      font: 400 27px/1.15 'Tenor Sans', Arial, sans-serif;
-      letter-spacing: 0.04em;
-      text-transform: uppercase;
-    }
-
-    .cat-form-text {
-      margin: 0 0 20px;
-      color: #766e65;
-      font-size: 13px;
-      font-weight: 400;
-      line-height: 1.55;
-    }
-
-    .cat-form {
-      display: grid;
-      gap: 11px;
-    }
-
-    .cat-input {
-      width: 100%;
-      height: 50px;
-      border: 1px solid #ded7ce;
-      border-radius: 10px;
-      padding: 0 14px;
-      background: #fbfaf8;
-      color: var(--lera-ink);
-      font: 500 13px/1.2 'Montserrat', Arial, sans-serif;
-      outline: none;
-    }
-
-    .cat-input:focus {
-      border-color: var(--lera-beige);
-      box-shadow: 0 0 0 4px rgba(193, 182, 164, 0.18);
-    }
-
-    .cat-consent {
-      display: flex;
-      align-items: flex-start;
-      gap: 9px;
-      color: #766e65;
-      font-size: 11px;
-      font-weight: 500;
-      line-height: 1.45;
-    }
-
-    .cat-consent input {
-      width: 17px;
-      height: 17px;
-      margin: 0;
-      accent-color: var(--lera-beige);
-      flex: 0 0 auto;
-    }
-
-    .cat-error {
-      min-height: 17px;
-      color: #b43a31;
-      font-size: 12px;
-      font-weight: 600;
-      text-align: center;
-    }
-
-    .cat-submit {
-      width: 100%;
-      height: 50px;
-      border: 0;
-      border-radius: 999px;
-      background: var(--lera-beige);
-      color: var(--lera-white);
-      cursor: pointer;
-      font: 500 12px/1 'Tenor Sans', Arial, sans-serif;
-      letter-spacing: 0.11em;
-      text-transform: uppercase;
-    }
-
-    .cat-submit:disabled {
-      opacity: 0.7;
-      cursor: wait;
-    }
-
-    .cat-success {
-      display: none;
-      padding: 18px 4px 5px;
-      text-align: center;
-    }
-
-    .cat-success.is-open { display: block; }
-
-    .cat-success h2 {
-      margin: 0 0 10px;
-      color: var(--lera-ink);
-      font: 400 27px/1.15 'Tenor Sans', Arial, sans-serif;
-      text-transform: uppercase;
-    }
-
-    .cat-success p {
-      margin: 0;
-      color: #766e65;
-      font-size: 13px;
-      font-weight: 500;
-      line-height: 1.5;
-    }
-
-    @keyframes catModalIn {
-      from { opacity: 0; transform: translateY(14px) scale(0.98); }
-      to { opacity: 1; transform: translateY(0) scale(1); }
-    }
-
     @media (max-width: 700px) {
       body { padding: 12px; }
 
@@ -310,12 +158,12 @@
       }
 
       .cat-image-wrapper {
-        height: 205px;
+        width: calc(100% - 24px);
+        height: auto;
+        aspect-ratio: 1 / 1;
         margin: 0 12px 12px;
         border-radius: 16px;
       }
-
-      .cat-form-card { padding: 26px 22px; }
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -331,7 +179,7 @@
         <p class="cat-subtitle">
           Свяжись с нашей службой заботы напрямую и задай любые уточняющие вопросы
         </p>
-        <button type="button" class="cat-btn" data-cat-open>Задать вопрос</button>
+        <a class="cat-btn" href="https://t.me/valeriechvileva_help" target="_blank" rel="noopener noreferrer">Задать вопрос</a>
       </div>
 
       <div class="cat-image-wrapper">
@@ -342,140 +190,5 @@
     </div>
   </div>
 
-  <div class="cat-modal" data-cat-modal aria-hidden="true">
-    <div class="cat-form-card" role="dialog" aria-modal="true" aria-labelledby="cat-form-title">
-      <button type="button" class="cat-close" data-cat-close aria-label="Закрыть">×</button>
-
-      <div class="cat-form-content">
-        <h2 class="cat-form-title" id="cat-form-title">Задайте вопрос</h2>
-        <p class="cat-form-text">Оставьте контакты — служба заботы свяжется с вами и ответит на уточняющие вопросы.</p>
-
-        <form class="cat-form" data-cat-form>
-          <input class="cat-input" type="text" name="name" placeholder="Ваше имя" autocomplete="name" required>
-          <input class="cat-input" type="tel" name="phone" placeholder="+7 (999) 999-99-99" autocomplete="tel" inputmode="tel" required>
-          <textarea class="cat-input" name="question" placeholder="Ваш вопрос" rows="3" style="height: 86px; padding-top: 14px; resize: vertical;"></textarea>
-          <label class="cat-consent">
-            <input type="checkbox" name="consent" required>
-            <span>Согласен(на) на обработку персональных данных</span>
-          </label>
-          <div class="cat-error" data-cat-error aria-live="polite"></div>
-          <button type="submit" class="cat-submit">Отправить</button>
-        </form>
-      </div>
-
-      <div class="cat-success" data-cat-success>
-        <h2>Спасибо за заявку!</h2>
-        <p>Мы получили сообщение и скоро свяжемся с вами.</p>
-      </div>
-    </div>
-  </div>
-
-  <script>
-    (function () {
-      const LEAD_CONFIG = Object.assign({
-        webhookUrl: "https://155-212-191-195.sslip.io/widgets0-webhook/",
-        webhookSecret: '',
-        widget: "Форма с видео — Дневник свечника",
-        source: "lera-candle-contact-widget"
-      }, window.LERA_CANDLE_CONTACT_CONFIG || {});
-      const leadParams = new URLSearchParams(window.location.search);
-      if (leadParams.get('webhookUrl')) LEAD_CONFIG.webhookUrl = leadParams.get('webhookUrl');
-      if (leadParams.get('webhookSecret')) LEAD_CONFIG.webhookSecret = leadParams.get('webhookSecret');
-      if (leadParams.get('source')) LEAD_CONFIG.source = leadParams.get('source');
-      const pageUrl = leadParams.get('pageUrl') || document.referrer || window.location.href.split('?')[0];
-
-      const openBtn = document.querySelector('[data-cat-open]');
-      const modal = document.querySelector('[data-cat-modal]');
-      const closeBtn = document.querySelector('[data-cat-close]');
-      const formCard = document.querySelector('.cat-form-card');
-      const form = document.querySelector('[data-cat-form]');
-      const errorEl = document.querySelector('[data-cat-error]');
-      const successEl = document.querySelector('[data-cat-success]');
-
-      function openModal() {
-        modal.classList.add('is-open');
-        modal.setAttribute('aria-hidden', 'false');
-        setTimeout(() => form.elements.name.focus(), 50);
-      }
-
-      function closeModal() {
-        modal.classList.remove('is-open');
-        modal.setAttribute('aria-hidden', 'true');
-      }
-
-      function formatPhone(value) {
-        const digits = value.replace(/\D/g, '').replace(/^8/, '7').slice(0, 11);
-        const normalized = digits.startsWith('7') ? digits : '7' + digits;
-        const parts = normalized.slice(1);
-        let result = '+7';
-        if (parts.length > 0) result += ' (' + parts.slice(0, 3);
-        if (parts.length >= 3) result += ')';
-        if (parts.length > 3) result += ' ' + parts.slice(3, 6);
-        if (parts.length > 6) result += '-' + parts.slice(6, 8);
-        if (parts.length > 8) result += '-' + parts.slice(8, 10);
-        return result;
-      }
-
-      openBtn.addEventListener('click', openModal);
-      closeBtn.addEventListener('click', closeModal);
-      modal.addEventListener('click', (event) => {
-        if (event.target === modal) closeModal();
-      });
-
-      form.elements.phone.addEventListener('input', () => {
-        form.elements.phone.value = formatPhone(form.elements.phone.value);
-      });
-
-      form.addEventListener('submit', async (event) => {
-        event.preventDefault();
-        const submitBtn = form.querySelector('.cat-submit');
-        const name = form.elements.name.value.trim();
-        const phone = form.elements.phone.value.trim();
-        const question = form.elements.question.value.trim();
-        const consent = form.elements.consent.checked;
-
-        if (!name || phone.replace(/\D/g, '').length !== 11) {
-          errorEl.textContent = 'Введите имя и полный номер телефона.';
-          return;
-        }
-
-        if (!consent) {
-          errorEl.textContent = 'Нужно согласие на обработку персональных данных.';
-          return;
-        }
-
-        errorEl.textContent = '';
-        submitBtn.disabled = true;
-        submitBtn.textContent = 'Отправляем...';
-
-        try {
-          const response = await fetch(LEAD_CONFIG.webhookUrl, {
-            method: 'POST',
-            headers: Object.assign({ 'Content-Type': 'application/json' }, LEAD_CONFIG.webhookSecret ? { 'X-Webhook-Secret': LEAD_CONFIG.webhookSecret } : {}),
-            body: JSON.stringify({
-              widget: LEAD_CONFIG.widget,
-              source: LEAD_CONFIG.source,
-              name,
-              phone,
-              question: question || 'Вопрос не указан',
-              'Согласие на обработку персональных данных': 'Да',
-              page: pageUrl,
-              createdAt: new Date().toISOString()
-            })
-          });
-
-          if (!response.ok) throw new Error('Webhook error');
-
-          formCard.classList.add('is-success');
-          successEl.classList.add('is-open');
-          setTimeout(closeModal, 4500);
-        } catch (error) {
-          errorEl.textContent = 'Не получилось отправить заявку. Попробуйте ещё раз.';
-          submitBtn.disabled = false;
-          submitBtn.textContent = 'Отправить';
-        }
-      });
-    })();
-  </script>
 </body>
 </html>
