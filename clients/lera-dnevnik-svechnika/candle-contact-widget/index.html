@@ -198,7 +198,9 @@
         widgetId: 'lera-candle-contact',
         source: 'lera-candle-contact-widget'
       }, window.LERA_CANDLE_CONTACT_ANALYTICS_CONFIG || {});
+      const contactCard = document.querySelector('.cat-card');
       const contactLink = document.querySelector('.cat-btn');
+      let viewTracked = false;
 
       function track(eventName) {
         const endpoint = String(analytics.endpoint || '').trim();
@@ -233,7 +235,25 @@
         }
       }
 
-      track('widget_shown');
+      track('widget_loaded');
+
+      function trackView() {
+        if (viewTracked) return;
+        viewTracked = true;
+        track('widget_shown');
+      }
+
+      if (contactCard && 'IntersectionObserver' in window) {
+        const observer = new IntersectionObserver(function (entries) {
+          if (!entries.some(function (entry) { return entry.isIntersecting && entry.intersectionRatio >= 0.4; })) return;
+          observer.disconnect();
+          trackView();
+        }, { threshold: [0.4] });
+        observer.observe(contactCard);
+      } else {
+        trackView();
+      }
+
       if (contactLink) {
         contactLink.addEventListener('click', function () {
           track('prize_link_click');

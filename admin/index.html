@@ -485,6 +485,11 @@
       color: #865b0d;
     }
 
+    .status--domain-warning {
+      background: var(--gold-soft);
+      color: #865b0d;
+    }
+
     .status--off {
       background: #edf0f3;
       color: #7c8792;
@@ -1012,7 +1017,7 @@
           prize_link_click: 0
         },
         code: `<script
-  src="https://widgets0.github.io/widgets0/clients/lera-dnevnik-svechnika/candle-contact-widget/embed.js?v=contact-analytics-20260815"
+  src="https://widgets0.github.io/widgets0/clients/lera-dnevnik-svechnika/candle-contact-widget/embed.js?v=domain-status-20260815"
   async><\/script>`
       },
       {
@@ -1099,6 +1104,7 @@
 
     function emptyEvents() {
       return {
+        widget_loaded: 0,
         widget_shown: 0,
         widget_closed: 0,
         wheel_spin_click: 0,
@@ -1112,14 +1118,68 @@
       return list.find(entry => [entry.widgetId, entry.source].includes(widget.analyticsWidgetId || widget.source || widget.id)) || null;
     }
 
-    function hasRealAnalytics(widget) {
+    function normalizeDomain(value) {
+      return String(value || "").trim().toLowerCase().replace(/^www\./, "");
+    }
+
+    function domainMatches(expected, actual) {
+      const target = normalizeDomain(expected);
+      const candidate = normalizeDomain(actual);
+      return Boolean(target && candidate && (candidate === target || candidate.endsWith(`.${target}`)));
+    }
+
+    function analyticsDomains(widget) {
       const entry = getWidgetAnalytics(widget);
-      return Boolean(entry && Object.values(entry.events || {}).some(value => Number(value || 0) > 0));
+      if (!entry) return [];
+      if (Array.isArray(entry.domains)) return entry.domains;
+      return entry.domain ? [{ domain: entry.domain, events: entry.events || emptyEvents(), lastSeenAt: entry.lastSeenAt || "" }] : [];
+    }
+
+    function targetDomainAnalytics(widget) {
+      return analyticsDomains(widget).filter(item => domainMatches(widget.domain, item.domain));
+    }
+
+    function sumDomainEvents(items) {
+      return items.reduce((result, item) => {
+        Object.entries(item.events || {}).forEach(([eventName, value]) => {
+          result[eventName] = Number(result[eventName] || 0) + Number(value || 0);
+        });
+        return result;
+      }, emptyEvents());
+    }
+
+    function installationStatus(widget) {
+      const domains = analyticsDomains(widget);
+      const target = domains.filter(item => domainMatches(widget.domain, item.domain));
+      const other = domains.filter(item => item.domain && item.domain !== "unknown-domain" && !domainMatches(widget.domain, item.domain));
+      const targetDetected = target.some(item => Object.values(item.events || {}).some(value => Number(value || 0) > 0));
+
+      if (targetDetected) {
+        return {
+          className: "",
+          label: "Код установлен",
+          warning: other.length ? "Обнаружен на другом домене" : "",
+          details: other.map(item => item.domain).join(", ")
+        };
+      }
+
+      if (other.length) {
+        return {
+          className: "status--domain-warning",
+          label: "Обнаружен на другом домене",
+          warning: "",
+          details: other.map(item => item.domain).join(", ")
+        };
+      }
+
+      return { className: "status--off", label: "Код не обнаружен", warning: "", details: "" };
     }
 
     function getWidgetEvents(widget) {
-      const real = getWidgetAnalytics(widget)?.events;
-      if (real) return { ...emptyEvents(), ...real };
+      const entry = getWidgetAnalytics(widget);
+      const domainEvents = targetDomainAnalytics(widget);
+      if (domainEvents.length) return sumDomainEvents(domainEvents);
+      if (entry) return emptyEvents();
       return { ...emptyEvents(), ...(widget.fallback || {}) };
     }
 
@@ -1202,7 +1262,7 @@
       const leads = Number(events.prize_link_click || 0);
       const closed = Number(events.widget_closed || 0);
       const isActive = Boolean(state.activeById[widget.id]);
-      const realData = hasRealAnalytics(widget);
+      const install = installationStatus(widget);
       const isContact = widget.metricMode === "contact";
       const code = widget.code || `<script src="https://widgets0.github.io/widgets0/widget-loader.js" data-widget="${widget.id}" data-source="${widget.source}" async><\\/script>`;
 
@@ -1215,7 +1275,8 @@
                 <div class="widget-title-row">
                   <span class="widget-title">${escapeHtml(widget.title)}</span>
                   <span class="status ${isActive ? "" : "status--off"}">${isActive ? "Активен" : "Выключен"}</span>
-                  ${realData ? "" : '<span class="status status--waiting">Ждём первых данных</span>'}
+                  <span class="status ${install.className}" title="${escapeHtml(install.details)}">${escapeHtml(install.label)}</span>
+                  ${install.warning ? `<span class="status status--domain-warning" title="${escapeHtml(install.details)}">${escapeHtml(install.warning)}</span>` : ""}
                 </div>
                 <div class="widget-meta">
                   <span class="mono">${escapeHtml(widget.domain)}</span>
@@ -1246,8 +1307,8 @@
 
           ${isContact ? `
             <div class="funnel funnel--contact">
-              ${renderMetric("Показали блок", shown, shown)}
-              ${renderMetric("Перешли в Telegram", leads, shown, "bar--green")}
+              ${renderMetric("Блок увидели", shown, shown)}
+              ${renderMetric("Нажали кнопку", leads, shown, "bar--green")}
             </div>
           ` : `
             <div class="funnel">

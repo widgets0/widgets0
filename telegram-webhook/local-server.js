@@ -11,6 +11,7 @@ const PORT = Number(env.PORT || 8787);
 const HOST = env.HOST || "0.0.0.0";
 const ANALYTICS_EVENTS_PATH = env.ANALYTICS_EVENTS_PATH || path.join(__dirname, "analytics-events.jsonl");
 const ALLOWED_ANALYTICS_EVENTS = new Set([
+  "widget_loaded",
   "widget_shown",
   "widget_closed",
   "wheel_spin_click",
@@ -122,6 +123,7 @@ async function readAnalyticsEvents() {
 
 function emptyEventCounters() {
   return {
+    widget_loaded: 0,
     widget_shown: 0,
     widget_closed: 0,
     wheel_spin_click: 0,
@@ -144,6 +146,7 @@ function summarizeAnalyticsEvents(events) {
         clientId: event.clientId || "",
         source: event.source || key,
         domain: eventDomain(event),
+        domains: {},
         events: emptyEventCounters(),
         firstSeenAt: event.createdAt || "",
         lastSeenAt: event.createdAt || ""
@@ -151,13 +154,30 @@ function summarizeAnalyticsEvents(events) {
     }
 
     const item = widgets.get(key);
+    const domain = eventDomain(event) || "unknown-domain";
     item.clientId = item.clientId || event.clientId || "";
     item.source = item.source || event.source || key;
-    item.domain = item.domain || eventDomain(event);
+    item.domain = item.domain || (domain === "unknown-domain" ? "" : domain);
     item.events[event.event] += 1;
     item.lastSeenAt = event.createdAt || item.lastSeenAt;
     if (event.createdAt && (!item.firstSeenAt || event.createdAt < item.firstSeenAt)) {
       item.firstSeenAt = event.createdAt;
+    }
+
+    if (!item.domains[domain]) {
+      item.domains[domain] = {
+        domain,
+        events: emptyEventCounters(),
+        firstSeenAt: event.createdAt || "",
+        lastSeenAt: event.createdAt || ""
+      };
+    }
+
+    const domainItem = item.domains[domain];
+    domainItem.events[event.event] += 1;
+    domainItem.lastSeenAt = event.createdAt || domainItem.lastSeenAt;
+    if (event.createdAt && (!domainItem.firstSeenAt || event.createdAt < domainItem.firstSeenAt)) {
+      domainItem.firstSeenAt = event.createdAt;
     }
 
     totals[event.event] += 1;
@@ -167,7 +187,12 @@ function summarizeAnalyticsEvents(events) {
     ok: true,
     generatedAt: new Date().toISOString(),
     totals,
-    widgets: Array.from(widgets.values()).sort((a, b) => String(b.lastSeenAt).localeCompare(String(a.lastSeenAt)))
+    widgets: Array.from(widgets.values())
+      .map(item => ({
+        ...item,
+        domains: Object.values(item.domains).sort((a, b) => String(b.lastSeenAt).localeCompare(String(a.lastSeenAt)))
+      }))
+      .sort((a, b) => String(b.lastSeenAt).localeCompare(String(a.lastSeenAt)))
   };
 }
 
