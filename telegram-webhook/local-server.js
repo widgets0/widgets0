@@ -178,54 +178,51 @@ function adminLoginPage(errorMessage = "") {
   <link rel="icon" type="image/png" href="/favicon.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
-    :root { color-scheme:light; --bg:#f6f7f8; --panel:#fff; --ink:#101820; --muted:#697783; --soft:#84919c; --line:#d9e0e5; --blue:#1678c9; --nav:#0d1c27; }
+    :root { color-scheme:light; --bg:#f6f7f8; --panel:#fff; --ink:#08192c; --muted:#667286; --soft:#7c8798; --line:#d3deec; --field:#eff7ff; --blue:#1678c9; --nav:#071927; }
     * { box-sizing:border-box; }
     html, body { margin:0; min-height:100%; }
-    body { min-height:100vh; background:var(--bg); color:var(--ink); font-family:Montserrat,Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; -webkit-font-smoothing:antialiased; }
+    body { min-height:100vh; background:var(--bg); color:var(--ink); font-family:Manrope,Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; -webkit-font-smoothing:antialiased; }
     button, input { font-family:inherit; }
     .page { display:grid; grid-template-columns:minmax(500px, 1fr) minmax(500px, 1fr); min-height:100vh; }
-    .auth { position:relative; display:flex; min-height:100vh; padding:42px clamp(42px, 6vw, 104px); background:var(--panel); }
-    .brand { display:inline-flex; align-items:center; gap:10px; width:132px; height:52px; margin:0 0 74px; color:#0b1b37; overflow:hidden; text-decoration:none; }
-    .logo-dots { display:grid; grid-template-columns:repeat(3, 9px); grid-auto-rows:9px; gap:5px; width:37px; flex:0 0 auto; }
+    .auth { position:relative; display:flex; min-height:100vh; padding:72px clamp(52px, 4.7vw, 72px); background:var(--panel); }
+    .brand { display:inline-flex; align-items:center; gap:12px; width:142px; height:58px; margin:0 0 92px; color:#0b1b37; overflow:hidden; text-decoration:none; }
+    .brand, .brand * { text-decoration:none; }
+    .logo-dots { display:grid; grid-template-columns:repeat(3, 10px); grid-auto-rows:10px; gap:5px; width:40px; flex:0 0 auto; }
     .logo-dots i { display:block; border-radius:50%; background:#005280; }
     .logo-dots i:nth-child(4) { background:#0074a5; }
     .logo-dots i:nth-child(5) { background:#51baff; }
     .logo-dots i:nth-child(6), .logo-dots i:nth-child(7), .logo-dots i:nth-child(8), .logo-dots i:nth-child(9), .logo-dots i:nth-child(10) { background:#9bd4ff; }
     .logo-dots i:nth-child(10) { grid-column:2; }
-    .brand-word { display:block; font-size:28px; line-height:1; font-weight:800; letter-spacing:-0.03em; }
-    .auth__inner { width:min(100%, 500px); margin:0; padding:0 0 30px; }
-    .intro { display:grid; gap:13px; margin:0 0 38px; }
-    h1 { margin:0; font-size:44px; line-height:1.08; font-weight:800; letter-spacing:0; }
-    .intro p { max-width:470px; margin:0; color:var(--muted); font-size:18px; line-height:1.55; }
+    .brand-word { display:block; font-size:30px; line-height:1; font-weight:800; letter-spacing:-0.04em; }
+    .auth__inner { width:min(100%, 594px); margin:0; padding:0 0 42px; }
+    .intro { display:grid; gap:20px; margin:0 0 50px; }
+    h1 { margin:0; font-size:54px; line-height:1.08; font-weight:500; letter-spacing:0; }
+    .intro p { max-width:420px; margin:0; color:var(--muted); font-size:25px; line-height:1.55; font-weight:500; }
     .login { width:100%; }
-    .form { display:grid; gap:26px; }
-    .fields { display:grid; gap:22px; }
-    .field { display:grid; gap:10px; }
-    label, .field-label { color:#667581; font-size:14px; line-height:1.25; font-weight:800; letter-spacing:.04em; text-transform:uppercase; }
+    .form { display:grid; gap:34px; }
+    .fields { display:grid; gap:30px; }
+    .field { display:grid; gap:12px; }
+    label, .field-label { color:#617084; font-size:20px; line-height:1.25; font-weight:800; letter-spacing:.01em; text-transform:uppercase; }
     .input-wrap { position:relative; }
-    input[type="text"], input[type="password"] { width:100%; height:62px; padding:0 18px; border:1px solid var(--line); border-radius:10px; outline:none; background:#fff; color:var(--ink); font-size:17px; font-weight:600; line-height:1; transition:border-color .18s ease, box-shadow .18s ease; }
-    input[type="password"], input[type="text"].password-input { padding-right:110px; }
-    input::placeholder { color:#aab3bb; font-weight:500; }
-    input:focus { border-color:var(--blue); box-shadow:0 0 0 3px rgba(37,111,212,.12); }
-    .show-password { position:absolute; top:50%; right:8px; width:96px; height:44px; transform:translateY(-50%); border:0; border-radius:7px; background:transparent; color:var(--muted); cursor:pointer; font-size:14px; line-height:1; font-weight:750; }
+    input[type="text"], input[type="password"] { width:100%; height:80px; padding:0 28px; border:1px solid var(--line); border-radius:10px; outline:none; background:var(--field); color:#000; font-size:24px; font-weight:500; line-height:1; transition:border-color .18s ease, box-shadow .18s ease; }
+    input[type="password"], input[type="text"].password-input { padding-right:142px; }
+    input::placeholder { color:#9aa9b8; font-weight:500; }
+    input:focus { border-color:var(--blue); box-shadow:0 0 0 3px rgba(37,111,212,.14); }
+    .show-password { position:absolute; top:50%; right:12px; width:118px; height:54px; transform:translateY(-50%); border:0; border-radius:8px; background:transparent; color:var(--muted); cursor:pointer; font-size:17px; line-height:1; font-weight:800; }
     .show-password:hover { background:#f2f4f6; color:var(--ink); }
-    .remember { display:flex; align-items:center; gap:12px; color:#33414c; font-size:16px; font-weight:650; cursor:pointer; text-transform:none; letter-spacing:0; }
-    .remember input { flex:0 0 auto; appearance:none; width:22px; height:22px; margin:0; border:1px solid #9faab3; border-radius:5px; background:#fff; cursor:pointer; }
+    .remember { display:flex; align-items:center; gap:16px; color:#101820; font-size:21px; font-weight:500; cursor:pointer; text-transform:none; letter-spacing:0; }
+    .remember input { flex:0 0 auto; appearance:none; width:28px; height:28px; margin:0; border:1px solid #9faab3; border-radius:6px; background:#fff; cursor:pointer; }
     .remember input:checked { border-color:var(--blue); background:var(--blue); }
-    .remember input:checked::after { content:""; display:block; width:9px; height:5px; margin:5px 0 0 5px; border-left:2px solid #fff; border-bottom:2px solid #fff; transform:rotate(-45deg); }
-    .submit { height:62px; border:0; border-radius:10px; background:var(--nav); color:#fff; cursor:pointer; font-size:16px; line-height:1; font-weight:800; box-shadow:0 12px 24px rgba(14,26,36,.14); }
-    .submit:hover { background:#172a39; }
+    .remember input:checked::after { content:""; display:block; width:12px; height:7px; margin:6px 0 0 7px; border-left:3px solid #fff; border-bottom:3px solid #fff; transform:rotate(-45deg); }
+    .submit { height:82px; border:0; border-radius:10px; background:var(--nav); color:#fff; cursor:pointer; font-size:21px; line-height:1; font-weight:800; box-shadow:0 16px 28px rgba(14,26,36,.16); }
+    .submit:hover { background:#11283b; }
     .error { padding:13px 15px; border:1px solid #f0c9cc; border-radius:9px; background:#fff2f2; color:#a52f38; font-size:14px; font-weight:700; line-height:1.45; }
-    .secure { color:var(--soft); font-size:13px; line-height:1.45; text-align:center; }
+    .secure { color:var(--soft); font-size:18px; line-height:1.45; text-align:center; }
     .visual { position:relative; min-height:100vh; overflow:hidden; background:#eaf7fb; isolation:isolate; }
     .visual img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:center; transform:scale(1.01); }
-    .visual::after { content:""; position:absolute; inset:0; z-index:1; background:linear-gradient(180deg, rgba(255,255,255,.06) 0%, rgba(5,31,45,.14) 100%); }
-    .visual__caption { position:absolute; z-index:2; right:clamp(38px, 5vw, 76px); bottom:clamp(38px, 5vw, 72px); left:clamp(38px, 5vw, 76px); width:min(540px, calc(100% - clamp(76px, 10vw, 152px))); padding:26px 28px; border:1px solid rgba(255,255,255,.64); border-radius:22px; background:rgba(255,255,255,.82); color:#0d1c27; box-shadow:0 22px 60px rgba(7,31,45,.22); -webkit-backdrop-filter:blur(18px) saturate(150%); backdrop-filter:blur(18px) saturate(150%); }
-    .visual__caption strong { display:block; max-width:500px; font-size:30px; line-height:1.18; font-weight:800; letter-spacing:0; }
-    .visual__caption span { display:block; margin-top:12px; color:#51616c; font-size:15px; line-height:1.55; font-weight:600; }
-    @media (max-width:1120px) { body { background:#fff; } .page { display:block; } .auth { min-height:100vh; padding:28px 32px; } .brand { width:124px; height:46px; margin-bottom:72px; } .logo-dots { grid-template-columns:repeat(3, 8px); grid-auto-rows:8px; gap:4px; width:32px; } .brand-word { font-size:25px; } .auth__inner { width:min(100%, 520px); padding:0 0 20px; } .intro { margin-bottom:30px; } h1 { font-size:36px; } .intro p { font-size:17px; } .visual { display:none; } }
+    @media (max-width:1120px) { body { background:#fff; } .page { display:block; } .auth { min-height:100vh; padding:28px 32px; } .brand { width:124px; height:46px; margin-bottom:72px; } .logo-dots { grid-template-columns:repeat(3, 8px); grid-auto-rows:8px; gap:4px; width:32px; } .brand-word { font-size:25px; } .auth__inner { width:min(100%, 520px); padding:0 0 20px; } .intro { margin-bottom:30px; } h1 { font-size:38px; font-weight:600; } .intro p { font-size:18px; } label, .field-label { font-size:14px; } input[type="text"], input[type="password"], .submit { height:62px; font-size:17px; } .show-password { height:44px; font-size:14px; } .remember { font-size:16px; } .remember input { width:22px; height:22px; } .remember input:checked::after { width:9px; height:5px; margin:5px 0 0 5px; border-left-width:2px; border-bottom-width:2px; } .secure { font-size:13px; } .visual { display:none; } }
     @media (max-width:780px) { .auth { padding-right:22px; padding-left:22px; } .brand { left:22px; } }
     @media (max-width:420px) { .auth { padding-right:18px; padding-left:18px; } .brand { left:18px; } h1 { font-size:33px; } .intro p { font-size:16px; } label, .field-label { font-size:13px; } input[type="text"], input[type="password"], .submit { height:58px; } }
   </style>
@@ -253,7 +250,6 @@ function adminLoginPage(errorMessage = "") {
     </section>
     <aside class="visual" aria-label="Пример оформления интерактивного виджета">
       <img src="/admin-login?asset=pattern" alt="Абстрактный паттерн Olly">
-      <div class="visual__caption"><strong>Виджеты, которые превращают внимание в заявки</strong><span>Все проекты и результаты в одном кабинете</span></div>
     </aside>
   </main>
   <script>
