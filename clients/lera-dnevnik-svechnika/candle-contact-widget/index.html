@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Задать вопрос — Дневник свечника</title>
+  <title>Задать вопрос</title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600&family=Tenor+Sans&display=swap');
 
@@ -52,31 +52,11 @@
       box-shadow: 0 20px 50px rgba(32, 25, 18, 0.16);
     }
 
-    .cat-card::before {
-      content: '';
-      position: absolute;
-      inset: 10px;
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      border-radius: 19px;
-      pointer-events: none;
-      z-index: 4;
-    }
-
     .cat-content {
       align-self: center;
       padding: 30px 44px 30px 46px;
       position: relative;
       z-index: 2;
-    }
-
-    .cat-kicker {
-      margin: 0 0 14px;
-      color: var(--lera-beige);
-      font-size: 11px;
-      font-weight: 500;
-      line-height: 1;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
     }
 
     .cat-title {
@@ -150,17 +130,6 @@
       object-fit: cover;
       object-position: 50% 48%;
       filter: saturate(0.86) contrast(1.04) brightness(0.94);
-    }
-
-    .cat-media-label {
-      position: absolute;
-      right: 18px;
-      bottom: 17px;
-      z-index: 2;
-      color: rgba(255, 255, 255, 0.88);
-      font: 400 10px/1 'Tenor Sans', Arial, sans-serif;
-      letter-spacing: 0.16em;
-      text-transform: uppercase;
     }
 
     .cat-modal {
@@ -325,14 +294,10 @@
         border-radius: 24px;
       }
 
-      .cat-card::before { border-radius: 16px; }
-
       .cat-content {
         padding: 30px 25px 24px;
         text-align: center;
       }
-
-      .cat-kicker { margin-bottom: 12px; }
 
       .cat-title {
         margin-bottom: 12px;
@@ -350,11 +315,6 @@
         border-radius: 16px;
       }
 
-      .cat-media-label {
-        right: 14px;
-        bottom: 13px;
-      }
-
       .cat-form-card { padding: 26px 22px; }
     }
 
@@ -367,10 +327,9 @@
   <div class="cat-banner-wrapper">
     <div class="cat-card">
       <div class="cat-content">
-        <p class="cat-kicker">Дневник свечника</p>
         <h2 class="cat-title">Остались вопросы?</h2>
         <p class="cat-subtitle">
-          Поможем выбрать программу обучения и ответим на вопросы о свечеварении и развитии вашего дела.
+          Свяжись с нашей службой заботы напрямую и задай любые уточняющие вопросы
         </p>
         <button type="button" class="cat-btn" data-cat-open>Задать вопрос</button>
       </div>
@@ -379,7 +338,6 @@
         <video class="cat-video" autoplay muted loop playsinline preload="metadata" aria-label="Зажигаем свечу">
           <source src="./candle-contact-loop.mp4" type="video/mp4">
         </video>
-        <span class="cat-media-label">Тепло в каждой детали</span>
       </div>
     </div>
   </div>
@@ -390,7 +348,7 @@
 
       <div class="cat-form-content">
         <h2 class="cat-form-title" id="cat-form-title">Задайте вопрос</h2>
-        <p class="cat-form-text">Оставьте контакты — команда Дневника свечника поможет с выбором и ответит на вопрос.</p>
+        <p class="cat-form-text">Оставьте контакты — служба заботы свяжется с вами и ответит на уточняющие вопросы.</p>
 
         <form class="cat-form" data-cat-form>
           <input class="cat-input" type="text" name="name" placeholder="Ваше имя" autocomplete="name" required>
