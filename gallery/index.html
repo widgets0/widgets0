@@ -13,33 +13,67 @@
 <helmet>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <script src="./image-slot.js"></script>
 <script type="text/babel" src="./ios-frame.jsx"></script>
 <script type="text/babel" src="./browser-window.jsx"></script>
 <style>
   *{box-sizing:border-box}
-  html,body{margin:0;padding:0}
+  html,body{margin:0;padding:0;font-family:Manrope,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
   input::placeholder{color:#86868b}
   .lib-scroll::-webkit-scrollbar{width:8px}
   .lib-scroll::-webkit-scrollbar-thumb{background:rgba(0,0,0,0.14);border-radius:8px}
+  .site-shell{min-height:100vh;background:#f5f5f7;font-family:Manrope,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:#1d1d1f;padding:0 24px 110px}
+  .floating-header-wrap{position:sticky;top:18px;z-index:50;margin:0 auto 40px;padding:16px 0 0;max-width:1280px}
+  .floating-header{display:flex;align-items:center;justify-content:space-between;gap:18px;padding:14px 18px 14px 20px;background:rgba(255,255,255,.78);backdrop-filter:saturate(180%) blur(22px);-webkit-backdrop-filter:saturate(180%) blur(22px);border:1px solid rgba(0,0,0,.08);border-radius:26px;box-shadow:0 18px 55px rgba(29,29,31,.08)}
+  .floating-header__logo{height:34px;width:auto;display:block}
+  .floating-header__nav{display:flex;align-items:center;gap:8px}
+  .floating-header__link{display:inline-flex;align-items:center;justify-content:center;min-height:40px;padding:0 14px;border-radius:980px;color:#1d1d1f;text-decoration:none;font-size:14px;font-weight:700;white-space:nowrap;transition:background .16s ease,color .16s ease,transform .16s ease}
+  .floating-header__link:hover{background:#f0f0f3;transform:translateY(-1px)}
+  .floating-header__cta{display:inline-flex;align-items:center;justify-content:center;min-height:42px;padding:0 20px;border-radius:980px;background:#1d1d1f;color:#fff;text-decoration:none;font-size:14px;font-weight:800;white-space:nowrap;box-shadow:0 8px 24px rgba(29,29,31,.16)}
+  .widget-card-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px}
+  .widget-card{display:flex;flex-direction:column;min-height:100%;background:#fff;border:1px solid rgba(0,0,0,.07);border-radius:24px;overflow:hidden;box-shadow:0 8px 26px rgba(20,20,40,.055);transition:transform .2s ease,border-color .2s ease,box-shadow .2s ease}
+  .widget-card:hover{transform:translateY(-4px);border-color:rgba(0,0,0,.12);box-shadow:0 24px 70px rgba(20,20,40,.12)}
+  .widget-card__preview{position:relative;height:320px;overflow:hidden;border-bottom:1px solid rgba(0,0,0,.06)}
+  .widget-card__body{display:flex;flex-direction:column;gap:16px;padding:22px;flex:1}
+  .widget-card__title{font-size:22px;font-weight:800;line-height:1.12;letter-spacing:-.012em;margin:0;color:#1d1d1f}
+  .widget-card__label{font-size:11px;letter-spacing:.11em;font-weight:800;color:#9a9aa5;margin-bottom:7px;text-transform:uppercase}
+  .widget-card__text{font-size:14.5px;line-height:1.48;color:#5f6368;margin:0}
+  .widget-card__tags{display:flex;flex-wrap:wrap;gap:7px}
+  .widget-card__tag{font-size:12.5px;color:#4b4b4f;background:#f0f0f3;border:1px solid rgba(0,0,0,.05);padding:5px 10px;border-radius:8px}
+  .widget-card__button{margin-top:auto;width:100%;border:0;border-radius:980px;background:#1d1d1f;color:#fff;font-family:inherit;font-weight:800;font-size:15px;padding:14px 16px;cursor:pointer;transition:transform .16s ease,box-shadow .16s ease}
+  .widget-card__button:hover{transform:translateY(-1px);box-shadow:0 12px 28px rgba(29,29,31,.16)}
+  .gallery-toolbar-card{display:grid;grid-template-columns:auto 1fr;gap:18px;align-items:center;margin:0 0 24px;padding:16px 18px;background:#fff;border:1px solid rgba(0,0,0,.07);border-radius:22px;box-shadow:0 8px 24px rgba(20,20,40,.045)}
+  .gallery-tabs-row{display:flex;flex-wrap:wrap;gap:10px;margin:0 0 28px}
+  .gallery-more-wrap{display:flex;justify-content:center;margin-top:30px}
+  @media (max-width:1100px){.widget-card-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.floating-header__nav{gap:4px}.floating-header__link{padding:0 10px}}
+  @media (max-width:760px){.site-shell{padding:0 16px 80px;overflow:hidden}.floating-header-wrap{top:10px;padding-top:10px;margin-bottom:28px}.floating-header{border-radius:20px;padding:12px 13px}.floating-header__logo{height:30px}.floating-header__link{display:none}.floating-header__cta{min-height:38px;padding:0 14px;font-size:13px}.hero-grid{grid-template-columns:1fr!important;gap:34px!important;margin:24px 0 62px!important}.hero-title{font-size:clamp(43px,13vw,56px)!important;letter-spacing:-.045em!important}.hero-visual{justify-content:center!important;overflow:hidden}.widget-card-grid{grid-template-columns:1fr}.gallery-toolbar-card{grid-template-columns:1fr}.widget-card__preview{height:260px}}
   @keyframes leadIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+  @keyframes heroCursorIn{from{opacity:0}to{opacity:1}}
 
 </style>
 </helmet>
-<div style="min-height:100vh;background:#f5f5f7;font-family:Onest,-apple-system,Segoe UI,sans-serif;color:#1d1d1f;padding:0 24px 110px">
+<div class="site-shell">
 
-  <header style="position:sticky;top:0;z-index:50;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:16px 24px;margin:0 -24px 40px;background:rgba(245,245,247,0.8);backdrop-filter:saturate(180%) blur(20px);border-bottom:1px solid rgba(0,0,0,0.08)">
-    <img src="./assets/olly-logo.png" alt="Olly" style="height:32px;width:auto;display:block">
-    <a href="#cta" style="text-decoration:none;background:#1d1d1f;color:#fff;font-size:14px;font-weight:700;padding:11px 22px;border-radius:980px;white-space:nowrap">Запустить бесплатно</a>
+  <header class="floating-header-wrap">
+    <div class="floating-header">
+      <img class="floating-header__logo" src="./assets/olly-logo.png" alt="Olly">
+      <nav class="floating-header__nav" aria-label="Навигация по галерее">
+        <a class="floating-header__link" href="#gallery-list">Виджеты</a>
+        <a class="floating-header__link" href="#where-use">Где использовать</a>
+        <a class="floating-header__link" href="#how-connect">Как подключить</a>
+        <a class="floating-header__link" href="../gallery2/">Галерея 2</a>
+        <a class="floating-header__cta" href="#cta">Запустить бесплатно</a>
+      </nav>
+    </div>
   </header>
 
   <div style="max-width:1180px;margin:0 auto">
 
-    <div style="display:grid;grid-template-columns:1.05fr 0.95fr;gap:56px;align-items:center;margin:36px 0 72px">
+    <div class="hero-grid" style="display:grid;grid-template-columns:1.05fr 0.95fr;gap:56px;align-items:center;margin:36px 0 72px">
       <div>
         <div style="display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:700;letter-spacing:0.04em;color:#0071e3;background:#eaf3ff;border:1px solid rgba(0,113,227,0.15);padding:6px 14px;border-radius:980px;margin-bottom:22px">Интерактивные механики для вашего сайта</div>
-        <h1 style="font-size:58px;font-weight:700;line-height:1.03;letter-spacing:-0.035em;margin:0 0 22px;text-wrap:balance">
+        <h1 class="hero-title" style="font-size:58px;font-weight:700;line-height:1.03;letter-spacing:-0.035em;margin:0 0 22px;text-wrap:balance">
           <span style="color:#86868b">Те же посетители — </span><span style="color:#1d1d1f">больше заявок</span>
         </h1>
         <p style="font-size:20px;line-height:1.5;color:#6e6e73;margin:0 0 32px;max-width:520px;text-wrap:pretty">Игры, квизы и калькуляторы вовлекают посетителей и отправляют заявки прямо в Telegram. Собираете за день, ставите одной строкой кода.</p>
@@ -65,15 +99,69 @@
           </div>
         </div>
       </div>
-      <div style="display:flex;justify-content:center">
+      <div class="hero-visual" style="display:flex;justify-content:center">
         <div style="width:288px;height:588px;background:#fff;border:3px solid #1d1d1f;border-radius:38px;box-shadow:16px 16px 0 rgba(29,29,31,0.92);overflow:hidden;position:relative">
-          <iframe id="hero-preview-frame" src="about:blank" scrolling="no" title="Демо виджета" style="position:absolute;top:0;left:0;width:150%;height:150%;border:0;transform:scale(0.6667);transform-origin:0 0;pointer-events:none"></iframe>
-          <div onClick="{{playHero}}" style="{{heroPosterStyle}}">
-            <div style="width:64px;height:64px;border-radius:50%;background:#1d1d1f;display:flex;align-items:center;justify-content:center;box-shadow:0 10px 30px rgba(0,0,0,0.25);margin-bottom:16px">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="#fff"><path d="M8 5v14l11-7z"></path></svg>
+          <div style="position:absolute;inset:0;background:#2a231e;color:#fff;overflow:hidden;background-image:repeating-conic-gradient(#2a231e 0deg 15deg,#3a322c 15deg 30deg)">
+            <div style="height:48px;display:flex;align-items:center;justify-content:flex-end;padding:0 14px;border-bottom:1px solid rgba(244,235,217,.12)">
+              <div style="width:26px;height:26px;border-radius:50%;background:rgba(244,235,217,.14);display:flex;align-items:center;justify-content:center;color:#f4ebd9;font-size:18px;line-height:1">×</div>
             </div>
-            <div style="font-size:15px;font-weight:700;color:#1d1d1f">Запустить демо</div>
-            <div style="font-size:13px;color:#8a8a97;margin-top:4px">Колесо фортуны</div>
+
+            <div style="position:absolute;top:48px;left:0;right:0;bottom:0;padding:25px 18px 18px;display:flex;flex-direction:column;align-items:center;text-align:center">
+              <sc-if value="{{heroWheel}}" hint-placeholder-val="{{true}}">
+                <div style="height:100%;width:100%;display:flex;flex-direction:column;align-items:center;animation:leadIn .45s ease">
+                  <div style="font-family:Georgia,serif;font-size:22px;font-weight:700;line-height:1.08;text-transform:uppercase;color:#c4a47c;margin-bottom:8px">Твой подарок<br>от школы ждёт!</div>
+                  <div style="font-size:12px;line-height:1.45;color:#f4ebd9;opacity:.85;margin-bottom:17px">Крути колесо — каждая участница<br>получает приз. Без исключений!</div>
+                  <div style="position:relative;margin-top:3px">
+                    <div style="position:absolute;top:-18px;left:50%;transform:translateX(-50%);z-index:3;width:0;height:0;border-left:11px solid transparent;border-right:11px solid transparent;border-top:20px solid #c4a47c;filter:drop-shadow(3px 3px 0 #1a1512)"></div>
+                    <div style="{{heroWheelStyle}}">
+                      <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:34px;height:34px;border-radius:50%;background:#c4a47c;border:4px solid #1a1512;box-shadow:0 2px 7px rgba(0,0,0,.35)"></div>
+                    </div>
+                    <sc-if value="{{heroPrizeShow}}" hint-placeholder-val="{{false}}">
+                      <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none;animation:leadIn .35s ease">
+                        <span style="position:absolute;top:8px;left:8px;width:6px;height:13px;background:#c4a47c;transform:rotate(-28deg);z-index:2"></span>
+                        <span style="position:absolute;top:18px;right:10px;width:7px;height:7px;background:#f4ebd9;transform:rotate(24deg);z-index:2"></span>
+                        <span style="position:absolute;bottom:13px;left:15px;width:7px;height:7px;background:#f4ebd9;transform:rotate(35deg);z-index:2"></span>
+                        <span style="position:absolute;bottom:8px;right:17px;width:6px;height:13px;background:#c4a47c;transform:rotate(28deg);z-index:2"></span>
+                        <div style="background:#f4ebd9;color:#2a231e;border:3px solid #1a1512;border-radius:12px;padding:12px 15px;font-size:14px;font-weight:900;line-height:1.1;box-shadow:5px 6px 0 rgba(0,0,0,.75);white-space:nowrap;z-index:3">БИНГО!<br><span style="font-size:11px">ВЫ ВЫИГРАЛИ {{heroPrize}}</span></div>
+                      </div>
+                    </sc-if>
+                  </div>
+                  <div style="{{heroSpinButtonStyle}}">{{heroSpinLabel}}</div>
+                  <div style="font-size:10px;color:#f4ebd9;opacity:.6;margin-top:10px">Приз гарантирован каждому участнику</div>
+                </div>
+              </sc-if>
+
+              <sc-if value="{{heroForm}}" hint-placeholder-val="{{false}}">
+                <div style="width:100%;animation:leadIn .45s ease;text-align:left">
+                  <div style="font-size:10px;letter-spacing:.12em;font-weight:800;color:#c4a47c;margin-bottom:9px">ТВОЙ ПРИЗ</div>
+                  <div style="font-family:Georgia,serif;font-size:28px;font-weight:700;line-height:1.04;text-transform:uppercase;color:#c4a47c;margin-bottom:10px">Скидка<br>{{heroPrize}}</div>
+                  <div style="font-size:12px;line-height:1.45;color:#f4ebd9;opacity:.85;margin-bottom:7px">Вы выиграли приз. Оставьте контакт — пришлём промокод.</div>
+                  <div style="display:inline-flex;align-items:center;gap:6px;background:rgba(196,164,124,.18);border:1px solid rgba(196,164,124,.45);border-radius:7px;padding:5px 8px;color:#f4ebd9;font-size:10px;font-weight:800;margin-bottom:13px">Предложение сгорит через <span style="color:#c4a47c;font-size:12px">{{heroTimerLabel}}</span></div>
+                  <div style="font-size:10px;font-weight:700;color:#f4ebd9;opacity:.7;margin-bottom:5px">Имя</div>
+                  <div style="height:37px;border:1.5px solid rgba(244,235,217,.34);border-radius:9px;background:rgba(244,235,217,.1);padding:0 10px;display:flex;align-items:center;font-size:12px;color:#f4ebd9;margin-bottom:10px">{{heroName}}</div>
+                  <div style="font-size:10px;font-weight:700;color:#f4ebd9;opacity:.7;margin-bottom:5px">Телефон</div>
+                  <div style="height:37px;border:1.5px solid rgba(244,235,217,.34);border-radius:9px;background:rgba(244,235,217,.1);padding:0 10px;display:flex;align-items:center;font-size:12px;color:#f4ebd9">{{heroPhone}}</div>
+                  <div style="{{heroSubmitStyle}}">ЗАБРАТЬ ПРИЗ</div>
+                </div>
+              </sc-if>
+
+              <sc-if value="{{heroSuccess}}" hint-placeholder-val="{{false}}">
+                <div style="height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:12px;animation:leadIn .45s ease">
+                  <div style="width:66px;height:66px;border-radius:50%;background:#c4a47c;color:#2a231e;border:4px solid #1a1512;display:flex;align-items:center;justify-content:center;box-shadow:6px 7px 0 rgba(0,0,0,.7)">
+                    <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#2a231e" stroke-width="2.7" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"></path></svg>
+                  </div>
+                  <div style="font-family:Georgia,serif;font-size:23px;font-weight:700;text-transform:uppercase;color:#c4a47c">Заявка отправлена</div>
+                  <div style="font-size:16px;line-height:1.2;font-weight:900;text-transform:uppercase;color:#f4ebd9">Вы выиграли скидку {{heroPrize}}</div>
+                  <div style="font-size:11px;line-height:1.35;color:#f4ebd9;opacity:.8;max-width:190px">Приз закреплён. Мы напишем вам в Telegram.</div>
+                  <div style="display:inline-flex;align-items:center;gap:6px;color:#c4a47c;font-size:11px;font-weight:800">Предложение действует ещё <span style="font-size:13px">{{heroTimerLabel}}</span></div>
+                  <div style="width:100%;display:flex;align-items:center;gap:9px;text-align:left;background:#f4ebd9;color:#2a231e;border:3px solid #1a1512;border-radius:11px;padding:9px 10px;box-shadow:4px 5px 0 rgba(0,0,0,.72)">
+                    <span style="width:9px;height:9px;border-radius:50%;background:#30d158;box-shadow:0 0 0 3px rgba(48,209,88,.22);flex:none"></span>
+                    <div style="font-size:11px;line-height:1.25;font-weight:800"><span>+1 новая заявка</span><br><span style="font-size:10px;font-weight:600;opacity:.68">улетела в Telegram</span></div>
+                  </div>
+                  <div style="font-size:10px;color:#f4ebd9;opacity:.6">129 заявок сегодня</div>
+                </div>
+              </sc-if>
+            </div>
           </div>
         </div>
       </div>
@@ -108,72 +196,67 @@
 
     <div id="gallery-list" ref="{{galleryRef}}" style="margin-top:96px;padding-top:64px;border-top:1px solid rgba(0,0,0,0.08);scroll-margin-top:90px">
       <h2 style="font-size:44px;font-weight:800;letter-spacing:-0.025em;margin:0 0 10px;text-wrap:balance">Библиотека виджетов</h2>
-      <p style="font-size:18px;color:#6e6e73;margin:0 0 40px;max-width:600px;line-height:1.5">Выберите виджет слева — превью появится в центре, а справа опишем, как он работает и что даёт.</p>
+      <p style="font-size:18px;color:#6e6e73;margin:0 0 32px;max-width:660px;line-height:1.5">Открывайте живые примеры, сравнивайте механику и выбирайте виджет под задачу: заявки, продажи, вовлечение или быстрый контакт.</p>
 
-      <div style="display:grid;grid-template-columns:250px 1fr 340px;height:720px;border:1px solid rgba(0,0,0,0.08);border-radius:24px;overflow:hidden;background:#fbfbfd;box-shadow:0 10px 40px rgba(20,20,40,0.07)">
-
-        <div class="lib-scroll" style="border-right:1px solid rgba(0,0,0,0.07);overflow-y:auto;padding:24px 16px">
-          <sc-for list="{{libGroups}}" as="g" hint-placeholder-count="4">
-            <div style="margin-bottom:20px">
-              <div style="font-size:11px;letter-spacing:0.1em;font-weight:700;color:#a1a1aa;margin-bottom:9px">{{g.label}}</div>
-              <div style="display:flex;flex-direction:column;gap:2px">
-                <sc-for list="{{g.items}}" as="w" hint-placeholder-count="3">
-                  <button onClick="{{w.onSelect}}" style="{{w.rowStyle}}">
-                    <span style="{{w.dotStyle}}"></span>
-                    <span style="flex:1;text-align:left">{{w.title}}</span>
-                  </button>
-                </sc-for>
-              </div>
-            </div>
-          </sc-for>
+      <div class="gallery-toolbar-card">
+        <div style="display:flex;align-items:baseline;gap:10px;color:#86868b;font-size:15px;font-weight:700">
+          <strong style="font-size:32px;line-height:1;color:#1d1d1f;letter-spacing:-0.02em">{{total}}</strong>
+          <span>виджетов</span>
         </div>
-
-        <div style="display:flex;align-items:center;justify-content:center;padding:36px 28px;overflow:hidden;background:radial-gradient(80% 60% at 50% 0%,#ffffff,#eef0f3 85%)">
-          <div style="width:320px;max-width:100%;height:640px;background:#fff;border:3px solid #1d1d1f;border-radius:42px;box-shadow:0 30px 70px rgba(20,20,40,0.22);overflow:hidden;position:relative">
-            <div style="position:absolute;top:0;left:50%;transform:translateX(-50%);width:130px;height:26px;background:#1d1d1f;border-radius:0 0 16px 16px;z-index:3"></div>
-            <iframe id="lib-preview-frame" src="about:blank" title="Превью виджета" scrolling="no" style="position:absolute;top:0;left:0;width:150%;height:150%;border:0;transform:scale(0.6667);transform-origin:0 0"></iframe>
-            <div onClick="{{playLib}}" style="{{libPosterStyle}}">
-              <div style="width:60px;height:60px;border-radius:50%;background:#1d1d1f;display:flex;align-items:center;justify-content:center;box-shadow:0 10px 28px rgba(0,0,0,0.22);margin-bottom:14px">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="#fff"><path d="M8 5v14l11-7z"></path></svg>
-              </div>
-              <div style="font-size:14px;font-weight:700;color:#1d1d1f">Запустить превью</div>
-              <div style="font-size:13px;color:#8a8a97;margin-top:4px">Живой виджет на телефоне</div>
-            </div>
-          </div>
-        </div>
-
-        <div class="lib-scroll" style="border-left:1px solid rgba(0,0,0,0.07);overflow-y:auto;padding:32px 28px;display:flex;flex-direction:column">
-          <div style="font-size:12px;letter-spacing:0.08em;font-weight:700;color:#a1a1aa;margin-bottom:9px">{{libGroup}}</div>
-          <h3 style="font-size:27px;font-weight:800;letter-spacing:-0.015em;line-height:1.12;margin:0 0 16px">{{libTitle}}</h3>
-
-          <div style="font-size:11px;letter-spacing:0.08em;font-weight:700;color:#8a8a97;margin-bottom:8px">КАК РАБОТАЕТ</div>
-          <p style="font-size:14.5px;line-height:1.55;color:#424245;margin:0 0 20px">{{libHow}}</p>
-
-          <div style="font-size:11px;letter-spacing:0.08em;font-weight:700;color:#8a8a97;margin-bottom:10px">КОМУ ПОДХОДИТ</div>
-          <div style="display:flex;flex-wrap:wrap;gap:7px;margin-bottom:24px">
-            <sc-for list="{{libTags}}" as="tag" hint-placeholder-count="4">
-              <span style="font-size:12.5px;color:#4b4b4f;background:#f0f0f3;border:1px solid rgba(0,0,0,0.05);padding:5px 10px;border-radius:8px">{{tag}}</span>
-            </sc-for>
-          </div>
-
-          <div style="background:#fff;border:1px solid rgba(0,0,0,0.08);border-radius:14px;padding:18px;margin-bottom:22px;box-shadow:0 2px 12px rgba(0,0,0,0.05)">
-            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
-              <span style="font-size:11px;letter-spacing:0.06em;font-weight:700;color:#8a8a97">РОСТ КОНВЕРСИИ</span>
-              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#1f8a5b" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l6-6 4 4 8-8M15 7h6v6"></path></svg>
-            </div>
-            <div style="font-size:30px;font-weight:800;letter-spacing:-0.02em;margin-bottom:12px">{{libUplift}}</div>
-            <div style="height:7px;border-radius:980px;background:#eef0f3;overflow:hidden">
-              <div style="{{libBarStyle}}"></div>
-            </div>
-          </div>
-
-          <a href="#cta" style="margin-top:auto;text-decoration:none;display:flex;align-items:center;justify-content:center;gap:8px;background:#1d1d1f;color:#fff;font-size:15px;font-weight:700;padding:15px;border-radius:13px">Попробовать этот виджет ›</a>
-        </div>
-
+        <sc-if value="{{showSearch}}" hint-placeholder-val="{{true}}">
+          <input value="{{q}}" onInput="{{onSearch}}" placeholder="Поиск виджетов" style="width:100%;min-height:54px;background:#f5f5f7;border:1px solid rgba(0,0,0,0.1);border-radius:16px;padding:0 18px;font-family:inherit;font-size:16px;font-weight:600;color:#1d1d1f;outline:none">
+        </sc-if>
       </div>
+
+      <div class="gallery-tabs-row">
+        <sc-for list="{{cats}}" as="c" hint-placeholder-count="6">
+          <button onClick="{{c.onClick}}" style="{{c.style}}">{{c.label}}</button>
+        </sc-for>
+      </div>
+
+      <sc-if value="{{empty}}" hint-placeholder-val="{{false}}">
+        <div style="background:#fff;border:1px solid rgba(0,0,0,0.07);border-radius:24px;padding:46px 28px;text-align:center;color:#6e6e73;font-size:17px;font-weight:700">Ничего не нашли — попробуйте другой запрос или категорию.</div>
+      </sc-if>
+
+      <div class="widget-card-grid">
+        <sc-for list="{{cards}}" as="w" hint-placeholder-count="6">
+          <article class="widget-card">
+            <div class="widget-card__preview" style="{{w.glowStyle}}">
+              <div style="{{w.frameStyle}}">
+                <iframe src="{{w.url}}" title="{{w.title}}" scrolling="no" style="{{w.iframeStyle}}"></iframe>
+              </div>
+            </div>
+            <div class="widget-card__body">
+              <div>
+                <div class="widget-card__label">{{w.category}}</div>
+                <h3 class="widget-card__title">{{w.title}}</h3>
+              </div>
+              <div>
+                <div class="widget-card__label">Как работает</div>
+                <p class="widget-card__text">{{w.how}}</p>
+              </div>
+              <div>
+                <div class="widget-card__label">Кому подходит</div>
+                <div class="widget-card__tags">
+                  <sc-for list="{{w.whoTags}}" as="tag" hint-placeholder-count="4">
+                    <span class="widget-card__tag">{{tag}}</span>
+                  </sc-for>
+                </div>
+              </div>
+              <button class="widget-card__button" onClick="{{w.onOpen}}">Посмотреть виджет</button>
+            </div>
+          </article>
+        </sc-for>
+      </div>
+
+      <sc-if value="{{hasMore}}" hint-placeholder-val="{{true}}">
+        <div class="gallery-more-wrap">
+          <button onClick="{{onToggleAll}}" style="{{moreBtnStyle}}">{{moreLabel}}</button>
+        </div>
+      </sc-if>
     </div>
 
-    <div ref="{{whereRef}}" style="margin-top:96px;padding-top:64px;border-top:1px solid rgba(0,0,0,0.08)">
+    <div id="where-use" ref="{{whereRef}}" style="margin-top:96px;padding-top:64px;border-top:1px solid rgba(0,0,0,0.08);scroll-margin-top:110px">
       <h2 style="font-size:44px;font-weight:800;letter-spacing:-0.025em;margin:0 0 48px;text-wrap:balance">Где использовать</h2>
 
       <div style="display:grid;grid-template-columns:340px 1fr;gap:56px;align-items:start">
@@ -387,7 +470,7 @@
       </div>
     </div>
 
-    <div style="margin-top:96px;padding-top:64px;border-top:1px solid rgba(0,0,0,0.08)">
+    <div id="how-connect" style="margin-top:96px;padding-top:64px;border-top:1px solid rgba(0,0,0,0.08);scroll-margin-top:110px">
       <h2 style="font-size:44px;font-weight:800;letter-spacing:-0.025em;margin:0 0 10px;text-wrap:balance">Как подключить</h2>
       <p style="font-size:18px;color:#6e6e73;margin:0 0 48px;max-width:600px;line-height:1.5">Запуск за один день — без разработчиков и переделки сайта.</p>
       <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:24px">
@@ -536,10 +619,22 @@ class Component extends DCLogic {
             phase: 'point', cursor: { x: 120, y: 380 }, opened: false,
             wheelDeg: 0, spinning: false, showForm: false, prize: '',
             demoName: '', demoPhone: '', success: false, toasts: [], leadCount: 128, leadName: 'Мария',
-            activeIndustry: 'beauty', ctaName: '', ctaContact: '', ctaSent: false, showAll: false, galShown: false, indShown: false, libId: null, heroPlayed: false, indPlayed: false, libPlayed: false };
+            activeIndustry: 'beauty', ctaName: '', ctaContact: '', ctaSent: false, showAll: false, galShown: false, indShown: false, libId: null, heroPhase: 'wheel', heroWheelDeg: 0, heroSpinning: false, heroName: '', heroPhone: '', heroPrize: '15%', heroSeconds: 600, indPlayed: false, libPlayed: false };
   toastId = 0;
   demoTimer = null;
+  heroTimer = null;
+  heroCountdownTimer = null;
   demoNames = ['Мария','Алексей','Ольга','Дмитрий','Ирина','Павел','Екатерина','Никита','Анна','Сергей'];
+  heroSeq = [
+    { phase: 'wheel', dur: 1100 },
+    { phase: 'spin', dur: 2200 },
+    { phase: 'prize', dur: 1250 },
+    { phase: 'form', dur: 700 },
+    { phase: 'typeName', dur: 700 },
+    { phase: 'typePhone', dur: 900 },
+    { phase: 'submit', dur: 550 },
+    { phase: 'success', dur: 2200 },
+  ];
   seq = [
     { phase: 'point', dur: 1000 },
     { phase: 'clickLeft', dur: 450 },
@@ -556,6 +651,11 @@ class Component extends DCLogic {
   ];
 
   componentDidMount() {
+    this.runHeroPhase(0);
+    this.heroCountdownTimer = setInterval(() => {
+      const timedPhase = ['form', 'typeName', 'typePhone', 'submit', 'success'].includes(this.state.heroPhase);
+      if (timedPhase && this.state.heroSeconds > 0) this.setState(s => ({ heroSeconds: s.heroSeconds - 1 }));
+    }, 1000);
     this.demoVisible = false; this.indVisible = false;
     const mkObs = (getEl, onChange) => {
       try {
@@ -579,7 +679,7 @@ class Component extends DCLogic {
     this.startIndustryRotation();
   }
   componentWillUnmount() {
-    clearTimeout(this.demoTimer); clearInterval(this.indTimer);
+    clearTimeout(this.demoTimer); clearTimeout(this.heroTimer); clearInterval(this.heroCountdownTimer); clearInterval(this.indTimer);
     if (this.demoObs) this.demoObs.disconnect();
     if (this.indObs) this.indObs.disconnect();
     if (this.galObs) this.galObs.disconnect();
@@ -607,6 +707,47 @@ class Component extends DCLogic {
   closeModal() {
     if (this.modalFrameEl) this.modalFrameEl.innerHTML = '';
     this.setState({ modal: null });
+  }
+
+  runHeroPhase(i) {
+    if (document.hidden) {
+      this.heroTimer = setTimeout(() => this.runHeroPhase(i), 500);
+      return;
+    }
+    const step = this.heroSeq[i];
+    switch (step.phase) {
+      case 'wheel':
+        this.setState({ heroPhase: step.phase, heroWheelDeg: 0, heroSpinning: false, heroName: '', heroPhone: '', heroSeconds: 600 });
+        break;
+      case 'spin':
+        this.setState({ heroPhase: step.phase, heroSpinning: true, heroWheelDeg: 360 * 4 + 42 });
+        break;
+      case 'prize':
+        this.setState({ heroPhase: step.phase, heroSpinning: false });
+        break;
+      case 'form':
+        this.setState({ heroPhase: step.phase, heroSpinning: false });
+        break;
+      case 'typeName':
+        this.setState({ heroPhase: step.phase, heroName: 'Алексей' });
+        break;
+      case 'typePhone':
+        this.setState({ heroPhase: step.phase, heroPhone: '+7 900 000-00-00' });
+        break;
+      case 'submit':
+        this.setState({ heroPhase: step.phase });
+        break;
+      case 'success':
+        this.setState({ heroPhase: step.phase });
+        break;
+    }
+    this.heroTimer = setTimeout(() => this.runHeroPhase((i + 1) % this.heroSeq.length), step.dur);
+  }
+
+  heroTimerText() {
+    const minutes = Math.floor(this.state.heroSeconds / 60);
+    const seconds = this.state.heroSeconds % 60;
+    return String(minutes).padStart(2, '0') + ':' + String(seconds).padStart(2, '0');
   }
 
   startIndustryRotation() {
@@ -883,12 +1024,12 @@ class Component extends DCLogic {
       whoTags: w.who.split('·').map(s => s.trim()).filter(Boolean),
       onOpen: () => this.openModal(w),
       glowStyle: {
-        position: 'relative', padding: '26px', cursor: 'pointer',
+        position: 'relative', padding: '18px', cursor: 'pointer',
         background: `radial-gradient(130% 92% at 50% 0%, ${w.glow}12, #ffffff 68%)`,
         borderBottom: '1px solid rgba(0,0,0,0.06)',
       },
       frameStyle: {
-        position: 'relative', height: '300px', borderRadius: '16px', overflow: 'hidden',
+        position: 'relative', height: '284px', borderRadius: '16px', overflow: 'hidden',
         boxShadow: '0 10px 30px rgba(0,0,0,0.12)', background: '#fff',
       },
       posterStyle: {
@@ -971,12 +1112,33 @@ class Component extends DCLogic {
         flexDirection: 'column', alignItems: 'center', justifyContent: 'center', cursor: 'pointer',
         background: 'radial-gradient(120% 80% at 50% 0%,#ece6fb,#f5f5f7 70%)',
       },
-      playHero: () => { const el = document.getElementById('hero-preview-frame'); if (el) el.src = this.base() + 'widgets/wheel-fortune-widget.html?preview=1'; this.setState({ heroPlayed: true }); },
-      heroPosterStyle: {
-        position: 'absolute', inset: 0, display: this.state.heroPlayed ? 'none' : 'flex',
-        flexDirection: 'column', alignItems: 'center', justifyContent: 'center', cursor: 'pointer',
-        background: 'radial-gradient(120% 80% at 50% 0%,#ece6fb,#f5f5f7 70%)',
+      heroWheel: this.state.heroPhase === 'wheel' || this.state.heroPhase === 'spin' || this.state.heroPhase === 'prize',
+      heroPrizeShow: this.state.heroPhase === 'prize',
+      heroForm: this.state.heroPhase === 'form' || this.state.heroPhase === 'typeName' || this.state.heroPhase === 'typePhone' || this.state.heroPhase === 'submit',
+      heroSuccess: this.state.heroPhase === 'success',
+      heroPrize: this.state.heroPrize,
+      heroName: this.state.heroName,
+      heroPhone: this.state.heroPhone,
+      heroTimerLabel: this.heroTimerText(),
+      heroWheelStyle: {
+        width: '178px', height: '178px', borderRadius: '50%', position: 'relative',
+        background: 'conic-gradient(#f4ebd9 0deg 60deg,#c4a47c 60deg 120deg,#f4ebd9 120deg 180deg,#c4a47c 180deg 240deg,#f4ebd9 240deg 300deg,#c4a47c 300deg 360deg)',
+        border: '7px solid #1a1512',
+        boxShadow: '8px 9px 0 rgba(0,0,0,0.65), inset 0 0 0 3px rgba(255,255,255,.4)',
+        transform: `rotate(${this.state.heroWheelDeg}deg)`,
+        transition: this.state.heroSpinning ? 'transform 1.9s cubic-bezier(.15,.8,.2,1)' : 'none',
       },
+      heroSpinButtonStyle: {
+        marginTop: '23px', width: '100%', background: '#c4a47c', color: '#2a231e', border: '3px solid #1a1512', borderRadius: '11px', padding: '12px 10px',
+        textAlign: 'center', fontSize: '13px', fontWeight: '900', letterSpacing: '.04em', transition: 'transform .15s ease',
+        transform: this.state.heroPhase === 'spin' ? 'scale(.95)' : 'none', boxShadow: '4px 5px 0 rgba(0,0,0,.72)',
+      },
+      heroSubmitStyle: {
+        marginTop: '17px', background: '#c4a47c', color: '#2a231e', border: '3px solid #1a1512', borderRadius: '11px', padding: '12px 10px',
+        textAlign: 'center', fontSize: '13px', fontWeight: '900', letterSpacing: '.04em', transition: 'transform .15s ease',
+        transform: this.state.heroPhase === 'submit' ? 'scale(.95)' : 'none', boxShadow: '4px 5px 0 rgba(0,0,0,.72)',
+      },
+      heroSpinLabel: this.state.heroSpinning ? 'КРУТИМ...' : 'КРУТИТЬ КОЛЕСО',
       libPreviewUrl: this.base() + libActive.path,
       libTitle: libActive.title,
       libGroup: libActive.meta.group,
